@@ -26,7 +26,6 @@
 
 #include <AkonadiCore/Collection>
 #include <AkonadiCore/Item>
-#include <AkonadiCore/Tag>
 
 #include "akonadi/akonadimonitorinterface.h"
 #include "akonadi/akonadiserializerinterface.h"
@@ -55,27 +54,12 @@ public:
     void setCollections(const Collection::List &collections);
     void populateCollection(const Collection &collection, const Item::List &items);
 
-
-    bool isTagListPopulated() const;
-    Tag::List tags() const;
-    bool isTagKnown(Tag::Id id) const;
-    Tag tag(Tag::Id id) const;
-    bool isTagPopulated(Tag::Id id) const;
-    Item::List items(const Tag &tag) const;
-
-    void setTags(const Tag::List &tags);
-    void populateTag(const Tag &tag, const Item::List &items);
-
     Item item(Item::Id id) const;
 
 private slots:
     void onCollectionAdded(const Collection &collection);
     void onCollectionChanged(const Collection &collection);
     void onCollectionRemoved(const Collection &collection);
-
-    void onTagAdded(const Tag &tag);
-    void onTagChanged(const Tag &tag);
-    void onTagRemoved(const Tag &tag);
 
     void onItemAdded(const Item &item);
     void onItemChanged(const Item &item);
@@ -88,10 +72,6 @@ private:
     bool m_collectionListPopulated;
     Collection::List m_collections;
     QHash<Collection::Id, QVector<Item::Id>> m_collectionItems;
-
-    bool m_tagListPopulated;
-    Tag::List m_tags;
-    QHash<Tag::Id, QVector<Item::Id>> m_tagItems;
 
     QHash<Item::Id, Item> m_items;
 };

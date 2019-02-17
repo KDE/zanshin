@@ -29,7 +29,6 @@
 #include "testlib/akonadifakemonitor.h"
 #include "testlib/gencollection.h"
 #include "testlib/gentodo.h"
-#include "testlib/gentag.h"
 
 using namespace Testlib;
 
@@ -47,9 +46,6 @@ private slots:
         // THEN
         QVERIFY(!cache->isCollectionListPopulated());
         QVERIFY(cache->collections().isEmpty());
-
-        QVERIFY(!cache->isTagListPopulated());
-        QVERIFY(cache->tags().isEmpty());
     }
 
     void shouldStoreCollectionsAndUpdate()
@@ -185,107 +181,6 @@ private slots:
         QCOMPARE(cache->collection(collection.id()).name(), QStringLiteral("tasks2"));
     }
 
-    void shouldStoreTagsAndUpdate()
-    {
-        // GIVEN
-        const auto tag1 = Akonadi::Tag(GenTag().withId(1).asPlain().withName("tag1"));
-        const auto tag2 = Akonadi::Tag(GenTag().withId(2).asContext().withName("tag2"));
-
-        auto monitor = AkonadiFakeMonitor::Ptr::create();
-        auto cache = Akonadi::Cache::Ptr::create(Akonadi::Serializer::Ptr(new Akonadi::Serializer), monitor);
-
-        // THEN
-        QVERIFY(!cache->isTagKnown(tag1.id()));
-        QVERIFY(!cache->isTagPopulated(tag1.id()));
-        QVERIFY(!cache->isTagKnown(tag2.id()));
-        QVERIFY(!cache->isTagPopulated(tag2.id()));
-
-        // WHEN
-        cache->setTags(Akonadi::Tag::List() << tag1 << tag2);
-
-        // THEN
-        QVERIFY(cache->isTagListPopulated());
-        QCOMPARE(cache->tags(), Akonadi::Tag::List() << tag1 << tag2);
-        QCOMPARE(cache->tag(tag1.id()), tag1);
-        QCOMPARE(cache->tag(tag1.id()).name(), tag1.name());
-        QCOMPARE(cache->tag(tag2.id()), tag2);
-        QCOMPARE(cache->tag(tag2.id()).name(), tag2.name());
-        QVERIFY(cache->isTagKnown(tag1.id()));
-        QVERIFY(!cache->isTagPopulated(tag1.id()));
-        QVERIFY(cache->isTagKnown(tag2.id()));
-        QVERIFY(!cache->isTagPopulated(tag2.id()));
-
-        // WHEN
-        cache->setTags(Akonadi::Tag::List() << GenTag(tag1).withName("tag1bis") << tag2);
-
-        // THEN
-        QCOMPARE(cache->tags(), Akonadi::Tag::List() << tag1 << tag2);
-        QCOMPARE(cache->tag(tag1.id()), tag1);
-        QCOMPARE(cache->tag(tag1.id()).name(), QStringLiteral("tag1bis"));
-        QCOMPARE(cache->tag(tag2.id()), tag2);
-        QCOMPARE(cache->tag(tag2.id()).name(), tag2.name());
-        QVERIFY(cache->isTagKnown(tag1.id()));
-        QVERIFY(!cache->isTagPopulated(tag1.id()));
-        QVERIFY(cache->isTagKnown(tag2.id()));
-        QVERIFY(!cache->isTagPopulated(tag2.id()));
-
-        // WHEN
-        monitor->changeTag(GenTag(tag1).withName("tag1ter"));
-
-        // THEN
-        QCOMPARE(cache->tags(), Akonadi::Tag::List() << tag1 << tag2);
-        QCOMPARE(cache->tag(tag1.id()), tag1);
-        QCOMPARE(cache->tag(tag1.id()).name(), QStringLiteral("tag1ter"));
-        QCOMPARE(cache->tag(tag2.id()), tag2);
-        QCOMPARE(cache->tag(tag2.id()).name(), tag2.name());
-        QVERIFY(cache->isTagKnown(tag1.id()));
-        QVERIFY(!cache->isTagPopulated(tag1.id()));
-        QVERIFY(cache->isTagKnown(tag2.id()));
-        QVERIFY(!cache->isTagPopulated(tag2.id()));
-    }
-
-    void shouldHandleTagAdds()
-    {
-        // GIVEN
-        const auto tag = Akonadi::Tag(GenTag().withId(1).asPlain().withName("tag"));
-
-        auto monitor = AkonadiFakeMonitor::Ptr::create();
-        auto cache = Akonadi::Cache::Ptr::create(Akonadi::Serializer::Ptr(new Akonadi::Serializer), monitor);
-
-        // WHEN
-        monitor->addTag(tag);
-
-        // THEN
-        QVERIFY(cache->tags().isEmpty());
-
-        // WHEN
-        cache->setTags(Akonadi::Tag::List());
-        monitor->addTag(tag);
-
-        // THEN
-        QVERIFY(cache->isTagListPopulated());
-        QCOMPARE(cache->tags(), Akonadi::Tag::List() << tag);
-        QCOMPARE(cache->tag(tag.id()), tag);
-        QCOMPARE(cache->tag(tag.id()).name(), QStringLiteral("tag"));
-    }
-
-    void shouldHandleTagChanges()
-    {
-        // GIVEN
-        const auto tag = Akonadi::Tag(GenTag().withId(1).asPlain().withName("tag"));
-
-        auto monitor = AkonadiFakeMonitor::Ptr::create();
-        auto cache = Akonadi::Cache::Ptr::create(Akonadi::Serializer::Ptr(new Akonadi::Serializer), monitor);
-        cache->setTags(Akonadi::Tag::List() << tag);
-
-        // WHEN
-        const auto tagbis = Akonadi::Tag(GenTag().withId(1).asPlain().withName("tagbis"));
-        monitor->changeTag(tagbis);
-
-        // THEN
-        QCOMPARE(cache->tag(tag.id()).name(), QStringLiteral("tagbis"));
-    }
-
     void shouldPopulateCollectionsWithItems()
     {
         // GIVEN
@@ -329,7 +224,6 @@ private slots:
     void shouldHandleCollectionRemoves()
     {
         // GIVEN
-        const auto tag = Akonadi::Tag(GenTag().withId(1).withName("tag"));
         const auto collection1 = Akonadi::Collection(GenCollection().withRootAsParent()
                                                                     .withId(1)
                                                                     .withName("tasks1")
@@ -348,7 +242,6 @@ private slots:
         cache->setCollections(Akonadi::Collection::List() << collection1 << collection2);
         cache->populateCollection(collection1, items1);
         cache->populateCollection(collection2, items2);
-        cache->populateTag(tag, items1 + items2);
 
         // WHEN
         monitor->removeCollection(collection1);
@@ -363,82 +256,6 @@ private slots:
         QCOMPARE(cache->items(collection2), items2);
         QCOMPARE(cache->item(items2.at(0).id()), items2.at(0));
         QCOMPARE(cache->item(items2.at(1).id()), items2.at(1));
-
-        QVERIFY(cache->isTagPopulated(tag.id()));
-        QCOMPARE(cache->items(tag), items2);
-    }
-
-    void shouldPopulateTagsWithItems()
-    {
-        // GIVEN
-        const auto tag1 = Akonadi::Tag(GenTag().withId(1).withName("tag1"));
-        const auto items1 = Akonadi::Item::List() << Akonadi::Item(GenTodo().withId(1).withTitle("item1"))
-                                                  << Akonadi::Item(GenTodo().withId(2).withTitle("item2"));
-        const auto tag2 = Akonadi::Tag(GenTag().withId(2).withName("tag2"));
-        const auto items2 = Akonadi::Item::List() << Akonadi::Item(GenTodo().withId(3).withTitle("item3"))
-                                                  << Akonadi::Item(GenTodo().withId(4).withTitle("item4"));
-
-        auto monitor = AkonadiFakeMonitor::Ptr::create();
-        auto serializer = Akonadi::Serializer::Ptr(new Akonadi::Serializer);
-        auto cache = Akonadi::Cache::Ptr::create(serializer, monitor);
-        cache->setTags(Akonadi::Tag::List() << tag1 << tag2);
-
-        // WHEN
-        cache->populateTag(tag1, items1);
-
-        // THEN
-        QVERIFY(cache->isTagPopulated(tag1.id()));
-        QCOMPARE(cache->items(tag1), items1);
-        QCOMPARE(cache->item(items1.at(0).id()), items1.at(0));
-        QCOMPARE(cache->item(items1.at(1).id()), items1.at(1));
-
-        // WHEN
-        cache->populateTag(tag2, items2);
-
-        // THEN
-        QVERIFY(cache->isTagPopulated(tag2.id()));
-        QCOMPARE(cache->items(tag2), items2);
-        QCOMPARE(cache->item(items2.at(0).id()), items2.at(0));
-        QCOMPARE(cache->item(items2.at(1).id()), items2.at(1));
-    }
-
-    void shouldHandleTagRemoves()
-    {
-        // GIVEN
-        const auto collection = Akonadi::Collection(GenCollection().withRootAsParent()
-                                                                   .withId(1)
-                                                                   .withName("collection")
-                                                                   .withTaskContent());
-        const auto tag1 = Akonadi::Tag(GenTag().withId(1).withName("tag1"));
-        const auto items1 = Akonadi::Item::List() << Akonadi::Item(GenTodo().withId(1).withTitle("item1"))
-                                                  << Akonadi::Item(GenTodo().withId(2).withTitle("item2"));
-        const auto tag2 = Akonadi::Tag(GenTag().withId(2).withName("tag2"));
-        const auto items2 = Akonadi::Item::List() << Akonadi::Item(GenTodo().withId(3).withTitle("item3"))
-                                                  << Akonadi::Item(GenTodo().withId(4).withTitle("item4"));
-
-        auto monitor = AkonadiFakeMonitor::Ptr::create();
-        auto cache = Akonadi::Cache::Ptr::create(Akonadi::Serializer::Ptr(new Akonadi::Serializer), monitor);
-        cache->setTags(Akonadi::Tag::List() << tag1 << tag2);
-        cache->populateCollection(collection, items1 + items2);
-        cache->populateTag(tag1, items1);
-        cache->populateTag(tag2, items2);
-
-        // WHEN
-        monitor->removeTag(tag1);
-
-        // THEN
-        QVERIFY(!cache->isTagPopulated(tag1.id()));
-        QVERIFY(cache->items(tag1).isEmpty());
-        QCOMPARE(cache->item(items1.at(0).id()), items1.at(0));
-        QCOMPARE(cache->item(items1.at(1).id()), items1.at(1));
-
-        QVERIFY(cache->isTagPopulated(tag2.id()));
-        QCOMPARE(cache->items(tag2), items2);
-        QCOMPARE(cache->item(items2.at(0).id()), items2.at(0));
-        QCOMPARE(cache->item(items2.at(1).id()), items2.at(1));
-
-        QVERIFY(cache->isCollectionPopulated(collection.id()));
-        QCOMPARE(cache->items(collection), items1 + items2);
     }
 
     void shouldHandleItemChanges()
@@ -456,9 +273,6 @@ private slots:
                                                                     .withId(3)
                                                                     .withName("tasks3")
                                                                     .withTaskContent());
-        const auto tag1 = Akonadi::Tag(GenTag().withId(1).withName("tag1"));
-        const auto tag2 = Akonadi::Tag(GenTag().withId(2).withName("tag2"));
-        const auto tag3 = Akonadi::Tag(GenTag().withId(3).withName("tag3"));
         const auto items = Akonadi::Item::List() << Akonadi::Item(GenTodo().withId(1).withParent(1).withContexts({"ctx-1"}).withTitle("item1"))
                                                  << Akonadi::Item(GenTodo().withId(2).withParent(1).withContexts({"ctx-1"}).withTitle("item2"));
         const auto item3 = Akonadi::Item(GenTodo().withId(3).withParent(1).withContexts({"ctx-1"}).withTitle("item3"));
@@ -470,8 +284,6 @@ private slots:
         cache->setCollections(Akonadi::Collection::List() << collection1 << collection2 << collection3);
         cache->populateCollection(collection1, items);
         cache->populateCollection(collection2, Akonadi::Item::List());
-        cache->populateTag(tag1, items);
-        cache->populateTag(tag2, Akonadi::Item::List());
 
         // WHEN
         monitor->changeItem(GenTodo(items.at(0)).withTitle("item1bis"));
@@ -487,13 +299,6 @@ private slots:
         QVERIFY(!cache->isCollectionPopulated(collection3.id()));
         QVERIFY(!cache->items(collection3).contains(items.at(0)));
 
-        QVERIFY(cache->isTagPopulated(tag1.id()));
-        QVERIFY(cache->items(tag1).contains(items.at(0)));
-        QVERIFY(cache->isTagPopulated(tag2.id()));
-        QVERIFY(!cache->items(tag2).contains(items.at(0)));
-        QVERIFY(!cache->isTagPopulated(tag3.id()));
-        QVERIFY(!cache->items(tag3).contains(items.at(0)));
-
         // WHEN
         monitor->changeItem(GenTodo(items.at(0)).withParent(2));
 
@@ -504,13 +309,6 @@ private slots:
         QVERIFY(cache->items(collection2).contains(items.at(0)));
         QVERIFY(!cache->isCollectionPopulated(collection3.id()));
         QVERIFY(!cache->items(collection3).contains(items.at(0)));
-
-        QVERIFY(cache->isTagPopulated(tag1.id()));
-        QVERIFY(cache->items(tag1).contains(items.at(0)));
-        QVERIFY(cache->isTagPopulated(tag2.id()));
-        QVERIFY(!cache->items(tag2).contains(items.at(0)));
-        QVERIFY(!cache->isTagPopulated(tag3.id()));
-        QVERIFY(!cache->items(tag3).contains(items.at(0)));
 
         // WHEN
         monitor->changeItem(GenTodo(items.at(0)).withParent(3));
@@ -523,13 +321,6 @@ private slots:
         QVERIFY(!cache->isCollectionPopulated(collection3.id()));
         QVERIFY(!cache->items(collection3).contains(items.at(0)));
 
-        QVERIFY(cache->isTagPopulated(tag1.id()));
-        QVERIFY(cache->items(tag1).contains(items.at(0)));
-        QVERIFY(cache->isTagPopulated(tag2.id()));
-        QVERIFY(!cache->items(tag2).contains(items.at(0)));
-        QVERIFY(!cache->isTagPopulated(tag3.id()));
-        QVERIFY(!cache->items(tag3).contains(items.at(0)));
-
         // WHEN
         monitor->changeItem(GenTodo().withId(1).withParent(2).withContexts({"ctx-2"}).withTitle("item1"));
 
@@ -541,19 +332,11 @@ private slots:
         QVERIFY(!cache->isCollectionPopulated(collection3.id()));
         QVERIFY(!cache->items(collection3).contains(items.at(0)));
 
-        QVERIFY(cache->isTagPopulated(tag1.id()));
-        QVERIFY(!cache->items(tag1).contains(items.at(0)));
-        QVERIFY(cache->isTagPopulated(tag2.id()));
-        QVERIFY(cache->items(tag2).contains(items.at(0)));
-        QVERIFY(!cache->isTagPopulated(tag3.id()));
-        QVERIFY(!cache->items(tag3).contains(items.at(0)));
-
         // WHEN
         monitor->changeItem(item3);
 
         // THEN
         QVERIFY(cache->items(collection1).contains(item3));
-        QVERIFY(cache->items(tag1).contains(item3));
     }
 
     void shouldHandleItemAdds()
@@ -567,8 +350,6 @@ private slots:
                                                      .withId(2)
                                                      .withName("tasks2")
                                                      .withTaskContent());
-        const auto tag1 = Akonadi::Tag(GenTag().withId(1).withName("tag1"));
-        const auto tag2 = Akonadi::Tag(GenTag().withId(2).withName("tag2"));
         const auto item1 = Akonadi::Item(GenTodo().withId(1).withParent(1).withContexts({"ctx-1"}).withTitle("item1"));
         const auto item2 = Akonadi::Item(GenTodo().withId(2).withParent(2).withContexts({"ctx-2"}).withTitle("item2"));
 
@@ -578,7 +359,6 @@ private slots:
         auto cache = Akonadi::Cache::Ptr::create(serializer, monitor);
         cache->setCollections(Akonadi::Collection::List() << collection1 << collection2);
         cache->populateCollection(collection1, Akonadi::Item::List());
-        cache->populateTag(tag1, Akonadi::Item::List());
 
         // WHEN
         monitor->addItem(item1);
@@ -590,12 +370,6 @@ private slots:
         QVERIFY(!cache->isCollectionPopulated(collection2.id()));
         QVERIFY(cache->items(collection2).isEmpty());
 
-        QVERIFY(cache->isTagPopulated(tag1.id()));
-        QVERIFY(!cache->items(tag1).isEmpty());
-        QCOMPARE(cache->items(tag1), Akonadi::Item::List() << item1);
-        QVERIFY(!cache->isTagPopulated(tag2.id()));
-        QVERIFY(cache->items(tag2).isEmpty());
-
         // WHEN
         monitor->addItem(item2);
 
@@ -605,12 +379,6 @@ private slots:
         QCOMPARE(cache->items(collection1), Akonadi::Item::List() << item1);
         QVERIFY(!cache->isCollectionPopulated(collection2.id()));
         QVERIFY(cache->items(collection2).isEmpty());
-
-        QVERIFY(cache->isTagPopulated(tag1.id()));
-        QVERIFY(!cache->items(tag1).isEmpty());
-        QCOMPARE(cache->items(tag1), Akonadi::Item::List() << item1);
-        QVERIFY(!cache->isTagPopulated(tag2.id()));
-        QVERIFY(cache->items(tag2).isEmpty());
     }
 
     void shouldHandleItemRemoves()
@@ -620,16 +388,13 @@ private slots:
                                                                    .withId(1)
                                                                    .withName("tasks")
                                                                    .withTaskContent());
-        const auto tag = Akonadi::Tag(GenTag().withId(1).withName("tag"));
         const auto items = Akonadi::Item::List() << Akonadi::Item(GenTodo().withId(1).withTitle("item1"))
                                                   << Akonadi::Item(GenTodo().withId(2).withTitle("item2"));
 
         auto monitor = AkonadiFakeMonitor::Ptr::create();
         auto cache = Akonadi::Cache::Ptr::create(Akonadi::Serializer::Ptr(new Akonadi::Serializer), monitor);
         cache->setCollections(Akonadi::Collection::List() << collection);
-        cache->setTags(Akonadi::Tag::List() << tag);
         cache->populateCollection(collection, items);
-        cache->populateTag(tag, items);
 
         // WHEN
         monitor->removeItem(items.at(0));
@@ -637,8 +402,6 @@ private slots:
         // THEN
         QVERIFY(cache->isCollectionPopulated(collection.id()));
         QCOMPARE(cache->items(collection), Akonadi::Item::List() << items.at(1));
-        QVERIFY(cache->isTagPopulated(tag.id()));
-        QCOMPARE(cache->items(tag), Akonadi::Item::List() << items.at(1));
         QCOMPARE(cache->item(items.at(0).id()), Akonadi::Item());
         QCOMPARE(cache->item(items.at(1).id()), items.at(1));
     }

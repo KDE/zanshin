@@ -30,8 +30,7 @@ Cache::Cache(const SerializerInterface::Ptr &serializer, const MonitorInterface:
     : QObject(parent),
       m_serializer(serializer),
       m_monitor(monitor),
-      m_collectionListPopulated(false),
-      m_tagListPopulated(false)
+      m_collectionListPopulated(false)
 {
     connect(m_monitor.data(), &MonitorInterface::collectionAdded,
             this, &Cache::onCollectionAdded);
@@ -39,13 +38,6 @@ Cache::Cache(const SerializerInterface::Ptr &serializer, const MonitorInterface:
             this, &Cache::onCollectionChanged);
     connect(m_monitor.data(), &MonitorInterface::collectionRemoved,
             this, &Cache::onCollectionRemoved);
-
-    connect(m_monitor.data(), &MonitorInterface::tagAdded,
-            this, &Cache::onTagAdded);
-    connect(m_monitor.data(), &MonitorInterface::tagChanged,
-            this, &Cache::onTagChanged);
-    connect(m_monitor.data(), &MonitorInterface::tagRemoved,
-            this, &Cache::onTagRemoved);
 
     connect(m_monitor.data(), &MonitorInterface::itemAdded,
             this, &Cache::onItemAdded);
@@ -124,62 +116,6 @@ void Cache::populateCollection(const Collection &collection, const Item::List &i
     }
 }
 
-bool Cache::isTagListPopulated() const
-{
-    return m_tagListPopulated;
-}
-
-Tag::List Cache::tags() const
-{
-    return m_tags;
-}
-
-bool Cache::isTagKnown(Tag::Id id) const
-{
-    return m_tags.contains(Tag(id));
-}
-
-Tag Cache::tag(Tag::Id id) const
-{
-    const auto index = m_tags.indexOf(Tag(id));
-    if (index >= 0)
-        return m_tags.at(index);
-    else
-        return Tag();
-}
-
-bool Cache::isTagPopulated(Tag::Id id) const
-{
-    return m_tagItems.contains(id);
-}
-
-Item::List Cache::items(const Tag &tag) const
-{
-    const auto ids = m_tagItems.value(tag.id());
-    auto items = Item::List();
-    items.reserve(ids.size());
-    std::transform(ids.cbegin(), ids.cend(),
-                   std::back_inserter(items),
-                   [this](const Item::Id &id) { return m_items.value(id); });
-    return items;
-}
-
-void Cache::setTags(const Tag::List &tags)
-{
-    m_tags = tags;
-    m_tagListPopulated = true;
-}
-
-void Cache::populateTag(const Tag &tag, const Item::List &items)
-{
-    auto &ids = m_tagItems[tag.id()];
-    for (const auto &item : items) {
-        m_items.insert(item.id(), item);
-        if (!ids.contains(item.id()))
-            ids << item.id();
-    }
-}
-
 Item Cache::item(Item::Id id) const
 {
     return m_items.value(id);
@@ -211,35 +147,11 @@ void Cache::onCollectionRemoved(const Collection &collection)
 
     for (const auto itemId : m_collectionItems.value(collection.id())) {
         m_items.remove(itemId);
-
-        for (auto &itemList : m_tagItems)
-            itemList.removeAll(itemId);
     }
 
     m_collectionItems.remove(collection.id());
 }
 
-void Cache::onTagAdded(const Tag &tag)
-{
-    if (!m_tagListPopulated)
-        return;
-    const auto index = m_tags.indexOf(tag);
-    if (index >= 0)
-        m_tags[index] = tag;
-    else
-        m_tags.append(tag);
-}
-
-void Cache::onTagChanged(const Tag &tag)
-{
-    onTagAdded(tag);
-}
-
-void Cache::onTagRemoved(const Tag &tag)
-{
-    m_tags.removeAll(tag);
-    m_tagItems.remove(tag.id());
-}
 
 void Cache::onItemAdded(const Item &item)
 {
@@ -249,13 +161,6 @@ void Cache::onItemAdded(const Item &item)
         *it << item.id();
         needsInsert = true;
     }
-    for (const auto &tag : item.tags()) {
-        const auto it = m_tagItems.find(tag.id());
-        if (it != m_tagItems.end()) {
-            *it << item.id();
-            needsInsert = true;
-        }
-    }
     if (needsInsert)
         m_items.insert(item.id(), item);
 
@@ -264,8 +169,6 @@ void Cache::onItemAdded(const Item &item)
 void Cache::onItemChanged(const Item &item)
 {
     const auto oldItem = m_items.take(item.id());
-    const auto oldTags = oldItem.tags();
-    const auto newTags = item.tags();
 
     if (oldItem.parentCollection() != item.parentCollection()) {
         auto it = m_collectionItems.find(oldItem.parentCollection().id());
@@ -277,22 +180,7 @@ void Cache::onItemChanged(const Item &item)
             it->append(item.id());
     }
 
-    for (const auto &oldTag : oldTags) {
-        if (!newTags.contains(oldTag) && m_tagItems.contains(oldTag.id())) {
-            m_tagItems[oldTag.id()].removeAll(oldTag.id());
-        }
-    }
-
-    for (const auto &newTag : newTags) {
-        if (!oldItem.tags().contains(newTag) && m_tagItems.contains(newTag.id())) {
-            m_tagItems[newTag.id()].append(item.id());
-        }
-    }
-
-    const auto inPopulatedTag = std::any_of(newTags.cbegin(), newTags.cend(),
-                                            [this](const Tag &tag) { return m_tagItems.contains(tag.id()); });
-
-    if (inPopulatedTag || m_collectionItems.contains(item.parentCollection().id())) {
+    if (m_collectionItems.contains(item.parentCollection().id())) {
         m_items.insert(item.id(), item);
     }
 }
@@ -301,7 +189,5 @@ void Cache::onItemRemoved(const Item &item)
 {
     m_items.remove(item.id());
     for (auto &itemList : m_collectionItems)
-        itemList.removeAll(item.id());
-    for (auto &itemList : m_tagItems)
         itemList.removeAll(item.id());
 }
