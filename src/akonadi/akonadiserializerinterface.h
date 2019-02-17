@@ -96,8 +96,9 @@ public:
     virtual Domain::Context::Ptr createContextFromItem(Akonadi::Item item) = 0;
     virtual Akonadi::Item createItemFromContext(Domain::Context::Ptr project) = 0;
     virtual void updateContextFromItem(Domain::Context::Ptr context, Akonadi::Item item) = 0;
-
     virtual void addContextToTask(Domain::Context::Ptr context, Akonadi::Item item) = 0;
+    virtual void removeContextFromTask(Domain::Context::Ptr context, Akonadi::Item item) = 0;
+    virtual QString contextUid(Akonadi::Item item) = 0;
 
     static QByteArray contextTagType(); // TODO REMOVE ONCE UNUSED
 };

@@ -80,6 +80,8 @@ public:
     Akonadi::Item createItemFromContext(Domain::Context::Ptr context) override;
     void updateContextFromItem(Domain::Context::Ptr context, Akonadi::Item item) override;
     void addContextToTask(Domain::Context::Ptr context, Akonadi::Item item) override;
+    void removeContextFromTask(Domain::Context::Ptr context, Akonadi::Item item) override;
+    QString contextUid(Akonadi::Item item) override;
 
 private:
     bool isContext(const Akonadi::Tag &tag) const;

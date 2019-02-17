@@ -2022,6 +2022,7 @@ private slots:
 
         // THEN
         QCOMPARE(result, expectedResult);
+        QCOMPARE(serializer.contextUid(item), todoUid);
     }
 
     void shouldAddContextToTask_data()
@@ -2065,6 +2066,58 @@ private slots:
         // WHEN
         Akonadi::Serializer serializer;
         serializer.addContextToTask(context, item);
+
+        // THEN
+        KCalCore::Todo::Ptr todo = item.payload<KCalCore::Todo::Ptr>();
+        QCOMPARE(todo->customProperty(s_appName, s_contextListProperty), expectedContextList);
+    }
+
+    void shouldRemoveContextFromTask_data()
+    {
+        QTest::addColumn<Domain::Context::Ptr>("context");
+        QTest::addColumn<Akonadi::Item>("item");
+        QTest::addColumn<QString>("expectedContextList");
+
+        auto context = Domain::Context::Ptr::create();
+        const QString contextUid = QStringLiteral("abc-123");
+        context->setProperty("todoUid", contextUid);
+
+        Akonadi::Item item;
+        auto todo = KCalCore::Todo::Ptr::create();
+        todo->setSummary("summary");
+        item.setPayload<KCalCore::Todo::Ptr>(todo);
+        QTest::newRow("item_with_no_context") << context << item << QString();
+
+        Akonadi::Item item2;
+        auto todo2 = KCalCore::Todo::Ptr::create();
+        todo2->setCustomProperty(s_appName, s_contextListProperty, "another");
+        item2.setPayload<KCalCore::Todo::Ptr>(todo2);
+        QTest::newRow("item_with_another_context") << context << item2 << QString("another");
+
+        Akonadi::Item item3;
+        auto todo3 = KCalCore::Todo::Ptr::create();
+        todo3->setCustomProperty(s_appName, s_contextListProperty, contextUid);
+        item3.setPayload<KCalCore::Todo::Ptr>(todo3);
+        QTest::newRow("item_with_this_context_already") << context << item3 << QString();
+
+        Akonadi::Item item4;
+        auto todo4 = KCalCore::Todo::Ptr::create();
+        const QString bothContexts = QStringLiteral("another,") + contextUid;
+        todo4->setCustomProperty(s_appName, s_contextListProperty, bothContexts);
+        item4.setPayload<KCalCore::Todo::Ptr>(todo4);
+        QTest::newRow("item_with_two_contexts") << context << item4 << QString("another");
+    }
+
+    void shouldRemoveContextFromTask()
+    {
+        // GIVEN
+        QFETCH(Domain::Context::Ptr, context);
+        QFETCH(Akonadi::Item, item);
+        QFETCH(QString, expectedContextList);
+
+        // WHEN
+        Akonadi::Serializer serializer;
+        serializer.removeContextFromTask(context, item);
 
         // THEN
         KCalCore::Todo::Ptr todo = item.payload<KCalCore::Todo::Ptr>();

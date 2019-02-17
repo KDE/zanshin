@@ -605,3 +605,33 @@ void Serializer::addContextToTask(Domain::Context::Ptr context, Item item)
 
     item.setPayload<KCalCore::Todo::Ptr>(todo);
 }
+
+void Serializer::removeContextFromTask(Domain::Context::Ptr context, Item item)
+{
+    if (!isTaskItem(item))
+        return;
+
+    auto todo = item.payload<KCalCore::Todo::Ptr>();
+
+    if (!context->property("todoUid").isValid())
+        return;
+
+    auto contextUid = context->property("todoUid").toString();
+    QStringList contextList = extractContexts(todo);
+    contextList.removeAll(contextUid);
+    if (contextList.isEmpty())
+        todo->removeCustomProperty(s_appName, s_contextListProperty);
+    else
+        todo->setCustomProperty(s_appName, s_contextListProperty, contextList.join(','));
+
+    item.setPayload<KCalCore::Todo::Ptr>(todo);
+}
+
+QString Serializer::contextUid(Item item)
+{
+    if (!isContext(item))
+        return {};
+
+    auto todo = item.payload<KCalCore::Todo::Ptr>();
+    return todo->uid();
+}
