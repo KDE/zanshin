@@ -301,8 +301,10 @@ QModelIndexList PageView::selectedIndexes() const
 void PageView::setRunningTaskModel(Presentation::RunningTaskModelInterface *model)
 {
     m_runningTaskModel = model;
-    connect(m_runningTaskModel, SIGNAL(runningTaskChanged(Domain::Task::Ptr)),
-            this, SLOT(onRunningTaskChanged(Domain::Task::Ptr)));
+    if (m_runningTaskModel) {
+        connect(m_runningTaskModel, SIGNAL(runningTaskChanged(Domain::Task::Ptr)),
+                this, SLOT(onRunningTaskChanged(Domain::Task::Ptr)));
+    }
 }
 
 void PageView::setMessageBoxInterface(const MessageBoxInterface::Ptr &interface)
