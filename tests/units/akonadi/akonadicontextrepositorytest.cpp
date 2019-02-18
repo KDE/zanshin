@@ -115,7 +115,7 @@ private slots:
         // A mock job
         auto contextItemDeleteJob = new FakeJob(this);
 
-        // Storage mock returning the tagCreatejob
+        // Storage mock returning the mock job
         Utils::MockObject<Akonadi::StorageInterface> storageMock;
         storageMock(&Akonadi::StorageInterface::removeItem).when(contextItem)
                                                            .thenReturn(contextItemDeleteJob);

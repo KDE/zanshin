@@ -35,7 +35,7 @@ class PagesDisplayFeature : public QObject
 {
     Q_OBJECT
 private slots:
-    void Inbox_projects_contexts_and_tags_appear_in_the_list()
+    void Inbox_projects_and_contexts_appear_in_the_list()
     {
         ZanshinContext c;
         Given(c.I_display_the_available_pages());

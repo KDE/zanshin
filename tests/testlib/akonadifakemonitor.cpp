@@ -70,18 +70,4 @@ void AkonadiFakeMonitor::moveItem(const Akonadi::Item &item)
     emit itemMoved(item);
 }
 
-void AkonadiFakeMonitor::addTag(const Akonadi::Tag &tag)
-{
-    emit tagAdded(tag);
-}
-
-void AkonadiFakeMonitor::removeTag(const Akonadi::Tag &tag)
-{
-    emit tagRemoved(tag);
-}
-
-void AkonadiFakeMonitor::changeTag(const Akonadi::Tag &tag)
-{
-    emit tagChanged(tag);
-}
 

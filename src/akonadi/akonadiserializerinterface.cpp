@@ -34,8 +34,3 @@ SerializerInterface::SerializerInterface()
 SerializerInterface::~SerializerInterface()
 {
 }
-
-QByteArray SerializerInterface::contextTagType()
-{
-    return QByteArray("Zanshin-Context");
-}

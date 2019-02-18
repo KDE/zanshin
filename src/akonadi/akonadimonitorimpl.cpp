@@ -30,8 +30,6 @@
 #include <AkonadiCore/CollectionFetchScope>
 #include <AkonadiCore/ItemFetchScope>
 #include <AkonadiCore/Monitor>
-#include <AkonadiCore/TagFetchScope>
-#include <AkonadiCore/TagAttribute>
 
 #include "akonadi/akonadiapplicationselectedattribute.h"
 #include "akonadi/akonaditimestampattribute.h"
@@ -43,7 +41,6 @@ MonitorImpl::MonitorImpl()
 {
     AttributeFactory::registerAttribute<ApplicationSelectedAttribute>();
     AttributeFactory::registerAttribute<TimestampAttribute>();
-    AttributeFactory::registerAttribute<TagAttribute>();
 
     m_monitor->fetchCollection(true);
     m_monitor->setCollectionMonitored(Akonadi::Collection::root());
@@ -64,25 +61,14 @@ MonitorImpl::MonitorImpl()
     auto itemScope = m_monitor->itemFetchScope();
     itemScope.fetchFullPayload();
     itemScope.fetchAllAttributes();
-    itemScope.setFetchTags(true);
-    itemScope.tagFetchScope().setFetchIdOnly(false);
-    itemScope.tagFetchScope().fetchAttribute<TagAttribute>();
+    itemScope.setFetchTags(false);
     itemScope.setAncestorRetrieval(ItemFetchScope::All);
     m_monitor->setItemFetchScope(itemScope);
-    auto tagFetchScope = m_monitor->tagFetchScope();
-    tagFetchScope.setFetchIdOnly(false);
-    tagFetchScope.fetchAttribute<TagAttribute>();
-    m_monitor->setTagFetchScope(tagFetchScope);
 
     connect(m_monitor, &Akonadi::Monitor::itemAdded, this, &MonitorImpl::itemAdded);
     connect(m_monitor, &Akonadi::Monitor::itemRemoved, this, &MonitorImpl::itemRemoved);
     connect(m_monitor, &Akonadi::Monitor::itemChanged, this, &MonitorImpl::itemChanged);
     connect(m_monitor, &Akonadi::Monitor::itemMoved, this, &MonitorImpl::itemMoved);
-    connect(m_monitor, &Akonadi::Monitor::itemsTagsChanged, this, &MonitorImpl::onItemsTagsChanged);
-
-    connect(m_monitor, &Akonadi::Monitor::tagAdded, this, &MonitorImpl::tagAdded);
-    connect(m_monitor, &Akonadi::Monitor::tagRemoved, this, &MonitorImpl::tagRemoved);
-    connect(m_monitor, &Akonadi::Monitor::tagChanged, this, &MonitorImpl::tagChanged);
 }
 
 MonitorImpl::~MonitorImpl()
@@ -107,17 +93,6 @@ void MonitorImpl::onCollectionChanged(const Collection &collection, const QSet<Q
     if (parts.contains("ZanshinSelected")
      && hasSupportedMimeTypes(collection)) {
         emit collectionSelectionChanged(collection);
-    }
-}
-
-void MonitorImpl::onItemsTagsChanged(const Akonadi::Item::List &items, const QSet<Akonadi::Tag> &addedTags, const QSet<Akonadi::Tag> &removedTags)
-{
-    // Because itemChanged is not emitted on tag removal, we need to listen to itemsTagsChanged and
-    // emit the itemChanged only in this case (avoid double emits in case of tag dissociation / association)
-    // So if both list are empty it means we are just seeing a tag being removed so we update its related items
-    if (addedTags.isEmpty() && removedTags.isEmpty()) {
-        foreach (const Item &item, items)
-            emit itemChanged(item);
     }
 }
 

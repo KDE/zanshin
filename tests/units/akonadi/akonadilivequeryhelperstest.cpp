@@ -380,8 +380,8 @@ private slots:
         data.createItem(GenTodo().withId(142).withUid("ctx-42").asContext());
         data.createItem(GenTodo().withId(143).withUid("ctx-43").asContext());
 
-        // Four items in each collection, one with no tag, one with the first tag,
-        // one with the second tag, last one with both tags
+        // Four items in each collection, one with no context, one with the first context,
+        // one with the second context, last one with both contexts
         data.createItem(GenTodo().withId(42).withParent(42).withContexts({}).withTitle(QStringLiteral("42")));
         data.createItem(GenTodo().withId(43).withParent(42).withContexts({"ctx-42"}).withTitle(QStringLiteral("43")));
         data.createItem(GenTodo().withId(44).withParent(42).withContexts({"ctx-43"}).withTitle(QStringLiteral("44")));

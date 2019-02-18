@@ -30,7 +30,6 @@
 namespace Akonadi {
 
 class Item;
-class Tag;
 
 class Serializer : public SerializerInterface
 {
@@ -68,12 +67,7 @@ public:
     Akonadi::Item createItemFromProject(Domain::Project::Ptr project) override;
     bool isProjectChild(Domain::Project::Ptr project, Akonadi::Item item) override;
 
-    Domain::Context::Ptr createContextFromTag(Akonadi::Tag tag) override;
-    void updateContextFromTag(Domain::Context::Ptr context, Akonadi::Tag tag) override;
-    Akonadi::Tag createTagFromContext(Domain::Context::Ptr context) override;
-    bool isContextTag(const Domain::Context::Ptr &context, const Akonadi::Tag &tag) const override;
     bool isContextChild(Domain::Context::Ptr context, Akonadi::Item item) const override;
-
     bool isContext(Akonadi::Item item) override;
     bool itemRepresentsContext(const Domain::Context::Ptr &context, Akonadi::Item item) const override;
     Domain::Context::Ptr createContextFromItem(Akonadi::Item item) override;
@@ -82,9 +76,6 @@ public:
     void addContextToTask(Domain::Context::Ptr context, Akonadi::Item item) override;
     void removeContextFromTask(Domain::Context::Ptr context, Akonadi::Item item) override;
     QString contextUid(Akonadi::Item item) override;
-
-private:
-    bool isContext(const Akonadi::Tag &tag) const;
 };
 
 }

@@ -35,7 +35,6 @@ namespace Akonadi {
 
 class Collection;
 class Item;
-class Tag;
 
 class SerializerInterface
 {
@@ -85,12 +84,7 @@ public:
     virtual Akonadi::Item createItemFromProject(Domain::Project::Ptr project) = 0;
     virtual bool isProjectChild(Domain::Project::Ptr project, Akonadi::Item item) = 0;
 
-    virtual Domain::Context::Ptr createContextFromTag(Akonadi::Tag tag) = 0;
-    virtual void updateContextFromTag(Domain::Context::Ptr context, Akonadi::Tag tag) = 0;
-    virtual Akonadi::Tag createTagFromContext(Domain::Context::Ptr context) = 0;
-    virtual bool isContextTag(const Domain::Context::Ptr &context, const Akonadi::Tag &tag) const = 0;
     virtual bool isContextChild(Domain::Context::Ptr context, Akonadi::Item item) const = 0;
-
     virtual bool isContext(Akonadi::Item item) = 0;
     virtual bool itemRepresentsContext(const Domain::Context::Ptr &context, Akonadi::Item item) const = 0;
     virtual Domain::Context::Ptr createContextFromItem(Akonadi::Item item) = 0;
@@ -99,8 +93,6 @@ public:
     virtual void addContextToTask(Domain::Context::Ptr context, Akonadi::Item item) = 0;
     virtual void removeContextFromTask(Domain::Context::Ptr context, Akonadi::Item item) = 0;
     virtual QString contextUid(Akonadi::Item item) = 0;
-
-    static QByteArray contextTagType(); // TODO REMOVE ONCE UNUSED
 };
 
 }

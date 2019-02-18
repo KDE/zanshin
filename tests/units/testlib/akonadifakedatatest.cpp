@@ -550,7 +550,7 @@ private slots:
         QCOMPARE(spy.takeFirst().at(0).value<Akonadi::Item>(), i1);
     }
 
-    void shouldListTagItems()
+    void shouldListContextItems()
     {
         // GIVEN
         auto data = Testlib::AkonadiFakeData();

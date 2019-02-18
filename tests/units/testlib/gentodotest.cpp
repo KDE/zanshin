@@ -66,7 +66,7 @@ private slots:
         QCOMPARE(item.parentCollection().id(), 42LL);
     }
 
-    void shouldAllowToSetTags()
+    void shouldAllowToSetContexts()
     {
         // GIVEN
         Akonadi::Item item = GenTodo().withContexts({"42", "43", "44"});

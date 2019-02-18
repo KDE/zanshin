@@ -145,11 +145,6 @@ public slots:
         sources << source;
     }
 
-    void addTag(const QString &name)
-    {
-        tagNames << name;
-    }
-
     void removeItem(const QModelIndex &index)
     {
         projectRemoved = index.data().toString();
@@ -161,7 +156,6 @@ public Q_SLOTS:
 public:
     QStringList projectNames;
     QStringList contextNames;
-    QStringList tagNames;
     QList<Domain::DataSource::Ptr> sources;
     QString projectRemoved;
 };

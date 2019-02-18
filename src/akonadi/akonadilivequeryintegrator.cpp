@@ -43,10 +43,6 @@ LiveQueryIntegrator::LiveQueryIntegrator(const SerializerInterface::Ptr &seriali
     connect(m_monitor.data(), &MonitorInterface::itemAdded, this, &LiveQueryIntegrator::onItemAdded);
     connect(m_monitor.data(), &MonitorInterface::itemRemoved, this, &LiveQueryIntegrator::onItemRemoved);
     connect(m_monitor.data(), &MonitorInterface::itemChanged, this, &LiveQueryIntegrator::onItemChanged);
-
-    connect(m_monitor.data(), &MonitorInterface::tagAdded, this, &LiveQueryIntegrator::onTagAdded);
-    connect(m_monitor.data(), &MonitorInterface::tagRemoved, this, &LiveQueryIntegrator::onTagRemoved);
-    connect(m_monitor.data(), &MonitorInterface::tagChanged, this, &LiveQueryIntegrator::onTagChanged);
 }
 
 void LiveQueryIntegrator::addRemoveHandler(const LiveQueryIntegrator::CollectionRemoveHandler &handler)
@@ -57,11 +53,6 @@ void LiveQueryIntegrator::addRemoveHandler(const LiveQueryIntegrator::Collection
 void LiveQueryIntegrator::addRemoveHandler(const LiveQueryIntegrator::ItemRemoveHandler &handler)
 {
     m_itemRemoveHandlers << handler;
-}
-
-void LiveQueryIntegrator::addRemoveHandler(const LiveQueryIntegrator::TagRemoveHandler &handler)
-{
-    m_tagRemoveHandlers << handler;
 }
 
 void LiveQueryIntegrator::onCollectionSelectionChanged()
@@ -137,41 +128,8 @@ void LiveQueryIntegrator::onItemChanged(const Item &item)
     }
 }
 
-void LiveQueryIntegrator::onTagAdded(const Tag &tag)
-{
-    foreach (const auto &weak, m_tagInputQueries) {
-        auto query = weak.toStrongRef();
-        if (query)
-            query->onAdded(tag);
-    }
-}
-
-void LiveQueryIntegrator::onTagRemoved(const Tag &tag)
-{
-    foreach (const auto &weak, m_tagInputQueries) {
-        auto query = weak.toStrongRef();
-        if (query)
-            query->onRemoved(tag);
-    }
-
-    foreach (const auto &handler, m_tagRemoveHandlers)
-        handler(tag);
-
-    cleanupQueries();
-}
-
-void LiveQueryIntegrator::onTagChanged(const Tag &tag)
-{
-    foreach (const auto &weak, m_tagInputQueries) {
-        auto query = weak.toStrongRef();
-        if (query)
-            query->onChanged(tag);
-    }
-}
-
 void LiveQueryIntegrator::cleanupQueries()
 {
     m_collectionInputQueries.removeAll(Domain::LiveQueryInput<Collection>::WeakPtr());
     m_itemInputQueries.removeAll(Domain::LiveQueryInput<Item>::WeakPtr());
-    m_tagInputQueries.removeAll(Domain::LiveQueryInput<Tag>::WeakPtr());
 }

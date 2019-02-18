@@ -53,7 +53,6 @@ public:
     {
         qRegisterMetaType<Akonadi::Collection>();
         qRegisterMetaType<Akonadi::Item>();
-        qRegisterMetaType<Akonadi::Tag>();
     }
 
 private slots:

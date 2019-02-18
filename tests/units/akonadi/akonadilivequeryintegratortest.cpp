@@ -246,7 +246,7 @@ private slots:
         const auto collection = Akonadi::Collection(GenCollection().withId(42).withRootAsParent().withName(QStringLiteral("folder")).withTaskContent());
         data.createCollection(collection);
 
-        // One context tag which shows in one query not the other
+        // One context which shows in one query not the other
         data.createItem(GenTodo().withParent(42).withId(42).withUid("ctx-42").asContext().withTitle(QStringLiteral("42-in")));
 
         auto integrator = createIntegrator(data);

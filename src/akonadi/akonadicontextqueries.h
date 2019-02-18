@@ -43,7 +43,6 @@ public:
     typedef Domain::QueryResult<Domain::Task::Ptr> TaskResult;
     typedef Domain::QueryResultProvider<Domain::Task::Ptr> TaskProvider;
 
-    typedef Domain::LiveQueryInput<Akonadi::Tag> TagInputQuery;
     typedef Domain::LiveQueryOutput<Domain::Context::Ptr> ContextQueryOutput;
     typedef Domain::QueryResult<Domain::Context::Ptr> ContextResult;
     typedef Domain::QueryResultProvider<Domain::Context::Ptr> ContextProvider;

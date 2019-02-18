@@ -26,8 +26,6 @@
 using namespace Testlib;
 
 AkonadiFakeStorageBehavior::AkonadiFakeStorageBehavior()
-    : m_fetchTagsErrorCode(KJob::NoError),
-      m_fetchTagsBehavior(NormalFetch)
 {
 }
 
@@ -113,44 +111,4 @@ void AkonadiFakeStorageBehavior::setFetchItemBehavior(Akonadi::Item::Id id, Fetc
 AkonadiFakeStorageBehavior::FetchBehavior AkonadiFakeStorageBehavior::fetchItemBehavior(Akonadi::Item::Id id) const
 {
     return m_fetchItemBehavior.value(id, NormalFetch);
-}
-
-void AkonadiFakeStorageBehavior::setFetchTagItemsErrorCode(Akonadi::Tag::Id id, int errorCode)
-{
-    m_fetchTagItemsErrorCode[id] = errorCode;
-}
-
-int AkonadiFakeStorageBehavior::fetchTagItemsErrorCode(Akonadi::Tag::Id id) const
-{
-    return m_fetchTagItemsErrorCode.value(id, KJob::NoError);
-}
-
-void AkonadiFakeStorageBehavior::setFetchTagItemsBehavior(Akonadi::Tag::Id id, FetchBehavior behavior)
-{
-    m_fetchTagItemsBehavior[id] = behavior;
-}
-
-AkonadiFakeStorageBehavior::FetchBehavior AkonadiFakeStorageBehavior::fetchTagItemsBehavior(Akonadi::Tag::Id id) const
-{
-    return m_fetchTagItemsBehavior.value(id, NormalFetch);
-}
-
-void AkonadiFakeStorageBehavior::setFetchTagsErrorCode(int errorCode)
-{
-    m_fetchTagsErrorCode = errorCode;
-}
-
-int AkonadiFakeStorageBehavior::fetchTagsErrorCode() const
-{
-    return m_fetchTagsErrorCode;
-}
-
-void AkonadiFakeStorageBehavior::setFetchTagsBehavior(FetchBehavior behavior)
-{
-    m_fetchTagsBehavior = behavior;
-}
-
-AkonadiFakeStorageBehavior::FetchBehavior AkonadiFakeStorageBehavior::fetchTagsBehavior() const
-{
-    return m_fetchTagsBehavior;
 }

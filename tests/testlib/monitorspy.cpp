@@ -54,10 +54,6 @@ MonitorSpy::MonitorSpy(Akonadi::MonitorInterface* monitor, QObject *parent)
     connect(m_monitor, &Akonadi::MonitorInterface::itemChanged, this, &MonitorSpy::restartTimer);
     connect(m_monitor, &Akonadi::MonitorInterface::itemMoved, this, &MonitorSpy::restartTimer);
 
-    connect(m_monitor, &Akonadi::MonitorInterface::tagAdded, this, &MonitorSpy::restartTimer);
-    connect(m_monitor, &Akonadi::MonitorInterface::tagRemoved, this, &MonitorSpy::restartTimer);
-    connect(m_monitor, &Akonadi::MonitorInterface::tagChanged, this, &MonitorSpy::restartTimer);
-
     connect(m_timer, &QTimer::timeout, this, &MonitorSpy::onDelayExpired);
 }
 

@@ -458,48 +458,6 @@ bool Serializer::isProjectChild(Domain::Project::Ptr project, Item item)
         && todoUid == relatedUid;
 }
 
-Domain::Context::Ptr Serializer::createContextFromTag(Akonadi::Tag tag)
-{
-    if (!isContext(tag))
-        return Domain::Context::Ptr();
-
-    auto context = Domain::Context::Ptr::create();
-    updateContextFromTag(context, tag);
-    return context;
-}
-
-Akonadi::Tag Serializer::createTagFromContext(Domain::Context::Ptr context)
-{
-    auto tag = Akonadi::Tag();
-    tag.setName(context->name());
-    tag.setType(Akonadi::SerializerInterface::contextTagType());
-    tag.setGid(QByteArray(context->name().toLatin1()));
-
-    if (context->property("tagId").isValid())
-        tag.setId(context->property("tagId").value<Akonadi::Tag::Id>());
-
-    return tag;
-}
-
-void Serializer::updateContextFromTag(Domain::Context::Ptr context, Akonadi::Tag tag)
-{
-    if (!isContext(tag))
-        return;
-
-    context->setProperty("tagId", tag.id());
-    context->setName(tag.name());
-}
-
-bool Serializer::isContext(const Akonadi::Tag &tag) const
-{
-    return (tag.type() == Akonadi::SerializerInterface::contextTagType());
-}
-
-bool Serializer::isContextTag(const Domain::Context::Ptr &context, const Akonadi::Tag &tag) const
-{
-    return (context->property("tagId").value<Akonadi::Tag::Id>() == tag.id());
-}
-
 static QStringList extractContexts(KCalCore::Todo::Ptr todo)
 {
     const auto contexts = todo->customProperty(s_appName, s_contextListProperty);

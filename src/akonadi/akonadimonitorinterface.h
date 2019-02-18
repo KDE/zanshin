@@ -31,7 +31,6 @@ namespace Akonadi {
 
 class Collection;
 class Item;
-class Tag;
 
 class MonitorInterface : public QObject
 {
@@ -52,10 +51,6 @@ signals:
     void itemRemoved(const Akonadi::Item &item);
     void itemChanged(const Akonadi::Item &items);
     void itemMoved(const Akonadi::Item &item);
-
-    void tagAdded(const Akonadi::Tag &tag);
-    void tagRemoved(const Akonadi::Tag &tag);
-    void tagChanged(const Akonadi::Tag &tag);
 };
 
 }

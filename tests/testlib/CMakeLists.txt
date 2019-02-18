@@ -9,7 +9,6 @@ set(testlib_SRCS
    akonadistoragetestbase.cpp
    fakejob.cpp
    gencollection.cpp
-   gentag.cpp
    gentodo.cpp
    modeltest.cpp
    monitorspy.cpp

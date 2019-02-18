@@ -39,7 +39,6 @@ public:
 
     typedef Domain::LiveQueryInput<Collection>::FetchFunction CollectionFetchFunction;
     typedef Domain::LiveQueryInput<Item>::FetchFunction ItemFetchFunction;
-    typedef Domain::LiveQueryInput<Tag>::FetchFunction TagFetchFunction;
 
     LiveQueryHelpers(const SerializerInterface::Ptr &serializer,
                      const StorageInterface::Ptr &storage);

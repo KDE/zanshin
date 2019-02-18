@@ -29,7 +29,6 @@
 
 #include <AkonadiCore/Collection>
 #include <AkonadiCore/Item>
-#include <AkonadiCore/Tag>
 
 #include <functional>
 
@@ -89,7 +88,6 @@ public:
     typedef QSharedPointer<LiveQueryIntegrator> Ptr;
     typedef std::function<void(const Collection &)> CollectionRemoveHandler;
     typedef std::function<void(const Item &)> ItemRemoveHandler;
-    typedef std::function<void(const Tag &)> TagRemoveHandler;
 
     LiveQueryIntegrator(const SerializerInterface::Ptr &serializer,
                         const MonitorInterface::Ptr &monitor,
@@ -184,7 +182,6 @@ public:
 
     void addRemoveHandler(const CollectionRemoveHandler &handler);
     void addRemoveHandler(const ItemRemoveHandler &handler);
-    void addRemoveHandler(const TagRemoveHandler &handler);
 
 private slots:
     void onCollectionSelectionChanged();
@@ -196,10 +193,6 @@ private slots:
     void onItemAdded(const Akonadi::Item &item);
     void onItemRemoved(const Akonadi::Item &item);
     void onItemChanged(const Akonadi::Item &item);
-
-    void onTagAdded(const Akonadi::Tag &tag);
-    void onTagRemoved(const Akonadi::Tag &tag);
-    void onTagChanged(const Akonadi::Tag &tag);
 
 private:
     void cleanupQueries();
@@ -216,11 +209,9 @@ private:
 
     Domain::LiveQueryInput<Collection>::WeakList m_collectionInputQueries;
     Domain::LiveQueryInput<Item>::WeakList m_itemInputQueries;
-    Domain::LiveQueryInput<Tag>::WeakList m_tagInputQueries;
 
     QList<CollectionRemoveHandler> m_collectionRemoveHandlers;
     QList<ItemRemoveHandler> m_itemRemoveHandlers;
-    QList<TagRemoveHandler> m_tagRemoveHandlers;
 
     SerializerInterface::Ptr m_serializer;
     MonitorInterface::Ptr m_monitor;
@@ -242,24 +233,6 @@ template<>
 inline bool LiveQueryIntegrator::represents<Item, Domain::Context::Ptr>(const Item &input, const Domain::Context::Ptr &output)
 {
     return m_serializer->itemRepresentsContext(output, input);
-}
-
-template<>
-inline Domain::Context::Ptr LiveQueryIntegrator::create<Tag, Domain::Context::Ptr>(const Tag &input)
-{
-    return m_serializer->createContextFromTag(input);
-}
-
-template<>
-inline void LiveQueryIntegrator::update<Tag, Domain::Context::Ptr>(const Tag &input, Domain::Context::Ptr &output)
-{
-    m_serializer->updateContextFromTag(output, input);
-}
-
-template<>
-inline bool LiveQueryIntegrator::represents<Tag, Domain::Context::Ptr>(const Tag &input, const Domain::Context::Ptr &output)
-{
-    return m_serializer->isContextTag(output, input);
 }
 
 template<>
@@ -357,11 +330,6 @@ template<>
 inline typename Domain::LiveQueryInput<Item>::WeakList &LiveQueryIntegrator::inputQueries<Item>()
 {
     return m_itemInputQueries;
-}
-template<>
-inline typename Domain::LiveQueryInput<Tag>::WeakList &LiveQueryIntegrator::inputQueries<Tag>()
-{
-    return m_tagInputQueries;
 }
 
 }

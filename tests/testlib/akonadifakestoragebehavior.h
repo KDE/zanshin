@@ -28,7 +28,6 @@
 
 #include <AkonadiCore/Collection>
 #include <AkonadiCore/Item>
-#include <AkonadiCore/Tag>
 
 namespace Testlib {
 
@@ -63,16 +62,6 @@ public:
     void setFetchItemBehavior(Akonadi::Item::Id id, FetchBehavior behavior);
     FetchBehavior fetchItemBehavior(Akonadi::Item::Id id) const;
 
-    void setFetchTagItemsErrorCode(Akonadi::Tag::Id id, int errorCode);
-    int fetchTagItemsErrorCode(Akonadi::Tag::Id id) const;
-    void setFetchTagItemsBehavior(Akonadi::Tag::Id id, FetchBehavior behavior);
-    FetchBehavior fetchTagItemsBehavior(Akonadi::Tag::Id id) const;
-
-    void setFetchTagsErrorCode(int errorCode);
-    int fetchTagsErrorCode() const;
-    void setFetchTagsBehavior(FetchBehavior behavior);
-    FetchBehavior fetchTagsBehavior() const;
-
 private:
     QHash<Akonadi::Collection::Id, int> m_fetchCollectionsErrorCode;
     QHash<Akonadi::Collection::Id, FetchBehavior> m_fetchCollectionsBehavior;
@@ -85,12 +74,6 @@ private:
 
     QHash<Akonadi::Item::Id, int> m_fetchItemErrorCode;
     QHash<Akonadi::Item::Id, FetchBehavior> m_fetchItemBehavior;
-
-    QHash<Akonadi::Tag::Id, int> m_fetchTagItemsErrorCode;
-    QHash<Akonadi::Tag::Id, FetchBehavior> m_fetchTagItemsBehavior;
-
-    int m_fetchTagsErrorCode;
-    FetchBehavior m_fetchTagsBehavior;
 };
 
 }

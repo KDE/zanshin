@@ -251,7 +251,7 @@ void Storage::configureItemFetchJob(ItemJob *job)
     auto scope = job->fetchScope();
     scope.fetchFullPayload();
     scope.fetchAllAttributes();
-    scope.setFetchTags(true);
+    scope.setFetchTags(false);
     scope.setAncestorRetrieval(ItemFetchScope::All);
     job->setFetchScope(scope);
 }

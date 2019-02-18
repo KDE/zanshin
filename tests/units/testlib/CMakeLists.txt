@@ -5,7 +5,6 @@ zanshin_auto_tests(
   akonadifakedataxmlloadertest
   akonadifakestoragetest
   gencollectiontest
-  gentagtest
   gentodotest
   monitorspytest
 )

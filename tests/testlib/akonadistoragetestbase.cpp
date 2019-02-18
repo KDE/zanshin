@@ -53,7 +53,6 @@ AkonadiStorageTestBase::AkonadiStorageTestBase(QObject *parent)
 {
     qRegisterMetaType<Akonadi::Collection>();
     qRegisterMetaType<Akonadi::Item>();
-    qRegisterMetaType<Akonadi::Tag>();
 }
 
 void AkonadiStorageTestBase::cleanupTestCase()

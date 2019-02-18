@@ -26,7 +26,6 @@
 
 #include <QFlags>
 #include <AkonadiCore/Item>
-#include <AkonadiCore/Tag>
 
 class KJob;
 class QObject;
@@ -37,7 +36,6 @@ namespace Akonadi {
 class Collection;
 class CollectionFetchJobInterface;
 class ItemFetchJobInterface;
-class TagFetchJobInterface;
 
 
 class StorageInterface
