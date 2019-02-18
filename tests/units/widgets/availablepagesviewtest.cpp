@@ -209,22 +209,6 @@ private slots:
         QCOMPARE(actions.value(QStringLiteral("pages_go_to")), goToAction);
     }
 
-    void shouldShowOnlyAddActionsNeededByTheModel_data()
-    {
-        QTest::addColumn<bool>("hasProjects");
-        QTest::addColumn<bool>("hasContexts");
-        QTest::addColumn<bool>("hasTags");
-
-        QTest::newRow("!projects !contexts !tags") << false << false << false;
-        QTest::newRow("!projects !contexts tags") << false << false << true;
-        QTest::newRow("!projects contexts !tags") << false << true << false;
-        QTest::newRow("!projects contexts tags") << false << true << true;
-        QTest::newRow("projects !contexts !tags") << true << false << false;
-        QTest::newRow("projects !contexts tags") << true << false << true;
-        QTest::newRow("projects contexts !tags") << true << true << false;
-        QTest::newRow("projects contexts tags") << true << true << true;
-    }
-
     void shouldDisplayListFromPageModel()
     {
         // GIVEN
