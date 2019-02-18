@@ -401,7 +401,7 @@ private slots:
         QVERIFY(!serializer.isContextChild(context2, item2));
 
         QCOMPARE(contextSpy.size(), 1);
-        QCOMPARE(contextSpy.takeFirst().at(0).value<Akonadi::Item>(), t2);
+        QCOMPARE(contextSpy.takeFirst().at(0).value<Akonadi::Item>().id(), t2.id());
 
         QCOMPARE(itemSpy.size(), 1);
         const auto emittedItem2 = itemSpy.first().at(0).value<Akonadi::Item>();
@@ -641,7 +641,7 @@ private slots:
         QVERIFY(data.childItems(c1.id()).isEmpty());
 
         QCOMPARE(spy.size(), 1);
-        QCOMPARE(spy.takeFirst().at(0).value<Akonadi::Item>(), i1);
+        QCOMPARE(spy.takeFirst().at(0).value<Akonadi::Item>().id(), i1.id());
     }
 };
 

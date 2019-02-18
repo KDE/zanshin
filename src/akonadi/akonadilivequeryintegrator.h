@@ -232,7 +232,7 @@ inline void LiveQueryIntegrator::update<Item, Domain::Context::Ptr>(const Item &
 template<>
 inline bool LiveQueryIntegrator::represents<Item, Domain::Context::Ptr>(const Item &input, const Domain::Context::Ptr &output)
 {
-    return m_serializer->itemRepresentsContext(output, input);
+    return m_serializer->representsItem(output, input);
 }
 
 template<>

@@ -86,7 +86,6 @@ public:
 
     virtual bool isContextChild(Domain::Context::Ptr context, Akonadi::Item item) const = 0;
     virtual bool isContext(Akonadi::Item item) = 0;
-    virtual bool itemRepresentsContext(const Domain::Context::Ptr &context, Akonadi::Item item) const = 0;
     virtual Domain::Context::Ptr createContextFromItem(Akonadi::Item item) = 0;
     virtual Akonadi::Item createItemFromContext(Domain::Context::Ptr project) = 0;
     virtual void updateContextFromItem(Domain::Context::Ptr context, Akonadi::Item item) = 0;

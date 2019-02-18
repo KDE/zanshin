@@ -2000,31 +2000,6 @@ private slots:
         QTest::newRow("no") << "context-123" << "another-context" << false;
     }
 
-    void shouldTestIfItemRepresentsContext()
-    {
-        // GIVEN
-        QFETCH(QString, contextUid);
-        QFETCH(QString, todoUid);
-        QFETCH(bool, expectedResult);
-
-        auto context = Domain::Context::Ptr::create();
-        context->setProperty("todoUid", contextUid);
-
-        KCalCore::Todo::Ptr todo(new KCalCore::Todo);
-        todo->setCustomProperty(s_appName, "Context", QStringLiteral("1"));
-        todo->setUid(todoUid);
-        Akonadi::Item item;
-        item.setPayload<KCalCore::Todo::Ptr>(todo);
-
-        // WHEN
-        Akonadi::Serializer serializer;
-        const bool result = serializer.itemRepresentsContext(context, item);
-
-        // THEN
-        QCOMPARE(result, expectedResult);
-        QCOMPARE(serializer.contextUid(item), todoUid);
-    }
-
     void shouldAddContextToTask_data()
     {
         QTest::addColumn<Domain::Context::Ptr>("context");

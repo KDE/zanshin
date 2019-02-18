@@ -266,7 +266,7 @@ void AkonadiFakeData::removeContext(const Akonadi::Item &contextItem)
     m_contextItems.remove(uid);
 
     m_contexts.remove(uid);
-    m_monitor->removeItem(contextItem);
+    m_monitor->removeItem(Akonadi::Item(contextItem.id())); // Akonadi doesn't emit a full item
 }
 
 Akonadi::Item::List AkonadiFakeData::items() const
@@ -387,7 +387,8 @@ void AkonadiFakeData::removeItem(const Akonadi::Item &item)
     if (isContext(item)) {
         removeContext(item);
     } else {
-        m_monitor->removeItem(reconstructItemDependencies(i));
+        // Akonadi doesn't emit the payload, but the ancestors are there
+        m_monitor->removeItem(reconstructItemDependencies(Akonadi::Item(i.id())));
     }
 }
 

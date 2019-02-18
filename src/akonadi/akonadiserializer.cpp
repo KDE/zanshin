@@ -487,17 +487,6 @@ bool Serializer::isContext(Item item)
     return !todo->customProperty(s_appName, "Context").isEmpty();
 }
 
-bool Serializer::itemRepresentsContext(const Domain::Context::Ptr &context, Item item) const
-{
-    if (!item.hasPayload<KCalCore::Todo::Ptr>())
-        return false;
-
-    const auto todo = item.payload<KCalCore::Todo::Ptr>();
-    const auto contextUid = context->property("todoUid").toString();
-    return !todo->customProperty(s_appName, "Context").isEmpty()
-            && todo->uid() == contextUid;
-}
-
 Domain::Context::Ptr Serializer::createContextFromItem(Item item)
 {
     if (!isContext(item))
