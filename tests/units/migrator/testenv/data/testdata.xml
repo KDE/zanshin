@@ -35,7 +35,7 @@ PERCENT-COMPLETE:0&#xd;
 END:VTODO&#xd;
 
 END:VCALENDAR</payload>
-        <tag>errands-context</tag>
+          <tag>errands-context</tag>
       </item>
       <collection content="inode/directory,application/x-vnd.akonadi.calendar.todo" rid="{e682b8b5-b67c-4538-8689-6166f64177f0}" name="Calendar2">
         <attribute type="AccessRights">a</attribute>
@@ -58,7 +58,7 @@ END:VTODO&#xd;
 END:VCALENDAR</payload>
           <attribute type="ForTestingPurpose">foo</attribute>
           <flag>\SEEN</flag>
-          <tag>errands-context</tag>
+          <tag>change-me</tag>
         </item>
         <item mimetype="application/x-vnd.akonadi.calendar.todo" rid="{1d33862f-f274-4c67-ab6c-362d56521ff4}">
           <payload>BEGIN:VCALENDAR
@@ -79,7 +79,6 @@ END:VTODO&#xd;
 END:VCALENDAR</payload>
           <attribute type="ForTestingPurpose">bar</attribute>
           <flag>\SEEN</flag>
-          <tag>errands-context</tag>
         </item>
         <item mimetype="application/x-vnd.akonadi.calendar.todo" rid="{1d33862f-f274-4c67-ab6c-362d56521ff5}">
           <payload>BEGIN:VCALENDAR
@@ -120,6 +119,8 @@ END:VTODO&#xd;
 END:VCALENDAR</payload>
           <attribute type="ForTestingPurpose">bar</attribute>
           <flag>\SEEN</flag>
+          <tag>errands-context</tag>
+          <tag>online-context</tag>
           <tag>change-me</tag>
         </item>
         <collection content="inode/directory,application/x-vnd.akonadi.calendar.todo" rid="{c9a13610-a9f6-433d-96f2-3b8fdb728fe5}" name="EmptyCalendar">
@@ -177,6 +178,7 @@ END:VCARD&#xd;
   </collection>
   <tag name="Errands" type="Zanshin-Context" gid="errands-context" rid="errands-context"/>
   <tag name="Online" type="Zanshin-Context" gid="online-context" rid="online-context"/>
+  <tag name="Unused" type="Zanshin-Context" gid="unused-context" rid="unused-context"/>
   <tag name="Physics" type="PLAIN" gid="physics-tag" rid="physics-tag"/>
   <tag name="Philosophy" type="PLAIN" gid="philosophy-tag" rid="philosophy-tag"/>
   <tag name="Delete Me" type="PLAIN" gid="delete-me" rid="delete-me"/>

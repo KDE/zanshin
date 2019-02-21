@@ -38,6 +38,7 @@
 #include <AkonadiCore/ItemFetchScope>
 #include <AkonadiCore/ItemModifyJob>
 #include <AkonadiCore/ItemMoveJob>
+#include <AkonadiCore/TagFetchScope>
 #include <AkonadiCore/TransactionSequence>
 #include "akonadi/akonadicollectionfetchjobinterface.h"
 #include "akonadi/akonadiitemfetchjobinterface.h"
@@ -221,6 +222,15 @@ ItemFetchJobInterface *Storage::fetchItem(Akonadi::Item item)
 
     configureItemFetchJob(job);
 
+    return job;
+}
+
+ItemFetchJobInterface *Storage::fetchItemsWithTags(Collection collection)
+{
+    auto job = new ItemJob(collection);
+    configureItemFetchJob(job);
+    job->fetchScope().setFetchTags(true);
+    job->fetchScope().tagFetchScope().setFetchIdOnly(false);
     return job;
 }
 

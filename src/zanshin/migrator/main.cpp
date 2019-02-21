@@ -26,26 +26,34 @@
 #include <KConfigGroup>
 #include <KSharedConfig>
 #include "zanshin021migrator.h"
+#include "zanshincontextitemsmigrator.h"
 
 int main(int argc, char **argv)
 {
     QApplication app(argc, argv);
 
     // Qt5 TODO use QCommandLineParser
-    const bool force = (argc > 1 && QByteArray(argv[1]) == "--force");
-
-    Zanshin021Migrator migrator;
+    const bool forceTags = (argc > 1 && QByteArray(argv[1]) == "--forceMigratingTags");
 
     KSharedConfig::Ptr config = KSharedConfig::openConfig(QStringLiteral("zanshin-migratorrc"));
     KConfigGroup group = config->group("Migrations");
-    if (force || !group.readEntry("Migrated021Projects", false)) {
+    if (!group.readEntry("Migrated021Projects", false)) {
+        Zanshin021Migrator migrator;
         if (!migrator.migrateProjects()) {
             return 1;
         }
         group.writeEntry("Migrated021Projects", true);
     }
+
+    if (forceTags || !group.readEntry("MigratedTags", false)) {
+        ZanshinContextItemsMigrator migrator;
+        if (!migrator.migrateTags()) {
+            return 1;
+        }
+        group.writeEntry("MigratedTags", true);
+    }
+
     config->sync();
 
     return 0;
-};
-
+}

@@ -7,9 +7,14 @@ zanshin_auto_tests(
 
 zanshin_akonadi_auto_tests(
   zanshin021migrationtest
+  zanshincontextitemsmigrationtest
 )
 
 target_link_libraries(tests-units-migrator-zanshin021migrationtest
+   migrator
+   testlib
+)
+target_link_libraries(tests-units-migrator-zanshincontextitemsmigrationtest
    migrator
    testlib
 )

@@ -56,6 +56,8 @@ public:
     ItemFetchJobInterface *fetchItems(Akonadi::Collection collection) override;
     ItemFetchJobInterface *fetchItem(Akonadi::Item item) override;
 
+    ItemFetchJobInterface *fetchItemsWithTags(Akonadi::Collection collection);
+
 private:
     CollectionFetchJob::Type jobTypeFromDepth(StorageInterface::FetchDepth depth);
     void configureItemFetchJob(ItemJob *job);
