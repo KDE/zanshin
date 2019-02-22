@@ -46,7 +46,7 @@ int main(int argc, char **argv)
     }
 
     if (forceTags || !group.readEntry("MigratedTags", false)) {
-        ZanshinContextItemsMigrator migrator;
+        ZanshinContextItemsMigrator migrator(forceTags);
         if (!migrator.migrateTags()) {
             return 1;
         }

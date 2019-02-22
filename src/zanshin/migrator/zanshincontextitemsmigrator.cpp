@@ -29,6 +29,7 @@
 #include <AkonadiCore/ItemModifyJob>
 #include <AkonadiCore/TagFetchJob>
 
+#include <ItemDeleteJob>
 #include <QStringList>
 #include <KCalCore/Todo>
 
@@ -36,7 +37,8 @@ using Akonadi::Serializer;
 
 static const char s_contextTagType[] = "Zanshin-Context";
 
-ZanshinContextItemsMigrator::ZanshinContextItemsMigrator()
+ZanshinContextItemsMigrator::ZanshinContextItemsMigrator(bool forceMigration)
+    : m_forceMigration(forceMigration)
 {
 }
 
@@ -47,6 +49,7 @@ ZanshinContextItemsMigrator::FetchResult ZanshinContextItemsMigrator::fetchAllIt
     auto collectionsJob = m_storage.fetchCollections(Akonadi::Collection::root(), Akonadi::Storage::Recursive);
     collectionsJob->kjob()->exec();
 
+    int deletedCount = 0;
     auto collections = collectionsJob->collections();
     foreach (const auto &collection, collections) {
         auto job = m_storage.fetchItemsWithTags(collection);
@@ -57,11 +60,13 @@ ZanshinContextItemsMigrator::FetchResult ZanshinContextItemsMigrator::fetchAllIt
         foreach (const Akonadi::Item &item, items) {
             if (item.hasPayload<KCalCore::Todo::Ptr>()) {
                 auto todo = item.payload<KCalCore::Todo::Ptr>();
-                if (which == WhichItems::TasksToConvert && !todo->customProperty(Serializer::customPropertyAppName(), Serializer::customPropertyContextList()).isEmpty()) {
-                    // This folder was already migrated, skip it
-                    hasTaskToConvert = false;
-                    qDebug() << "Detected an already converted task" << todo->uid();
-                    break;
+                if (!m_forceMigration) {
+                    if (which == WhichItems::TasksToConvert && !todo->customProperty(Serializer::customPropertyAppName(), Serializer::customPropertyContextList()).isEmpty()) {
+                        // This folder was already migrated, skip it
+                        hasTaskToConvert = false;
+                        qDebug() << "Detected an already converted task" << todo->uid();
+                        break;
+                    }
                 }
                 const bool isContext = !todo->customProperty(Serializer::customPropertyAppName(), Serializer::customPropertyIsContext()).isEmpty();
                 if ((isContext && which == WhichItems::OnlyContexts) ||
@@ -69,6 +74,11 @@ ZanshinContextItemsMigrator::FetchResult ZanshinContextItemsMigrator::fetchAllIt
                         (!isContext && which == WhichItems::AllTasks)) {
                     selectedItems.push_back(item);
                     hasTaskToConvert = true;
+                }
+                if (m_forceMigration && isContext && which == WhichItems::TasksToConvert) {
+                    ++deletedCount;
+                    auto job = new Akonadi::ItemDeleteJob(item);
+                    job->exec();
                 }
             }
         }
@@ -79,6 +89,10 @@ ZanshinContextItemsMigrator::FetchResult ZanshinContextItemsMigrator::fetchAllIt
     }
     if (!result.pickedCollection.isValid())
         result.pickedCollection = collections.first();
+
+    if (deletedCount > 0) {
+        qDebug() << "Deleted all" << deletedCount << "contexts, we will recreate them";
+    }
 
     return result;
 }
@@ -118,6 +132,7 @@ void ZanshinContextItemsMigrator::associateContexts(Akonadi::Item::List& items)
 {
     int count = 0;
     for (auto &item : items) {
+        m_serializer.clearItem(&item);
         const auto allTags = item.tags();
         for (const auto &tag : allTags) {
             if (tag.type() == s_contextTagType) {

@@ -33,7 +33,7 @@ enum class WhichItems { TasksToConvert, OnlyContexts, AllTasks };
 class ZanshinContextItemsMigrator
 {
 public:
-    ZanshinContextItemsMigrator();
+    ZanshinContextItemsMigrator(bool forceMigration = false);
 
     struct FetchResult
     {
@@ -52,6 +52,7 @@ public:
 private:
     Akonadi::Storage m_storage;
     Akonadi::Serializer m_serializer;
+    bool m_forceMigration;
 
     QHash<Akonadi::Tag::Id, QString> m_tagUids;
 };
