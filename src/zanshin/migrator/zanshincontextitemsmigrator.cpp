@@ -66,8 +66,8 @@ ZanshinContextItemsMigrator::FetchResult ZanshinContextItemsMigrator::fetchAllIt
                         (!isContext && which == WhichItems::TasksToConvert) ||
                         (!isContext && which == WhichItems::AllTasks)) {
                     selectedItems.push_back(item);
+                    hasTaskToConvert = true;
                 }
-                hasTaskToConvert = true;
             }
         }
         if (hasTaskToConvert) {
@@ -99,12 +99,12 @@ void ZanshinContextItemsMigrator::createContexts(const Akonadi::Tag::List &conte
 
         auto context = Domain::Context::Ptr::create();
         context->setName(tag.name());
-        context->setProperty("todoUid", tag.gid());
         Akonadi::Item item = m_serializer.createItemFromContext(context);
         item.setParentCollection(collection);
         auto job = new Akonadi::ItemCreateJob(item, collection);
         if (job->exec()) {
             ++count;
+            m_tagUids.insert(tag.id(), job->item().payload<KCalCore::Todo::Ptr>()->uid());
         } else {
             qWarning() << "Failure to create context:" << job->errorString();
         }
@@ -121,7 +121,10 @@ void ZanshinContextItemsMigrator::associateContexts(Akonadi::Item::List& items)
             if (tag.type() == s_contextTagType) {
                 auto context = Domain::Context::Ptr::create();
                 context->setName(tag.name());
-                context->setProperty("todoUid", tag.gid());
+                const auto tagUid = m_tagUids.value(tag.id());
+                if (tagUid.isEmpty())
+                    qWarning() << "Item" << item.id() << "uses unknown tag" << tag.id() << tag.name();
+                context->setProperty("todoUid", tagUid);
                 m_serializer.addContextToTask(context, item);
                 auto job = new Akonadi::ItemModifyJob(item);
                 if (job->exec()) {

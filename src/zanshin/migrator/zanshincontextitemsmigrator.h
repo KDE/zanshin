@@ -53,6 +53,7 @@ private:
     Akonadi::Storage m_storage;
     Akonadi::Serializer m_serializer;
 
+    QHash<Akonadi::Tag::Id, QString> m_tagUids;
 };
 
 #endif // ZANSHINCONTEXTITEMSMIGRATOR_H

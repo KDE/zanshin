@@ -76,20 +76,17 @@ private slots:
 
     void shouldFetchAllItems()
     {
-        // GIVEN
-        ZanshinContextItemsMigrator migrator;
-
         // WHEN
-        auto result = migrator.fetchAllItems(WhichItems::TasksToConvert);
+        auto result = m_migrator.fetchAllItems(WhichItems::TasksToConvert);
 
         // THEN
         // the migrator gathered all items and the related tags
-        m_expectedUids.insert(QStringLiteral("child-of-project"), {"errands-context", "online-context"});
+        m_expectedUids.insert(QStringLiteral("child-of-project"), {"Errands", "Online"});
         m_expectedUids.insert(QStringLiteral("new-project-with-property"), {});
-        m_expectedUids.insert(QStringLiteral("old-project-with-comment"), {"errands-context"});
+        m_expectedUids.insert(QStringLiteral("old-project-with-comment"), {"Errands"});
         m_expectedUids.insert(QStringLiteral("project-with-comment-and-property"), {});
         m_expectedUids.insert(QStringLiteral("project-with-children"), {});
-        m_expectedUids.insert(QStringLiteral("standalone-task"), {"errands-context"});
+        m_expectedUids.insert(QStringLiteral("standalone-task"), {"Errands"});
 
         checkExpectedTags(result.items, m_expectedUids);
 
@@ -99,55 +96,52 @@ private slots:
 
     void shouldFetchAllTags()
     {
-        // GIVEN
-        ZanshinContextItemsMigrator migrator;
-
         // WHEN
-        Akonadi::Tag::List tags = migrator.fetchAllTags();
+        Akonadi::Tag::List tags = m_migrator.fetchAllTags();
 
         // THEN
-        QCOMPARE(tagNames(tags), QStringList() << "errands-context" << "online-context" << "unused-context");
+        QCOMPARE(tagNames(tags), QStringList() << "Errands" << "Online" << "Unused");
     }
 
     void shouldCreateContexts()
     {
         // GIVEN
-        ZanshinContextItemsMigrator migrator;
-        auto result = migrator.fetchAllItems(WhichItems::TasksToConvert); // in fact we just need the collection...
-        Akonadi::Tag::List tags = migrator.fetchAllTags();
+        const auto result = m_migrator.fetchAllItems(WhichItems::TasksToConvert); // in fact we just need the collection...
+        const Akonadi::Tag::List tags = m_migrator.fetchAllTags();
 
         // WHEN
-        migrator.createContexts(tags, result.pickedCollection);
+        m_migrator.createContexts(tags, result.pickedCollection);
 
         // THEN
-        auto newItemList = migrator.fetchAllItems(WhichItems::OnlyContexts).items;
+        auto newItemList = m_migrator.fetchAllItems(WhichItems::OnlyContexts).items;
         Akonadi::Item::List contextItems;
         QVector<KCalCore::Todo::Ptr> contextTodos;
         for (auto it = newItemList.constBegin(); it != newItemList.constEnd(); ++it) {
             const auto item = *it;
             if (m_serializer.isContext(item)) {
                 contextItems.append(item);
-                contextTodos.append(item.payload<KCalCore::Todo::Ptr>());
+                auto todo = item.payload<KCalCore::Todo::Ptr>();
+                contextTodos.append(todo);
+                m_contextTodos.insert(todo->uid(), todo->summary());
             }
         }
         QCOMPARE(contextItems.size(), 3);
         QCOMPARE(contextTodos.size(), 3);
-        QCOMPARE(contextTodos.at(0)->uid(), "errands-context");
-        QCOMPARE(contextTodos.at(1)->uid(), "online-context");
-        QCOMPARE(contextTodos.at(2)->uid(), "unused-context");
+        QCOMPARE(contextTodos.at(0)->summary(), "Errands");
+        QCOMPARE(contextTodos.at(1)->summary(), "Online");
+        QCOMPARE(contextTodos.at(2)->summary(), "Unused");
     }
 
     void shouldAssociateContexts()
     {
         // GIVEN
-        ZanshinContextItemsMigrator migrator;
-        auto result = migrator.fetchAllItems(WhichItems::TasksToConvert);
+        auto result = m_migrator.fetchAllItems(WhichItems::TasksToConvert);
 
         // WHEN
-        migrator.associateContexts(result.items);
+        m_migrator.associateContexts(result.items);
 
         // THEN
-        auto newResult = migrator.fetchAllItems(WhichItems::AllTasks);
+        auto newResult = m_migrator.fetchAllItems(WhichItems::AllTasks);
         checkExpectedContexts(newResult.items, m_expectedUids);
    }
 
@@ -189,7 +183,7 @@ private:
 
     void checkExpectedContexts(const Akonadi::Item::List &items, const QMap<QString /*uid*/, QStringList /*tags*/> &expectedItems)
     {
-        const QMap<QString, Akonadi::Item> itemHash = fillHash(items);
+        const QMap<QString /*uid*/, Akonadi::Item> itemHash = fillHash(items);
         const QStringList uids = itemHash.keys();
         if (uids.count() != expectedItems.count()) // QCOMPARE for QStringList isn't verbose enough
             qWarning() << "Got" << uids << "expected" << expectedItems.keys();
@@ -200,10 +194,13 @@ private:
             //qDebug() << item.id() << it.key();
             auto todo = item.payload<KCalCore::Todo::Ptr>();
             QVERIFY(todo);
-            const auto contexts = todo->customProperty("Zanshin", "ContextList").split(',', QString::SkipEmptyParts);
-            if (contexts != it.value()) // QCOMPARE for QStringList isn't verbose enough
-                qWarning() << it.key() << "got" << contexts << "expected" << it.value();
-            QCOMPARE(contexts, it.value());
+            const auto contextUids = todo->customProperty("Zanshin", "ContextList").split(',', QString::SkipEmptyParts);
+            QStringList contextNames;
+            std::transform(contextUids.cbegin(), contextUids.cend(), std::back_inserter(contextNames), [this](const QString &uid) { return m_contextTodos.value(uid); });
+            contextNames.sort();
+            if (contextNames != it.value()) // QCOMPARE for QStringList isn't verbose enough
+                qWarning() << it.key() << "got" << contextNames << "expected" << it.value();
+            QCOMPARE(contextNames, it.value());
 
             QVERIFY(!m_serializer.isContext(item));
         }
@@ -212,13 +209,15 @@ private:
     static QStringList tagNames(const Akonadi::Tag::List &tags)
     {
         QStringList itemTags;
-        std::transform(tags.constBegin(), tags.constEnd(), std::back_inserter(itemTags), [](const Akonadi::Tag &tag) { return tag.gid(); });
+        std::transform(tags.constBegin(), tags.constEnd(), std::back_inserter(itemTags), [](const Akonadi::Tag &tag) { return tag.name(); });
         itemTags.sort();
         return itemTags;
     }
 
     QMap<QString /*uid*/, QStringList /*tags --> contexts*/> m_expectedUids;
     Akonadi::Serializer m_serializer;
+    QHash<QString /*uid*/, QString /*name*/> m_contextTodos;
+    ZanshinContextItemsMigrator m_migrator;
 };
 
 
