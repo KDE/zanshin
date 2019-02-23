@@ -32,7 +32,6 @@ namespace Presentation {
 class AvailablePagesSortFilterProxyModel : public QSortFilterProxyModel
 {
     Q_OBJECT
-    Q_ENUMS(SortType)
 public:
     explicit AvailablePagesSortFilterProxyModel(QObject *parent = 0);
 

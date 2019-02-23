@@ -107,8 +107,8 @@ private slots:
     {
         // GIVEN
         auto query = Domain::LiveRelationshipQuery<QString, QObject*>();
-        query.setFetchFunction([this] (const Domain::LiveQueryInput<QString>::AddFunction &add) {
-            Utils::JobHandler::install(new FakeJob, [this, add] {
+        query.setFetchFunction([] (const Domain::LiveQueryInput<QString>::AddFunction &add) {
+            Utils::JobHandler::install(new FakeJob, [add] {
                 add(QStringLiteral("0"));
                 add(QStringLiteral("1"));
                 add(QString());
@@ -148,8 +148,8 @@ private slots:
     {
         // GIVEN
         auto query = Domain::LiveRelationshipQuery<QString, QObjectPtr>();
-        query.setFetchFunction([this] (const Domain::LiveQueryInput<QString>::AddFunction &add) {
-            Utils::JobHandler::install(new FakeJob, [this, add] {
+        query.setFetchFunction([] (const Domain::LiveQueryInput<QString>::AddFunction &add) {
+            Utils::JobHandler::install(new FakeJob, [add] {
                 add(QStringLiteral("0"));
                 add(QStringLiteral("1"));
                 add(QString());
@@ -157,7 +157,7 @@ private slots:
                 add(QStringLiteral("2"));
             });
         });
-        query.setConvertFunction([this] (const QString &s) {
+        query.setConvertFunction([] (const QString &s) {
             bool ok = false;
             const int id = s.toInt(&ok);
             if (ok) {
@@ -294,8 +294,8 @@ private slots:
         QTRY_COMPARE(result->data(), expected);
 
         // WHEN
-        query.setFetchFunction([this] (const Domain::LiveRelationshipQuery<QObject*, QString>::AddFunction &add) {
-            Utils::JobHandler::install(new FakeJob, [this, add] {});
+        query.setFetchFunction([] (const Domain::LiveRelationshipQuery<QObject*, QString>::AddFunction &) {
+            Utils::JobHandler::install(new FakeJob, [] {});
         });
 
         // unrelated remove -> ignore
@@ -364,7 +364,7 @@ private slots:
         // GIVEN
         Domain::LiveRelationshipQuery<QObject*, QPair<int, QString>> query;
         bool listingDone = false;
-        query.setFetchFunction([this, &listingDone] (const Domain::LiveRelationshipQuery<QObject*, QString>::AddFunction &add) {
+        query.setFetchFunction([&listingDone] (const Domain::LiveRelationshipQuery<QObject*, QString>::AddFunction &add) {
             Q_UNUSED(add);
             Utils::JobHandler::install(new FakeJob, [&listingDone] {
                 listingDone = true;

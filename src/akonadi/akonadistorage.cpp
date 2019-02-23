@@ -82,7 +82,7 @@ public:
             collections.erase(std::remove_if(collections.begin(), collections.end(),
                                              [allowedMimeTypes] (const Collection &collection) {
                                                 auto mimeTypes = collection.contentMimeTypes().toSet();
-                                                return mimeTypes.intersect(allowedMimeTypes).isEmpty();
+                                                return !mimeTypes.intersects(allowedMimeTypes);
                                              }),
                               collections.end());
         }

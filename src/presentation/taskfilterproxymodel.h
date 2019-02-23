@@ -32,12 +32,12 @@ namespace Presentation {
 class TaskFilterProxyModel : public QSortFilterProxyModel
 {
     Q_OBJECT
-    Q_ENUMS(SortType)
 public:
     enum SortType {
         TitleSort = 0,
         DateSort
     };
+    Q_ENUM(SortType)
 
     explicit TaskFilterProxyModel(QObject *parent = nullptr);
 

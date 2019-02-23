@@ -692,18 +692,21 @@ private slots:
 
         // availablePages view
         auto available = components.availablePagesView();
-        foreach (const auto &key,  available->globalActions().keys())
-            QCOMPARE(actions.value(key), available->globalActions().value(key));
+        auto availableGlobalActions = available->globalActions();
+        for (auto it = availableGlobalActions.cbegin(); it != availableGlobalActions.cend(); ++it)
+            QCOMPARE(actions.value(it.key()), it.value());
 
         // availableSources view
         auto availableSources = components.availableSourcesView();
-        foreach (const auto &key, availableSources->globalActions().keys())
-            QCOMPARE(actions.value(key), availableSources->globalActions().value(key));
+        auto availableSourcesGlobalActions = availableSources->globalActions();
+        for (auto it = availableSourcesGlobalActions.cbegin(); it != availableSourcesGlobalActions.cend(); ++it)
+            QCOMPARE(actions.value(it.key()), it.value());
 
         // page view
         auto page = components.pageView();
-        foreach (const auto &key, page->globalActions().keys())
-            QCOMPARE(actions.value(key), page->globalActions().value(key));
+        auto pageGlobalActions = page->globalActions();
+        for (auto it = pageGlobalActions.cbegin(); it != pageGlobalActions.cend(); ++it)
+            QCOMPARE(actions.value(it.key()), it.value());
 
         // application component own action
         auto moveAction = components.findChild<QAction*>(QStringLiteral("moveItemAction"));

@@ -96,10 +96,10 @@ private slots:
         // GIVEN
         QStandardItemModel input;
         const auto today = Utils::DateTime::currentDate();
-        input.appendRow(createTaskItem(QStringLiteral("1. past"), QStringLiteral(""), today.addDays(-1)));
-        input.appendRow(createTaskItem(QStringLiteral("2. present"), QStringLiteral(""), today));
-        input.appendRow(createTaskItem(QStringLiteral("3. future"), QStringLiteral(""), today.addDays(1)));
-        input.appendRow(createTaskItem(QStringLiteral("4. whatever"), QStringLiteral("")));
+        input.appendRow(createTaskItem(QStringLiteral("1. past"), QString(), today.addDays(-1)));
+        input.appendRow(createTaskItem(QStringLiteral("2. present"), QString(), today));
+        input.appendRow(createTaskItem(QStringLiteral("3. future"), QString(), today.addDays(1)));
+        input.appendRow(createTaskItem(QStringLiteral("4. whatever"), QString()));
 
         Presentation::TaskFilterProxyModel output;
         output.setSourceModel(&input);

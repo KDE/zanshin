@@ -36,7 +36,6 @@ namespace Domain {
 class DataSource : public QObject
 {
     Q_OBJECT
-    Q_ENUMS(ContentType)
     Q_PROPERTY(QString name READ name WRITE setName NOTIFY nameChanged)
     Q_PROPERTY(QString iconName READ iconName WRITE setIconName NOTIFY iconNameChanged)
     Q_PROPERTY(Domain::DataSource::ContentTypes contentTypes READ contentTypes WRITE setContentTypes NOTIFY contentTypesChanged)
@@ -49,6 +48,7 @@ public:
         NoContent = 0,
         Tasks,
     };
+    Q_ENUM(ContentType)
     Q_DECLARE_FLAGS(ContentTypes, ContentType)
 
     explicit DataSource(QObject *parent = nullptr);

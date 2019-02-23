@@ -89,8 +89,8 @@ private slots:
     {
         // GIVEN
         auto query = Domain::LiveQuery<QString, QObject*>();
-        query.setFetchFunction([this] (const Domain::LiveQueryInput<QString>::AddFunction &add) {
-            Utils::JobHandler::install(new FakeJob, [this, add] {
+        query.setFetchFunction([] (const Domain::LiveQueryInput<QString>::AddFunction &add) {
+            Utils::JobHandler::install(new FakeJob, [add] {
                 add(QStringLiteral("0"));
                 add(QStringLiteral("1"));
                 add(QString());
@@ -131,8 +131,8 @@ private slots:
     {
         // GIVEN
         auto query = Domain::LiveQuery<QString, QObjectPtr>();
-        query.setFetchFunction([this] (const Domain::LiveQueryInput<QString>::AddFunction &add) {
-            Utils::JobHandler::install(new FakeJob, [this, add] {
+        query.setFetchFunction([] (const Domain::LiveQueryInput<QString>::AddFunction &add) {
+            Utils::JobHandler::install(new FakeJob, [add] {
                 add(QStringLiteral("0"));
                 add(QStringLiteral("1"));
                 add(QString());
@@ -140,7 +140,7 @@ private slots:
                 add(QStringLiteral("2"));
             });
         });
-        query.setConvertFunction([this] (const QString &s) {
+        query.setConvertFunction([] (const QString &s) {
             bool ok = false;
             const int id = s.toInt(&ok);
             if (ok) {

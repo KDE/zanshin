@@ -96,7 +96,7 @@ DataSourceQueries::ProjectResult::Ptr DataSourceQueries::findProjects(Domain::Da
 
 DataSourceQueries::CollectionInputQuery::PredicateFunction DataSourceQueries::createFetchPredicate(const Collection &root) const
 {
-    return [this, root] (const Collection &collection) {
+    return [root] (const Collection &collection) {
         return collection.isValid()
             && collection.parentCollection() == root;
     };
