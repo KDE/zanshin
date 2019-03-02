@@ -38,12 +38,10 @@ public:
 
     typedef Domain::LiveQueryInput<Akonadi::Collection> CollectionInputQuery;
     typedef Domain::LiveQueryOutput<Domain::DataSource::Ptr> DataSourceQueryOutput;
-    typedef Domain::QueryResultProvider<Domain::DataSource::Ptr> DataSourceProvider;
     typedef Domain::QueryResult<Domain::DataSource::Ptr> DataSourceResult;
 
     typedef Domain::LiveQueryInput<Akonadi::Item> ItemInputQuery;
     typedef Domain::LiveQueryOutput<Domain::Project::Ptr> ProjectQueryOutput;
-    typedef Domain::QueryResultProvider<Domain::Project::Ptr> ProjectProvider;
     typedef Domain::QueryResult<Domain::Project::Ptr> ProjectResult;
 
     DataSourceQueries(const StorageInterface::Ptr &storage,
