@@ -45,6 +45,8 @@
 
 #include <QProcess>
 
+using Akonadi::Serializer;
+
 class ZanshinContextItemsMigrationTest : public QObject
 {
     Q_OBJECT
@@ -194,7 +196,7 @@ private:
             //qDebug() << item.id() << it.key();
             auto todo = item.payload<KCalCore::Todo::Ptr>();
             QVERIFY(todo);
-            const auto contextUids = todo->customProperty("Zanshin", "ContextList").split(',', QString::SkipEmptyParts);
+            const auto contextUids = todo->customProperty(Serializer::customPropertyAppName(), Serializer::customPropertyContextList()).split(',', QString::SkipEmptyParts);
             QStringList contextNames;
             std::transform(contextUids.cbegin(), contextUids.cend(), std::back_inserter(contextNames), [this](const QString &uid) { return m_contextTodos.value(uid); });
             contextNames.sort();

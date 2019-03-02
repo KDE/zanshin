@@ -75,6 +75,13 @@ public:
     void addContextToTask(Domain::Context::Ptr context, Akonadi::Item item) override;
     void removeContextFromTask(Domain::Context::Ptr context, Akonadi::Item item) override;
     QString contextUid(Akonadi::Item item) override;
+
+    static QByteArray customPropertyAppName();
+    static QByteArray customPropertyIsProject();
+    static QByteArray customPropertyIsContext();
+    static QByteArray customPropertyIsRunning();
+    static QByteArray customPropertyContextList();
+
 };
 
 }

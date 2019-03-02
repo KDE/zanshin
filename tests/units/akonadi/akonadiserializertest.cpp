@@ -35,13 +35,12 @@
 
 Q_DECLARE_METATYPE(Akonadi::Item*)
 
+using Akonadi::Serializer;
+
 static void setTodoDates(KCalCore::Todo::Ptr todo, const QDate &start, const QDate &due) {
     todo->setDtStart(QDateTime(start));
     todo->setDtDue(QDateTime(due));
 }
-
-static const char s_contextListProperty[] = "ContextList";
-static const char s_appName[] = "Zanshin";
 
 class AkonadiSerializerTest : public QObject
 {
@@ -533,7 +532,7 @@ private slots:
         // A todo with the project flag
         KCalCore::Todo::Ptr todo(new KCalCore::Todo);
         todo->setSummary(QStringLiteral("foo"));
-        todo->setCustomProperty("Zanshin", "Project", QStringLiteral("1"));
+        todo->setCustomProperty(Serializer::customPropertyAppName(), Serializer::customPropertyIsProject(), QStringLiteral("1"));
 
         // ... as payload of an item
         Akonadi::Item item;
@@ -647,9 +646,9 @@ private slots:
         }
 
         if (updatedRunning) {
-            updatedTodo->setCustomProperty("Zanshin", "Running", "1");
+            updatedTodo->setCustomProperty(Serializer::customPropertyAppName(), Serializer::customPropertyIsRunning(), "1");
         } else {
-            updatedTodo->removeCustomProperty("Zanshin", "Running");
+            updatedTodo->removeCustomProperty(Serializer::customPropertyAppName(), Serializer::customPropertyIsRunning());
         }
 
         // ... as payload of a new item
@@ -875,7 +874,7 @@ private slots:
         // A todo with the project flag
         KCalCore::Todo::Ptr projectTodo(new KCalCore::Todo);
         projectTodo->setSummary(QStringLiteral("foo"));
-        projectTodo->setCustomProperty("Zanshin", "Project", QStringLiteral("1"));
+        projectTodo->setCustomProperty(Serializer::customPropertyAppName(), Serializer::customPropertyIsProject(), QStringLiteral("1"));
 
         // ... as payload of an item
         Akonadi::Item projectItem;
@@ -1088,7 +1087,7 @@ private slots:
         }
 
         QCOMPARE(todo->relatedTo(), QStringLiteral("parent-uid"));
-        QCOMPARE(todo->customProperty("Zanshin", "Running"), running ? QStringLiteral("1") : QString());
+        QCOMPARE(todo->customProperty(Serializer::customPropertyAppName(), Serializer::customPropertyIsRunning()), running ? QStringLiteral("1") : QString());
     }
 
     void shouldVerifyIfAnItemIsATaskChild_data()
@@ -1236,7 +1235,7 @@ private slots:
         // ... stored in a todo...
         KCalCore::Todo::Ptr todo(new KCalCore::Todo);
         todo->setSummary(summary);
-        todo->setCustomProperty("Zanshin", "Project", QStringLiteral("1"));
+        todo->setCustomProperty(Serializer::customPropertyAppName(), Serializer::customPropertyIsProject(), QStringLiteral("1"));
         QVERIFY(!todo->uid().isEmpty());
 
         // ... as payload of an item
@@ -1308,7 +1307,7 @@ private slots:
         // A todo...
         KCalCore::Todo::Ptr originalTodo(new KCalCore::Todo);
         originalTodo->setSummary(QStringLiteral("summary"));
-        originalTodo->setCustomProperty("Zanshin", "Project", QStringLiteral("1"));
+        originalTodo->setCustomProperty(Serializer::customPropertyAppName(), Serializer::customPropertyIsProject(), QStringLiteral("1"));
 
         // ... as payload of an item...
         Akonadi::Item originalItem(42);
@@ -1331,7 +1330,7 @@ private slots:
         // ... in a new todo...
         KCalCore::Todo::Ptr updatedTodo(new KCalCore::Todo);
         updatedTodo->setSummary(updatedSummary);
-        updatedTodo->setCustomProperty("Zanshin", "Project", QStringLiteral("1"));
+        updatedTodo->setCustomProperty(Serializer::customPropertyAppName(), Serializer::customPropertyIsProject(), QStringLiteral("1"));
         QVERIFY(!updatedTodo->uid().isEmpty());
 
         // ... as payload of a new item
@@ -1362,7 +1361,7 @@ private slots:
         // ... stored in a todo...
         KCalCore::Todo::Ptr originalTodo(new KCalCore::Todo);
         originalTodo->setSummary(summary);
-        originalTodo->setCustomProperty("Zanshin", "Project", QStringLiteral("1"));
+        originalTodo->setCustomProperty(Serializer::customPropertyAppName(), Serializer::customPropertyIsProject(), QStringLiteral("1"));
 
         // ... as payload of an item...
         Akonadi::Item originalItem;
@@ -1391,7 +1390,7 @@ private slots:
         // ... stored in a todo...
         KCalCore::Todo::Ptr originalTodo(new KCalCore::Todo);
         originalTodo->setSummary(summary);
-        originalTodo->setCustomProperty("Zanshin", "Project", QStringLiteral("1"));
+        originalTodo->setCustomProperty(Serializer::customPropertyAppName(), Serializer::customPropertyIsProject(), QStringLiteral("1"));
 
         // ... as payload of an item...
         Akonadi::Item originalItem;
@@ -1471,7 +1470,7 @@ private slots:
         auto todo = item.payload<KCalCore::Todo::Ptr>();
         QCOMPARE(todo->summary(), summary);
         QCOMPARE(todo->uid(), todoUid);
-        QVERIFY(!todo->customProperty("Zanshin", "Project").isEmpty());
+        QVERIFY(!todo->customProperty(Serializer::customPropertyAppName(), Serializer::customPropertyIsProject()).isEmpty());
     }
 
     void shouldVerifyIfAnItemIsAProjectChild_data()
@@ -1725,7 +1724,7 @@ private slots:
         if (item.hasPayload<KCalCore::Todo::Ptr>()) {
             auto todo = item.payload<KCalCore::Todo::Ptr>();
             QCOMPARE(todo->relatedTo(), QString());
-            QVERIFY(!todo->customProperty("Zanshin", "Project").isEmpty());
+            QVERIFY(!todo->customProperty(Serializer::customPropertyAppName(), Serializer::customPropertyIsProject()).isEmpty());
         }
     }
 
@@ -1736,7 +1735,7 @@ private slots:
         Akonadi::Item *itemWithContexts = new Akonadi::Item(15);
         KCalCore::Todo::Ptr todo(new KCalCore::Todo);
         // we can cheat and not really create contexts...
-        todo->setCustomProperty(s_appName, s_contextListProperty, "one,two");
+        todo->setCustomProperty(Serializer::customPropertyAppName(), Serializer::customPropertyContextList(), "one,two");
         itemWithContexts->setPayload<KCalCore::Todo::Ptr>(todo);
         QTest::newRow("with_contexts") << itemWithContexts;
 
@@ -1756,7 +1755,7 @@ private slots:
 
         // THEN
         auto todo = item->payload<KCalCore::Todo::Ptr>();
-        QVERIFY(todo->customProperty(s_appName, s_contextListProperty).isEmpty());
+        QVERIFY(todo->customProperty(Serializer::customPropertyAppName(), Serializer::customPropertyContextList()).isEmpty());
         delete item;
     }
 
@@ -1778,7 +1777,7 @@ private slots:
         // ... stored in a todo...
         KCalCore::Todo::Ptr todo(new KCalCore::Todo);
         todo->setSummary(name);
-        todo->setCustomProperty(s_appName, "Context", QStringLiteral("1"));
+        todo->setCustomProperty(Serializer::customPropertyAppName(), Serializer::customPropertyIsContext(), QStringLiteral("1"));
         QVERIFY(!todo->uid().isEmpty());
 
         // ... as payload of an item
@@ -1818,7 +1817,7 @@ private slots:
         KCalCore::Todo::Ptr originalTodo(new KCalCore::Todo);
         originalTodo->setSummary("summary");
         if (isProject)
-            originalTodo->setCustomProperty(s_appName, "Project", QStringLiteral("1"));
+            originalTodo->setCustomProperty(Serializer::customPropertyAppName(), Serializer::customPropertyIsProject(), QStringLiteral("1"));
 
         // ... as payload of an item...
         Akonadi::Item originalItem;
@@ -1848,7 +1847,7 @@ private slots:
         // ... stored in a todo...
         KCalCore::Todo::Ptr todo(new KCalCore::Todo);
         todo->setSummary(name);
-        todo->setCustomProperty(s_appName, "Context", QStringLiteral("1"));
+        todo->setCustomProperty(Serializer::customPropertyAppName(), Serializer::customPropertyIsContext(), QStringLiteral("1"));
         QVERIFY(!todo->uid().isEmpty());
 
         // ... as payload of an item
@@ -1889,7 +1888,7 @@ private slots:
         KCalCore::Todo::Ptr wrongTodo(new KCalCore::Todo);
         wrongTodo->setSummary("wrongSummary");
         if (isProject)
-            wrongTodo->setCustomProperty(s_appName, "Project", QStringLiteral("1"));
+            wrongTodo->setCustomProperty(Serializer::customPropertyAppName(), Serializer::customPropertyIsProject(), QStringLiteral("1"));
 
         Akonadi::Item wrongItem;
         wrongItem.setMimeType(QStringLiteral("application/x-vnd.akonadi.calendar.todo"));
@@ -1921,7 +1920,7 @@ private slots:
         Akonadi::Item relatedItem;
         auto todo = KCalCore::Todo::Ptr::create();
         todo->setSummary("summary");
-        todo->setCustomProperty(s_appName, s_contextListProperty, contextUid);
+        todo->setCustomProperty(Serializer::customPropertyAppName(), Serializer::customPropertyContextList(), contextUid);
         relatedItem.setPayload<KCalCore::Todo::Ptr>(todo);
         QTest::newRow("Related item") << context << relatedItem << true;
 
@@ -2019,14 +2018,14 @@ private slots:
 
         Akonadi::Item item2;
         auto todo2 = KCalCore::Todo::Ptr::create();
-        todo2->setCustomProperty(s_appName, s_contextListProperty, "another");
+        todo2->setCustomProperty(Serializer::customPropertyAppName(), Serializer::customPropertyContextList(), "another");
         item2.setPayload<KCalCore::Todo::Ptr>(todo2);
         const QString bothContexts = QStringLiteral("another,") + contextUid;
         QTest::newRow("item_with_another_context") << context << item2 << bothContexts;
 
         Akonadi::Item item3;
         auto todo3 = KCalCore::Todo::Ptr::create();
-        todo3->setCustomProperty(s_appName, s_contextListProperty, bothContexts);
+        todo3->setCustomProperty(Serializer::customPropertyAppName(), Serializer::customPropertyContextList(), bothContexts);
         item3.setPayload<KCalCore::Todo::Ptr>(todo3);
         QTest::newRow("item_with_this_context_already") << context << item3 << bothContexts;
     }
@@ -2044,7 +2043,7 @@ private slots:
 
         // THEN
         KCalCore::Todo::Ptr todo = item.payload<KCalCore::Todo::Ptr>();
-        QCOMPARE(todo->customProperty(s_appName, s_contextListProperty), expectedContextList);
+        QCOMPARE(todo->customProperty(Serializer::customPropertyAppName(), Serializer::customPropertyContextList()), expectedContextList);
     }
 
     void shouldRemoveContextFromTask_data()
@@ -2065,20 +2064,20 @@ private slots:
 
         Akonadi::Item item2;
         auto todo2 = KCalCore::Todo::Ptr::create();
-        todo2->setCustomProperty(s_appName, s_contextListProperty, "another");
+        todo2->setCustomProperty(Serializer::customPropertyAppName(), Serializer::customPropertyContextList(), "another");
         item2.setPayload<KCalCore::Todo::Ptr>(todo2);
         QTest::newRow("item_with_another_context") << context << item2 << QString("another");
 
         Akonadi::Item item3;
         auto todo3 = KCalCore::Todo::Ptr::create();
-        todo3->setCustomProperty(s_appName, s_contextListProperty, contextUid);
+        todo3->setCustomProperty(Serializer::customPropertyAppName(), Serializer::customPropertyContextList(), contextUid);
         item3.setPayload<KCalCore::Todo::Ptr>(todo3);
         QTest::newRow("item_with_this_context_already") << context << item3 << QString();
 
         Akonadi::Item item4;
         auto todo4 = KCalCore::Todo::Ptr::create();
         const QString bothContexts = QStringLiteral("another,") + contextUid;
-        todo4->setCustomProperty(s_appName, s_contextListProperty, bothContexts);
+        todo4->setCustomProperty(Serializer::customPropertyAppName(), Serializer::customPropertyContextList(), bothContexts);
         item4.setPayload<KCalCore::Todo::Ptr>(todo4);
         QTest::newRow("item_with_two_contexts") << context << item4 << QString("another");
     }
@@ -2096,7 +2095,7 @@ private slots:
 
         // THEN
         KCalCore::Todo::Ptr todo = item.payload<KCalCore::Todo::Ptr>();
-        QCOMPARE(todo->customProperty(s_appName, s_contextListProperty), expectedContextList);
+        QCOMPARE(todo->customProperty(Serializer::customPropertyAppName(), Serializer::customPropertyContextList()), expectedContextList);
     }
 
     // Investigation into how to differentiate all-day events from events with time,

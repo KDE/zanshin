@@ -40,9 +40,6 @@
 
 using namespace Akonadi;
 
-static const char s_contextListProperty[] = "ContextList";
-static const char s_appName[] = "Zanshin";
-
 Serializer::Serializer()
 {
 }
@@ -183,7 +180,7 @@ void Serializer::updateTaskFromItem(Domain::Task::Ptr task, Item item)
     task->setProperty("parentCollectionId", item.parentCollection().id());
     task->setProperty("todoUid", todo->uid());
     task->setProperty("relatedUid", todo->relatedTo());
-    task->setRunning(todo->customProperty("Zanshin", "Running") == QLatin1String("1"));
+    task->setRunning(todo->customProperty(Serializer::customPropertyAppName(), Serializer::customPropertyIsRunning()) == QLatin1String("1"));
 
     switch (todo->recurrence()->recurrenceType()) {
     case KCalCore::Recurrence::rDaily:
@@ -281,9 +278,9 @@ Akonadi::Item Serializer::createItemFromTask(Domain::Task::Ptr task)
     }
 
     if (task->isRunning()) {
-        todo->setCustomProperty("Zanshin", "Running", "1");
+        todo->setCustomProperty(Serializer::customPropertyAppName(), Serializer::customPropertyIsRunning(), "1");
     } else {
-        todo->removeCustomProperty("Zanshin", "Running");
+        todo->removeCustomProperty(Serializer::customPropertyAppName(), Serializer::customPropertyIsRunning());
     }
 
     // Needs to be done after all other dates are positioned
@@ -349,7 +346,7 @@ void Serializer::promoteItemToProject(Akonadi::Item item)
 
     auto todo = item.payload<KCalCore::Todo::Ptr>();
     todo->setRelatedTo(QString());
-    todo->setCustomProperty("Zanshin", "Project", QStringLiteral("1"));
+    todo->setCustomProperty(Serializer::customPropertyAppName(), Serializer::customPropertyIsProject(), QStringLiteral("1"));
 }
 
 void Serializer::clearItem(Akonadi::Item *item)
@@ -359,7 +356,7 @@ void Serializer::clearItem(Akonadi::Item *item)
         return;
 
     auto todo = item->payload<KCalCore::Todo::Ptr>();
-    todo->removeCustomProperty(s_appName, s_contextListProperty);
+    todo->removeCustomProperty(Serializer::customPropertyAppName(), Serializer::customPropertyContextList());
 }
 
 Akonadi::Item::List Serializer::filterDescendantItems(const Akonadi::Item::List &potentialChildren, const Akonadi::Item &ancestorItem)
@@ -398,7 +395,7 @@ bool Serializer::isProjectItem(Item item)
         return false;
 
     auto todo = item.payload<KCalCore::Todo::Ptr>();
-    return !todo->customProperty(s_appName, "Project").isEmpty();
+    return !todo->customProperty(Serializer::customPropertyAppName(), Serializer::customPropertyIsProject()).isEmpty();
 }
 
 Domain::Project::Ptr Serializer::createProjectFromItem(Item item)
@@ -429,7 +426,7 @@ Item Serializer::createItemFromProject(Domain::Project::Ptr project)
     auto todo = KCalCore::Todo::Ptr::create();
 
     todo->setSummary(project->name());
-    todo->setCustomProperty("Zanshin", "Project", QStringLiteral("1"));
+    todo->setCustomProperty(Serializer::customPropertyAppName(), Serializer::customPropertyIsProject(), QStringLiteral("1"));
 
     if (project->property("todoUid").isValid()) {
         todo->setUid(project->property("todoUid").toString());
@@ -460,7 +457,7 @@ bool Serializer::isProjectChild(Domain::Project::Ptr project, Item item)
 
 static QStringList extractContexts(KCalCore::Todo::Ptr todo)
 {
-    const auto contexts = todo->customProperty(s_appName, s_contextListProperty);
+    const QString contexts = todo->customProperty(Serializer::customPropertyAppName(), Serializer::customPropertyContextList());
     return contexts.split(',', QString::SkipEmptyParts);
 }
 
@@ -484,7 +481,7 @@ bool Serializer::isContext(Item item)
         return false;
 
     auto todo = item.payload<KCalCore::Todo::Ptr>();
-    return !todo->customProperty(s_appName, "Context").isEmpty();
+    return !todo->customProperty(Serializer::customPropertyAppName(), Serializer::customPropertyIsContext()).isEmpty();
 }
 
 Domain::Context::Ptr Serializer::createContextFromItem(Item item)
@@ -502,7 +499,7 @@ Akonadi::Item Serializer::createItemFromContext(Domain::Context::Ptr context)
     auto todo = KCalCore::Todo::Ptr::create();
 
     todo->setSummary(context->name());
-    todo->setCustomProperty(s_appName, "Context", QStringLiteral("1"));
+    todo->setCustomProperty(Serializer::customPropertyAppName(), Serializer::customPropertyIsContext(), QStringLiteral("1"));
 
     if (context->property("todoUid").isValid()) {
         todo->setUid(context->property("todoUid").toString());
@@ -550,7 +547,7 @@ void Serializer::addContextToTask(Domain::Context::Ptr context, Item item)
     auto contextList = extractContexts(todo);
     if (!contextList.contains(contextUid))
         contextList.append(contextUid);
-    todo->setCustomProperty(s_appName, s_contextListProperty, contextList.join(','));
+    todo->setCustomProperty(Serializer::customPropertyAppName(), Serializer::customPropertyContextList(), contextList.join(','));
 
     item.setPayload<KCalCore::Todo::Ptr>(todo);
 }
@@ -571,9 +568,9 @@ void Serializer::removeContextFromTask(Domain::Context::Ptr context, Item item)
     QStringList contextList = extractContexts(todo);
     contextList.removeAll(contextUid);
     if (contextList.isEmpty())
-        todo->removeCustomProperty(s_appName, s_contextListProperty);
+        todo->removeCustomProperty(Serializer::customPropertyAppName(), Serializer::customPropertyContextList());
     else
-        todo->setCustomProperty(s_appName, s_contextListProperty, contextList.join(','));
+        todo->setCustomProperty(Serializer::customPropertyAppName(), Serializer::customPropertyContextList(), contextList.join(','));
 
     item.setPayload<KCalCore::Todo::Ptr>(todo);
 }
@@ -585,4 +582,33 @@ QString Serializer::contextUid(Item item)
 
     auto todo = item.payload<KCalCore::Todo::Ptr>();
     return todo->uid();
+}
+
+// KCalCore's CustomProperties doesn't implement case insensitivity
+// and some CALDAV servers make everything uppercase. So do like most of kdepim
+// and use uppercase property names.
+
+QByteArray Serializer::customPropertyAppName()
+{
+    return QByteArrayLiteral("ZANSHIN");
+}
+
+QByteArray Serializer::customPropertyIsProject()
+{
+    return QByteArrayLiteral("ISPROJECT");
+}
+
+QByteArray Serializer::customPropertyIsContext()
+{
+    return QByteArrayLiteral("ISCONTEXT");
+}
+
+QByteArray Serializer::customPropertyIsRunning()
+{
+    return QByteArrayLiteral("ISRUNNING");
+}
+
+QByteArray Serializer::customPropertyContextList()
+{
+    return QByteArrayLiteral("CONTEXTLIST");
 }

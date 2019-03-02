@@ -26,8 +26,10 @@
 #include <KCalCore/Todo>
 
 #include <testlib/qtest_zanshin.h>
+#include <akonadi/akonadiserializer.h>
 
 using namespace Testlib;
+using Akonadi::Serializer;
 
 class GenTodoTest : public QObject
 {
@@ -73,7 +75,7 @@ private slots:
 
         // THEN
         auto todo = item.payload<KCalCore::Todo::Ptr>();
-        QStringList contextUids = todo->customProperty("Zanshin", "ContextList").split(',');
+        QStringList contextUids = todo->customProperty(Serializer::customPropertyAppName(), Serializer::customPropertyContextList()).split(',');
         QCOMPARE(contextUids.size(), 3);
         QCOMPARE(contextUids.at(0), "42");
         QCOMPARE(contextUids.at(1), "43");
@@ -86,13 +88,13 @@ private slots:
         Akonadi::Item item = GenTodo().asProject();
 
         // THEN
-        QVERIFY(!item.payload<KCalCore::Todo::Ptr>()->customProperty("Zanshin", "Project").isEmpty());
+        QVERIFY(!item.payload<KCalCore::Todo::Ptr>()->customProperty(Serializer::customPropertyAppName(), Serializer::customPropertyIsProject()).isEmpty());
 
         // WHEN
         item = GenTodo(item).asProject(false);
 
         // THEN
-        QVERIFY(item.payload<KCalCore::Todo::Ptr>()->customProperty("Zanshin", "Project").isEmpty());
+        QVERIFY(item.payload<KCalCore::Todo::Ptr>()->customProperty(Serializer::customPropertyAppName(), Serializer::customPropertyIsProject()).isEmpty());
     }
 
     void shouldAllowToSetContextType()
@@ -101,13 +103,13 @@ private slots:
         Akonadi::Item item = GenTodo().asContext();
 
         // THEN
-        QVERIFY(!item.payload<KCalCore::Todo::Ptr>()->customProperty("Zanshin", "Context").isEmpty());
+        QVERIFY(!item.payload<KCalCore::Todo::Ptr>()->customProperty(Serializer::customPropertyAppName(), Serializer::customPropertyIsContext()).isEmpty());
 
         // WHEN
         item = GenTodo(item).asContext(false);
 
         // THEN
-        QVERIFY(item.payload<KCalCore::Todo::Ptr>()->customProperty("Zanshin", "Context").isEmpty());
+        QVERIFY(item.payload<KCalCore::Todo::Ptr>()->customProperty(Serializer::customPropertyAppName(), Serializer::customPropertyIsContext()).isEmpty());
     }
 
     void shouldAllowToSetUid()

@@ -24,12 +24,15 @@
 #include "zanshin021migrator.h"
 #include <akonadi/akonadicollectionfetchjobinterface.h>
 #include <akonadi/akonadiitemfetchjobinterface.h>
+#include <akonadi/akonadiserializer.h>
 
 #include <AkonadiCore/TransactionSequence>
 #include <AkonadiCore/ItemModifyJob>
 
 #include <QStringList>
 #include <KCalCore/Todo>
+
+using Akonadi::Serializer;
 
 Zanshin021Migrator::Zanshin021Migrator()
 {
@@ -39,7 +42,7 @@ Zanshin021Migrator::Zanshin021Migrator()
 bool Zanshin021Migrator::isProject(const Akonadi::Item& item)
 {
     // same as Serializer::isProject, but we don't need the serializer here...
-    return item.hasPayload<KCalCore::Todo::Ptr>() && !item.payload<KCalCore::Todo::Ptr>()->customProperty("Zanshin", "Project").isEmpty();
+    return item.hasPayload<KCalCore::Todo::Ptr>() && !item.payload<KCalCore::Todo::Ptr>()->customProperty(Serializer::customPropertyAppName(), Serializer::customPropertyIsProject()).isEmpty();
 }
 
 
@@ -71,7 +74,7 @@ void Zanshin021Migrator::markAsProject(SeenItem& seenItem, Akonadi::TransactionS
     Akonadi::Item &item = seenItem.item();
     if (!isProject(item)) {
         auto todo = item.payload<KCalCore::Todo::Ptr>();
-        todo->setCustomProperty("Zanshin", "Project", QStringLiteral("1"));
+        todo->setCustomProperty(Serializer::customPropertyAppName(), Serializer::customPropertyIsProject(), QStringLiteral("1"));
         item.setPayload(todo);
         seenItem.setDirty();
         qDebug() << "Marking as project:" << item.id() << item.remoteId() << todo->summary();

@@ -32,6 +32,8 @@
 #include <QStringList>
 #include <KCalCore/Todo>
 
+using Akonadi::Serializer;
+
 static const char s_contextTagType[] = "Zanshin-Context";
 
 ZanshinContextItemsMigrator::ZanshinContextItemsMigrator()
@@ -55,13 +57,13 @@ ZanshinContextItemsMigrator::FetchResult ZanshinContextItemsMigrator::fetchAllIt
         foreach (const Akonadi::Item &item, items) {
             if (item.hasPayload<KCalCore::Todo::Ptr>()) {
                 auto todo = item.payload<KCalCore::Todo::Ptr>();
-                if (which == WhichItems::TasksToConvert && !todo->customProperty("Zanshin", "ContextList").isEmpty()) {
+                if (which == WhichItems::TasksToConvert && !todo->customProperty(Serializer::customPropertyAppName(), Serializer::customPropertyContextList()).isEmpty()) {
                     // This folder was already migrated, skip it
                     hasTaskToConvert = false;
                     qDebug() << "Detected an already converted task" << todo->uid();
                     break;
                 }
-                const bool isContext = !todo->customProperty("Zanshin", "Context").isEmpty();
+                const bool isContext = !todo->customProperty(Serializer::customPropertyAppName(), Serializer::customPropertyIsContext()).isEmpty();
                 if ((isContext && which == WhichItems::OnlyContexts) ||
                         (!isContext && which == WhichItems::TasksToConvert) ||
                         (!isContext && which == WhichItems::AllTasks)) {
@@ -134,6 +136,13 @@ void ZanshinContextItemsMigrator::associateContexts(Akonadi::Item::List& items)
                     qWarning() << "Failure to associate context" << tag.name() << "to task:" << job->errorString();
                 }
             }
+        }
+        // While we're here, port from "Project" to "ISPROJECT"
+        auto todo = item.payload<KCalCore::Todo::Ptr>();
+        if (!todo->customProperty("Zanshin", "Project").isEmpty()) {
+            todo->setCustomProperty(Serializer::customPropertyAppName(), Serializer::customPropertyIsProject(), QStringLiteral("1"));
+            auto job = new Akonadi::ItemModifyJob(item);
+            job->exec();
         }
     }
     qDebug() << "Associated contexts to" << count << "items";

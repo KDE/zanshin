@@ -23,10 +23,13 @@
 
 #include "testlib/akonadifakedata.h"
 #include "testlib/akonadifakedataxmlloader.h"
+#include <akonadi/akonadiserializer.h>
 
 #include <KCalCore/Todo>
 
 #include <testlib/qtest_zanshin.h>
+
+using Akonadi::Serializer;
 
 class AkonadiFakeDataXmlLoaderTest : public QObject
 {
@@ -84,7 +87,7 @@ private slots:
         const auto contextAsTodo = firstContext.payload<KCalCore::Todo::Ptr>();
         QCOMPARE(contextAsTodo->uid(), "online-context");
         QCOMPARE(contextAsTodo->summary(), "Online");
-        QCOMPARE(contextAsTodo->customProperty("Zanshin", "Context"), "1");
+        QCOMPARE(contextAsTodo->customProperty(Serializer::customPropertyAppName(), Serializer::customPropertyIsContext()), "1");
     }
 };
 

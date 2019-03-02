@@ -25,11 +25,10 @@
 
 #include <KCalCore/Todo>
 #include <QDateTime>
+#include <akonadi/akonadiserializer.h>
 
 using namespace Testlib;
-
-static const char s_contextListProperty[] = "ContextList";
-static const char s_appName[] = "Zanshin";
+using Akonadi::Serializer;
 
 GenTodo::GenTodo(const Akonadi::Item &item)
     : m_item(item)
@@ -60,9 +59,9 @@ GenTodo &GenTodo::withContexts(const QStringList &contextUids)
 {
     auto todo = m_item.payload<KCalCore::Todo::Ptr>();
     if (contextUids.isEmpty())
-        todo->removeCustomProperty(s_appName, s_contextListProperty);
+        todo->removeCustomProperty(Serializer::customPropertyAppName(), Serializer::customPropertyContextList());
     else
-        todo->setCustomProperty(s_appName, s_contextListProperty, contextUids.join(','));
+        todo->setCustomProperty(Serializer::customPropertyAppName(), Serializer::customPropertyContextList(), contextUids.join(','));
     m_item.setPayload<KCalCore::Todo::Ptr>(todo);
     return *this;
 }
@@ -71,9 +70,9 @@ GenTodo &GenTodo::asProject(bool value)
 {
     auto todo = m_item.payload<KCalCore::Todo::Ptr>();
     if (value)
-        todo->setCustomProperty("Zanshin", "Project", QStringLiteral("1"));
+        todo->setCustomProperty(Serializer::customPropertyAppName(), Serializer::customPropertyIsProject(), QStringLiteral("1"));
     else
-        todo->removeCustomProperty("Zanshin", "Project");
+        todo->removeCustomProperty(Serializer::customPropertyAppName(), Serializer::customPropertyIsProject());
     return *this;
 }
 
@@ -81,9 +80,9 @@ GenTodo &GenTodo::asContext(bool value)
 {
     auto todo = m_item.payload<KCalCore::Todo::Ptr>();
     if (value)
-        todo->setCustomProperty("Zanshin", "Context", QStringLiteral("1"));
+        todo->setCustomProperty(Serializer::customPropertyAppName(), Serializer::customPropertyIsContext(), QStringLiteral("1"));
     else
-        todo->removeCustomProperty("Zanshin", "Context");
+        todo->removeCustomProperty(Serializer::customPropertyAppName(), Serializer::customPropertyIsContext());
     return *this;
 }
 
