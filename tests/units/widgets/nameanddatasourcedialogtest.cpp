@@ -33,7 +33,7 @@
 
 #include "presentation/querytreemodelbase.h"
 
-#include "widgets/newprojectdialog.h"
+#include "widgets/nameanddatasourcedialog.h"
 
 class UserInputSimulator : public QObject
 {
@@ -68,13 +68,13 @@ private slots:
     }
 
 public:
-    Widgets::NewProjectDialog *dialog;
+    Widgets::NameAndDataSourceDialog *dialog;
     bool reject;
     QString nameInput;
     int sourceComboIndex;
 };
 
-class NewProjectDialogTest : public QObject
+class NameAndDataSourceDialogTest : public QObject
 {
     Q_OBJECT
 private:
@@ -126,7 +126,7 @@ private:
 private slots:
     void shouldHaveDefaultState()
     {
-        Widgets::NewProjectDialog dialog;
+        Widgets::NameAndDataSourceDialog dialog;
 
         QVERIFY(dialog.name().isEmpty());
         QVERIFY(dialog.dataSource().isNull());
@@ -149,7 +149,7 @@ private slots:
     void shouldPositionDefaultProperties()
     {
         // GIVEN
-        Widgets::NewProjectDialog dialog;
+        Widgets::NameAndDataSourceDialog dialog;
         auto sourceModel = createSourceModel();
         auto sourceCombo = dialog.findChild<QComboBox*>(QStringLiteral("sourceCombo"));
 
@@ -164,7 +164,7 @@ private slots:
     void shouldProvideUserInputWhenAccepted()
     {
         // GIVEN
-        Widgets::NewProjectDialog dialog;
+        Widgets::NameAndDataSourceDialog dialog;
 
         auto sourceModel = createSourceModel();
         dialog.setDataSourcesModel(sourceModel);
@@ -191,7 +191,7 @@ private slots:
     void shouldNotProvideUserInputWhenReject()
     {
         // GIVEN
-        Widgets::NewProjectDialog dialog;
+        Widgets::NameAndDataSourceDialog dialog;
 
         auto sourceModel = createSourceModel();
         dialog.setDataSourcesModel(sourceModel);
@@ -213,7 +213,7 @@ private slots:
     void shouldNotAllowEmptyName()
     {
         // GIVEN
-        Widgets::NewProjectDialog dialog;
+        Widgets::NameAndDataSourceDialog dialog;
 
         auto sourceModel = createSourceModel();
         dialog.setDataSourcesModel(sourceModel);
@@ -237,7 +237,7 @@ private slots:
     void shouldNotAllowNoSelectedSource()
     {
         // GIVEN
-        Widgets::NewProjectDialog dialog;
+        Widgets::NameAndDataSourceDialog dialog;
 
         auto sourceModel = createSourceModel();
         dialog.setDataSourcesModel(sourceModel);
@@ -259,6 +259,6 @@ private slots:
     }
 };
 
-ZANSHIN_TEST_MAIN(NewProjectDialogTest)
+ZANSHIN_TEST_MAIN(NameAndDataSourceDialogTest)
 
-#include "newprojectdialogtest.moc"
+#include "nameanddatasourcedialogtest.moc"

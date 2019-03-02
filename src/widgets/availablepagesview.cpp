@@ -38,7 +38,7 @@
 #include "presentation/querytreemodelbase.h"
 
 #include "widgets/messagebox.h"
-#include "widgets/newprojectdialog.h"
+#include "widgets/nameanddatasourcedialog.h"
 #include "widgets/quickselectdialog.h"
 
 #include "domain/project.h"
@@ -97,7 +97,7 @@ AvailablePagesView::AvailablePagesView(QWidget *parent)
     layout->setContentsMargins(margins);
 
     m_projectDialogFactory = [] (QWidget *parent) {
-        return NewProjectDialogPtr(new NewProjectDialog(parent));
+        return NameAndDataSourceDialogPtr(new NameAndDataSourceDialog(parent));
     };
     m_quickSelectDialogFactory = [] (QWidget *parent) {
         return QuickSelectDialogPtr(new QuickSelectDialog(parent));
@@ -241,7 +241,7 @@ void AvailablePagesView::onCurrentChanged(const QModelIndex &current)
 
 void AvailablePagesView::onAddProjectTriggered()
 {
-    NewProjectDialogInterface::Ptr dialog = m_projectDialogFactory(this);
+    NameAndDataSourceDialogInterface::Ptr dialog = m_projectDialogFactory(this);
     dialog->setDataSourcesModel(m_sources);
 
     if (dialog->exec() == QDialog::Accepted) {
@@ -254,7 +254,7 @@ void AvailablePagesView::onAddProjectTriggered()
 
 void AvailablePagesView::onAddContextTriggered()
 {
-    NewProjectDialogInterface::Ptr dialog = m_projectDialogFactory(this);
+    NameAndDataSourceDialogInterface::Ptr dialog = m_projectDialogFactory(this);
     dialog->setWindowTitle(i18n("Add a context"));
     dialog->setDataSourcesModel(m_sources);
 

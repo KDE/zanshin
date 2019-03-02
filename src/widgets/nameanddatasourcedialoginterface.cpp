@@ -22,10 +22,10 @@
 */
 
 
-#include "newprojectdialoginterface.h"
+#include "nameanddatasourcedialoginterface.h"
 
 using namespace Widgets;
 
-NewProjectDialogInterface::~NewProjectDialogInterface()
+NameAndDataSourceDialogInterface::~NameAndDataSourceDialogInterface()
 {
 }

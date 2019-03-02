@@ -22,8 +22,8 @@
 */
 
 
-#ifndef WIDGETS_NEWPROJECTDIALOGINTERFACE_H
-#define WIDGETS_NEWPROJECTDIALOGINTERFACE_H
+#ifndef WIDGETS_NAMEANDDATASOURCEDIALOGINTERFACE_H
+#define WIDGETS_NAMEANDDATASOURCEDIALOGINTERFACE_H
 
 #include <QString>
 
@@ -33,13 +33,12 @@ class QAbstractItemModel;
 
 namespace Widgets {
 
-// This is used to create both Projects and Contexts
-class NewProjectDialogInterface
+class NameAndDataSourceDialogInterface
 {
 public:
-    typedef QSharedPointer<NewProjectDialogInterface> Ptr;
+    typedef QSharedPointer<NameAndDataSourceDialogInterface> Ptr;
 
-    virtual ~NewProjectDialogInterface();
+    virtual ~NameAndDataSourceDialogInterface();
 
     virtual int exec() = 0;
 
@@ -51,4 +50,4 @@ public:
 
 }
 
-#endif // WIDGETS_NEWPROJECTDIALOGINTERFACE_H
+#endif // WIDGETS_NAMEANDDATASOURCEDIALOGINTERFACE_H

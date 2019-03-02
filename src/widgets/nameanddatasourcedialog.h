@@ -22,28 +22,28 @@
 */
 
 
-#ifndef WIDGETS_NEWPROJECTDIALOG_H
-#define WIDGETS_NEWPROJECTDIALOG_H
+#ifndef WIDGETS_NAMEANDDATASOURCEDIALOG_H
+#define WIDGETS_NAMEANDDATASOURCEDIALOG_H
 
 #include <QDialog>
 
-#include "widgets/newprojectdialoginterface.h"
+#include "widgets/nameanddatasourcedialoginterface.h"
 
 class QModelIndex;
 class KDescendantsProxyModel;
 
 namespace Ui {
-    class NewProjectDialog;
+    class NameAndDataSourceDialog;
 }
 
 namespace Widgets {
 
-class NewProjectDialog : public QDialog, public NewProjectDialogInterface
+class NameAndDataSourceDialog : public QDialog, public NameAndDataSourceDialogInterface
 {
     Q_OBJECT
 public:
-    explicit NewProjectDialog(QWidget *parent = nullptr);
-    ~NewProjectDialog();
+    explicit NameAndDataSourceDialog(QWidget *parent = nullptr);
+    ~NameAndDataSourceDialog();
 
     int exec() override;
 
@@ -61,7 +61,7 @@ private slots:
 private:
     void applyDefaultSource(const QModelIndex &root);
 
-    Ui::NewProjectDialog *ui;
+    Ui::NameAndDataSourceDialog *ui;
     KDescendantsProxyModel *m_flattenProxy;
     QString m_name;
     Domain::DataSource::Ptr m_source;
@@ -69,4 +69,4 @@ private:
 
 }
 
-#endif // WIDGETS_NEWPROJECTDIALOG_H
+#endif // WIDGETS_NAMEANDDATASOURCEDIALOG_H

@@ -4,7 +4,7 @@ zanshin_auto_tests(
   availablesourcesviewtest
   editorviewtest
   filterwidgettest
-  newprojectdialogtest
+  nameanddatasourcedialogtest
   pageviewerrorhandlertest
   pageviewtest
   quickselectdialogtest

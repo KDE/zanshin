@@ -22,9 +22,9 @@
 */
 
 
-#include "newprojectdialog.h"
+#include "nameanddatasourcedialog.h"
 
-#include "ui_newprojectdialog.h"
+#include "ui_nameanddatasourcedialog.h"
 
 #include <QPushButton>
 #include <QSortFilterProxyModel>
@@ -54,36 +54,36 @@ protected:
     }
 };
 
-NewProjectDialog::NewProjectDialog(QWidget *parent)
+NameAndDataSourceDialog::NameAndDataSourceDialog(QWidget *parent)
     : QDialog(parent),
-      ui(new Ui::NewProjectDialog),
+      ui(new Ui::NameAndDataSourceDialog),
       m_flattenProxy(new KDescendantsProxyModel(this))
 {
     ui->setupUi(this);
 
-    connect(ui->nameEdit, &QLineEdit::textChanged, this, &NewProjectDialog::onUserInputChanged);
+    connect(ui->nameEdit, &QLineEdit::textChanged, this, &NameAndDataSourceDialog::onUserInputChanged);
 
     auto taskSourceProxy = new TaskSourceProxy(this);
     taskSourceProxy->setSourceModel(m_flattenProxy);
     ui->sourceCombo->setModel(taskSourceProxy);
     m_flattenProxy->setDisplayAncestorData(true);
     connect(ui->sourceCombo, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged),
-            this, &NewProjectDialog::onUserInputChanged);
+            this, &NameAndDataSourceDialog::onUserInputChanged);
 
     onUserInputChanged();
 }
 
-NewProjectDialog::~NewProjectDialog()
+NameAndDataSourceDialog::~NameAndDataSourceDialog()
 {
     delete ui;
 }
 
-int NewProjectDialog::exec()
+int NameAndDataSourceDialog::exec()
 {
     return QDialog::exec();
 }
 
-void NewProjectDialog::accept()
+void NameAndDataSourceDialog::accept()
 {
     m_name = ui->nameEdit->text();
     m_source = ui->sourceCombo->itemData(ui->sourceCombo->currentIndex(),
@@ -92,12 +92,12 @@ void NewProjectDialog::accept()
     QDialog::accept();
 }
 
-void NewProjectDialog::setWindowTitle(const QString &title)
+void NameAndDataSourceDialog::setWindowTitle(const QString &title)
 {
     QDialog::setWindowTitle(title);
 }
 
-void NewProjectDialog::setDataSourcesModel(QAbstractItemModel *model)
+void NameAndDataSourceDialog::setDataSourcesModel(QAbstractItemModel *model)
 {
     m_flattenProxy->setSourceModel(model);
     auto proxy = ui->sourceCombo->model();
@@ -109,17 +109,17 @@ void NewProjectDialog::setDataSourcesModel(QAbstractItemModel *model)
     }
 }
 
-QString NewProjectDialog::name() const
+QString NameAndDataSourceDialog::name() const
 {
     return m_name;
 }
 
-Domain::DataSource::Ptr NewProjectDialog::dataSource() const
+Domain::DataSource::Ptr NameAndDataSourceDialog::dataSource() const
 {
     return m_source;
 }
 
-void NewProjectDialog::onUserInputChanged()
+void NameAndDataSourceDialog::onUserInputChanged()
 {
     const auto text = ui->nameEdit->text();
     const auto source = ui->sourceCombo->itemData(ui->sourceCombo->currentIndex(),
@@ -130,4 +130,4 @@ void NewProjectDialog::onUserInputChanged()
     buttonOk->setEnabled(!text.isEmpty() && source);
 }
 
-#include "newprojectdialog.moc"
+#include "nameanddatasourcedialog.moc"

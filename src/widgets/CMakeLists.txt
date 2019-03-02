@@ -8,8 +8,8 @@ set(widgets_SRCS
     itemdelegate.cpp
     messagebox.cpp
     messageboxinterface.cpp
-    newprojectdialog.cpp
-    newprojectdialoginterface.cpp
+    nameanddatasourcedialog.cpp
+    nameanddatasourcedialoginterface.cpp
     pageview.cpp
     pageviewerrorhandler.cpp
     runningtaskwidget.cpp
@@ -20,7 +20,7 @@ set(widgets_SRCS
 ki18n_wrap_ui(widgets_SRCS
     editorview.ui
     filterwidget.ui
-    newprojectdialog.ui
+    nameanddatasourcedialog.ui
 )
 
 add_library(widgets STATIC ${widgets_SRCS})

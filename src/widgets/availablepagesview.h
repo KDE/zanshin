@@ -41,15 +41,15 @@ class QTreeView;
 
 namespace Widgets {
 
-class NewProjectDialogInterface;
+class NameAndDataSourceDialogInterface;
 class QuickSelectDialogInterface;
 
 class AvailablePagesView : public QWidget
 {
     Q_OBJECT
 public:
-    typedef QSharedPointer<NewProjectDialogInterface> NewProjectDialogPtr;
-    typedef std::function<NewProjectDialogPtr(QWidget*)> ProjectDialogFactory;
+    typedef QSharedPointer<NameAndDataSourceDialogInterface> NameAndDataSourceDialogPtr;
+    typedef std::function<NameAndDataSourceDialogPtr(QWidget*)> ProjectDialogFactory;
     typedef QSharedPointer<QuickSelectDialogInterface> QuickSelectDialogPtr;
     typedef std::function<QuickSelectDialogPtr(QWidget*)> QuickSelectDialogFactory;
 
