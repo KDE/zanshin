@@ -141,7 +141,9 @@ void AkonadiStorageTestBase::shouldListFullItemsInACollection()
 {
     // GIVEN
     auto storage = createStorage();
-    const QStringList expectedRemoteIds = { "{1d33862f-f274-4c67-ab6c-362d56521ff4}",
+    const QStringList expectedRemoteIds = { "rid-errands-context",
+                                            "rid-online-context",
+                                            "{1d33862f-f274-4c67-ab6c-362d56521ff4}",
                                             "{1d33862f-f274-4c67-ab6c-362d56521ff5}",
                                             "{1d33862f-f274-4c67-ab6c-362d56521ff6}",
                                             "{7824df00-2fd6-47a4-8319-52659dc82005}",
@@ -158,11 +160,17 @@ void AkonadiStorageTestBase::shouldListFullItemsInACollection()
     QStringList itemRemoteIds;
     itemRemoteIds.reserve(items.size());
     foreach (const auto &item, items) {
-        itemRemoteIds << item.remoteId();
+        const auto rid = item.remoteId();
+        itemRemoteIds << rid;
         QVERIFY(item.loadedPayloadParts().contains(Akonadi::Item::FullPayload));
-        QVERIFY(!item.attributes().isEmpty());
         QVERIFY(item.modificationTime().isValid());
-        QVERIFY(!item.flags().isEmpty());
+        if (rid.endsWith("context")) {
+            QVERIFY2(item.attributes().isEmpty(), qPrintable(rid));
+            QVERIFY2(item.flags().isEmpty(), qPrintable(rid));
+        } else {
+            QVERIFY2(!item.attributes().isEmpty(), qPrintable(rid));
+            QVERIFY2(!item.flags().isEmpty(), qPrintable(rid));
+        }
 
         auto parent = item.parentCollection();
         while (parent != Akonadi::Collection::root()) {

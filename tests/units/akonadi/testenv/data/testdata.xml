@@ -158,12 +158,12 @@ UID:144e86e5-a169-4c89-8ad0-fdd0b2a948e1&#xd;
 LAST-MODIFIED:20111214T031148Z&#xd;
 SUMMARY:Buy apples&#xd;
 PERCENT-COMPLETE:0&#xd;
+X-KDE-Zanshin-ContextList:errands-context
 END:VTODO&#xd;
 
 END:VCALENDAR</payload>
           <attribute type="ForTestingPurpose">foo</attribute>
           <flag>\SEEN</flag>
-          <tag>errands-context</tag>
         </item>
         <item mimetype="application/x-vnd.akonadi.calendar.todo" rid="{7824df00-2fd6-47a4-8319-52659dc82006}">
           <payload>BEGIN:VCALENDAR
@@ -176,13 +176,13 @@ CREATED:20111214T031148Z&#xd;
 UID:144e86e5-a169-4c89-8ad0-fdd0b2a948e1&#xd;
 LAST-MODIFIED:20111214T031148Z&#xd;
 SUMMARY:Buy apples&#xd;
+X-KDE-Zanshin-ContextList:errands-context
 PERCENT-COMPLETE:0&#xd;
 END:VTODO&#xd;
 
 END:VCALENDAR</payload>
           <attribute type="ForTestingPurpose">foo</attribute>
           <flag>\SEEN</flag>
-          <tag>philosophy-tag</tag>
         </item>
         <item mimetype="application/x-vnd.akonadi.calendar.todo" rid="{1d33862f-f274-4c67-ab6c-362d56521ff4}">
           <payload>BEGIN:VCALENDAR
@@ -202,7 +202,6 @@ END:VTODO&#xd;
 END:VCALENDAR</payload>
           <attribute type="ForTestingPurpose">bar</attribute>
           <flag>\SEEN</flag>
-          <tag>errands-context</tag>
         </item>
         <item mimetype="application/x-vnd.akonadi.calendar.todo" rid="{1d33862f-f274-4c67-ab6c-362d56521ff5}">
           <payload>BEGIN:VCALENDAR
@@ -222,7 +221,6 @@ END:VTODO&#xd;
 END:VCALENDAR</payload>
           <attribute type="ForTestingPurpose">bar</attribute>
           <flag>\SEEN</flag>
-          <tag>change-me</tag>
         </item>
         <item mimetype="application/x-vnd.akonadi.calendar.todo" rid="{1d33862f-f274-4c67-ab6c-362d56521ff6}">
           <payload>BEGIN:VCALENDAR
@@ -243,7 +241,6 @@ END:VTODO&#xd;
 END:VCALENDAR</payload>
           <attribute type="ForTestingPurpose">bar</attribute>
           <flag>\SEEN</flag>
-          <tag>change-me</tag>
         </item>
         <item mimetype="application/x-vnd.akonadi.calendar.todo" rid="{d0159c99-0d23-41fa-bb5f-tasktoremove}">
           <payload>BEGIN:VCALENDAR
@@ -263,8 +260,39 @@ END:VTODO&#xd;
 END:VCALENDAR</payload>
           <attribute type="ForTestingPurpose">bar</attribute>
           <flag>\SEEN</flag>
-          <tag>change-me</tag>
         </item>
+
+        <item mimetype="application/x-vnd.akonadi.calendar.todo" rid="rid-errands-context">
+          <payload>BEGIN:VCALENDAR
+PRODID:-//K Desktop Environment//NONSGML libkcal 4.3//EN
+VERSION:2.0
+X-KDE-ICAL-IMPLEMENTATION-VERSION:1.0
+BEGIN:VTODO&#xd;
+CREATED:20190317T162551Z&#xd;
+UID:errands-context&#xd;
+X-KDE-Zanshin-Context:1&#xd;
+LAST-MODIFIED:20140317T162551Z&#xd;
+SUMMARY:Errands&#xd;
+END:VTODO&#xd;
+
+END:VCALENDAR</payload>
+        </item>
+        <item mimetype="application/x-vnd.akonadi.calendar.todo" rid="rid-online-context">
+          <payload>BEGIN:VCALENDAR
+PRODID:-//K Desktop Environment//NONSGML libkcal 4.3//EN
+VERSION:2.0
+X-KDE-ICAL-IMPLEMENTATION-VERSION:1.0
+BEGIN:VTODO&#xd;
+CREATED:20190317T162551Z&#xd;
+UID:online-context&#xd;
+X-KDE-Zanshin-Context:1&#xd;
+LAST-MODIFIED:20140317T162551Z&#xd;
+SUMMARY:Online&#xd;
+END:VTODO&#xd;
+
+END:VCALENDAR</payload>
+        </item>
+
         <collection content="inode/directory,application/x-vnd.akonadi.calendar.todo" rid="{c9a13610-a9f6-433d-96f2-3b8fdb728fe5}" name="Calendar3">
           <attribute type="AccessRights">a</attribute>
         </collection>
@@ -317,10 +345,4 @@ END:VCARD&#xd;
     <collection content="inode/directory,application/x-vnd.akonadi.calendar.todo" rid="{1f78b360-a01b-4785-9187-75450190342c}" name="Destroy me!"/>
     <collection content="inode/directory,application/x-vnd.akonadi.calendar.todo" rid="{28ef9f03-4ebc-4e33-970f-f379775894f9}" name="Change me!"/>
   </collection>
-  <tag name="Errands" type="Zanshin-Context" gid="errands-context" rid="errands-context"/>
-  <tag name="Online" type="Zanshin-Context" gid="online-context" rid="online-context"/>
-  <tag name="Physics" type="PLAIN" gid="physics-tag" rid="physics-tag"/>
-  <tag name="Philosophy" type="PLAIN" gid="philosophy-tag" rid="philosophy-tag"/>
-  <tag name="Delete Me" type="PLAIN" gid="delete-me" rid="delete-me"/>
-  <tag name="Change Me" type="PLAIN" gid="change-me" rid="change-me"/>
 </knut>

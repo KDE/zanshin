@@ -92,6 +92,11 @@ ZanshinContext::ZanshinContext(QObject *parent)
     auto loader = Testlib::AkonadiFakeDataXmlLoader(&m_data);
     loader.load(xmlFile);
 
+    // Sanity checks
+    QVERIFY(m_data.collections().size() > 1);
+    QVERIFY(m_data.items().size() > 1);
+    QVERIFY(m_data.contexts().size() > 1);
+
     // Swap regular dependencies for the fake data ones
     auto &deps = Utils::DependencyManager::globalInstance();
     deps.add<Akonadi::MonitorInterface,
@@ -331,7 +336,7 @@ bool ZanshinContext::I_display_the_page(const QString &pageName)
     waitForEmptyJobQueue();
 
     QModelIndex pageIndex = Zanshin::findIndex(pageListModel, pageName);
-    VERIFY(pageIndex.isValid());
+    VERIFY_OR_DUMP(pageIndex.isValid());
 
     QObject *page = nullptr;
     QMetaObject::invokeMethod(availablePages, "createPageForIndex",
@@ -430,15 +435,7 @@ bool ZanshinContext::I_promote_the_item()
 
 bool ZanshinContext::I_add_a_project(const QString &projectName, const QString &parentSourceName)
 {
-    auto availableSources = m_appModel->property("availableSources").value<QObject*>();
-    VERIFY(availableSources);
-    auto sourceList = availableSources->property("sourceListModel").value<QAbstractItemModel*>();
-    VERIFY(sourceList);
-    waitForStableState();
-    QModelIndex index = Zanshin::findIndex(sourceList, parentSourceName);
-    VERIFY(index.isValid());
-    auto source = index.data(Presentation::QueryTreeModelBase::ObjectRole)
-                       .value<Domain::DataSource::Ptr>();
+    auto source = dataSourceFromName(parentSourceName);
     VERIFY(source);
 
     VERIFY(QMetaObject::invokeMethod(m_presentation, "addProject",
@@ -449,13 +446,15 @@ bool ZanshinContext::I_add_a_project(const QString &projectName, const QString &
     return true;
 }
 
-bool ZanshinContext::I_add_a_context(const QString &contextName)
+bool ZanshinContext::I_add_a_context(const QString &contextName, const QString &parentSourceName)
 {
-    waitForStableState();
+    auto source = dataSourceFromName(parentSourceName);
+    VERIFY(source);
 
     VERIFY(QMetaObject::invokeMethod(m_presentation,
                                      "addContext",
-                                     Q_ARG(QString, contextName)));
+                                     Q_ARG(QString, contextName),
+                                     Q_ARG(Domain::DataSource::Ptr, source)));
     waitForStableState();
 
     return true;
@@ -845,4 +844,25 @@ bool ZanshinContext::the_setting_is(const QString &key, qint64 expectedId)
     COMPARE(id, expectedId);
 
     return true;
+}
+
+Domain::DataSource::Ptr ZanshinContext::dataSourceFromName(const QString &sourceName)
+{
+    auto availableSources = m_appModel->property("availableSources").value<QObject*>();
+    if (!availableSources)
+        return nullptr;
+    auto sourceList = availableSources->property("sourceListModel").value<QAbstractItemModel*>();
+    if (!sourceList)
+        return nullptr;
+    waitForStableState();
+    QModelIndex index = Zanshin::findIndex(sourceList, sourceName);
+    if (!index.isValid()) {
+        qWarning() << "source" << sourceName << "not found.";
+        for (int row = 0; row < sourceList->rowCount(); row++) {
+            qDebug() << sourceList->index(row, 0).data().toString();
+        }
+        return nullptr;
+    }
+    return index.data(Presentation::QueryTreeModelBase::ObjectRole)
+                .value<Domain::DataSource::Ptr>();
 }

@@ -28,6 +28,7 @@
 #include <QVector>
 
 #include "domain/task.h"
+#include "domain/datasource.h"
 #include "presentation/errorhandler.h"
 
 #include "testlib/akonadifakedata.h"
@@ -75,7 +76,7 @@ public:
     Q_REQUIRED_RESULT bool I_remove_the_item();
     Q_REQUIRED_RESULT bool I_promote_the_item();
     Q_REQUIRED_RESULT bool I_add_a_project(const QString &projectName, const QString &parentSourceName);
-    Q_REQUIRED_RESULT bool I_add_a_context(const QString &contextName);
+    Q_REQUIRED_RESULT bool I_add_a_context(const QString &contextName, const QString &parentSourceName);
     Q_REQUIRED_RESULT bool I_add_a_task(const QString &taskName);
     Q_REQUIRED_RESULT bool I_rename_a_page(const QString &path, const QString &oldName, const QString &newName);
     Q_REQUIRED_RESULT bool I_remove_a_page(const QString &path, const QString &pageName);
@@ -110,6 +111,7 @@ private:
     QAbstractItemModel *model() const;
 
     Domain::Task::Ptr currentTask() const;
+    Domain::DataSource::Ptr dataSourceFromName(const QString &sourceName);
 
     void waitForEmptyJobQueue();
     void waitForStableState();

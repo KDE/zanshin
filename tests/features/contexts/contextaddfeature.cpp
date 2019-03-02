@@ -39,7 +39,7 @@ private slots:
     {
         ZanshinContext c;
         Given(c.I_display_the_available_pages());
-        When(c.I_add_a_context("Internet"));
+        When(c.I_add_a_context("Internet", "TestData / Calendar1"));
         And(c.I_list_the_items());
         Then(c.the_list_is({
                              { "display", "icon" },

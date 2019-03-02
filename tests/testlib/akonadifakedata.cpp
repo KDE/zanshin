@@ -323,7 +323,6 @@ void AkonadiFakeData::createItem(const Akonadi::Item &item)
 
     const QStringList contextUids = extractContextUids(item);
     foreach (const auto &contextUid, contextUids) {
-        Q_ASSERT(m_contexts.contains(contextUid));
         m_contextItems[contextUid] << item.id();
     }
 
