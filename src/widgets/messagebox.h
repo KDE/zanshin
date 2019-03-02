@@ -37,7 +37,6 @@ public:
     virtual ~MessageBox();
 
     QMessageBox::Button askConfirmation(QWidget *parent, const QString &title, const QString &text) override;
-    QString askTextInput(QWidget *parent, const QString &title, const QString &text) override;
 };
 
 }

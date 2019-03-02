@@ -41,9 +41,6 @@ public:
     virtual ~MessageBoxInterface();
 
     virtual QMessageBox::Button askConfirmation(QWidget *parent, const QString &title, const QString &text) = 0;
-
-    // Now unused - remove?
-    virtual QString askTextInput(QWidget *parent, const QString &title, const QString &text) = 0;
 };
 
 }
