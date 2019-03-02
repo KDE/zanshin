@@ -40,6 +40,9 @@
 
 using namespace Akonadi;
 
+static const char s_contextListProperty[] = "ContextList";
+static const char s_appName[] = "Zanshin";
+
 Serializer::Serializer()
 {
 }
@@ -150,8 +153,7 @@ bool Serializer::isTaskItem(Item item)
     if (!item.hasPayload<KCalCore::Todo::Ptr>())
         return false;
 
-    auto todo = item.payload<KCalCore::Todo::Ptr>();
-    return todo->customProperty("Zanshin", "Project").isEmpty();
+    return !isProjectItem(item) && !isContext(item);
 }
 
 Domain::Task::Ptr Serializer::createTaskFromItem(Item item)
@@ -356,11 +358,8 @@ void Serializer::clearItem(Akonadi::Item *item)
     if (!isTaskItem(*item))
         return;
 
-//    NOTE : Currently not working, when akonadistorage test will make it pass, we will use it
-//    item->clearTags();
-
-    foreach (const Tag& tag, item->tags())
-        item->clearTag(tag);
+    auto todo = item->payload<KCalCore::Todo::Ptr>();
+    todo->removeCustomProperty(s_appName, s_contextListProperty);
 }
 
 Akonadi::Item::List Serializer::filterDescendantItems(const Akonadi::Item::List &potentialChildren, const Akonadi::Item &ancestorItem)
@@ -398,7 +397,8 @@ bool Serializer::isProjectItem(Item item)
     if (!item.hasPayload<KCalCore::Todo::Ptr>())
         return false;
 
-    return !isTaskItem(item);
+    auto todo = item.payload<KCalCore::Todo::Ptr>();
+    return !todo->customProperty(s_appName, "Project").isEmpty();
 }
 
 Domain::Project::Ptr Serializer::createProjectFromItem(Item item)
@@ -500,13 +500,108 @@ bool Serializer::isContextTag(const Domain::Context::Ptr &context, const Akonadi
     return (context->property("tagId").value<Akonadi::Tag::Id>() == tag.id());
 }
 
+static QStringList extractContexts(KCalCore::Todo::Ptr todo)
+{
+    const auto contexts = todo->customProperty(s_appName, s_contextListProperty);
+    return contexts.split(',', QString::SkipEmptyParts);
+}
+
 bool Serializer::isContextChild(Domain::Context::Ptr context, Item item) const
 {
-    if (!context->property("tagId").isValid())
+    if (!context->property("todoUid").isValid())
         return false;
 
-    auto tagId = context->property("tagId").value<Akonadi::Tag::Id>();
-    Akonadi::Tag tag(tagId);
+    if (!item.hasPayload<KCalCore::Todo::Ptr>())
+        return false;
 
-    return item.hasTag(tag);
+    auto contextUid = context->property("todoUid").toString();
+    auto todo = item.payload<KCalCore::Todo::Ptr>();
+    const auto contextList = extractContexts(todo);
+    return contextList.contains(contextUid);
+}
+
+bool Serializer::isContext(Item item)
+{
+    if (!item.hasPayload<KCalCore::Todo::Ptr>())
+        return false;
+
+    auto todo = item.payload<KCalCore::Todo::Ptr>();
+    return !todo->customProperty(s_appName, "Context").isEmpty();
+}
+
+bool Serializer::itemRepresentsContext(const Domain::Context::Ptr &context, Item item) const
+{
+    if (!item.hasPayload<KCalCore::Todo::Ptr>())
+        return false;
+
+    const auto todo = item.payload<KCalCore::Todo::Ptr>();
+    const auto contextUid = context->property("todoUid").toString();
+    return !todo->customProperty(s_appName, "Context").isEmpty()
+            && todo->uid() == contextUid;
+}
+
+Domain::Context::Ptr Serializer::createContextFromItem(Item item)
+{
+    if (!isContext(item))
+        return {};
+
+    auto context = Domain::Context::Ptr::create();
+    updateContextFromItem(context, item);
+    return context;
+}
+
+Akonadi::Item Serializer::createItemFromContext(Domain::Context::Ptr context)
+{
+    auto todo = KCalCore::Todo::Ptr::create();
+
+    todo->setSummary(context->name());
+    todo->setCustomProperty(s_appName, "Context", QStringLiteral("1"));
+
+    if (context->property("todoUid").isValid()) {
+        todo->setUid(context->property("todoUid").toString());
+    }
+
+    auto item = Akonadi::Item();
+    if (context->property("itemId").isValid()) {
+        item.setId(context->property("itemId").value<Akonadi::Item::Id>());
+    }
+    if (context->property("parentCollectionId").isValid()) {
+        auto parentId = context->property("parentCollectionId").value<Akonadi::Collection::Id>();
+        item.setParentCollection(Akonadi::Collection(parentId));
+    }
+    item.setMimeType(KCalCore::Todo::todoMimeType());
+    item.setPayload(todo);
+    return item;
+}
+
+void Serializer::updateContextFromItem(Domain::Context::Ptr context, Item item)
+{
+    if (!isContext(item))
+        return;
+
+    auto todo = item.payload<KCalCore::Todo::Ptr>();
+
+    context->setName(todo->summary());
+    context->setProperty("itemId", item.id());
+    context->setProperty("parentCollectionId", item.parentCollection().id());
+    context->setProperty("todoUid", todo->uid());
+}
+
+void Serializer::addContextToTask(Domain::Context::Ptr context, Item item)
+{
+    if (!isTaskItem(item))
+        return;
+
+    auto todo = item.payload<KCalCore::Todo::Ptr>();
+
+    if (!context->property("todoUid").isValid())
+        return;
+
+    auto contextUid = context->property("todoUid").toString();
+    auto contextList = extractContexts(todo);
+    if (!contextList.contains(contextUid))
+        contextList.append(contextUid);
+    todo->setCustomProperty(s_appName, s_contextListProperty, contextList.join(','));
+
+    item.setPayload<KCalCore::Todo::Ptr>(todo);
 }

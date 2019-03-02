@@ -51,6 +51,9 @@ public:
     SerializerInterface();
     virtual ~SerializerInterface();
 
+    // Passing Akonadi::Item and Akonadi::Collection by value is a bit wasteful (lots of copy constructor)
+    // but is currently necessary because of mockitopp.
+
     virtual bool representsCollection(QObjectPtr object, Akonadi::Collection collection) = 0;
     virtual bool representsItem(QObjectPtr object, Akonadi::Item item) = 0;
 
@@ -88,7 +91,15 @@ public:
     virtual bool isContextTag(const Domain::Context::Ptr &context, const Akonadi::Tag &tag) const = 0;
     virtual bool isContextChild(Domain::Context::Ptr context, Akonadi::Item item) const = 0;
 
-    static QByteArray contextTagType();
+    virtual bool isContext(Akonadi::Item item) = 0;
+    virtual bool itemRepresentsContext(const Domain::Context::Ptr &context, Akonadi::Item item) const = 0;
+    virtual Domain::Context::Ptr createContextFromItem(Akonadi::Item item) = 0;
+    virtual Akonadi::Item createItemFromContext(Domain::Context::Ptr project) = 0;
+    virtual void updateContextFromItem(Domain::Context::Ptr context, Akonadi::Item item) = 0;
+
+    virtual void addContextToTask(Domain::Context::Ptr context, Akonadi::Item item) = 0;
+
+    static QByteArray contextTagType(); // TODO REMOVE ONCE UNUSED
 };
 
 }

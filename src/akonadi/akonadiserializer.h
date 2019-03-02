@@ -74,6 +74,13 @@ public:
     bool isContextTag(const Domain::Context::Ptr &context, const Akonadi::Tag &tag) const override;
     bool isContextChild(Domain::Context::Ptr context, Akonadi::Item item) const override;
 
+    bool isContext(Akonadi::Item item) override;
+    bool itemRepresentsContext(const Domain::Context::Ptr &context, Akonadi::Item item) const override;
+    Domain::Context::Ptr createContextFromItem(Akonadi::Item item) override;
+    Akonadi::Item createItemFromContext(Domain::Context::Ptr context) override;
+    void updateContextFromItem(Domain::Context::Ptr context, Akonadi::Item item) override;
+    void addContextToTask(Domain::Context::Ptr context, Akonadi::Item item) override;
+
 private:
     bool isContext(const Akonadi::Tag &tag) const;
 };

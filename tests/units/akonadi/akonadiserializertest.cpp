@@ -31,7 +31,6 @@
 #include <AkonadiCore/Collection>
 #include <AkonadiCore/EntityDisplayAttribute>
 #include <AkonadiCore/Item>
-#include <AkonadiCore/Tag>
 #include <KCalCore/Todo>
 
 Q_DECLARE_METATYPE(Akonadi::Item*)
@@ -40,6 +39,9 @@ static void setTodoDates(KCalCore::Todo::Ptr todo, const QDate &start, const QDa
     todo->setDtStart(QDateTime(start));
     todo->setDtDue(QDateTime(due));
 }
+
+static const char s_contextListProperty[] = "ContextList";
+static const char s_appName[] = "Zanshin";
 
 class AkonadiSerializerTest : public QObject
 {
@@ -1242,7 +1244,7 @@ private slots:
         item.setMimeType(QStringLiteral("application/x-vnd.akonadi.calendar.todo"));
         item.setPayload<KCalCore::Todo::Ptr>(todo);
 
-        // which has a prent collection
+        // which has a parent collection
         Akonadi::Collection collection(43);
         item.setParentCollection(collection);
 
@@ -1731,25 +1733,16 @@ private slots:
     {
         QTest::addColumn<Akonadi::Item*>("item");
 
-        Akonadi::Item *itemWithContent = new Akonadi::Item(15);
+        Akonadi::Item *itemWithContexts = new Akonadi::Item(15);
         KCalCore::Todo::Ptr todo(new KCalCore::Todo);
+        // we can cheat and not really create contexts...
+        todo->setCustomProperty(s_appName, s_contextListProperty, "one,two");
+        itemWithContexts->setPayload<KCalCore::Todo::Ptr>(todo);
+        QTest::newRow("with_contexts") << itemWithContexts;
 
-        // context
-        Akonadi::Tag context(QStringLiteral("42"));
-        context.setType( Akonadi::SerializerInterface::contextTagType() );
-
-        // tag
-        Akonadi::Tag tag(QStringLiteral("43"));
-        tag.setType( Akonadi::Tag::PLAIN );
-
-        Akonadi::Tag::List tagsList = Akonadi::Tag::List() << tag << context;
-        itemWithContent->setTags(tagsList);
-        itemWithContent->setPayload<KCalCore::Todo::Ptr>(todo);
-
-        QTest::newRow("nominal case") << itemWithContent;
-
-        Akonadi::Item *item2 = new Akonadi::Item(16);
-        QTest::newRow("parent invalid") << item2;
+        Akonadi::Item *itemWithNoContext = new Akonadi::Item(15);
+        itemWithNoContext->setPayload<KCalCore::Todo::Ptr>(todo);
+        QTest::newRow("no_context") << itemWithNoContext;
     }
 
     void shouldClearItem()
@@ -1762,110 +1755,153 @@ private slots:
         serializer.clearItem(item);
 
         // THEN
-        QCOMPARE(item->tags().size(), 0);
+        auto todo = item->payload<KCalCore::Todo::Ptr>();
+        QVERIFY(todo->customProperty(s_appName, s_contextListProperty).isEmpty());
         delete item;
     }
 
-    void shouldCreateContextFromTag_data()
+    void shouldCreateContextFromItem_data()
     {
-        QTest::addColumn<QByteArray>("type");
         QTest::addColumn<QString>("name");
-        QTest::addColumn<Akonadi::Tag::Id>("tagId");
 
-        const QByteArray rightTagType = Akonadi::Serializer::contextTagType() ;
-
-        QTest::newRow("nominal case") << rightTagType << "Context42" << Akonadi::Tag::Id(42);
-        QTest::newRow("empty name case") << rightTagType << "" << Akonadi::Tag::Id(43);
+        QTest::newRow("nominal case") << "Context42";
+        QTest::newRow("empty name case") << "";
     }
 
-    void shouldCreateContextFromTag()
+    void shouldCreateContextFromItem()
     {
         // GIVEN
 
         // Data...
-        QFETCH(QByteArray, type);
         QFETCH(QString, name);
-        QFETCH(Akonadi::Tag::Id, tagId);
 
-        // ... stored as an Akonadi Tag
-        Akonadi::Tag tag(name);
-        tag.setType(type);
-        tag.setId(tagId);
+        // ... stored in a todo...
+        KCalCore::Todo::Ptr todo(new KCalCore::Todo);
+        todo->setSummary(name);
+        todo->setCustomProperty(s_appName, "Context", QStringLiteral("1"));
+        QVERIFY(!todo->uid().isEmpty());
+
+        // ... as payload of an item
+        Akonadi::Item item(42);
+        item.setMimeType(QStringLiteral("application/x-vnd.akonadi.calendar.todo"));
+        item.setPayload<KCalCore::Todo::Ptr>(todo);
+
+        // which has a parent collection
+        Akonadi::Collection collection(43);
+        item.setParentCollection(collection);
 
         // WHEN
         Akonadi::Serializer serializer;
-        Domain::Context::Ptr context = serializer.createContextFromTag(tag);
+        Domain::Context::Ptr context = serializer.createContextFromItem(item);
 
         // THEN
-        QCOMPARE(context->name(), tag.name());
-        QCOMPARE(context->property("tagId").toLongLong(), tag.id());
+        QCOMPARE(context->name(), name);
+        QCOMPARE(context->property("todoUid").toString(), todo->uid());
+        QCOMPARE(context->property("itemId").toLongLong(), item.id());
+        QCOMPARE(context->property("parentCollectionId").toLongLong(), collection.id());
     }
 
-    void shouldNotCreateContextFromWrongTagType()
+    void shouldNotCreateContextFromWrongItemType_data()
+    {
+        QTest::addColumn<bool>("isProject");
+
+        QTest::newRow("project") << true;
+        QTest::newRow("task") << false;
+    }
+
+    void shouldNotCreateContextFromWrongItemType()
     {
         // GIVEN
+        QFETCH(bool, isProject);
 
-        // Data stored as an Akonadi Tag
-        Akonadi::Tag tag(QStringLiteral("context42"));
-        tag.setType(QByteArray("wrongTagType"));
+        // A project todo
+        KCalCore::Todo::Ptr originalTodo(new KCalCore::Todo);
+        originalTodo->setSummary("summary");
+        if (isProject)
+            originalTodo->setCustomProperty(s_appName, "Project", QStringLiteral("1"));
+
+        // ... as payload of an item...
+        Akonadi::Item originalItem;
+        originalItem.setMimeType(QStringLiteral("application/x-vnd.akonadi.calendar.todo"));
+        originalItem.setPayload<KCalCore::Todo::Ptr>(originalTodo);
 
         // WHEN
         Akonadi::Serializer serializer;
-        Domain::Context::Ptr context = serializer.createContextFromTag(tag);
+        Domain::Context::Ptr context = serializer.createContextFromItem(originalItem);
 
         // THEN
         QVERIFY(!context);
     }
 
-    void shouldUpdateContextFromTag_data()
+    void shouldUpdateContextFromItem_data()
     {
-        shouldCreateContextFromTag_data();
+        shouldCreateContextFromItem_data();
     }
 
-    void shouldUpdateContextFromTag()
+    void shouldUpdateContextFromItem()
     {
         // GIVEN
 
         // Data...
-        QFETCH(QByteArray, type);
         QFETCH(QString, name);
-        QFETCH(Akonadi::Tag::Id, tagId);
 
-        // ... stored as an Akonadi Tag
-        Akonadi::Tag tag(name);
-        tag.setType(type);
-        tag.setId(tagId);
+        // ... stored in a todo...
+        KCalCore::Todo::Ptr todo(new KCalCore::Todo);
+        todo->setSummary(name);
+        todo->setCustomProperty(s_appName, "Context", QStringLiteral("1"));
+        QVERIFY(!todo->uid().isEmpty());
+
+        // ... as payload of an item
+        Akonadi::Item item(42);
+        item.setMimeType(QStringLiteral("application/x-vnd.akonadi.calendar.todo"));
+        item.setPayload<KCalCore::Todo::Ptr>(todo);
 
         // WHEN
         Akonadi::Serializer serializer;
         Domain::Context::Ptr context(new Domain::Context);
 
-        serializer.updateContextFromTag(context, tag);
+        serializer.updateContextFromItem(context, item);
 
         // THEN
-        QCOMPARE(context->name(), tag.name());
-        QCOMPARE(context->property("tagId").toLongLong(), tag.id());
+        QCOMPARE(context->name(), name);
+        QCOMPARE(context->property("todoUid").toString(), todo->uid());
+        QCOMPARE(context->property("itemId").toLongLong(), item.id());
     }
 
-    void shouldNotUpdateContextFromWrongTagType()
+    void shouldNotUpdateContextFromWrongItemType_data()
+    {
+        QTest::addColumn<bool>("isProject");
+
+        QTest::newRow("project") << true;
+        QTest::newRow("task") << false;
+    }
+
+    void shouldNotUpdateContextFromWrongItemType()
     {
         // GIVEN
+        QFETCH(bool, isProject);
 
-        Akonadi::Tag originalTag(QStringLiteral("Context42"));
-        originalTag.setType(Akonadi::Serializer::contextTagType());
-        originalTag.setId(42);
+        // A context
+        auto context = Domain::Context::Ptr::create();
+        context->setName("summary");
+        context->setProperty("todoUid", qint64(43));
 
-        Akonadi::Serializer serializer;
-        Domain::Context::Ptr context = serializer.createContextFromTag(originalTag);
+        KCalCore::Todo::Ptr wrongTodo(new KCalCore::Todo);
+        wrongTodo->setSummary("wrongSummary");
+        if (isProject)
+            wrongTodo->setCustomProperty(s_appName, "Project", QStringLiteral("1"));
+
+        Akonadi::Item wrongItem;
+        wrongItem.setMimeType(QStringLiteral("application/x-vnd.akonadi.calendar.todo"));
+        wrongItem.setPayload<KCalCore::Todo::Ptr>(wrongTodo);
 
         // WHEN
-        Akonadi::Tag wrongTag(QStringLiteral("WrongContext42"));
-        wrongTag.setType(QByteArray("wrongTypeTag"));
-        serializer.updateContextFromTag(context, wrongTag);
+        Akonadi::Serializer serializer;
+        serializer.updateContextFromItem(context, wrongItem);
 
         // THEN
-        QCOMPARE(context->name(), originalTag.name());
-        QCOMPARE(context->property("tagId").toLongLong(), originalTag.id());
+        QCOMPARE(context->name(), "summary");
+        QCOMPARE(context->property("todoUid").toLongLong(), qint64(43));
     }
 
     void shouldVerifyIfAnItemIsAContextChild_data()
@@ -1876,14 +1912,17 @@ private slots:
 
         // Create a context
         auto context = Domain::Context::Ptr::create();
-        context->setProperty("tagId", qint64(43));
-        Akonadi::Tag tag(Akonadi::Tag::Id(43));
+        const QString contextUid = QStringLiteral("abc-123");
+        context->setProperty("todoUid", contextUid);
 
         Akonadi::Item unrelatedItem;
         QTest::newRow("Unrelated item") << context << unrelatedItem << false;
 
         Akonadi::Item relatedItem;
-        relatedItem.setTag(tag);
+        auto todo = KCalCore::Todo::Ptr::create();
+        todo->setSummary("summary");
+        todo->setCustomProperty(s_appName, s_contextListProperty, contextUid);
+        relatedItem.setPayload<KCalCore::Todo::Ptr>(todo);
         QTest::newRow("Related item") << context << relatedItem << true;
 
         auto invalidContext = Domain::Context::Ptr::create();
@@ -1908,44 +1947,128 @@ private slots:
         QCOMPARE(value, isChild);
     }
 
-    void shouldCreateTagFromContext_data()
+    void shouldCreateItemFromContext_data()
     {
         QTest::addColumn<QString>("name");
-        QTest::addColumn<qint64>("tagId");
-        QTest::addColumn<QByteArray>("tagGid");
+        QTest::addColumn<qint64>("itemId");
+        QTest::addColumn<QString>("todoUid");
 
-        QString nameInternet = QStringLiteral("Internet");
+        const QString nameInternet = QStringLiteral("Internet");
+        const QString uid = QStringLiteral("uid-123");
 
-        QTest::newRow("nominal case") << QString(nameInternet) << qint64(42) << nameInternet.toLatin1();
-        QTest::newRow("null name case") << QString() << qint64(42) << QByteArray();
-        QTest::newRow("null tagId case") << QString(nameInternet)<< qint64(-1) << nameInternet.toLatin1();
-        QTest::newRow("totally null context case") << QString() << qint64(-1) << QByteArray();
+        QTest::newRow("nominal_case") << nameInternet << qint64(42) << uid;
+        QTest::newRow("no_item_id") << nameInternet<< qint64(-1) << uid;
+        QTest::newRow("null_uid") << nameInternet << qint64(42) << QString();
+        QTest::newRow("no_name") << QString() << qint64(42) << uid;
     }
 
-    void shouldCreateTagFromContext()
+    void shouldCreateItemFromContext()
     {
         // GIVEN
         QFETCH(QString, name);
-        QFETCH(qint64, tagId);
-        QFETCH(QByteArray, tagGid);
+        QFETCH(qint64, itemId);
+        QFETCH(QString, todoUid);
 
         // WHEN
         auto context = Domain::Context::Ptr::create();
-        context->setProperty("tagId", tagId);
+        context->setProperty("todoUid", todoUid);
+        if (itemId > 0)
+            context->setProperty("itemId", itemId);
+
         context->setName(name);
 
         Akonadi::Serializer serializer;
-        Akonadi::Tag tag = serializer.createTagFromContext(context);
+        Akonadi::Item item = serializer.createItemFromContext(context);
+        auto todo = item.payload<KCalCore::Todo::Ptr>();
 
         // THEN
-        QCOMPARE(tag.name(), name);
-        QCOMPARE(tag.isValid(), tagId > 0);
+        QCOMPARE(todo->summary(), name);
 
-        if (tagId > 0) {
-            QCOMPARE(tag.id(), tagId);
-            QCOMPARE(tag.gid(), tagGid);
-            QCOMPARE(tag.type(), Akonadi::SerializerInterface::contextTagType());
+        if (!todoUid.isEmpty()) {
+            QCOMPARE(todo->uid(), todoUid);
         }
+        QCOMPARE(item.id(), itemId);
+    }
+
+    void shouldTestIfItemRepresentsContext_data()
+    {
+        QTest::addColumn<QString>("contextUid");
+        QTest::addColumn<QString>("todoUid");
+        QTest::addColumn<bool>("expectedResult");
+
+        QTest::newRow("yes") << "context-123" << "context-123" << true;
+        QTest::newRow("no") << "context-123" << "another-context" << false;
+    }
+
+    void shouldTestIfItemRepresentsContext()
+    {
+        // GIVEN
+        QFETCH(QString, contextUid);
+        QFETCH(QString, todoUid);
+        QFETCH(bool, expectedResult);
+
+        auto context = Domain::Context::Ptr::create();
+        context->setProperty("todoUid", contextUid);
+
+        KCalCore::Todo::Ptr todo(new KCalCore::Todo);
+        todo->setCustomProperty(s_appName, "Context", QStringLiteral("1"));
+        todo->setUid(todoUid);
+        Akonadi::Item item;
+        item.setPayload<KCalCore::Todo::Ptr>(todo);
+
+        // WHEN
+        Akonadi::Serializer serializer;
+        const bool result = serializer.itemRepresentsContext(context, item);
+
+        // THEN
+        QCOMPARE(result, expectedResult);
+    }
+
+    void shouldAddContextToTask_data()
+    {
+        QTest::addColumn<Domain::Context::Ptr>("context");
+        QTest::addColumn<Akonadi::Item>("item");
+        QTest::addColumn<QString>("expectedContextList");
+
+        // Create a context
+        auto context = Domain::Context::Ptr::create();
+        const QString contextUid = QStringLiteral("abc-123");
+        context->setProperty("todoUid", contextUid);
+
+        Akonadi::Item item;
+        auto todo = KCalCore::Todo::Ptr::create();
+        todo->setSummary("summary");
+        item.setPayload<KCalCore::Todo::Ptr>(todo);
+        QTest::newRow("item_with_no_context") << context << item << contextUid;
+
+        Akonadi::Item item2;
+        auto todo2 = KCalCore::Todo::Ptr::create();
+        todo2->setCustomProperty(s_appName, s_contextListProperty, "another");
+        item2.setPayload<KCalCore::Todo::Ptr>(todo2);
+        const QString bothContexts = QStringLiteral("another,") + contextUid;
+        QTest::newRow("item_with_another_context") << context << item2 << bothContexts;
+
+        Akonadi::Item item3;
+        auto todo3 = KCalCore::Todo::Ptr::create();
+        todo3->setCustomProperty(s_appName, s_contextListProperty, bothContexts);
+        item3.setPayload<KCalCore::Todo::Ptr>(todo3);
+        QTest::newRow("item_with_this_context_already") << context << item3 << bothContexts;
+    }
+
+    void shouldAddContextToTask()
+    {
+        // GIVEN
+        QFETCH(Domain::Context::Ptr, context);
+        QFETCH(Akonadi::Item, item);
+        QFETCH(QString, expectedContextList);
+
+        // WHEN
+        Akonadi::Serializer serializer;
+        serializer.addContextToTask(context, item);
+
+        // THEN
+        KCalCore::Todo::Ptr todo = item.payload<KCalCore::Todo::Ptr>();
+        QCOMPARE(todo->customProperty(s_appName, s_contextListProperty), expectedContextList);
     }
 
     // Investigation into how to differentiate all-day events from events with time,

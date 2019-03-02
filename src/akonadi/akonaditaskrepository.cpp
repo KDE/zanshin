@@ -118,9 +118,7 @@ KJob *TaskRepository::createInContext(Domain::Task::Ptr task, Domain::Context::P
     Item item = m_serializer->createItemFromTask(task);
     Q_ASSERT(!item.isValid());
 
-    Tag tag = m_serializer->createTagFromContext(context);
-    Q_ASSERT(tag .isValid());
-    item.setTag(tag);
+    m_serializer->addContextToTask(context, item);
 
     return createItem(item);
 }
