@@ -42,7 +42,7 @@
 
 int main(int argc, char **argv)
 {
-    QApplication app(argc, argv); // PORTING SCRIPT: move this to before the KAboutData initialization
+    QApplication app(argc, argv);
     App::initializeDependencies();
     KAboutData aboutData(QStringLiteral("tasktreeviewer"),
                      QStringLiteral("Show all the tasks in tree"), QStringLiteral("1.0"));
