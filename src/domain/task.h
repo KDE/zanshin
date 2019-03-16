@@ -52,7 +52,8 @@ public:
         NoRecurrence = 0,
         RecursDaily,
         RecursWeekly,
-        RecursMonthly // for now only monthly on the same day (say 11th day of the month)
+        RecursMonthly, // for now only monthly on the same day (say 11th day of the month)
+        RecursYearly,
     };
     Q_ENUM(Recurrence)
 

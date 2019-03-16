@@ -192,6 +192,9 @@ void Serializer::updateTaskFromItem(Domain::Task::Ptr task, Item item)
     case KCalCore::Recurrence::rMonthlyDay:
         task->setRecurrence(Domain::Task::RecursMonthly);
         break;
+    case KCalCore::Recurrence::rYearlyDay:
+        task->setRecurrence(Domain::Task::RecursYearly);
+        break;
     default:
         // Other cases are not supported for now and as such just ignored
         break;
@@ -263,6 +266,9 @@ Akonadi::Item Serializer::createItemFromTask(Domain::Task::Ptr task)
         break;
     case Domain::Task::RecursMonthly:
         todo->recurrence()->setMonthly(1);
+        break;
+    case Domain::Task::RecursYearly:
+        todo->recurrence()->setYearly(1);
         break;
     }
 

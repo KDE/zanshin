@@ -59,6 +59,7 @@ EditorView::EditorView(QWidget *parent)
     ui->recurrenceCombo->addItem(i18n("Daily"), QVariant::fromValue(Domain::Task::RecursDaily));
     ui->recurrenceCombo->addItem(i18n("Weekly"), QVariant::fromValue(Domain::Task::RecursWeekly));
     ui->recurrenceCombo->addItem(i18n("Monthly"), QVariant::fromValue(Domain::Task::RecursMonthly));
+    ui->recurrenceCombo->addItem(i18n("Yearly"), QVariant::fromValue(Domain::Task::RecursYearly));
 
     ui->textEdit->installEventFilter(this);
     ui->startDateEdit->installEventFilter(this);

@@ -697,6 +697,7 @@ private slots:
         QTest::newRow("daily") << int(KCalCore::Recurrence::rDaily) << Domain::Task::RecursDaily;
         QTest::newRow("weekly") << int(KCalCore::Recurrence::rWeekly) << Domain::Task::RecursWeekly;
         QTest::newRow("monthly") << int(KCalCore::Recurrence::rMonthlyDay) << Domain::Task::RecursMonthly;
+        QTest::newRow("yearly") << int(KCalCore::Recurrence::rYearlyDay) << Domain::Task::RecursYearly;
     }
 
     void shouldUpdateTaskRecurrenceFromItem()
@@ -947,6 +948,12 @@ private slots:
                                                 << Domain::Task::RecursMonthly
                                                 << Domain::Task::Attachments()
                                                 << false;
+        QTest::newRow("nominal case (yearly)") << "summary" << "content" << false << QDate()
+                                                << QDate(2013, 11, 24) << QDate(2014, 03, 01)
+                                                << qint64(-1) << qint64(-1) << QString()
+                                                << Domain::Task::RecursYearly
+                                                << Domain::Task::Attachments()
+                                                << false;
         QTest::newRow("done case (no id)") << "summary" << "content" << true << QDate(2013, 11, 30)
                                            << QDate(2013, 11, 24) << QDate(2014, 03, 01)
                                            << qint64(-1) << qint64(-1) << QString()
@@ -1067,6 +1074,7 @@ private slots:
                                         : recurrence == Domain::Task::RecursDaily ? KCalCore::Recurrence::rDaily
                                         : recurrence == Domain::Task::RecursWeekly ? KCalCore::Recurrence::rWeekly
                                         : recurrence == Domain::Task::RecursMonthly ? KCalCore::Recurrence::rMonthlyDay
+                                        : recurrence == Domain::Task::RecursYearly ? KCalCore::Recurrence::rYearlyDay
                                         : KCalCore::Recurrence::rNone; // Shouldn't happen though
         QCOMPARE(todo->recurrence()->recurrenceType(), expectedRecurrence);
         if (recurrence != Domain::Task::NoRecurrence)
