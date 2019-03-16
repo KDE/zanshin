@@ -158,3 +158,25 @@ void ItemDelegate::paint(QPainter *painter,
         painter->drawText(additionalInfoRect, Qt::AlignLeft, additionalInfo);
     }
 }
+
+QWidget *ItemDelegate::createEditor(QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index) const
+{
+    m_editingState = EditingState::JustCreatedEditor;
+    return QStyledItemDelegate::createEditor(parent, option, index);
+}
+
+void ItemDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const
+{
+    m_editingState = EditingState::NotEditing;
+    QStyledItemDelegate::setModelData(editor, model, index);
+}
+
+void ItemDelegate::setEditorData(QWidget *editor, const QModelIndex &index) const
+{
+    // The first call gets through (initial value)
+    // And later call is rejected, the user's own value takes precedence
+    if (m_editingState == EditingState::JustCreatedEditor) {
+        m_editingState = EditingState::Editing;
+        QStyledItemDelegate::setEditorData(editor, index);
+    }
+}
