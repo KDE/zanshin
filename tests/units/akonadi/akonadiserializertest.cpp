@@ -697,7 +697,7 @@ private slots:
         QTest::newRow("daily") << int(KCalCore::Recurrence::rDaily) << Domain::Task::RecursDaily;
         QTest::newRow("weekly") << int(KCalCore::Recurrence::rWeekly) << Domain::Task::RecursWeekly;
         QTest::newRow("monthly") << int(KCalCore::Recurrence::rMonthlyDay) << Domain::Task::RecursMonthly;
-        QTest::newRow("yearly") << int(KCalCore::Recurrence::rYearlyDay) << Domain::Task::RecursYearly;
+        QTest::newRow("yearly") << int(KCalCore::Recurrence::rYearlyMonth) << Domain::Task::RecursYearly;
     }
 
     void shouldUpdateTaskRecurrenceFromItem()
@@ -726,6 +726,9 @@ private slots:
             break;
         case KCalCore::Recurrence::rMonthlyDay:
             todo->recurrence()->setMonthly(1);
+            break;
+        case KCalCore::Recurrence::rYearlyMonth:
+            todo->recurrence()->setYearly(1);
             break;
         default:
             qFatal("Shouldn't happen");
@@ -1074,7 +1077,7 @@ private slots:
                                         : recurrence == Domain::Task::RecursDaily ? KCalCore::Recurrence::rDaily
                                         : recurrence == Domain::Task::RecursWeekly ? KCalCore::Recurrence::rWeekly
                                         : recurrence == Domain::Task::RecursMonthly ? KCalCore::Recurrence::rMonthlyDay
-                                        : recurrence == Domain::Task::RecursYearly ? KCalCore::Recurrence::rYearlyDay
+                                        : recurrence == Domain::Task::RecursYearly ? KCalCore::Recurrence::rYearlyMonth
                                         : KCalCore::Recurrence::rNone; // Shouldn't happen though
         QCOMPARE(todo->recurrence()->recurrenceType(), expectedRecurrence);
         if (recurrence != Domain::Task::NoRecurrence)

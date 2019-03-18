@@ -192,7 +192,7 @@ void Serializer::updateTaskFromItem(Domain::Task::Ptr task, Item item)
     case KCalCore::Recurrence::rMonthlyDay:
         task->setRecurrence(Domain::Task::RecursMonthly);
         break;
-    case KCalCore::Recurrence::rYearlyDay:
+    case KCalCore::Recurrence::rYearlyMonth:
         task->setRecurrence(Domain::Task::RecursYearly);
         break;
     default:
