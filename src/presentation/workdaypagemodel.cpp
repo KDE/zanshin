@@ -99,9 +99,15 @@ QAbstractItemModel *WorkdayPageModel::createCentralListModel()
         return task ? (defaultFlags | Qt::ItemIsUserCheckable | Qt::ItemIsDropEnabled) : defaultFlags;
     };
 
-    using AdditionalInfo = Domain::QueryResult<Domain::Project::Ptr>::Ptr; // later on we'll want a struct with the context query as well
+    struct AdditionalData
+    {
+        bool childTask = false;
+        Domain::QueryResult<Domain::Project::Ptr>::Ptr projectQueryResult;
+        // later on we'll want the context query as well
+    };
+    using AdditionalInfo = QSharedPointer<AdditionalData>;
 
-    auto data = [](const Domain::Task::Ptr &task, int role, const AdditionalInfo &projectQueryResult) -> QVariant {
+    auto data = [](const Domain::Task::Ptr &task, int role, const AdditionalInfo &info) -> QVariant {
         switch (role) {
         case Qt::DisplayRole:
         case Qt::EditRole:
@@ -109,8 +115,10 @@ QAbstractItemModel *WorkdayPageModel::createCentralListModel()
         case Qt::CheckStateRole:
             return task->isDone() ? Qt::Checked : Qt::Unchecked;
         case Presentation::QueryTreeModelBase::AdditionalInfoRole:
-            if (projectQueryResult && !projectQueryResult->data().isEmpty()) {
-                Domain::Project::Ptr project = projectQueryResult->data().at(0);
+            if (!info || info->childTask)
+                return QString();
+            if (info->projectQueryResult && !info->projectQueryResult->data().isEmpty()) {
+                Domain::Project::Ptr project = info->projectQueryResult->data().at(0);
                 return i18n("Project: %1", project->name());
             }
             return i18n("Inbox"); // TODO add source name
@@ -121,19 +129,22 @@ QAbstractItemModel *WorkdayPageModel::createCentralListModel()
     };
 
     auto fetchAdditionalInfo = [this](const QModelIndex &index, const Domain::Task::Ptr &task) -> AdditionalInfo {
-        if (index.parent().isValid()) // children are in the same collection as their parent, so the same project
-            return nullptr;
+        AdditionalInfo info = AdditionalInfo::create();
+        if (index.parent().isValid()) { // children are in the same collection as their parent, so the same project
+            info->childTask = true;
+            return info;
+        }
 
-        AdditionalInfo projectQueryResult = m_taskQueries->findProject(task);
-        if (projectQueryResult) {
+        info->projectQueryResult = m_taskQueries->findProject(task);
+        if (info->projectQueryResult) {
             QPersistentModelIndex persistentIndex(index);
-            projectQueryResult->addPostInsertHandler([persistentIndex](const Domain::Project::Ptr &, int) {
+            info->projectQueryResult->addPostInsertHandler([persistentIndex](const Domain::Project::Ptr &, int) {
                 // When a project was found (inserted into the result), update the rendering of the item
                 auto model = const_cast<QAbstractItemModel *>(persistentIndex.model());
                 model->dataChanged(persistentIndex, persistentIndex);
             });
         }
-        return projectQueryResult;
+        return info;
     };
 
     auto setData = [this](const Domain::Task::Ptr &task, const QVariant &value, int role) {

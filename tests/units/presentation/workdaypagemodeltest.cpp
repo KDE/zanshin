@@ -172,6 +172,8 @@ private slots:
 
         QCOMPARE(model->data(task1Index, Presentation::QueryTreeModelBase::AdditionalInfoRole).toString(), QString("Inbox"));
         QCOMPARE(model->data(task2Index, Presentation::QueryTreeModelBase::AdditionalInfoRole).toString(), QString("Project: KDE"));
+        QCOMPARE(model->data(childTask11Index, Presentation::QueryTreeModelBase::AdditionalInfoRole).toString(), QString());
+        QCOMPARE(model->data(childTask12Index, Presentation::QueryTreeModelBase::AdditionalInfoRole).toString(), QString());
 
         // WHEN
         taskRepositoryMock(&Domain::TaskRepository::update).when(task1).thenReturn(new FakeJob(this));
