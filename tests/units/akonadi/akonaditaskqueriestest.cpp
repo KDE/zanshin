@@ -540,18 +540,19 @@ private slots:
         // One task in the first collection
         data.createItem(GenTodo().withId(42).withParent(42).withTitle(QStringLiteral("42")));
 
-        // Two tasks in the second collection
-        data.createItem(GenTodo().withId(43).withParent(43).withTitle(QStringLiteral("43")));
-        data.createItem(GenTodo().withId(44).withParent(43).withTitle(QStringLiteral("44")).withParentUid(QStringLiteral("2")));
+        // Two toplevel tasks in the second collection, one with a child
+        data.createItem(GenTodo().withId(43).withUid("parent-43").withParent(43).withTitle(QStringLiteral("43")));
+        data.createItem(GenTodo().withId(44).withParent(43).withTitle(QStringLiteral("44")).withParentUid(QStringLiteral("2"))); // non-existing parent
+        data.createItem(GenTodo().withId(45).withParent(43).withTitle(QStringLiteral("45")).withParentUid(QStringLiteral("parent-43"))); // existing parent
 
         // WHEN
         QScopedPointer<Domain::TaskQueries> queries(new Akonadi::TaskQueries(Akonadi::StorageInterface::Ptr(data.createStorage()),
                                                                              Akonadi::Serializer::Ptr(new Akonadi::Serializer),
                                                                              Akonadi::MonitorInterface::Ptr(data.createMonitor()),
                                                                              Akonadi::Cache::Ptr()));
-        auto result = queries->findTopLevel();
+        auto result = queries->findInboxTopLevel();
         result->data();
-        result = queries->findTopLevel(); // Should not cause any problem or wrong data
+        result = queries->findInboxTopLevel(); // Should not cause any problem or wrong data
 
         // THEN
         QVERIFY(result->data().isEmpty());
@@ -574,7 +575,7 @@ private slots:
                                                                              Akonadi::Serializer::Ptr(new Akonadi::Serializer),
                                                                              Akonadi::MonitorInterface::Ptr(data.createMonitor()),
                                                                              Akonadi::Cache::Ptr()));
-        auto result = queries->findTopLevel();
+        auto result = queries->findInboxTopLevel();
         TestHelpers::waitForEmptyJobQueue();
         QVERIFY(result->data().isEmpty());
 
@@ -608,7 +609,7 @@ private slots:
                                                                              Akonadi::Serializer::Ptr(new Akonadi::Serializer),
                                                                              Akonadi::MonitorInterface::Ptr(data.createMonitor()),
                                                                              Akonadi::Cache::Ptr()));
-        auto result = queries->findTopLevel();
+        auto result = queries->findInboxTopLevel();
         TestHelpers::waitForEmptyJobQueue();
         QCOMPARE(result->data().size(), 2);
 
@@ -641,7 +642,7 @@ private slots:
                                                                              Akonadi::Serializer::Ptr(new Akonadi::Serializer),
                                                                              Akonadi::MonitorInterface::Ptr(data.createMonitor()),
                                                                              Akonadi::Cache::Ptr()));
-        auto result = queries->findTopLevel();
+        auto result = queries->findInboxTopLevel();
         // Even though the pointer didn't change it's convenient to user if we call
         // the replace handlers
         bool replaceHandlerCalled = false;
@@ -682,7 +683,7 @@ private slots:
                                                                              Akonadi::Serializer::Ptr(new Akonadi::Serializer),
                                                                              Akonadi::MonitorInterface::Ptr(data.createMonitor()),
                                                                              Akonadi::Cache::Ptr()));
-        auto result = queries->findTopLevel();
+        auto result = queries->findInboxTopLevel();
         TestHelpers::waitForEmptyJobQueue();
         QCOMPARE(result->data().size(), 2);
 
@@ -716,7 +717,7 @@ private slots:
                                                                              Akonadi::Serializer::Ptr(new Akonadi::Serializer),
                                                                              Akonadi::MonitorInterface::Ptr(data.createMonitor()),
                                                                              Akonadi::Cache::Ptr()));
-        auto result = queries->findTopLevel();
+        auto result = queries->findInboxTopLevel();
         TestHelpers::waitForEmptyJobQueue();
         QCOMPARE(result->data().size(), 1);
 
@@ -750,7 +751,7 @@ private slots:
                                                                              Akonadi::Serializer::Ptr(new Akonadi::Serializer),
                                                                              Akonadi::MonitorInterface::Ptr(data.createMonitor()),
                                                                              Akonadi::Cache::Ptr()));
-        auto result = queries->findTopLevel();
+        auto result = queries->findInboxTopLevel();
         TestHelpers::waitForEmptyJobQueue();
         QCOMPARE(result->data().size(), 2);
 
@@ -1014,7 +1015,7 @@ private slots:
 
 
         // WHEN
-        auto result = queries->findTopLevel();
+        auto result = queries->findInboxTopLevel();
 
         if (deleteQuery)
             delete queries.take();
@@ -1052,9 +1053,9 @@ private slots:
                                                                              Akonadi::Serializer::Ptr(new Akonadi::Serializer),
                                                                              Akonadi::MonitorInterface::Ptr(data.createMonitor()),
                                                                              Akonadi::Cache::Ptr()));
-        auto result = queries->findTopLevel();
+        auto result = queries->findInboxTopLevel();
         result->data();
-        result = queries->findTopLevel(); // Should not cause any problem or wrong data
+        result = queries->findInboxTopLevel(); // Should not cause any problem or wrong data
 
         // THEN
         QVERIFY(result->data().isEmpty());
@@ -1805,6 +1806,47 @@ private slots:
         // THEN
         TestHelpers::waitForEmptyJobQueue();
         QCOMPARE(result->data().size(), 0);
+    }
+
+    void shouldOnlyReturnTopLevelTasks()
+    {
+        // GIVEN
+        AkonadiFakeData data;
+
+        // One collection
+        data.createCollection(GenCollection().withId(42).withRootAsParent().withTaskContent());
+
+        // One empty project
+        data.createItem(GenTodo().withId(1).asProject().withParent(42)
+                                 .withTitle(QStringLiteral("Empty Project")).withUid(QStringLiteral("project-1")));
+        // One real project
+        data.createItem(GenTodo().withId(2).asProject().withParent(42)
+                                 .withTitle(QStringLiteral("Real Project")).withUid(QStringLiteral("project-2")));
+
+        // Two toplevel tasks in the second collection, one with a child
+        data.createItem(GenTodo().withId(3).withParent(42).withTitle(QStringLiteral("43")).withUid("parent-43").withParentUid("project-2"));
+        data.createItem(GenTodo().withId(4).withParent(42).withTitle(QStringLiteral("44")).withParentUid(QStringLiteral("2"))); // non-existing parent
+        data.createItem(GenTodo().withId(5).withParent(42).withTitle(QStringLiteral("45")).withParentUid(QStringLiteral("parent-43"))); // existing parent
+
+        // WHEN
+        auto serializer = Akonadi::Serializer::Ptr(new Akonadi::Serializer);
+        auto cache = Akonadi::Cache::Ptr::create(serializer, Akonadi::MonitorInterface::Ptr(data.createMonitor()));
+        auto storage = createCachingStorage(data, cache);
+        QScopedPointer<Domain::TaskQueries> queries(new Akonadi::TaskQueries(storage,
+                                                                             serializer,
+                                                                             Akonadi::MonitorInterface::Ptr(data.createMonitor()),
+                                                                             cache));
+        auto result = queries->findTopLevel();
+        result->data();
+        result = queries->findTopLevel(); // Should not cause any problem or wrong data
+
+        // THEN
+        QVERIFY(result->data().isEmpty());
+        TestHelpers::waitForEmptyJobQueue();
+
+        QCOMPARE(result->data().size(), 2);
+        QCOMPARE(result->data().at(0)->title(), QStringLiteral("43"));
+        QCOMPARE(result->data().at(1)->title(), QStringLiteral("44"));
     }
 
 };

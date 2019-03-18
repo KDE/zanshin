@@ -108,9 +108,31 @@ TaskQueries::DataSourceResult::Ptr TaskQueries::findDataSource(Domain::Task::Ptr
 
 TaskQueries::TaskResult::Ptr TaskQueries::findTopLevel() const
 {
+    Q_ASSERT(m_cache);
     auto fetch = m_helpers->fetchItems();
     auto predicate = [this] (const Akonadi::Item &item) {
-        return m_serializer->relatedUidFromItem(item).isEmpty() && m_serializer->isTaskItem(item);
+        // Tasks with no parent, or whose parent is a project (not a task)
+        if (!m_serializer->isTaskItem(item))
+            return false;
+
+        const auto items = m_cache->items(item.parentCollection());
+        auto currentItem = item;
+        auto parentUid = m_serializer->relatedUidFromItem(currentItem);
+        while (!parentUid.isEmpty()) {
+            const auto parent = std::find_if(items.cbegin(), items.cend(),
+                                             [this, parentUid] (const Akonadi::Item &item) {
+                                                 return m_serializer->itemUid(item) == parentUid;
+                                             });
+            if (parent == items.cend())
+                break;
+
+            if (m_serializer->isTaskItem(*parent))
+                return false;
+
+            currentItem = *parent;
+            parentUid = m_serializer->relatedUidFromItem(currentItem);
+        }
+        return true;
     };
     m_integrator->bind("TaskQueries::findTopLevel", m_findTopLevel, fetch, predicate);
     return m_findTopLevel->result();
@@ -120,10 +142,8 @@ TaskQueries::TaskResult::Ptr TaskQueries::findInboxTopLevel() const
 {
     auto fetch = m_helpers->fetchItems();
     auto predicate = [this] (const Akonadi::Item &item) {
-        const bool excluded = !m_serializer->isTaskItem(item)
-                           || !m_serializer->relatedUidFromItem(item).isEmpty();
-
-        return !excluded;
+        // Tasks without a parent (neither task nor project)
+        return m_serializer->isTaskItem(item) && m_serializer->relatedUidFromItem(item).isEmpty();
     };
     m_integrator->bind("TaskQueries::findInboxTopLevel", m_findInboxTopLevel, fetch, predicate);
     return m_findInboxTopLevel->result();
