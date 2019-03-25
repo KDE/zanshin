@@ -54,6 +54,7 @@ private slots:
                                  { "Projects / TestData » Calendar1 » Calendar2 / Backlog", "view-pim-tasks" },
                                  { "Contexts", "folder" },
                                  { "Contexts / Errands", "view-pim-notes" },
+                                 { "All Tasks", "view-pim-tasks" },
                              }
                          }));
     }

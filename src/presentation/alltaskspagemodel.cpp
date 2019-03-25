@@ -1,6 +1,6 @@
 /* This file is part of Zanshin
 
-   Copyright 2015 Theo Vaucher <theo.vaucher@gmail.com>
+   Copyright 2019 David Faure <faure@kde.org>
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License as
@@ -22,57 +22,50 @@
 */
 
 
-#include "workdaypagemodel.h"
+#include "alltaskspagemodel.h"
 
 #include <QMimeData>
 
 #include <KLocalizedString>
 
-#include "domain/taskqueries.h"
-#include "domain/taskrepository.h"
-
 #include "presentation/querytreemodel.h"
-
-#include "utils/datetime.h"
 
 using namespace Presentation;
 
-WorkdayPageModel::WorkdayPageModel(const Domain::TaskQueries::Ptr &taskQueries,
-                                   const Domain::TaskRepository::Ptr &taskRepository,
-                                   QObject *parent)
+AllTasksPageModel::AllTasksPageModel(const Domain::TaskQueries::Ptr &taskQueries,
+                                     const Domain::TaskRepository::Ptr &taskRepository,
+                                     QObject *parent)
     : PageModel(parent),
       m_taskQueries(taskQueries),
       m_taskRepository(taskRepository)
 {
 }
 
-Domain::Task::Ptr WorkdayPageModel::addItem(const QString &title, const QModelIndex &parentIndex)
+Domain::Task::Ptr AllTasksPageModel::addItem(const QString &title, const QModelIndex &parentIndex)
 {
     const auto parentData = parentIndex.data(QueryTreeModelBase::ObjectRole);
     const auto parentTask = parentData.value<Domain::Task::Ptr>();
 
     auto task = Domain::Task::Ptr::create();
     task->setTitle(title);
-    if (!parentTask)
-        task->setStartDate(Utils::DateTime::currentDate());
     const auto job = parentTask ? m_taskRepository->createChild(task, parentTask)
                    : m_taskRepository->create(task);
-    installHandler(job, i18n("Cannot add task %1 in Workday", title));
+    installHandler(job, i18n("Cannot add task %1", title));
 
     return task;
 }
 
-void WorkdayPageModel::removeItem(const QModelIndex &index)
+void AllTasksPageModel::removeItem(const QModelIndex &index)
 {
     QVariant data = index.data(QueryTreeModelBase::ObjectRole);
     auto task = data.value<Domain::Task::Ptr>();
     if (task) {
         const auto job = m_taskRepository->remove(task);
-        installHandler(job, i18n("Cannot remove task %1 from Workday", task->title()));
+        installHandler(job, i18n("Cannot remove task %1", task->title()));
     }
 }
 
-void WorkdayPageModel::promoteItem(const QModelIndex &index)
+void AllTasksPageModel::promoteItem(const QModelIndex &index)
 {
     QVariant data = index.data(QueryTreeModelBase::ObjectRole);
     auto task = data.value<Domain::Task::Ptr>();
@@ -81,25 +74,25 @@ void WorkdayPageModel::promoteItem(const QModelIndex &index)
     installHandler(job, i18n("Cannot promote task %1 to be a project", task->title()));
 }
 
-QAbstractItemModel *WorkdayPageModel::createCentralListModel()
+QAbstractItemModel *AllTasksPageModel::createCentralListModel()
 {
     auto query = [this](const Domain::Task::Ptr &task) -> Domain::QueryResultInterface<Domain::Task::Ptr>::Ptr {
         if (!task)
-            return m_taskQueries->findWorkdayTopLevel();
+            return m_taskQueries->findTopLevel();
         else
             return m_taskQueries->findChildren(task);
     };
 
-    auto flags = [](const Domain::Task::Ptr &task) {
-        const Qt::ItemFlags defaultFlags = Qt::ItemIsSelectable
-                                         | Qt::ItemIsEnabled
-                                         | Qt::ItemIsEditable
-                                         | Qt::ItemIsDragEnabled;
-
-        return task ? (defaultFlags | Qt::ItemIsUserCheckable | Qt::ItemIsDropEnabled) : defaultFlags;
+    auto flags = [](const Domain::Task::Ptr &) {
+        return Qt::ItemIsSelectable
+             | Qt::ItemIsEnabled
+             | Qt::ItemIsEditable
+             | Qt::ItemIsDragEnabled
+             | Qt::ItemIsUserCheckable
+             | Qt::ItemIsDropEnabled;
     };
 
-    auto data = [](const Domain::Task::Ptr &task, int role, const TaskExtraDataPtr &info) {
+    auto data = [](const Domain::Task::Ptr &task, int role, const TaskExtraDataPtr &info) -> QVariant {
         return dataForTaskWithProject(task, role, info);
     };
 
@@ -119,8 +112,18 @@ QAbstractItemModel *WorkdayPageModel::createCentralListModel()
             task->setDone(value.toInt() == Qt::Checked);
 
         const auto job = m_taskRepository->update(task);
-        installHandler(job, i18n("Cannot modify task %1 in Workday", currentTitle));
+        installHandler(job, i18n("Cannot modify task %1", currentTitle));
         return true;
+    };
+
+    auto drag = [](const Domain::Task::List &tasks) -> QMimeData* {
+        if (tasks.isEmpty())
+            return nullptr;
+
+        auto data = new QMimeData;
+        data->setData(QStringLiteral("application/x-zanshin-object"), "object");
+        data->setProperty("objects", QVariant::fromValue(tasks));
+        return data;
     };
 
     auto drop = [this](const QMimeData *mimeData, Qt::DropAction, const Domain::Task::Ptr &parentTask) {
@@ -136,11 +139,6 @@ QAbstractItemModel *WorkdayPageModel::createCentralListModel()
                 const auto job = m_taskRepository->associate(parentTask, childTask);
                 installHandler(job, i18n("Cannot move task %1 as sub-task of %2", childTask->title(), parentTask->title()));
             } else {
-                childTask->setStartDate(Utils::DateTime::currentDate());
-                // TODO something like m_taskRepository->update(childTask) is missing here
-                // It was removed in commit c97a99bf because it led to a LLCONFLICT in akonadi (due to dissociate below).
-                // The removal broke tests-features-workday-workdaydraganddropfeature (date not changed).
-
                 auto job = m_taskRepository->dissociate(childTask);
                 installHandler(job, i18n("Cannot deparent task %1 from its parent", childTask->title()));
             }
@@ -149,15 +147,6 @@ QAbstractItemModel *WorkdayPageModel::createCentralListModel()
         return true;
     };
 
-    auto drag = [](const Domain::Task::List &tasks) -> QMimeData* {
-        if (tasks.isEmpty())
-            return nullptr;
-
-        auto data = new QMimeData;
-        data->setData(QStringLiteral("application/x-zanshin-object"), "object");
-        data->setProperty("objects", QVariant::fromValue(tasks));
-        return data;
-    };
 
     return new QueryTreeModel<Domain::Task::Ptr, TaskExtraDataPtr>(query, flags, data, setData, drop, drag, fetchAdditionalInfo, this);
 }

@@ -15,4 +15,5 @@ zanshin_auto_tests(
   taskfilterproxymodeltest
   contextpagemodeltest
   workdaypagemodeltest
+  alltaskspagemodeltest
 )

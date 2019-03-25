@@ -24,6 +24,10 @@
 
 #include "pagemodel.h"
 
+#include "presentation/querytreemodel.h"
+
+#include <klocalizedstring.h>
+
 using namespace Presentation;
 
 PageModel::PageModel(QObject *parent)
@@ -37,4 +41,47 @@ QAbstractItemModel *PageModel::centralListModel()
     if (!m_centralListModel)
         m_centralListModel = createCentralListModel();
     return m_centralListModel;
+}
+
+PageModel::TaskExtraDataPtr PageModel::fetchTaskExtraData(Domain::TaskQueries::Ptr taskQueries,
+                                                              const QModelIndex &index, const Domain::Task::Ptr &task)
+{
+    TaskExtraDataPtr info = TaskExtraDataPtr::create();
+    if (index.parent().isValid()) { // children are in the same collection as their parent, so the same project
+        info->childTask = true;
+        return info;
+    }
+
+    info->projectQueryResult = taskQueries->findProject(task);
+    if (info->projectQueryResult) {
+        QPersistentModelIndex persistentIndex(index);
+        info->projectQueryResult->addPostInsertHandler([persistentIndex](const Domain::Project::Ptr &, int) {
+            // When a project was found (inserted into the result), update the rendering of the item
+            auto model = const_cast<QAbstractItemModel *>(persistentIndex.model());
+            model->dataChanged(persistentIndex, persistentIndex);
+        });
+    }
+    return info;
+}
+
+QVariant PageModel::dataForTaskWithProject(const Domain::Task::Ptr &task, int role, const TaskExtraDataPtr &info)
+{
+    switch (role) {
+    case Qt::DisplayRole:
+    case Qt::EditRole:
+        return task->title();
+    case Qt::CheckStateRole:
+        return task->isDone() ? Qt::Checked : Qt::Unchecked;
+    case Presentation::QueryTreeModelBase::AdditionalInfoRole:
+        if (!info || info->childTask)
+            return QString();
+        if (info->projectQueryResult && !info->projectQueryResult->data().isEmpty()) {
+            Domain::Project::Ptr project = info->projectQueryResult->data().at(0);
+            return i18n("Project: %1", project->name());
+        }
+        return i18n("Inbox"); // TODO add source name
+    default:
+        break;
+    }
+    return QVariant();
 }

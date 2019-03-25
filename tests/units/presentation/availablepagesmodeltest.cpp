@@ -32,6 +32,7 @@
 #include "utils/mockobject.h"
 #include "utils/datetime.h"
 
+#include "presentation/alltaskspagemodel.h"
 #include "presentation/availablepagesmodel.h"
 #include "presentation/contextpagemodel.h"
 #include "presentation/errorhandler.h"
@@ -55,6 +56,10 @@ public:
 
     QString m_message;
 };
+
+static const int s_projectsRow = 2;
+static const int s_contextRow = 3;
+static const int s_allTasksRow = 4;
 
 class AvailablePagesModelTest : public QObject
 {
@@ -134,18 +139,19 @@ private slots:
         // THEN
         const QModelIndex inboxIndex = model->index(0, 0);
         const QModelIndex workdayIndex = model->index(1, 0);
-        const QModelIndex projectsIndex = model->index(2, 0);
+        const QModelIndex projectsIndex = model->index(s_projectsRow, 0);
         const QModelIndex source1Index = model->index(0, 0, projectsIndex);
         const QModelIndex project11Index = model->index(0, 0, source1Index);
         const QModelIndex project12Index = model->index(1, 0, source1Index);
         const QModelIndex source2Index = model->index(1, 0, projectsIndex);
         const QModelIndex project21Index = model->index(0, 0, source2Index);
         const QModelIndex project22Index = model->index(1, 0, source2Index);
-        const QModelIndex contextsIndex = model->index(3, 0);
+        const QModelIndex contextsIndex = model->index(s_contextRow, 0);
         const QModelIndex context1Index = model->index(0, 0, contextsIndex);
         const QModelIndex context2Index = model->index(1, 0, contextsIndex);
+        const QModelIndex allTasksIndex = model->index(s_allTasksRow, 0);
 
-        QCOMPARE(model->rowCount(), 4);
+        QCOMPARE(model->rowCount(), 5);
         QCOMPARE(model->rowCount(inboxIndex), 0);
         QCOMPARE(model->rowCount(workdayIndex), 0);
         QCOMPARE(model->rowCount(projectsIndex), 2);
@@ -158,6 +164,7 @@ private slots:
         QCOMPARE(model->rowCount(contextsIndex), 2);
         QCOMPARE(model->rowCount(context1Index), 0);
         QCOMPARE(model->rowCount(context2Index), 0);
+        QCOMPARE(model->rowCount(allTasksIndex), 0);
 
         const Qt::ItemFlags defaultFlags = Qt::ItemIsSelectable
                                          | Qt::ItemIsEnabled
@@ -174,6 +181,7 @@ private slots:
         QCOMPARE(model->flags(contextsIndex), Qt::NoItemFlags);
         QCOMPARE(model->flags(context1Index), defaultFlags | Qt::ItemIsDropEnabled);
         QCOMPARE(model->flags(context2Index), defaultFlags | Qt::ItemIsDropEnabled);
+        QCOMPARE(model->flags(allTasksIndex), (defaultFlags & ~(Qt::ItemIsEditable)));
 
         QCOMPARE(model->data(inboxIndex).toString(), i18n("Inbox"));
         QCOMPARE(model->data(workdayIndex).toString(), i18n("Workday"));
@@ -187,6 +195,7 @@ private slots:
         QCOMPARE(model->data(contextsIndex).toString(), i18n("Contexts"));
         QCOMPARE(model->data(context1Index).toString(), context1->name());
         QCOMPARE(model->data(context2Index).toString(), context2->name());
+        QCOMPARE(model->data(allTasksIndex).toString(), i18n("All Tasks"));
 
         QVERIFY(!model->data(inboxIndex, Qt::EditRole).isValid());
         QVERIFY(!model->data(workdayIndex, Qt::EditRole).isValid());
@@ -200,6 +209,7 @@ private slots:
         QVERIFY(!model->data(contextsIndex, Qt::EditRole).isValid());
         QCOMPARE(model->data(context1Index, Qt::EditRole).toString(), context1->name());
         QCOMPARE(model->data(context2Index, Qt::EditRole).toString(), context2->name());
+        QVERIFY(!model->data(allTasksIndex, Qt::EditRole).isValid());
 
         QCOMPARE(model->data(inboxIndex, Presentation::QueryTreeModelBase::IconNameRole).toString(), QStringLiteral("mail-folder-inbox"));
         QCOMPARE(model->data(workdayIndex, Presentation::QueryTreeModelBase::IconNameRole).toString(), QStringLiteral("go-jump-today"));
@@ -213,6 +223,7 @@ private slots:
         QCOMPARE(model->data(contextsIndex, Presentation::QueryTreeModelBase::IconNameRole).toString(), QStringLiteral("folder"));
         QCOMPARE(model->data(context1Index, Presentation::QueryTreeModelBase::IconNameRole).toString(), QStringLiteral("view-pim-notes"));
         QCOMPARE(model->data(context2Index, Presentation::QueryTreeModelBase::IconNameRole).toString(), QStringLiteral("view-pim-notes"));
+        QCOMPARE(model->data(allTasksIndex, Presentation::QueryTreeModelBase::IconNameRole).toString(), QStringLiteral("view-pim-tasks"));
 
         QVERIFY(!model->data(inboxIndex, Qt::CheckStateRole).isValid());
         QVERIFY(!model->data(workdayIndex, Qt::CheckStateRole).isValid());
@@ -226,6 +237,7 @@ private slots:
         QVERIFY(!model->data(contextsIndex, Qt::CheckStateRole).isValid());
         QVERIFY(!model->data(context1Index, Qt::CheckStateRole).isValid());
         QVERIFY(!model->data(context2Index, Qt::CheckStateRole).isValid());
+        QVERIFY(!model->data(allTasksIndex, Qt::CheckStateRole).isValid());
 
         // WHEN
         projectRepositoryMock(&Domain::ProjectRepository::update).when(project11).thenReturn(new FakeJob(this));
@@ -430,6 +442,47 @@ private slots:
         QVERIFY(qobject_cast<Presentation::WorkdayPageModel*>(workdayPage));
     }
 
+    void shouldCreateAllTasksPage()
+    {
+        // GIVEN
+
+        // Empty sources provider
+        auto sourceProvider = Domain::QueryResultProvider<Domain::DataSource::Ptr>::Ptr::create();
+        auto sourceResult = Domain::QueryResult<Domain::DataSource::Ptr>::create(sourceProvider);
+        // Empty context provider
+        auto contextProvider = Domain::QueryResultProvider<Domain::Context::Ptr>::Ptr::create();
+        auto contextResult = Domain::QueryResult<Domain::Context::Ptr>::create(contextProvider);
+
+        // context mocking
+        Utils::MockObject<Domain::ContextQueries> contextQueriesMock;
+        contextQueriesMock(&Domain::ContextQueries::findAll).when().thenReturn(contextResult);
+
+        Utils::MockObject<Domain::ContextRepository> contextRepositoryMock;
+
+        // sources mocking
+        Utils::MockObject<Domain::DataSourceQueries> dataSourceQueriesMock;
+        dataSourceQueriesMock(&Domain::DataSourceQueries::findAllSelected).when().thenReturn(sourceResult);
+
+        Utils::MockObject<Domain::ProjectRepository> projectRepositoryMock;
+
+        Presentation::AvailablePagesModel pages(dataSourceQueriesMock.getInstance(),
+                                                    Domain::ProjectQueries::Ptr(),
+                                                    projectRepositoryMock.getInstance(),
+                                                    contextQueriesMock.getInstance(),
+                                                    contextRepositoryMock.getInstance(),
+                                                    Domain::TaskQueries::Ptr(),
+                                                    Domain::TaskRepository::Ptr());
+
+        // WHEN
+        QAbstractItemModel *model = pages.pageListModel();
+
+        // THEN
+        const QModelIndex allTasksIndex = model->index(s_allTasksRow, 0);
+
+        QObject *workdayPage = pages.createPageForIndex(allTasksIndex);
+        QVERIFY(qobject_cast<Presentation::AllTasksPageModel*>(workdayPage));
+    }
+
     void shouldCreateProjectsPage()
     {
         // GIVEN
@@ -479,7 +532,7 @@ private slots:
         QAbstractItemModel *model = pages.pageListModel();
 
         // THEN
-        const QModelIndex projectsIndex = model->index(2, 0);
+        const QModelIndex projectsIndex = model->index(s_projectsRow, 0);
         const QModelIndex sourceIndex = model->index(0, 0, projectsIndex);
         const QModelIndex project1Index = model->index(0, 0, sourceIndex);
         const QModelIndex project2Index = model->index(1, 0, sourceIndex);
@@ -541,7 +594,7 @@ private slots:
         QAbstractItemModel *model = pages.pageListModel();
 
         // THEN
-        const QModelIndex contextsIndex = model->index(3, 0);
+        const QModelIndex contextsIndex = model->index(s_contextRow, 0);
         const QModelIndex context1Index = model->index(0, 0, contextsIndex);
         const QModelIndex context2Index = model->index(1, 0, contextsIndex);
 
@@ -719,7 +772,7 @@ private slots:
 
         QAbstractItemModel *model = pages.pageListModel();
 
-        const QModelIndex projectsIndex = model->index(2, 0);
+        const QModelIndex projectsIndex = model->index(s_projectsRow, 0);
         const QModelIndex sourceIndex = model->index(0, 0, projectsIndex);
         const QModelIndex project1Index = model->index(0, 0, sourceIndex);
 
@@ -781,7 +834,7 @@ private slots:
 
         QAbstractItemModel *model = pages.pageListModel();
 
-        const QModelIndex projectsIndex = model->index(2, 0);
+        const QModelIndex projectsIndex = model->index(s_projectsRow, 0);
         const QModelIndex sourceIndex = model->index(0, 0, projectsIndex);
         const QModelIndex project1Index = model->index(0, 0, sourceIndex);
 
@@ -833,7 +886,7 @@ private slots:
 
         QAbstractItemModel *model = pages.pageListModel();
 
-        const QModelIndex contextsIndex = model->index(3, 0);
+        const QModelIndex contextsIndex = model->index(s_contextRow, 0);
         const QModelIndex context1Index = model->index(0, 0, contextsIndex);
 
         contextRepositoryMock(&Domain::ContextRepository::remove).when(context1).thenReturn(new FakeJob(this));
@@ -883,7 +936,7 @@ private slots:
 
         QAbstractItemModel *model = pages.pageListModel();
 
-        const QModelIndex contextsIndex = model->index(3, 0);
+        const QModelIndex contextsIndex = model->index(s_contextRow, 0);
         const QModelIndex context1Index = model->index(0, 0, contextsIndex);
 
         auto job = new FakeJob(this);
@@ -951,7 +1004,7 @@ private slots:
         FakeErrorHandler errorHandler;
         pages.setErrorHandler(&errorHandler);
         QAbstractItemModel *model = pages.pageListModel();
-        const QModelIndex projectsIndex = model->index(2, 0);
+        const QModelIndex projectsIndex = model->index(s_projectsRow, 0);
         const QModelIndex sourceIndex = model->index(0, 0, projectsIndex);
         const QModelIndex project1Index = model->index(0, 0, sourceIndex);
 
@@ -1020,7 +1073,7 @@ private slots:
         FakeErrorHandler errorHandler;
         pages.setErrorHandler(&errorHandler);
         QAbstractItemModel *model = pages.pageListModel();
-        const QModelIndex contextsIndex = model->index(3, 0);
+        const QModelIndex contextsIndex = model->index(s_contextRow, 0);
         const QModelIndex context1Index = model->index(0, 0, contextsIndex);
 
         // WHEN
@@ -1094,7 +1147,7 @@ private slots:
         FakeErrorHandler errorHandler;
         pages.setErrorHandler(&errorHandler);
         QAbstractItemModel *model = pages.pageListModel();
-        const QModelIndex projectsIndex = model->index(2, 0);
+        const QModelIndex projectsIndex = model->index(s_projectsRow, 0);
         const QModelIndex sourceIndex = model->index(0, 0, projectsIndex);
         const QModelIndex project1Index = model->index(0, 0, sourceIndex);
 
@@ -1171,7 +1224,7 @@ private slots:
         FakeErrorHandler errorHandler;
         pages.setErrorHandler(&errorHandler);
         QAbstractItemModel *model = pages.pageListModel();
-        const QModelIndex contextsIndex = model->index(3, 0);
+        const QModelIndex contextsIndex = model->index(s_contextRow, 0);
         const QModelIndex context1Index = model->index(0, 0, contextsIndex);
 
         // WHEN

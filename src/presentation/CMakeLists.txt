@@ -11,6 +11,7 @@ set(presentation_SRCS
     metatypes.cpp
     pagemodel.cpp
     projectpagemodel.cpp
+    alltaskspagemodel.cpp
     querytreemodelbase.cpp
     runningtaskmodelinterface.cpp
     runningtaskmodel.cpp

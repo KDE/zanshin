@@ -94,6 +94,7 @@ private slots:
                                  { "Contexts" },
                                  { "Contexts / Errands" },
                                  { "Contexts / Online" },
+                                 { "All Tasks" },
                              }
                          }));
     }
@@ -119,6 +120,7 @@ private slots:
                                  { "Contexts" },
                                  { "Contexts / Errands" },
                                  { "Contexts / Online" },
+                                 { "All Tasks" },
                              }
                          }));
     }

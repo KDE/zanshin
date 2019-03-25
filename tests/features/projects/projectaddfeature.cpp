@@ -56,6 +56,7 @@ private slots:
                                  { "Contexts", "folder" },
                                  { "Contexts / Errands", "view-pim-notes" },
                                  { "Contexts / Online", "view-pim-notes" },
+                                 { "All Tasks", "view-pim-tasks" },
                              }
                          }));
     }

@@ -87,6 +87,7 @@ private:
     QObjectPtr m_workdayObject;
     QObjectPtr m_projectsObject;
     QObjectPtr m_contextsObject;
+    QObjectPtr m_allTasksObject;
 };
 
 }

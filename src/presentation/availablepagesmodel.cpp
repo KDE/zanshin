@@ -35,6 +35,7 @@
 #include "domain/projectrepository.h"
 #include "domain/taskrepository.h"
 
+#include "presentation/alltaskspagemodel.h"
 #include "presentation/availablepagessortfilterproxymodel.h"
 #include "presentation/contextpagemodel.h"
 #include "presentation/inboxpagemodel.h"
@@ -116,6 +117,12 @@ QObject *AvailablePagesModel::createPageForIndex(const QModelIndex &index)
                                                      this);
         contextPageModel->setErrorHandler(errorHandler());
         return contextPageModel;
+    } else if (object == m_allTasksObject) {
+        auto allTasksPageModel = new AllTasksPageModel(m_taskQueries,
+                                                       m_taskRepository,
+                                                       this);
+        allTasksPageModel->setErrorHandler(errorHandler());
+        return allTasksPageModel;
     }
 
     return nullptr;
@@ -161,12 +168,15 @@ QAbstractItemModel *AvailablePagesModel::createPageListModel()
     m_projectsObject->setProperty("name", i18n("Projects"));
     m_contextsObject = QObjectPtr::create();
     m_contextsObject->setProperty("name", i18n("Contexts"));
+    m_allTasksObject = QObjectPtr::create();
+    m_allTasksObject->setProperty("name", i18n("All Tasks"));
 
     m_rootsProvider = Domain::QueryResultProvider<QObjectPtr>::Ptr::create();
     m_rootsProvider->append(m_inboxObject);
     m_rootsProvider->append(m_workdayObject);
     m_rootsProvider->append(m_projectsObject);
     m_rootsProvider->append(m_contextsObject);
+    m_rootsProvider->append(m_allTasksObject);
 
     auto query = [this](const QObjectPtr &object) -> Domain::QueryResultInterface<QObjectPtr>::Ptr {
         if (!object)
@@ -189,12 +199,15 @@ QAbstractItemModel *AvailablePagesModel::createPageListModel()
         const Qt::ItemFlags immutableNodeFlags = Qt::ItemIsSelectable
                                                | Qt::ItemIsEnabled
                                                | Qt::ItemIsDropEnabled;
+        const Qt::ItemFlags nonDroppableNodeFlags = Qt::ItemIsSelectable
+                                                  | Qt::ItemIsEnabled;
         const Qt::ItemFlags structureNodeFlags = Qt::NoItemFlags;
 
         return object.objectCast<Domain::Project>() ? defaultFlags
              : object.objectCast<Domain::Context>() ? defaultFlags
              : object == m_inboxObject ? immutableNodeFlags
              : object == m_workdayObject ? immutableNodeFlags
+             : object == m_allTasksObject ? nonDroppableNodeFlags
              : structureNodeFlags;
     };
 
@@ -211,6 +224,7 @@ QAbstractItemModel *AvailablePagesModel::createPageListModel()
           || object == m_workdayObject
           || object == m_projectsObject
           || object == m_contextsObject
+          || object == m_allTasksObject
           || object.objectCast<Domain::DataSource>())) {
             return QVariant();
         }
@@ -222,6 +236,7 @@ QAbstractItemModel *AvailablePagesModel::createPageListModel()
                                    : (object == m_workdayObject)  ? QStringLiteral("go-jump-today")
                                    : (object == m_projectsObject) ? QStringLiteral("folder")
                                    : (object == m_contextsObject) ? QStringLiteral("folder")
+                                   : (object == m_allTasksObject)  ? QStringLiteral("view-pim-tasks")
                                    : object.objectCast<Domain::DataSource>() ? QStringLiteral("folder")
                                    : object.objectCast<Domain::Context>() ? QStringLiteral("view-pim-notes")
                                    : QStringLiteral("view-pim-tasks");
@@ -244,6 +259,7 @@ QAbstractItemModel *AvailablePagesModel::createPageListModel()
          || object == m_workdayObject
          || object == m_projectsObject
          || object == m_contextsObject
+         || object == m_allTasksObject
          || object.objectCast<Domain::DataSource>()) {
             return false;
         }

@@ -29,7 +29,9 @@
 
 #include <QModelIndex>
 
+#include "domain/project.h"
 #include "domain/task.h"
+#include "domain/taskqueries.h"
 
 #include "presentation/metatypes.h"
 #include "presentation/errorhandlingmodelbase.h"
@@ -49,6 +51,20 @@ public slots:
     virtual Domain::Task::Ptr addItem(const QString &title, const QModelIndex &parentIndex = QModelIndex()) = 0;
     virtual void removeItem(const QModelIndex &index) = 0;
     virtual void promoteItem(const QModelIndex &index) = 0;
+
+protected:
+    struct TaskExtraData
+    {
+        bool childTask = false;
+        Domain::QueryResult<Domain::Project::Ptr>::Ptr projectQueryResult;
+        // later on we'll want the context query as well
+    };
+    using TaskExtraDataPtr = QSharedPointer<TaskExtraData>;
+
+    using ProjectQueryPtr = Domain::QueryResult<Domain::Project::Ptr>::Ptr;
+    static TaskExtraDataPtr fetchTaskExtraData(Domain::TaskQueries::Ptr taskQueries,
+                                        const QModelIndex &index, const Domain::Task::Ptr &task);
+    static QVariant dataForTaskWithProject(const Domain::Task::Ptr &task, int role, const TaskExtraDataPtr &info);
 
 private:
     virtual QAbstractItemModel *createCentralListModel() = 0;
