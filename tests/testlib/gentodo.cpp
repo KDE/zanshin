@@ -62,7 +62,6 @@ GenTodo &GenTodo::withContexts(const QStringList &contextUids)
         todo->removeCustomProperty(Serializer::customPropertyAppName(), Serializer::customPropertyContextList());
     else
         todo->setCustomProperty(Serializer::customPropertyAppName(), Serializer::customPropertyContextList(), contextUids.join(','));
-    m_item.setPayload<KCalCore::Todo::Ptr>(todo);
     return *this;
 }
 
