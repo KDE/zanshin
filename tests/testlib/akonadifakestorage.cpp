@@ -395,7 +395,7 @@ Akonadi::Collection::List AkonadiFakeStorage::collectChildren(const Akonadi::Col
     auto collections = Akonadi::Collection::List();
 
     foreach (const auto &child, m_data->childCollections(findId(root))) {
-        if (child.enabled() || child.referenced())
+        if (child.enabled())
             collections << m_data->collection(findId(child));
         collections += collectChildren(child);
     }
