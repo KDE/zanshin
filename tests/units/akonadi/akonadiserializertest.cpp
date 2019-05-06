@@ -452,11 +452,14 @@ private slots:
         QTest::addColumn<QDate>("doneDate");
         QTest::addColumn<QDate>("startDate");
         QTest::addColumn<QDate>("dueDate");
+        QTest::addColumn<QString>("contexts");
 
-        QTest::newRow("nominal case") << "summary" << "content" << false << QDate() << QDate(2013, 11, 24) << QDate(2014, 03, 01);
-        QTest::newRow("done case") << "summary" << "content" << true << QDate(2013, 11, 30) << QDate(2013, 11, 24) << QDate(2014, 03, 01);
-        QTest::newRow("done without doneDate case") << "summary" << "content" << true << QDate() << QDate(2013, 11, 24) << QDate(2014, 03, 01);
-        QTest::newRow("empty case") << QString() << QString() << false << QDate() << QDate() << QDate();
+        QTest::newRow("nominal case") << "summary" << "content" << false << QDate() << QDate(2013, 11, 24) << QDate(2014, 03, 01) << "";
+        QTest::newRow("done case") << "summary" << "content" << true << QDate(2013, 11, 30) << QDate(2013, 11, 24) << QDate(2014, 03, 01) << "";
+        QTest::newRow("done without doneDate case") << "summary" << "content" << true << QDate() << QDate(2013, 11, 24) << QDate(2014, 03, 01) << "";
+        QTest::newRow("empty case") << QString() << QString() << false << QDate() << QDate() << QDate() << "";
+        QTest::newRow("one_context") << "summary" << "content" << false << QDate() << QDate(2013, 11, 24) << QDate(2014, 03, 01) << "mycontext";
+        QTest::newRow("two_contexts") << "summary" << "content" << false << QDate() << QDate(2013, 11, 24) << QDate(2014, 03, 01) << "c1,c2";
     }
 
     void shouldCreateTaskFromItem()
@@ -470,6 +473,7 @@ private slots:
         QFETCH(QDate, doneDate);
         QFETCH(QDate, startDate);
         QFETCH(QDate, dueDate);
+        QFETCH(QString, contexts);
 
         // ... stored in a todo...
         KCalCore::Todo::Ptr todo(new KCalCore::Todo);
@@ -484,6 +488,8 @@ private slots:
         setTodoDates(todo, startDate, dueDate);
         todo->setRelatedTo(QStringLiteral("my-uid"));
 
+        if (!contexts.isEmpty())
+            todo->setCustomProperty(Serializer::customPropertyAppName(), Serializer::customPropertyContextList(), contexts);
 
         // ... as payload of an item
         Akonadi::Item item;
@@ -510,6 +516,7 @@ private slots:
         QCOMPARE(task->property("relatedUid").toString(), todo->relatedTo());
         QCOMPARE(task->property("itemId").toLongLong(), item.id());
         QCOMPARE(task->property("parentCollectionId").toLongLong(), collection.id());
+        QCOMPARE(task->property("contextList").toString(), contexts);
     }
 
     void shouldCreateNullTaskFromInvalidItem()
@@ -910,6 +917,7 @@ private slots:
         QTest::addColumn<Domain::Task::Recurrence>("recurrence");
         QTest::addColumn<Domain::Task::Attachments>("attachments");
         QTest::addColumn<bool>("running");
+        QTest::addColumn<QString>("contexts");
 
         Domain::Task::Attachments attachments;
 
@@ -932,50 +940,58 @@ private slots:
                                               << qint64(-1) << qint64(-1) << QString()
                                               << Domain::Task::NoRecurrence
                                               << attachments
-                                              << false;
+                                              << false
+                                              << QString();
         QTest::newRow("nominal case (daily)") << "summary" << "content" << false << QDate()
                                               << QDate(2013, 11, 24) << QDate(2014, 03, 01)
                                               << qint64(-1) << qint64(-1) << QString()
                                               << Domain::Task::RecursDaily
                                               << Domain::Task::Attachments()
-                                              << false;
+                                              << false
+                                              << QString();
         QTest::newRow("nominal case (weekly)") << "summary" << "content" << false << QDate()
                                                << QDate(2013, 11, 24) << QDate(2014, 03, 01)
                                                << qint64(-1) << qint64(-1) << QString()
                                                << Domain::Task::RecursWeekly
                                                << Domain::Task::Attachments()
-                                               << false;
+                                               << false
+                                               << QString();
         QTest::newRow("nominal case (monthly)") << "summary" << "content" << false << QDate()
                                                 << QDate(2013, 11, 24) << QDate(2014, 03, 01)
                                                 << qint64(-1) << qint64(-1) << QString()
                                                 << Domain::Task::RecursMonthly
                                                 << Domain::Task::Attachments()
-                                                << false;
+                                                << false
+                                                << QString();
         QTest::newRow("nominal case (yearly)") << "summary" << "content" << false << QDate()
                                                 << QDate(2013, 11, 24) << QDate(2014, 03, 01)
                                                 << qint64(-1) << qint64(-1) << QString()
                                                 << Domain::Task::RecursYearly
                                                 << Domain::Task::Attachments()
-                                                << false;
+                                                << false
+                                                << QString();
         QTest::newRow("done case (no id)") << "summary" << "content" << true << QDate(2013, 11, 30)
                                            << QDate(2013, 11, 24) << QDate(2014, 03, 01)
                                            << qint64(-1) << qint64(-1) << QString()
                                            << Domain::Task::NoRecurrence
                                            << Domain::Task::Attachments()
-                                           << false;
+                                           << false
+                                           << QString();
         QTest::newRow("empty case (no id)") << QString() << QString() << false << QDate()
                                             << QDate() << QDate()
                                             << qint64(-1) << qint64(-1) << QString()
                                             << Domain::Task::NoRecurrence
                                             << Domain::Task::Attachments()
-                                            << false;
+                                            << false
+                                            << QString();
 #if 0 // if we ever need time info, then we need a Task::setAllDay(bool) just like KCalCore::Todo has.
       QTest::newRow("nominal_with_time_info_noid") << "summary" << "content" << true << QDateTime(QDate(2015, 3, 1), QTime(1, 2, 3), Qt::UTC)
                                               << QDateTime(QDate(2013, 11, 24), QTime(0, 1, 2), Qt::UTC) << QDateTime(QDate(2016, 3, 1), QTime(4, 5, 6), Qt::UTC)
                                               << qint64(-1) << qint64(-1) << QString()
                                               << Domain::Task::NoRecurrence
                                               << Domain::Task::Attachments()
-                                              << false;
+                                              << false
+                                              << QString();
 #endif
 
         QTest::newRow("nominal case (with id)") << "summary" << "content" << false << QDate()
@@ -983,25 +999,36 @@ private slots:
                                                 << qint64(42) << qint64(43) << "my-uid"
                                                 << Domain::Task::NoRecurrence
                                                 << Domain::Task::Attachments()
-                                                << false;
+                                                << false
+                                                << QString();
         QTest::newRow("done case (with id)") << "summary" << "content" << true << QDate(2013, 11, 30)
                                              << QDate(2013, 11, 24) << QDate(2014, 03, 01)
                                              << qint64(42) << qint64(43) << "my-uid"
                                              << Domain::Task::NoRecurrence
                                              << Domain::Task::Attachments()
-                                             << false;
+                                             << false
+                                             << QString();
         QTest::newRow("empty case (with id)") << QString() << QString() << false << QDate()
                                               << QDate() << QDate()
                                               << qint64(42) << qint64(43) << "my-uid"
                                               << Domain::Task::NoRecurrence
                                               << Domain::Task::Attachments()
-                                              << false;
+                                              << false
+                                              << QString();
         QTest::newRow("nominal case (running)") << "running" << QString() << false << QDate()
                                               << QDate(2013, 11, 24) << QDate(2014, 03, 01)
                                               << qint64(-1) << qint64(-1) << QString()
                                               << Domain::Task::NoRecurrence
                                               << Domain::Task::Attachments()
-                                              << true;
+                                              << true
+                                              << QString();
+        QTest::newRow("with_context") << "with_context" << QString() << false << QDate()
+                                              << QDate(2013, 11, 24) << QDate(2014, 03, 01)
+                                              << qint64(-1) << qint64(-1) << QString()
+                                              << Domain::Task::NoRecurrence
+                                              << Domain::Task::Attachments()
+                                              << true
+                                              << QString("c1,c2");
     }
 
     void shouldCreateItemFromTask()
@@ -1021,6 +1048,7 @@ private slots:
         QFETCH(Domain::Task::Recurrence, recurrence);
         QFETCH(Domain::Task::Attachments, attachments);
         QFETCH(bool, running);
+        QFETCH(QString, contexts);
 
         // ... stored in a task
         auto task = Domain::Task::Ptr::create();
@@ -1044,6 +1072,7 @@ private slots:
             task->setProperty("todoUid", todoUid);
 
         task->setProperty("relatedUid", "parent-uid");
+        task->setProperty("contextList", contexts);
 
         // WHEN
         Akonadi::Serializer serializer;
@@ -1099,6 +1128,7 @@ private slots:
 
         QCOMPARE(todo->relatedTo(), QStringLiteral("parent-uid"));
         QCOMPARE(todo->customProperty(Serializer::customPropertyAppName(), Serializer::customPropertyIsRunning()), running ? QStringLiteral("1") : QString());
+        QCOMPARE(todo->customProperty(Serializer::customPropertyAppName(), Serializer::customPropertyContextList()), contexts);
     }
 
     void shouldVerifyIfAnItemIsATaskChild_data()

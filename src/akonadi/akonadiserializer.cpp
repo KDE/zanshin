@@ -181,6 +181,7 @@ void Serializer::updateTaskFromItem(Domain::Task::Ptr task, Item item)
     task->setProperty("todoUid", todo->uid());
     task->setProperty("relatedUid", todo->relatedTo());
     task->setRunning(todo->customProperty(Serializer::customPropertyAppName(), Serializer::customPropertyIsRunning()) == QLatin1String("1"));
+    task->setProperty("contextList", todo->customProperty(Serializer::customPropertyAppName(), Serializer::customPropertyContextList()));
 
     switch (todo->recurrence()->recurrenceType()) {
     case KCalCore::Recurrence::rDaily:
@@ -287,6 +288,11 @@ Akonadi::Item Serializer::createItemFromTask(Domain::Task::Ptr task)
         todo->setCustomProperty(Serializer::customPropertyAppName(), Serializer::customPropertyIsRunning(), "1");
     } else {
         todo->removeCustomProperty(Serializer::customPropertyAppName(), Serializer::customPropertyIsRunning());
+    }
+
+    if (task->property("contextList").isValid()) {
+        const auto contextList = task->property("contextList").toString();
+        todo->setCustomProperty(Serializer::customPropertyAppName(), Serializer::customPropertyContextList(), contextList);
     }
 
     // Needs to be done after all other dates are positioned

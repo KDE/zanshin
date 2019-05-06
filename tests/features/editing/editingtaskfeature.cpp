@@ -90,6 +90,18 @@ private slots:
         And(c.I_open_the_item_in_the_editor_again());
         Then(c.the_editor_shows_the_field("due date", "2014-07-20"));
     }
+
+    void Editing_a_task_in_the_central_list_of_a_context_page()
+    {
+        ZanshinContext c;
+        Given(c.I_display_the_page("Contexts / Errands"));
+        And(c.I_look_at_the_central_list());
+        And(c.there_is_an_item_in_the_central_list("Buy kiwis"));
+        When(c.I_open_the_item_in_the_editor());
+        And(c.I_rename_the_item("Buy better kiwis"));
+        Then(c.the_editor_shows_the_field("title", "Buy better kiwis"));
+        And(c.there_is_an_item_in_the_central_list("Buy better kiwis"));
+    }
 };
 
 ZANSHIN_TEST_MAIN(EditingTaskFeature)
