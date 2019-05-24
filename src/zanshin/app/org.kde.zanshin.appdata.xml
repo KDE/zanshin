@@ -30,29 +30,6 @@
   <name xml:lang="x-test">xxZanshinxx</name>
   <name xml:lang="zh-CN">Zanshin</name>
   <summary>To Do Management Application</summary>
-  <summary xml:lang="bs">Program za upravljanje zadacima</summary>
-  <summary xml:lang="ca">Aplicació per a la gestió de les pendents</summary>
-  <summary xml:lang="ca-valencia">Aplicació per a la gestió de les pendents</summary>
-  <summary xml:lang="da">Program til håndtering af gøremål</summary>
-  <summary xml:lang="de">Verwaltungsprogramm für Aufgaben</summary>
-  <summary xml:lang="en-GB">TODO Management Application</summary>
-  <summary xml:lang="es">Aplicación de gestión de lista de cosas pendientes</summary>
-  <summary xml:lang="fi">Tehtävienhallintasovellus</summary>
-  <summary xml:lang="fr">Application de gestion de tâches à faire</summary>
-  <summary xml:lang="gl">Aplicativo de xestión de tarefas</summary>
-  <summary xml:lang="id">Aplikasi Pengelolaan TODO</summary>
-  <summary xml:lang="it">Applicazione di gestione delle COSE DA FARE</summary>
-  <summary xml:lang="ko">할 일 관리 도구</summary>
-  <summary xml:lang="nl">Beheertoepassing voor taken</summary>
-  <summary xml:lang="pl">Program do zarządzania zadaniami</summary>
-  <summary xml:lang="pt">Aplicação de Gestão de Tarefas</summary>
-  <summary xml:lang="pt-BR">Aplicativo de gerenciamento de tarefas</summary>
-  <summary xml:lang="sk">Aplikácia na správu úloh</summary>
-  <summary xml:lang="sv">ATT GÖRA: Hanteringsprogram</summary>
-  <summary xml:lang="tr">Yapılacaklar Yönetimi Uygulaması</summary>
-  <summary xml:lang="uk">Програма для керування записами завдань</summary>
-  <summary xml:lang="x-test">xxTODO Management Applicationxx</summary>
-  <summary xml:lang="zh-CN">待办事项管理程序</summary>
   <description>
     <p>
       Zanshin is a powerful yet simple application for managing your day to day actions.
