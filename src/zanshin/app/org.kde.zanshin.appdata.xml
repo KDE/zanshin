@@ -30,6 +30,13 @@
   <name xml:lang="x-test">xxZanshinxx</name>
   <name xml:lang="zh-CN">Zanshin</name>
   <summary>To Do Management Application</summary>
+  <summary xml:lang="ca">Aplicació per a gestionar les pendents</summary>
+  <summary xml:lang="ca-valencia">Aplicació per a gestionar les pendents</summary>
+  <summary xml:lang="nl">Beheertoepassing voor te verrichten taken</summary>
+  <summary xml:lang="pt">Aplicação de Gestão de Tarefas</summary>
+  <summary xml:lang="sv">Hanteringsprogram av uppgifter</summary>
+  <summary xml:lang="uk">Програма для керування записами завдань</summary>
+  <summary xml:lang="x-test">xxTo Do Management Applicationxx</summary>
   <description>
     <p>
       Zanshin is a powerful yet simple application for managing your day to day actions.
