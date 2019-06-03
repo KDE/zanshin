@@ -34,6 +34,7 @@
   <summary xml:lang="ca-valencia">Aplicació per a gestionar les pendents</summary>
   <summary xml:lang="en-GB">To Do Management Application</summary>
   <summary xml:lang="es">Aplicación de gestión de lista de tareas pendientes</summary>
+  <summary xml:lang="it">Applicazione di gestione delle cose da fare</summary>
   <summary xml:lang="ko">할 일 관리 프로그램</summary>
   <summary xml:lang="nl">Beheertoepassing voor te verrichten taken</summary>
   <summary xml:lang="pt">Aplicação de Gestão de Tarefas</summary>
@@ -135,7 +136,7 @@
       <li xml:lang="sk">Organizuje úlohy v projektoch a kontextoch</li>
       <li xml:lang="sv">Organisera uppgifter i projekt och sammanhang</li>
       <li xml:lang="tr">Proje ve içeriklerdeki işleri düzenle</li>
-      <li xml:lang="uk">Упорядковування завдань за проектами та контекстами.</li>
+      <li xml:lang="uk">Упорядковування завдань за проєктами та контекстами.</li>
       <li xml:lang="x-test">xxOrganize tasks in projects and contextsxx</li>
       <li>Akonadi-enabled application allowing to get the data from virtually anywhere (local, imap, web service...)</li>
       <li xml:lang="bs">Akonadi omogućena aplikacija koja vam dopušta da dobavite podatke od u suštini bilo gdje (lokalno, imap, web servis...)</li>
