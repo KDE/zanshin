@@ -35,6 +35,7 @@ TaskQueries::TaskQueries(const StorageInterface::Ptr &storage,
                          const MonitorInterface::Ptr &monitor,
                          const Cache::Ptr &cache)
     : m_serializer(serializer),
+      m_monitor(monitor),
       m_cache(cache),
       m_helpers(new LiveQueryHelpers(serializer, storage)),
       m_integrator(new LiveQueryIntegrator(serializer, monitor)),
@@ -45,6 +46,16 @@ TaskQueries::TaskQueries(const StorageInterface::Ptr &storage,
 
     m_integrator->addRemoveHandler([this] (const Item &item) {
         m_findChildren.remove(item.id());
+        m_findContexts.remove(item.id());
+    });
+
+    connect(m_monitor.data(), &MonitorInterface::itemChanged, this, [this] (const Item &item) {
+        const auto it = m_findContexts.find(item.id());
+        if (it == m_findContexts.cend())
+            return;
+
+        m_findContextsItem[item.id()] = item;
+        (*it)->reset();
     });
 }
 
@@ -207,9 +218,22 @@ TaskQueries::TaskResult::Ptr TaskQueries::findWorkdayTopLevel() const
 
 TaskQueries::ContextResult::Ptr TaskQueries::findContexts(Domain::Task::Ptr task) const
 {
-    qFatal("Not implemented yet");
-    Q_UNUSED(task);
-    return ContextResult::Ptr();
+    Akonadi::Item taskItem = m_serializer->createItemFromTask(task);
+    const auto taskItemId = taskItem.id();
+    m_findContextsItem[taskItemId] = taskItem;
+
+    auto &query = m_findContexts[taskItemId];
+    auto fetch = m_helpers->fetchItems();
+    auto predicate = [this, taskItemId] (const Akonadi::Item &contextItem) {
+        auto context = m_serializer->createContextFromItem(contextItem);
+        if (!context)
+            return false;
+
+        const auto taskItem = m_findContextsItem[taskItemId];
+        return m_serializer->isContextChild(context, taskItem);
+    };
+    m_integrator->bind("TaskQueries::findContexts", query, fetch, predicate);
+    return query->result();
 }
 
 void TaskQueries::onWorkdayPollTimeout()

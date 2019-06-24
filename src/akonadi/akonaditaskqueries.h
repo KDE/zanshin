@@ -45,8 +45,8 @@ public:
     typedef Domain::QueryResultProvider<Domain::Task::Ptr> TaskProvider;
     typedef Domain::QueryResult<Domain::Task::Ptr> TaskResult;
 
-    typedef Domain::QueryResultProvider<Domain::Context::Ptr> ContextProvider;
     typedef Domain::QueryResult<Domain::Context::Ptr> ContextResult;
+    typedef Domain::LiveQueryOutput<Domain::Context::Ptr> ContextQueryOutput;
 
     typedef Domain::QueryResult<Domain::Project::Ptr> ProjectResult;
     typedef Domain::LiveQueryOutput<Domain::Project::Ptr> ProjectQueryOutput;
@@ -77,6 +77,7 @@ private slots:
 
 private:
     SerializerInterface::Ptr m_serializer;
+    MonitorInterface::Ptr m_monitor;
     Cache::Ptr m_cache;
     LiveQueryHelpers::Ptr m_helpers;
     LiveQueryIntegrator::Ptr m_integrator;
@@ -86,6 +87,8 @@ private:
     mutable TaskQueryOutput::Ptr m_findAll;
     mutable QHash<Akonadi::Item::Id, TaskQueryOutput::Ptr> m_findChildren;
     mutable QHash<Akonadi::Item::Id, ProjectQueryOutput::Ptr> m_findProject;
+    mutable QHash<Akonadi::Item::Id, ContextQueryOutput::Ptr> m_findContexts;
+    mutable QHash<Akonadi::Item::Id, Akonadi::Item> m_findContextsItem;
     mutable QHash<Akonadi::Item::Id, DataSourceQueryOutput::Ptr> m_findDataSource;
     mutable TaskQueryOutput::Ptr m_findTopLevel;
     mutable TaskQueryOutput::Ptr m_findInboxTopLevel;

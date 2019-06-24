@@ -1808,6 +1808,180 @@ private slots:
         QCOMPARE(result->data().size(), 0);
     }
 
+    void findContextsShouldLookInAllCollections()
+    {
+        // GIVEN
+        AkonadiFakeData data;
+
+        // One top level collection
+        auto collection1 = GenCollection().withId(42).withRootAsParent().withTaskContent();
+        data.createCollection(collection1);
+        auto collection2 = GenCollection().withId(43).withRootAsParent().withTaskContent();
+        data.createCollection(collection2);
+
+        // One task in collection1, one context in collection1, one context in collection2
+        data.createItem(GenTodo().withId(42).withParent(42)
+                        .withTitle(QStringLiteral("42")).withUid(QStringLiteral("uid-42"))
+                        .withContexts({ QStringLiteral("uid-43"), QStringLiteral("uid-44") }));
+        data.createItem(GenTodo().withId(43).withParent(42).asContext()
+                        .withTitle(QStringLiteral("43")).withUid(QStringLiteral("uid-43")));
+        data.createItem(GenTodo().withId(44).withParent(43).asContext()
+                        .withTitle(QStringLiteral("44")).withUid(QStringLiteral("uid-44")));
+
+        // WHEN
+        auto serializer = Akonadi::Serializer::Ptr(new Akonadi::Serializer);
+
+        auto cache = Akonadi::Cache::Ptr::create(serializer, Akonadi::MonitorInterface::Ptr(data.createMonitor()));
+        auto storage = createCachingStorage(data, cache);
+        QScopedPointer<Domain::TaskQueries> queries(new Akonadi::TaskQueries(storage,
+                                                                             serializer,
+                                                                             Akonadi::MonitorInterface::Ptr(data.createMonitor()),
+                                                                             cache));
+        auto task = serializer->createTaskFromItem(data.item(42));
+        // populate cache for collection
+        auto *fetchJob = storage->fetchItems(collection1);
+        QVERIFY2(fetchJob->kjob()->exec(), qPrintable(fetchJob->kjob()->errorString()));
+        fetchJob = storage->fetchItems(collection2);
+        QVERIFY2(fetchJob->kjob()->exec(), qPrintable(fetchJob->kjob()->errorString()));
+
+        auto result = queries->findContexts(task);
+
+        // THEN
+        QVERIFY(result);
+        TestHelpers::waitForEmptyJobQueue();
+        QCOMPARE(result->data().size(), 2);
+        QCOMPARE(result->data().at(0)->name(), QStringLiteral("43"));
+        QCOMPARE(result->data().at(1)->name(), QStringLiteral("44"));
+
+        // Should not change anything
+        result = queries->findContexts(task);
+
+        QCOMPARE(result->data().size(), 2);
+        QCOMPARE(result->data().at(0)->name(), QStringLiteral("43"));
+        QCOMPARE(result->data().at(1)->name(), QStringLiteral("44"));
+    }
+
+    void findContextsShouldReactToRelationshipChange()
+    {
+        // GIVEN
+        AkonadiFakeData data;
+
+        // One top level collection
+        auto collection1 = GenCollection().withId(42).withRootAsParent().withTaskContent();
+        data.createCollection(collection1);
+        auto collection2 = GenCollection().withId(43).withRootAsParent().withTaskContent();
+        data.createCollection(collection2);
+
+        // One task in collection1, one context in collection1, two contexts in collection2
+        data.createItem(GenTodo().withId(42).withParent(42)
+                        .withTitle(QStringLiteral("42")).withUid(QStringLiteral("uid-42"))
+                        .withContexts({ QStringLiteral("uid-43"), QStringLiteral("uid-44") }));
+        data.createItem(GenTodo().withId(43).withParent(42).asContext()
+                        .withTitle(QStringLiteral("43")).withUid(QStringLiteral("uid-43")));
+        data.createItem(GenTodo().withId(44).withParent(43).asContext()
+                        .withTitle(QStringLiteral("44")).withUid(QStringLiteral("uid-44")));
+        data.createItem(GenTodo().withId(45).withParent(43).asContext()
+                        .withTitle(QStringLiteral("45")).withUid(QStringLiteral("uid-45")));
+
+        auto serializer = Akonadi::Serializer::Ptr(new Akonadi::Serializer);
+
+        auto cache = Akonadi::Cache::Ptr::create(serializer, Akonadi::MonitorInterface::Ptr(data.createMonitor()));
+        auto storage = createCachingStorage(data, cache);
+        QScopedPointer<Domain::TaskQueries> queries(new Akonadi::TaskQueries(storage,
+                                                                             serializer,
+                                                                             Akonadi::MonitorInterface::Ptr(data.createMonitor()),
+                                                                             cache));
+        auto task = serializer->createTaskFromItem(data.item(42));
+        // populate cache for collection
+        auto *fetchJob = storage->fetchItems(collection1);
+        QVERIFY2(fetchJob->kjob()->exec(), qPrintable(fetchJob->kjob()->errorString()));
+        fetchJob = storage->fetchItems(collection2);
+        QVERIFY2(fetchJob->kjob()->exec(), qPrintable(fetchJob->kjob()->errorString()));
+
+        auto result = queries->findContexts(task);
+
+        QVERIFY(result);
+        TestHelpers::waitForEmptyJobQueue();
+        QCOMPARE(result->data().size(), 2);
+        QCOMPARE(result->data().at(0)->name(), QStringLiteral("43"));
+        QCOMPARE(result->data().at(1)->name(), QStringLiteral("44"));
+
+        // WHEN
+        data.modifyItem(GenTodo(data.item(42)).withContexts({ QStringLiteral("uid-43"), QStringLiteral("uid-45") }));
+
+        // THEN
+        TestHelpers::waitForEmptyJobQueue();
+        QCOMPARE(result->data().size(), 2);
+        QCOMPARE(result->data().at(0)->name(), QStringLiteral("43"));
+        QCOMPARE(result->data().at(1)->name(), QStringLiteral("45"));
+
+        // WHEN
+        data.modifyItem(GenTodo(data.item(42)).withContexts({ QStringLiteral("uid-45") }));
+
+        // THEN
+        TestHelpers::waitForEmptyJobQueue();
+        QCOMPARE(result->data().size(), 1);
+        QCOMPARE(result->data().at(0)->name(), QStringLiteral("45"));
+
+        // WHEN
+        data.modifyItem(GenTodo(data.item(42)).withContexts({}));
+
+        // THEN
+        TestHelpers::waitForEmptyJobQueue();
+        QCOMPARE(result->data().size(), 0);
+    }
+
+    void findContextsShouldReactToItemRemoved()
+    {
+        // GIVEN
+        AkonadiFakeData data;
+
+        // One top level collection
+        auto collection1 = GenCollection().withId(42).withRootAsParent().withTaskContent();
+        data.createCollection(collection1);
+        auto collection2 = GenCollection().withId(43).withRootAsParent().withTaskContent();
+        data.createCollection(collection2);
+
+        // One task in collection1, one context in collection1, one context in collection2
+        data.createItem(GenTodo().withId(42).withParent(42)
+                        .withTitle(QStringLiteral("42")).withUid(QStringLiteral("uid-42"))
+                        .withContexts({ QStringLiteral("uid-43"), QStringLiteral("uid-44") }));
+        data.createItem(GenTodo().withId(43).withParent(42).asContext()
+                        .withTitle(QStringLiteral("43")).withUid(QStringLiteral("uid-43")));
+        data.createItem(GenTodo().withId(44).withParent(43).asContext()
+                        .withTitle(QStringLiteral("44")).withUid(QStringLiteral("uid-44")));
+
+        auto serializer = Akonadi::Serializer::Ptr(new Akonadi::Serializer);
+
+        auto cache = Akonadi::Cache::Ptr::create(serializer, Akonadi::MonitorInterface::Ptr(data.createMonitor()));
+        auto storage = createCachingStorage(data, cache);
+        QScopedPointer<Domain::TaskQueries> queries(new Akonadi::TaskQueries(storage,
+                                                                             serializer,
+                                                                             Akonadi::MonitorInterface::Ptr(data.createMonitor()),
+                                                                             cache));
+        auto task = serializer->createTaskFromItem(data.item(42));
+        // populate cache for collection
+        auto *fetchJob = storage->fetchItems(collection1);
+        QVERIFY2(fetchJob->kjob()->exec(), qPrintable(fetchJob->kjob()->errorString()));
+        fetchJob = storage->fetchItems(collection2);
+        QVERIFY2(fetchJob->kjob()->exec(), qPrintable(fetchJob->kjob()->errorString()));
+
+        auto result = queries->findContexts(task);
+
+        QVERIFY(result);
+        TestHelpers::waitForEmptyJobQueue();
+        QCOMPARE(result->data().size(), 2);
+        QCOMPARE(result->data().at(0)->name(), QStringLiteral("43"));
+        QCOMPARE(result->data().at(1)->name(), QStringLiteral("44"));
+
+        // WHEN
+        data.removeItem(Akonadi::Item(42));
+
+        // THEN
+        TestHelpers::waitForEmptyJobQueue();
+        QCOMPARE(result->data().size(), 0);
+    }
+
     void shouldOnlyReturnTopLevelTasks()
     {
         // GIVEN
