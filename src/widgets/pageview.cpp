@@ -51,8 +51,22 @@
 #include "presentation/runningtaskmodelinterface.h"
 #include "presentation/taskfilterproxymodel.h"
 #include "utils/datetime.h"
+#include <QProxyStyle>
 
 namespace Widgets {
+
+class TreeProxyStyle : public QProxyStyle
+{
+    Q_OBJECT
+public:
+    using QProxyStyle::QProxyStyle;
+    void drawPrimitive(PrimitiveElement pe, const QStyleOption *opt, QPainter *p, const QWidget *w) const override {
+        if (pe != PE_IndicatorBranch) {
+            QProxyStyle::drawPrimitive(pe, opt, p, w);
+        }
+    }
+};
+
 class PageTreeView : public QTreeView
 {
     Q_OBJECT
@@ -153,7 +167,7 @@ PageView::PageView(QWidget *parent)
     connect(m_centralView->model(), &QAbstractItemModel::rowsInserted, m_centralView, &QTreeView::expandAll);
     connect(m_centralView->model(), &QAbstractItemModel::layoutChanged, m_centralView, &QTreeView::expandAll);
     connect(m_centralView->model(), &QAbstractItemModel::modelReset, m_centralView, &QTreeView::expandAll);
-    m_centralView->setStyleSheet(QStringLiteral("QTreeView::branch { border-image: url(none.png); }"));
+    m_centralView->setStyle(new TreeProxyStyle);
 
     m_quickAddEdit->setObjectName(QStringLiteral("quickAddEdit"));
     m_quickAddEdit->setPlaceholderText(i18n("Type and press enter to add a task"));
