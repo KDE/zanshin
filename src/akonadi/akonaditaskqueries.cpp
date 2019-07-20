@@ -51,7 +51,7 @@ TaskQueries::TaskQueries(const StorageInterface::Ptr &storage,
 
     connect(m_monitor.data(), &MonitorInterface::itemChanged, this, [this] (const Item &item) {
         const auto it = m_findContexts.find(item.id());
-        if (it == m_findContexts.cend())
+        if (it == m_findContexts.end())
             return;
 
         m_findContextsItem[item.id()] = item;
