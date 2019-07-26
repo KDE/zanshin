@@ -104,17 +104,7 @@ QAbstractItemModel *ProjectPageModel::createCentralListModel()
     };
 
     auto data = [](const Domain::Task::Ptr &task, int role, int) -> QVariant {
-        if (role != Qt::DisplayRole
-         && role != Qt::EditRole
-         && role != Qt::CheckStateRole) {
-            return QVariant();
-        }
-
-        if (role == Qt::DisplayRole || role == Qt::EditRole) {
-            return task->title();
-        } else {
-            return task->isDone() ? Qt::Checked : Qt::Unchecked;
-        }
+        return defaultTaskData(task, role, TaskExtraDataPtr());
     };
 
     auto setData = [this](const Domain::Task::Ptr &task, const QVariant &value, int role) {

@@ -111,38 +111,12 @@ QAbstractItemModel *ContextPageModel::createCentralListModel()
              | Qt::ItemIsDropEnabled;
     };
 
-    using AdditionalInfo = Domain::QueryResult<Domain::Project::Ptr>::Ptr; // later on we'll want a struct with the context query as well
-
-    auto data = [] (const Domain::Task::Ptr &task, int role, const AdditionalInfo &projectQueryResult) -> QVariant {
-        switch (role) {
-            case Qt::DisplayRole:
-            case Qt::EditRole:
-                return task->title();
-            case Qt::CheckStateRole:
-                return task->isDone() ? Qt::Checked : Qt::Unchecked;
-            case Presentation::QueryTreeModelBase::AdditionalInfoRole:
-                if (projectQueryResult && !projectQueryResult->data().isEmpty()) {
-                    Domain::Project::Ptr project = projectQueryResult->data().at(0);
-                    return i18n("Project: %1", project->name());
-                 }
-                return i18n("Inbox");
-            default:
-                break;
-        }
-        return QVariant();
+    auto data = [](const Domain::Task::Ptr &task, int role, const TaskExtraDataPtr &info) -> QVariant {
+        return defaultTaskData(task, role, info);
     };
 
-    auto fetchAdditionalInfo = [this](const QModelIndex &index, const Domain::Task::Ptr &task) -> AdditionalInfo {
-        AdditionalInfo projectQueryResult = m_taskQueries->findProject(task);
-        if (projectQueryResult) {
-            QPersistentModelIndex persistentIndex(index);
-            projectQueryResult->addPostInsertHandler([persistentIndex](const Domain::Project::Ptr &, int) {
-                // When a project was found (inserted into the result), update the rendering of the item
-                auto model = const_cast<QAbstractItemModel *>(persistentIndex.model());
-                model->dataChanged(persistentIndex, persistentIndex);
-            });
-        }
-        return projectQueryResult;
+    auto fetchAdditionalInfo = [this](const QModelIndex &index, const Domain::Task::Ptr &task) {
+        return fetchTaskExtraData(m_taskQueries, TaskExtraPart::Project, index, task);
     };
 
     auto setData = [this] (const Domain::Task::Ptr &task, const QVariant &value, int role) {
@@ -204,5 +178,5 @@ QAbstractItemModel *ContextPageModel::createCentralListModel()
         return data;
     };
 
-    return new QueryTreeModel<Domain::Task::Ptr, AdditionalInfo>(query, flags, data, setData, drop, drag, fetchAdditionalInfo, this);
+    return new QueryTreeModel<Domain::Task::Ptr, TaskExtraDataPtr>(query, flags, data, setData, drop, drag, fetchAdditionalInfo, this);
 }

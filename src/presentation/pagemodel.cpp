@@ -109,7 +109,11 @@ QVariant PageModel::defaultTaskData(const Domain::Task::Ptr &task, int role, con
             Domain::Project::Ptr project = info->projectQueryResult->data().at(0);
             return i18n("Project: %1", project->name());
         }
-        return i18n("Inbox"); // TODO add source name
+        if (info->dataSourceQueryResult && !info->dataSourceQueryResult->data().isEmpty()) {
+            Domain::DataSource::Ptr dataSource = info->dataSourceQueryResult->data().at(0);
+            return dataSource->name();
+        }
+        return i18n("Inbox");
     default:
         break;
     }
