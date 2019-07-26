@@ -94,7 +94,7 @@ PageModel::TaskExtraDataPtr PageModel::fetchTaskExtraData(Domain::TaskQueries::P
     return info;
 }
 
-QVariant PageModel::dataForTaskWithProject(const Domain::Task::Ptr &task, int role, const TaskExtraDataPtr &info)
+QVariant PageModel::defaultTaskData(const Domain::Task::Ptr &task, int role, const TaskExtraDataPtr &info)
 {
     switch (role) {
     case Qt::DisplayRole:

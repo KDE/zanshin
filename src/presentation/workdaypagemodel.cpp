@@ -100,7 +100,7 @@ QAbstractItemModel *WorkdayPageModel::createCentralListModel()
     };
 
     auto data = [](const Domain::Task::Ptr &task, int role, const TaskExtraDataPtr &info) {
-        return dataForTaskWithProject(task, role, info);
+        return defaultTaskData(task, role, info);
     };
 
     auto fetchAdditionalInfo = [this](const QModelIndex &index, const Domain::Task::Ptr &task) {

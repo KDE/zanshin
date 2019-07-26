@@ -77,7 +77,7 @@ protected:
                                                const TaskExtraParts &parts,
                                                const QModelIndex &index,
                                                const Domain::Task::Ptr &task);
-    static QVariant dataForTaskWithProject(const Domain::Task::Ptr &task, int role, const TaskExtraDataPtr &info);
+    static QVariant defaultTaskData(const Domain::Task::Ptr &task, int role, const TaskExtraDataPtr &info);
 
 private:
     virtual QAbstractItemModel *createCentralListModel() = 0;

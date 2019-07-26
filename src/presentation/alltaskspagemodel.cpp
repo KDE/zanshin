@@ -93,7 +93,7 @@ QAbstractItemModel *AllTasksPageModel::createCentralListModel()
     };
 
     auto data = [](const Domain::Task::Ptr &task, int role, const TaskExtraDataPtr &info) -> QVariant {
-        return dataForTaskWithProject(task, role, info);
+        return defaultTaskData(task, role, info);
     };
 
     auto fetchAdditionalInfo = [this](const QModelIndex &index, const Domain::Task::Ptr &task) {
