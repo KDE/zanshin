@@ -43,6 +43,16 @@ class PageModel : public QObject, public ErrorHandlingModelBase
     Q_OBJECT
     Q_PROPERTY(QAbstractItemModel* centralListModel READ centralListModel)
 public:
+    enum class TaskExtraPart {
+        None = 0x00,
+        DataSource = 0x01,
+        Project = 0x02,
+        Contexts = 0x04,
+    };
+    Q_ENUM(TaskExtraPart)
+    Q_DECLARE_FLAGS(TaskExtraParts, TaskExtraPart)
+    Q_FLAG(TaskExtraParts)
+
     explicit PageModel(QObject *parent = nullptr);
 
     QAbstractItemModel *centralListModel();
@@ -56,14 +66,17 @@ protected:
     struct TaskExtraData
     {
         bool childTask = false;
+        Domain::QueryResult<Domain::DataSource::Ptr>::Ptr dataSourceQueryResult;
         Domain::QueryResult<Domain::Project::Ptr>::Ptr projectQueryResult;
-        // later on we'll want the context query as well
+        Domain::QueryResult<Domain::Context::Ptr>::Ptr contextQueryResult;
     };
     using TaskExtraDataPtr = QSharedPointer<TaskExtraData>;
 
     using ProjectQueryPtr = Domain::QueryResult<Domain::Project::Ptr>::Ptr;
     static TaskExtraDataPtr fetchTaskExtraData(Domain::TaskQueries::Ptr taskQueries,
-                                        const QModelIndex &index, const Domain::Task::Ptr &task);
+                                               const TaskExtraParts &parts,
+                                               const QModelIndex &index,
+                                               const Domain::Task::Ptr &task);
     static QVariant dataForTaskWithProject(const Domain::Task::Ptr &task, int role, const TaskExtraDataPtr &info);
 
 private:
@@ -73,5 +86,7 @@ private:
 };
 
 }
+
+Q_DECLARE_OPERATORS_FOR_FLAGS(Presentation::PageModel::TaskExtraParts)
 
 #endif // PRESENTATION_PAGEMODEL_H

@@ -44,23 +44,53 @@ QAbstractItemModel *PageModel::centralListModel()
 }
 
 PageModel::TaskExtraDataPtr PageModel::fetchTaskExtraData(Domain::TaskQueries::Ptr taskQueries,
-                                                              const QModelIndex &index, const Domain::Task::Ptr &task)
+                                                          const TaskExtraParts &parts,
+                                                          const QModelIndex &index,
+                                                          const Domain::Task::Ptr &task)
 {
     TaskExtraDataPtr info = TaskExtraDataPtr::create();
-    if (index.parent().isValid()) { // children are in the same collection as their parent, so the same project
+    if (index.parent().isValid()) {
         info->childTask = true;
-        return info;
     }
 
-    info->projectQueryResult = taskQueries->findProject(task);
-    if (info->projectQueryResult) {
-        QPersistentModelIndex persistentIndex(index);
-        info->projectQueryResult->addPostInsertHandler([persistentIndex](const Domain::Project::Ptr &, int) {
-            // When a project was found (inserted into the result), update the rendering of the item
-            auto model = const_cast<QAbstractItemModel *>(persistentIndex.model());
-            model->dataChanged(persistentIndex, persistentIndex);
-        });
+    // children are in the same data source as their parent
+    if (!info->childTask && parts.testFlag(TaskExtraPart::DataSource)) {
+        info->dataSourceQueryResult = taskQueries->findDataSource(task);
+        if (info->dataSourceQueryResult) {
+            QPersistentModelIndex persistentIndex(index);
+            info->dataSourceQueryResult->addPostInsertHandler([persistentIndex](const Domain::DataSource::Ptr &, int) {
+                // When a data source was found (inserted into the result), update the rendering of the item
+                auto model = const_cast<QAbstractItemModel *>(persistentIndex.model());
+                model->dataChanged(persistentIndex, persistentIndex);
+            });
+        }
     }
+
+    // children are in the same project as their parent
+    if (!info->childTask && parts.testFlag(TaskExtraPart::Project)) {
+        info->projectQueryResult = taskQueries->findProject(task);
+        if (info->projectQueryResult) {
+            QPersistentModelIndex persistentIndex(index);
+            info->projectQueryResult->addPostInsertHandler([persistentIndex](const Domain::Project::Ptr &, int) {
+                // When a project was found (inserted into the result), update the rendering of the item
+                auto model = const_cast<QAbstractItemModel *>(persistentIndex.model());
+                model->dataChanged(persistentIndex, persistentIndex);
+            });
+        }
+    }
+
+    if (parts.testFlag(TaskExtraPart::Contexts)) {
+        info->contextQueryResult = taskQueries->findContexts(task);
+        if (info->contextQueryResult) {
+            QPersistentModelIndex persistentIndex(index);
+            info->contextQueryResult->addPostInsertHandler([persistentIndex](const Domain::Context::Ptr &, int) {
+                // When a project was found (inserted into the result), update the rendering of the item
+                auto model = const_cast<QAbstractItemModel *>(persistentIndex.model());
+                model->dataChanged(persistentIndex, persistentIndex);
+            });
+        }
+    }
+
     return info;
 }
 
