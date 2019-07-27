@@ -210,7 +210,7 @@ void Serializer::updateTaskFromItem(Domain::Task::Ptr task, Item item)
     attachments.reserve(attachmentsInput.size());
     std::transform(attachmentsInput.cbegin(), attachmentsInput.cend(),
                    std::back_inserter(attachments),
-#if KCALCORE_VERSION >= QT_VERSION_CHECK(5, 11, 90)
+#if KCALCORE_VERSION >= QT_VERSION_CHECK(5, 11, 80)
                    [&mimeDb] (const KCalCore::Attachment &attach) {
                        Domain::Task::Attachment attachment;
                        if (attach.isUri())
@@ -297,7 +297,7 @@ Akonadi::Item Serializer::createItemFromTask(Domain::Task::Ptr task)
     }
 
     for (const auto &attachment : task->attachments()) {
-#if KCALCORE_VERSION >= QT_VERSION_CHECK(5, 11, 90)
+#if KCALCORE_VERSION >= QT_VERSION_CHECK(5, 11, 80)
         KCalCore::Attachment attach(QByteArray{});
         if (attachment.isUri())
             attach.setUri(attachment.uri().toString());

@@ -593,7 +593,7 @@ private slots:
         originalTodo->setCustomProperty(Serializer::customPropertyAppName(),
                                         Serializer::customPropertyContextList(),
                                         QStringLiteral("context1,context2"));
-#if KCALCORE_VERSION >= QT_VERSION_CHECK(5, 11, 90)
+#if KCALCORE_VERSION >= QT_VERSION_CHECK(5, 11, 80)
         KCalCore::Attendee originalAttendee(QStringLiteral("John Doe"),
                                             QStringLiteral("j@d.com"),
                                             true,
@@ -658,7 +658,7 @@ private slots:
             updatedTodo->recurrence()->setDaily(1);
 
         for (int i = 0; i < updatedAttachmentData.size(); i++) {
-#if KCALCORE_VERSION >= QT_VERSION_CHECK(5, 11, 90)
+#if KCALCORE_VERSION >= QT_VERSION_CHECK(5, 11, 80)
             KCalCore::Attachment attachment(QByteArray{});
             if (!updatedAttachmentData.at(i).isEmpty())
                 attachment.setDecodedData(updatedAttachmentData.at(i));
@@ -1142,7 +1142,7 @@ private slots:
         QCOMPARE(todo->attachments().size(), attachments.size());
         for (int i = 0; i < attachments.size(); i++) {
             auto attachment = todo->attachments().at(i);
-#if KCALCORE_VERSION >= QT_VERSION_CHECK(5, 11, 90)
+#if KCALCORE_VERSION >= QT_VERSION_CHECK(5, 11, 80)
             QCOMPARE(attachment.isUri(), attachments.at(i).isUri());
             QCOMPARE(QUrl(attachment.uri()), attachments.at(i).uri());
             QCOMPARE(attachment.decodedData(), attachments.at(i).data());
