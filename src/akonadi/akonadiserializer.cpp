@@ -29,6 +29,7 @@
 #include <AkonadiCore/EntityDisplayAttribute>
 #include <AkonadiCore/Item>
 #include <KCalCore/Todo>
+#include <kcalcore_version.h>
 #include <QMimeDatabase>
 
 #include <numeric>
@@ -209,6 +210,19 @@ void Serializer::updateTaskFromItem(Domain::Task::Ptr task, Item item)
     attachments.reserve(attachmentsInput.size());
     std::transform(attachmentsInput.cbegin(), attachmentsInput.cend(),
                    std::back_inserter(attachments),
+#if KCALCORE_VERSION >= QT_VERSION_CHECK(5, 11, 90)
+                   [&mimeDb] (const KCalCore::Attachment &attach) {
+                       Domain::Task::Attachment attachment;
+                       if (attach.isUri())
+                           attachment.setUri(QUrl(attach.uri()));
+                       else
+                           attachment.setData(attach.decodedData());
+                       attachment.setLabel(attach.label());
+                       attachment.setMimeType(attach.mimeType());
+                       attachment.setIconName(mimeDb.mimeTypeForName(attach.mimeType()).iconName());
+                       return attachment;
+                   });
+#else
                    [&mimeDb] (const KCalCore::Attachment::Ptr &attach) {
                        Domain::Task::Attachment attachment;
                        if (attach->isUri())
@@ -220,6 +234,7 @@ void Serializer::updateTaskFromItem(Domain::Task::Ptr task, Item item)
                        attachment.setIconName(mimeDb.mimeTypeForName(attach->mimeType()).iconName());
                        return attachment;
                    });
+#endif
     task->setAttachments(attachments);
 }
 
@@ -282,6 +297,15 @@ Akonadi::Item Serializer::createItemFromTask(Domain::Task::Ptr task)
     }
 
     for (const auto &attachment : task->attachments()) {
+#if KCALCORE_VERSION >= QT_VERSION_CHECK(5, 11, 90)
+        KCalCore::Attachment attach(QByteArray{});
+        if (attachment.isUri())
+            attach.setUri(attachment.uri().toString());
+        else
+            attach.setDecodedData(attachment.data());
+        attach.setMimeType(attachment.mimeType());
+        attach.setLabel(attachment.label());
+#else
         KCalCore::Attachment::Ptr attach(new KCalCore::Attachment(QByteArray()));
         if (attachment.isUri())
             attach->setUri(attachment.uri().toString());
@@ -289,6 +313,7 @@ Akonadi::Item Serializer::createItemFromTask(Domain::Task::Ptr task)
             attach->setDecodedData(attachment.data());
         attach->setMimeType(attachment.mimeType());
         attach->setLabel(attachment.label());
+#endif
         todo->addAttachment(attach);
     }
 

@@ -32,6 +32,7 @@
 #include <AkonadiCore/EntityDisplayAttribute>
 #include <AkonadiCore/Item>
 #include <KCalCore/Todo>
+#include <kcalcore_version.h>
 
 Q_DECLARE_METATYPE(Akonadi::Item*)
 
@@ -592,10 +593,17 @@ private slots:
         originalTodo->setCustomProperty(Serializer::customPropertyAppName(),
                                         Serializer::customPropertyContextList(),
                                         QStringLiteral("context1,context2"));
+#if KCALCORE_VERSION >= QT_VERSION_CHECK(5, 11, 90)
+        KCalCore::Attendee originalAttendee(QStringLiteral("John Doe"),
+                                            QStringLiteral("j@d.com"),
+                                            true,
+                                            KCalCore::Attendee::Accepted);
+#else
         KCalCore::Attendee::Ptr originalAttendee(new KCalCore::Attendee(QStringLiteral("John Doe"),
                                                                         QStringLiteral("j@d.com"),
                                                                         true,
                                                                         KCalCore::Attendee::Accepted));
+#endif
         originalTodo->addAttendee(originalAttendee);
 
         // ... as payload of an item...
@@ -650,6 +658,15 @@ private slots:
             updatedTodo->recurrence()->setDaily(1);
 
         for (int i = 0; i < updatedAttachmentData.size(); i++) {
+#if KCALCORE_VERSION >= QT_VERSION_CHECK(5, 11, 90)
+            KCalCore::Attachment attachment(QByteArray{});
+            if (!updatedAttachmentData.at(i).isEmpty())
+                attachment.setDecodedData(updatedAttachmentData.at(i));
+            else
+                attachment.setUri(updatedAttachmentUris.at(i));
+            attachment.setMimeType(updatedAttachmentMimeTypes.at(i));
+            attachment.setLabel(updatedAttachmentLabels.at(i));
+#else
             KCalCore::Attachment::Ptr attachment(new KCalCore::Attachment(QByteArray()));
             if (!updatedAttachmentData.at(i).isEmpty())
                 attachment->setDecodedData(updatedAttachmentData.at(i));
@@ -657,6 +674,7 @@ private slots:
                 attachment->setUri(updatedAttachmentUris.at(i));
             attachment->setMimeType(updatedAttachmentMimeTypes.at(i));
             attachment->setLabel(updatedAttachmentLabels.at(i));
+#endif
             updatedTodo->addAttachment(attachment);
         }
 
@@ -1124,11 +1142,19 @@ private slots:
         QCOMPARE(todo->attachments().size(), attachments.size());
         for (int i = 0; i < attachments.size(); i++) {
             auto attachment = todo->attachments().at(i);
+#if KCALCORE_VERSION >= QT_VERSION_CHECK(5, 11, 90)
+            QCOMPARE(attachment.isUri(), attachments.at(i).isUri());
+            QCOMPARE(QUrl(attachment.uri()), attachments.at(i).uri());
+            QCOMPARE(attachment.decodedData(), attachments.at(i).data());
+            QCOMPARE(attachment.label(), attachments.at(i).label());
+            QCOMPARE(attachment.mimeType(), attachments.at(i).mimeType());
+#else
             QCOMPARE(attachment->isUri(), attachments.at(i).isUri());
             QCOMPARE(QUrl(attachment->uri()), attachments.at(i).uri());
             QCOMPARE(attachment->decodedData(), attachments.at(i).data());
             QCOMPARE(attachment->label(), attachments.at(i).label());
             QCOMPARE(attachment->mimeType(), attachments.at(i).mimeType());
+#endif
         }
 
         if (!todoUid.isEmpty()) {
