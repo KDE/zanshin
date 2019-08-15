@@ -51,8 +51,11 @@ QSize ItemDelegate::sizeHint(const QStyleOptionViewItem &option,
     // and for a date on the right
     opt.text += ' ' + QLocale().dateFormat(QLocale::ShortFormat).toUpper() + ' ';
     QSize sz = QStyledItemDelegate::sizeHint(opt, index);
-    const auto additionalInfo = index.data(Presentation::QueryTreeModelBase::AdditionalInfoRole).toString();
-    if (!additionalInfo.isEmpty())
+    const auto projectInfo = index.data(Presentation::QueryTreeModelBase::ProjectRole);
+    const auto dataSourceInfo = index.data(Presentation::QueryTreeModelBase::DataSourceRole);
+    const auto contextListInfo = index.data(Presentation::QueryTreeModelBase::ContextListRole);
+    const auto hasAdditionalInfo = projectInfo.isValid() || dataSourceInfo.isValid() || contextListInfo.isValid();
+    if (hasAdditionalInfo)
         sz.rheight() += opt.fontMetrics.height();
     return sz;
 }
@@ -77,7 +80,10 @@ void ItemDelegate::paint(QPainter *painter,
 
     const auto startDate = task ? task->startDate() : QDate();
     const auto dueDate = task ? task->dueDate() : QDate();
-    const auto additionalInfo = index.data(Presentation::QueryTreeModelBase::AdditionalInfoRole).toString();
+    const auto projectInfo = index.data(Presentation::QueryTreeModelBase::ProjectRole);
+    const auto dataSourceInfo = index.data(Presentation::QueryTreeModelBase::DataSourceRole);
+    const auto contextListInfo = index.data(Presentation::QueryTreeModelBase::ContextListRole);
+    const auto hasAdditionalInfo = projectInfo.isValid() || dataSourceInfo.isValid() || contextListInfo.isValid();
 
     const auto currentDate = Utils::DateTime::currentDate();
     const auto onStartDate = startDate.isValid() && startDate <= currentDate;
@@ -116,7 +122,7 @@ void ItemDelegate::paint(QPainter *painter,
     const auto textRect = style->subElementRect(QStyle::SE_ItemViewItemText, &opt, widget)
                              .adjusted(textMargin, 0, - textMargin, 0);
     auto summaryRect = textRect.adjusted(0, 0, -dueDateWidth, 0);
-    if (!additionalInfo.isEmpty())
+    if (hasAdditionalInfo)
         summaryRect.setHeight(summaryRect.height() - opt.fontMetrics.height());
     auto dueDateRect = textRect.adjusted(textRect.width() - dueDateWidth, 0, 0, 0);
     dueDateRect.setHeight(summaryRect.height());
@@ -149,7 +155,11 @@ void ItemDelegate::paint(QPainter *painter,
     }
 
     // Draw the second line
-    if (!additionalInfo.isEmpty()) {
+    if (hasAdditionalInfo) {
+        const auto additionalInfo = projectInfo.isValid() && !projectInfo.toString().isEmpty() ? i18n("Project: %1", projectInfo.toString())
+                                  : dataSourceInfo.isValid() ? dataSourceInfo.toString()
+                                  : i18n("Inbox");
+
         QFont additionalInfoFont = baseFont;
         additionalInfoFont.setItalic(true);
         additionalInfoFont.setPointSize(additionalInfoFont.pointSize() - 1);
