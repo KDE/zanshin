@@ -131,18 +131,6 @@ QVariant PageModel::defaultTaskData(const Domain::Task::Ptr &task, int role, con
                            [](const Domain::Context::Ptr &context) { return context->name(); });
             return result;
         }
-    case Presentation::QueryTreeModelBase::AdditionalInfoRole:
-        if (!info || info->childTask)
-            return QString();
-        if (info->projectQueryResult && !info->projectQueryResult->data().isEmpty()) {
-            Domain::Project::Ptr project = info->projectQueryResult->data().at(0);
-            return i18n("Project: %1", project->name());
-        }
-        if (info->dataSourceQueryResult && !info->dataSourceQueryResult->data().isEmpty()) {
-            Domain::DataSource::Ptr dataSource = info->dataSourceQueryResult->data().at(0);
-            return dataSource->name();
-        }
-        return i18n("Inbox");
     default:
         break;
     }

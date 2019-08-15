@@ -74,7 +74,6 @@ public:
         ObjectRole = Qt::UserRole + 1,
         IconNameRole,
         IsDefaultRole,
-        AdditionalInfoRole,
         IsChildRole,
         ProjectRole,
         DataSourceRole,
