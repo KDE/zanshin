@@ -89,6 +89,9 @@ private slots:
         auto projectResult = Domain::QueryResult<Domain::Project::Ptr>::create(projectProvider);
         projectProvider->append(project);
 
+        auto inboxProvider = Domain::QueryResultProvider<Domain::Project::Ptr>::Ptr::create();
+        auto inboxResult = Domain::QueryResult<Domain::Project::Ptr>::create(inboxProvider);
+
         Utils::MockObject<Domain::TaskQueries> taskQueriesMock;
         taskQueriesMock(&Domain::TaskQueries::findWorkdayTopLevel).when().thenReturn(taskResult);
         taskQueriesMock(&Domain::TaskQueries::findChildren).when(task1).thenReturn(childTaskResult);
@@ -97,11 +100,11 @@ private slots:
         taskQueriesMock(&Domain::TaskQueries::findChildren).when(childTask11).thenReturn(Domain::QueryResult<Domain::Task::Ptr>::Ptr());
         taskQueriesMock(&Domain::TaskQueries::findChildren).when(childTask12).thenReturn(Domain::QueryResult<Domain::Task::Ptr>::Ptr());
 
-        taskQueriesMock(&Domain::TaskQueries::findProject).when(task1).thenReturn(Domain::QueryResult<Domain::Project::Ptr>::Ptr());
+        taskQueriesMock(&Domain::TaskQueries::findProject).when(task1).thenReturn(inboxResult);
         taskQueriesMock(&Domain::TaskQueries::findProject).when(task2).thenReturn(projectResult);
-        taskQueriesMock(&Domain::TaskQueries::findProject).when(task3).thenReturn(Domain::QueryResult<Domain::Project::Ptr>::Ptr());
-        taskQueriesMock(&Domain::TaskQueries::findProject).when(childTask11).thenReturn(Domain::QueryResult<Domain::Project::Ptr>::Ptr());
-        taskQueriesMock(&Domain::TaskQueries::findProject).when(childTask12).thenReturn(Domain::QueryResult<Domain::Project::Ptr>::Ptr());
+        taskQueriesMock(&Domain::TaskQueries::findProject).when(task3).thenReturn(inboxResult);
+        taskQueriesMock(&Domain::TaskQueries::findProject).when(childTask11).thenReturn(inboxResult);
+        taskQueriesMock(&Domain::TaskQueries::findProject).when(childTask12).thenReturn(inboxResult);
 
         Utils::MockObject<Domain::TaskRepository> taskRepositoryMock;
 
@@ -170,10 +173,16 @@ private slots:
         QCOMPARE(model->data(task3Index, Qt::CheckStateRole).toBool(), task3->isDone());
         QCOMPARE(model->data(taskChildTask12Index, Qt::CheckStateRole).toBool(), childTask12->isDone());
 
-        QCOMPARE(model->data(task1Index, Presentation::QueryTreeModelBase::AdditionalInfoRole).toString(), QString("Inbox"));
-        QCOMPARE(model->data(task2Index, Presentation::QueryTreeModelBase::AdditionalInfoRole).toString(), QString("Project: KDE"));
-        QCOMPARE(model->data(childTask11Index, Presentation::QueryTreeModelBase::AdditionalInfoRole).toString(), QString());
-        QCOMPARE(model->data(childTask12Index, Presentation::QueryTreeModelBase::AdditionalInfoRole).toString(), QString());
+        QVERIFY(model->data(task1Index, Presentation::QueryTreeModelBase::ProjectRole).isValid());
+        QVERIFY(model->data(task2Index, Presentation::QueryTreeModelBase::ProjectRole).isValid());
+        QCOMPARE(model->data(task1Index, Presentation::QueryTreeModelBase::ProjectRole).toString(), QString());
+        QCOMPARE(model->data(task2Index, Presentation::QueryTreeModelBase::ProjectRole).toString(), QString("KDE"));
+        QCOMPARE(model->data(task1Index, Presentation::QueryTreeModelBase::IsChildRole).toBool(), false);
+        QCOMPARE(model->data(task2Index, Presentation::QueryTreeModelBase::IsChildRole).toBool(), false);
+        QVERIFY(!model->data(childTask11Index, Presentation::QueryTreeModelBase::ProjectRole).isValid());
+        QVERIFY(!model->data(childTask12Index, Presentation::QueryTreeModelBase::ProjectRole).isValid());
+        QCOMPARE(model->data(childTask11Index, Presentation::QueryTreeModelBase::IsChildRole).toBool(), true);
+        QCOMPARE(model->data(childTask12Index, Presentation::QueryTreeModelBase::IsChildRole).toBool(), true);
 
         // WHEN
         taskRepositoryMock(&Domain::TaskRepository::update).when(task1).thenReturn(new FakeJob(this));

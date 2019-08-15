@@ -75,6 +75,10 @@ public:
         IconNameRole,
         IsDefaultRole,
         AdditionalInfoRole,
+        IsChildRole,
+        ProjectRole,
+        DataSourceRole,
+        ContextListRole,
         UserRole
     };
 

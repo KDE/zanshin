@@ -102,6 +102,35 @@ QVariant PageModel::defaultTaskData(const Domain::Task::Ptr &task, int role, con
         return task->title();
     case Qt::CheckStateRole:
         return task->isDone() ? Qt::Checked : Qt::Unchecked;
+    case Presentation::QueryTreeModelBase::IsChildRole:
+        return !info ? QVariant() : info->childTask;
+    case Presentation::QueryTreeModelBase::ProjectRole:
+        if (!info || !info->projectQueryResult) {
+            return QVariant();
+        } else if (info->projectQueryResult->data().isEmpty()) {
+            return QString();
+        } else {
+            return info->projectQueryResult->data().at(0)->name();
+        }
+    case Presentation::QueryTreeModelBase::DataSourceRole:
+        if (!info || !info->dataSourceQueryResult) {
+            return QVariant();
+        } else if (info->dataSourceQueryResult->data().isEmpty()) {
+            return QString();
+        } else {
+            return info->dataSourceQueryResult->data().at(0)->name();
+        }
+    case Presentation::QueryTreeModelBase::ContextListRole:
+        if (!info || !info->contextQueryResult) {
+            return QVariant();
+        } else {
+            const auto contexts = info->contextQueryResult->data();
+            auto result = QStringList();
+            std::transform(std::cbegin(contexts), std::cend(contexts),
+                           std::back_inserter(result),
+                           [](const Domain::Context::Ptr &context) { return context->name(); });
+            return result;
+        }
     case Presentation::QueryTreeModelBase::AdditionalInfoRole:
         if (!info || info->childTask)
             return QString();
