@@ -31,7 +31,6 @@
 #include <KLocalizedString>
 
 #include "domain/task.h"
-#include "presentation/pagemodel.h"
 #include "presentation/querytreemodelbase.h"
 #include "utils/datetime.h"
 
