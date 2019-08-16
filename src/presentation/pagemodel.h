@@ -65,7 +65,7 @@ public slots:
 protected:
     struct TaskExtraData
     {
-        bool childTask = false;
+        bool isChildTask = false;
         Domain::QueryResult<Domain::DataSource::Ptr>::Ptr dataSourceQueryResult;
         Domain::QueryResult<Domain::Project::Ptr>::Ptr projectQueryResult;
         Domain::QueryResult<Domain::Context::Ptr>::Ptr contextQueryResult;

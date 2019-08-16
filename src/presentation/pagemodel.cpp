@@ -50,11 +50,11 @@ PageModel::TaskExtraDataPtr PageModel::fetchTaskExtraData(Domain::TaskQueries::P
 {
     TaskExtraDataPtr info = TaskExtraDataPtr::create();
     if (index.parent().isValid()) {
-        info->childTask = true;
+        info->isChildTask = true;
     }
 
     // children are in the same data source as their parent
-    if (!info->childTask && parts.testFlag(TaskExtraPart::DataSource)) {
+    if (!info->isChildTask && parts.testFlag(TaskExtraPart::DataSource)) {
         info->dataSourceQueryResult = taskQueries->findDataSource(task);
         if (info->dataSourceQueryResult) {
             QPersistentModelIndex persistentIndex(index);
@@ -67,7 +67,7 @@ PageModel::TaskExtraDataPtr PageModel::fetchTaskExtraData(Domain::TaskQueries::P
     }
 
     // children are in the same project as their parent
-    if (!info->childTask && parts.testFlag(TaskExtraPart::Project)) {
+    if (!info->isChildTask && parts.testFlag(TaskExtraPart::Project)) {
         info->projectQueryResult = taskQueries->findProject(task);
         if (info->projectQueryResult) {
             QPersistentModelIndex persistentIndex(index);
@@ -103,7 +103,7 @@ QVariant PageModel::defaultTaskData(const Domain::Task::Ptr &task, int role, con
     case Qt::CheckStateRole:
         return task->isDone() ? Qt::Checked : Qt::Unchecked;
     case Presentation::QueryTreeModelBase::IsChildRole:
-        return !info ? QVariant() : info->childTask;
+        return !info ? QVariant() : info->isChildTask;
     case Presentation::QueryTreeModelBase::ProjectRole:
         if (!info || !info->projectQueryResult) {
             return QVariant();
