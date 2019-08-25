@@ -29,7 +29,11 @@
 #include <AkonadiCore/EntityDisplayAttribute>
 #include <AkonadiCore/Item>
 #include <KCalCore/Todo>
+#if __has_include(<kcalcore_version.h>)
 #include <kcalcore_version.h>
+#else
+#include <kcalendarcore_version.h>
+#endif
 #include <QMimeDatabase>
 
 #include <numeric>
