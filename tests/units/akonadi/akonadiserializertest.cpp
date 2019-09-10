@@ -828,7 +828,7 @@ private slots:
         QCOMPARE(task->recurrence(), Domain::Task::RecursMonthly);
         QVERIFY(!task->isDone());
         const QDate lastOccurrence(QDate(today.year(), today.month(), 10));
-        if (today.day() >= 10)
+        if (today.day() > 10)
             QCOMPARE(task->startDate(), lastOccurrence.addMonths(1));
         else
             QCOMPARE(task->startDate(), lastOccurrence);
