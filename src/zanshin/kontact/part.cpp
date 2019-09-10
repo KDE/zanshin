@@ -32,7 +32,6 @@
 #include <QStandardPaths>
 
 #include "../app/aboutdata.h"
-#include "../app/dependencies.h"
 
 #include "presentation/applicationmodel.h"
 
@@ -43,13 +42,14 @@
 #include "widgets/pageview.h"
 
 #include "utils/dependencymanager.h"
+#include "integration/dependencies.h"
 
 K_PLUGIN_FACTORY(PartFactory, registerPlugin<Part>();)
 
 Part::Part(QWidget *parentWidget, QObject *parent, const QVariantList &)
     : KParts::ReadOnlyPart(parent)
 {
-    App::initializeDependencies();
+    Integration::initializeGlobalAppDependencies();
 
     setComponentName(QStringLiteral("zanshin"), QStringLiteral("zanshin"));
 

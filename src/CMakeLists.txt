@@ -10,6 +10,7 @@ add_subdirectory(zanshin)
 add_subdirectory(akonadi)
 add_subdirectory(domain)
 add_subdirectory(presentation)
+add_subdirectory(integration)
 add_subdirectory(utils)
 add_subdirectory(widgets)
 

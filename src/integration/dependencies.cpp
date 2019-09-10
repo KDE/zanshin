@@ -45,7 +45,7 @@
 
 #include "utils/dependencymanager.h"
 
-void App::initializeDependencies()
+void Integration::initializeGlobalAppDependencies()
 {
     auto &deps = Utils::DependencyManager::globalInstance();
 

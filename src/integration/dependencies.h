@@ -21,12 +21,12 @@
    USA.
 */
 
-#ifndef APP_DEPENDENCIES_H
-#define APP_DEPENDENCIES_H
+#ifndef INTEGRATION_DEPENDENCIES_H
+#define INTEGRATION_DEPENDENCIES_H
 
-namespace App
+namespace Integration
 {
-    void initializeDependencies();
+    void initializeGlobalAppDependencies();
 }
 
 #endif

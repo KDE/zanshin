@@ -37,6 +37,7 @@
 
 #include "utils/dependencymanager.h"
 #include "utils/jobhandler.h"
+#include "integration/dependencies.h"
 
 #include <AkonadiCore/AttributeFactory>
 
@@ -46,11 +47,6 @@
 #include <QSortFilterProxyModel>
 #include <QStandardItemModel>
 #include <QTest>
-
-namespace App
-{
-    void initializeDependencies();
-}
 
 void FakeErrorHandler::doDisplayMessage(const QString &)
 {
@@ -70,7 +66,7 @@ ZanshinContext::ZanshinContext(QObject *parent)
     static bool initializedDependencies = false;
 
     if (!initializedDependencies) {
-        App::initializeDependencies();
+        Integration::initializeGlobalAppDependencies();
         MonitorSpy::setExpirationDelay(200);
         initializedDependencies = true;
     }

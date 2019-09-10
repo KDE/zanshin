@@ -14,15 +14,12 @@ MACRO(ZANSHIN_MANUAL_TESTS)
 
   FOREACH(_testname ${ARGN})
     set(_prefixed_testname "${prefix}-${_testname}")
-    add_executable(${_prefixed_testname} ${_testname}.cpp ${CMAKE_SOURCE_DIR}/src/zanshin/app/dependencies.cpp)
+    add_executable(${_prefixed_testname} ${_testname}.cpp)
     kde_enable_exceptions()
     target_link_libraries(${_prefixed_testname}
       Qt5::Test
 
-      akonadi
-      domain
-      presentation
-      utils
+      integration
       widgets
     )
   ENDFOREACH(_testname)
@@ -45,10 +42,7 @@ MACRO(ZANSHIN_AUTO_TESTS)
       Qt5::Test
 
       testlib
-      akonadi
-      domain
-      presentation
-      utils
+      integration
       widgets
       KF5::AkonadiXml
     )
@@ -73,10 +67,7 @@ MACRO(ZANSHIN_FEATURE_TESTS)
 
       featurelib
       testlib
-      akonadi
-      domain
-      presentation
-      utils
+      integration
       widgets
       KF5::AkonadiXml
     )

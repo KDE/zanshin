@@ -31,7 +31,7 @@
 #include <KLocalizedString>
 #include <QCommandLineParser>
 
-#include "zanshin/app/dependencies.h"
+#include "integration/dependencies.h"
 
 #include "domain/taskqueries.h"
 #include "domain/taskrepository.h"
@@ -43,7 +43,7 @@
 int main(int argc, char **argv)
 {
     QApplication app(argc, argv);
-    App::initializeDependencies();
+    Integration::initializeGlobalAppDependencies();
     KAboutData aboutData(QStringLiteral("tasktreeviewer"),
                      QStringLiteral("Show all the tasks in tree"), QStringLiteral("1.0"));
     QCommandLineParser parser;

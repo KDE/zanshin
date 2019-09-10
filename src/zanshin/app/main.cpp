@@ -44,9 +44,9 @@
 #include "presentation/applicationmodel.h"
 
 #include "utils/dependencymanager.h"
+#include "integration/dependencies.h"
 
 #include "aboutdata.h"
-#include "dependencies.h"
 
 #include <iostream>
 #include <KAboutData>
@@ -57,7 +57,7 @@ int main(int argc, char **argv)
 {
     KLocalizedString::setApplicationDomain("zanshin");
     QApplication app(argc, argv);
-    App::initializeDependencies();
+    Integration::initializeGlobalAppDependencies();
 
     auto aboutData = App::getAboutData();
     QCommandLineParser parser;

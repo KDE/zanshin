@@ -1,6 +1,5 @@
 set(part_SRCS
     ../app/aboutdata.cpp
-    ../app/dependencies.cpp
     part.cpp
 )
 
@@ -8,10 +7,7 @@ add_library(zanshin_part MODULE ${part_SRCS})
 kde_enable_exceptions()
 target_link_libraries(zanshin_part
     KF5::Parts
-    akonadi
-    domain
-    presentation
-    utils
+    integration
     widgets
 )
 
