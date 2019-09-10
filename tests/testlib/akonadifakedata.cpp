@@ -27,8 +27,12 @@
 
 #include <KCalCore/Todo>
 
+#include "akonadi/akonadicache.h"
+#include "akonadi/akonadicachingstorage.h"
 #include "akonadi/akonadiserializer.h"
 #include "akonadi/akonadiapplicationselectedattribute.h"
+
+#include "utils/dependencymanager.h"
 
 #include <algorithm>
 
@@ -416,6 +420,24 @@ Akonadi::MonitorInterface *AkonadiFakeData::createMonitor()
 Akonadi::StorageInterface *AkonadiFakeData::createStorage()
 {
     return new AkonadiFakeStorage(this);
+}
+
+std::unique_ptr<Utils::DependencyManager> AkonadiFakeData::createDependencies()
+{
+    auto deps = std::make_unique<Utils::DependencyManager>();
+    deps->add<Akonadi::Cache,
+             Akonadi::Cache(Akonadi::SerializerInterface*, Akonadi::MonitorInterface*),
+             Utils::DependencyManager::UniqueInstance>();
+    deps->add<Akonadi::MonitorInterface, Utils::DependencyManager::UniqueInstance>([this] (Utils::DependencyManager *deps) {
+        Q_UNUSED(deps)
+        return createMonitor();
+    });
+    deps->add<Akonadi::SerializerInterface, Akonadi::Serializer, Utils::DependencyManager::UniqueInstance>();
+    deps->add<Akonadi::StorageInterface, Utils::DependencyManager::UniqueInstance>([this] (Utils::DependencyManager *deps) {
+        return new Akonadi::CachingStorage(deps->create<Akonadi::Cache>(),
+                                           Akonadi::StorageInterface::Ptr(createStorage()));
+    });
+    return deps;
 }
 
 template<typename T>

@@ -36,6 +36,10 @@ class MonitorInterface;
 class StorageInterface;
 }
 
+namespace Utils {
+class DependencyManager;
+}
+
 namespace Testlib {
 
 class AkonadiFakeMonitor;
@@ -73,6 +77,7 @@ public:
 
     Akonadi::MonitorInterface *createMonitor();
     Akonadi::StorageInterface *createStorage();
+    std::unique_ptr<Utils::DependencyManager> createDependencies();
 
     Akonadi::Collection::Id maxCollectionId() const;
     Akonadi::Item::Id maxItemId() const;
