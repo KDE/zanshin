@@ -48,7 +48,13 @@
 void Integration::initializeGlobalAppDependencies()
 {
     auto &deps = Utils::DependencyManager::globalInstance();
+    initializeDefaultAkonadiDependencies(deps);
+    initializeDefaultDomainDependencies(deps);
+    initializeDefaultPresentationDependencies(deps);
+}
 
+void Integration::initializeDefaultAkonadiDependencies(Utils::DependencyManager &deps)
+{
     deps.add<Akonadi::Cache,
              Akonadi::Cache(Akonadi::SerializerInterface*, Akonadi::MonitorInterface*),
              Utils::DependencyManager::UniqueInstance>();
@@ -58,7 +64,10 @@ void Integration::initializeGlobalAppDependencies()
         return new Akonadi::CachingStorage(deps->create<Akonadi::Cache>(),
                                            Akonadi::StorageInterface::Ptr(new Akonadi::Storage));
     });
+}
 
+void Integration::initializeDefaultDomainDependencies(Utils::DependencyManager &deps)
+{
     deps.add<Domain::ContextQueries,
              Akonadi::ContextQueries(Akonadi::StorageInterface*,
                                      Akonadi::SerializerInterface*,
@@ -96,7 +105,10 @@ void Integration::initializeGlobalAppDependencies()
     deps.add<Domain::TaskRepository,
              Akonadi::TaskRepository(Akonadi::StorageInterface*,
                                      Akonadi::SerializerInterface*)>();
+}
 
+void Integration::initializeDefaultPresentationDependencies(Utils::DependencyManager &deps)
+{
     deps.add<Presentation::EditorModel>([] (Utils::DependencyManager *deps) {
         auto model = new Presentation::EditorModel;
         auto repository = deps->create<Domain::TaskRepository>();

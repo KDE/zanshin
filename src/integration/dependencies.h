@@ -24,9 +24,18 @@
 #ifndef INTEGRATION_DEPENDENCIES_H
 #define INTEGRATION_DEPENDENCIES_H
 
+namespace Utils
+{
+    class DependencyManager;
+}
+
 namespace Integration
 {
     void initializeGlobalAppDependencies();
+
+    void initializeDefaultAkonadiDependencies(Utils::DependencyManager &deps);
+    void initializeDefaultDomainDependencies(Utils::DependencyManager &deps);
+    void initializeDefaultPresentationDependencies(Utils::DependencyManager &deps);
 }
 
 #endif
