@@ -34,9 +34,20 @@
 
 #include "presentation/inboxpagemodel.h"
 #include "presentation/errorhandler.h"
+#include "presentation/querytreemodelbase.h"
+
+#include "akonadi/akonadiserializerinterface.h"
+
+#include "utils/dependencymanager.h"
+#include "integration/dependencies.h"
 
 #include "testlib/fakejob.h"
+#include "testlib/akonadifakedata.h"
+#include "testlib/gencollection.h"
+#include "testlib/gentodo.h"
+#include "testlib/testhelpers.h"
 
+using namespace Testlib;
 using namespace mockitopp;
 using namespace mockitopp::matcher;
 
@@ -59,34 +70,26 @@ private slots:
     {
         // GIVEN
 
-        // One task
-        auto rootTask = Domain::Task::Ptr::create();
-        rootTask->setTitle(QStringLiteral("rootTask"));
-        auto inboxProvider = Domain::QueryResultProvider<Domain::Task::Ptr>::Ptr::create();
-        auto inboxResult = Domain::QueryResult<Domain::Task::Ptr>::create(inboxProvider);
-        inboxProvider->append(rootTask);
+        AkonadiFakeData data;
+        auto deps = data.createDependencies();
+        Integration::initializeDefaultDomainDependencies(*deps.get());
+
+        // One top level collection
+        data.createCollection(GenCollection().withId(42).withRootAsParent().withTaskContent());
+
+        // One root task
+        data.createItem(GenTodo().withId(1).withParent(42).withUid("1").withTitle(QStringLiteral("rootTask")));
 
         // One task under the root task
-        auto childTask = Domain::Task::Ptr::create();
-        childTask->setTitle(QStringLiteral("childTask"));
-        childTask->setDone(true);
-        auto taskProvider = Domain::QueryResultProvider<Domain::Task::Ptr>::Ptr::create();
-        auto taskResult = Domain::QueryResult<Domain::Task::Ptr>::create(taskProvider);
-        taskProvider->append(childTask);
+        data.createItem(GenTodo().withId(2).withParent(42).withUid("2").withParentUid("1").done(true).withTitle(QStringLiteral("childTask")));
 
-        Utils::MockObject<Domain::TaskQueries> taskQueriesMock;
-        taskQueriesMock(&Domain::TaskQueries::findInboxTopLevel).when().thenReturn(inboxResult);
-        taskQueriesMock(&Domain::TaskQueries::findChildren).when(rootTask).thenReturn(taskResult);
-        taskQueriesMock(&Domain::TaskQueries::findChildren).when(childTask).thenReturn(Domain::QueryResult<Domain::Task::Ptr>::Ptr());
-        taskQueriesMock(&Domain::TaskQueries::findDataSource).when(any<Domain::Task::Ptr>()).thenReturn(Domain::QueryResult<Domain::DataSource::Ptr>::Ptr());
-
-        Utils::MockObject<Domain::TaskRepository> taskRepositoryMock;
-
-        Presentation::InboxPageModel inbox(taskQueriesMock.getInstance(),
-                                               taskRepositoryMock.getInstance());
+        auto serializer = deps->create<Akonadi::SerializerInterface>();
+        Presentation::InboxPageModel inbox(deps->create<Domain::TaskQueries>(),
+                                           deps->create<Domain::TaskRepository>());
 
         // WHEN
         QAbstractItemModel *model = inbox.centralListModel();
+        TestHelpers::waitForEmptyJobQueue();
 
         // THEN
         const QModelIndex rootTaskIndex = model->index(0, 0);
@@ -95,6 +98,9 @@ private slots:
         QCOMPARE(model->rowCount(), 1);
         QCOMPARE(model->rowCount(rootTaskIndex), 1);
         QCOMPARE(model->rowCount(childTaskIndex), 0);
+
+        auto rootTask = model->data(rootTaskIndex, Presentation::QueryTreeModelBase::ObjectRole).value<Domain::Task::Ptr>();
+        auto childTask = model->data(childTaskIndex, Presentation::QueryTreeModelBase::ObjectRole).value<Domain::Task::Ptr>();
 
         const Qt::ItemFlags defaultFlags = Qt::ItemIsSelectable
                                          | Qt::ItemIsEnabled
@@ -116,9 +122,6 @@ private slots:
         QCOMPARE(model->data(childTaskIndex, Qt::CheckStateRole).toBool(), childTask->isDone());
 
         // WHEN
-        taskRepositoryMock(&Domain::TaskRepository::update).when(rootTask).thenReturn(new FakeJob(this));
-        taskRepositoryMock(&Domain::TaskRepository::update).when(childTask).thenReturn(new FakeJob(this));
-
         QVERIFY(model->setData(rootTaskIndex, "newRootTask"));
         QVERIFY(model->setData(childTaskIndex, "newChildTask"));
 
@@ -126,9 +129,6 @@ private slots:
         QVERIFY(model->setData(childTaskIndex, Qt::Unchecked, Qt::CheckStateRole));
 
         // THEN
-        QVERIFY(taskRepositoryMock(&Domain::TaskRepository::update).when(rootTask).exactly(2));
-        QVERIFY(taskRepositoryMock(&Domain::TaskRepository::update).when(childTask).exactly(2));
-
         QCOMPARE(rootTask->title(), QStringLiteral("newRootTask"));
         QCOMPARE(childTask->title(), QStringLiteral("newChildTask"));
 
@@ -136,38 +136,61 @@ private slots:
         QCOMPARE(childTask->isDone(), false);
 
         // WHEN
-        auto data = std::unique_ptr<QMimeData>(model->mimeData(QModelIndexList() << childTaskIndex));
+        auto mimeData = std::unique_ptr<QMimeData>(model->mimeData(QModelIndexList() << childTaskIndex));
 
         // THEN
-        QVERIFY(data->hasFormat(QStringLiteral("application/x-zanshin-object")));
-        QCOMPARE(data->property("objects").value<Domain::Task::List>(),
+        QVERIFY(mimeData->hasFormat(QStringLiteral("application/x-zanshin-object")));
+        QCOMPARE(mimeData->property("objects").value<Domain::Task::List>(),
                  Domain::Task::List() << childTask);
 
         // WHEN
-        auto childTask2 = Domain::Task::Ptr::create();
-        taskRepositoryMock(&Domain::TaskRepository::associate).when(rootTask, childTask2).thenReturn(new FakeJob(this));
-        data.reset(new QMimeData);
-        data->setData(QStringLiteral("application/x-zanshin-object"), "object");
-        data->setProperty("objects", QVariant::fromValue(Domain::Task::List() << childTask2));
-        model->dropMimeData(data.get(), Qt::MoveAction, -1, -1, rootTaskIndex);
+        // - root (1)
+        //   - child (2)
+        //     - grandchild (48), will be dropped onto root
+        data.createItem(GenTodo().withId(48).withParent(42).withUid("48").withParentUid("2").withTitle(QStringLiteral("childTask2")));
+        QCOMPARE(model->rowCount(childTaskIndex), 1);
+        auto grandChildTask = model->data(model->index(0, 0, childTaskIndex), Presentation::QueryTreeModelBase::ObjectRole).value<Domain::Task::Ptr>();
+        QVERIFY(grandChildTask);
+        mimeData.reset(new QMimeData);
+        mimeData->setData(QStringLiteral("application/x-zanshin-object"), "object");
+        mimeData->setProperty("objects", QVariant::fromValue(Domain::Task::List() << grandChildTask));
+        QVERIFY(model->dropMimeData(mimeData.get(), Qt::MoveAction, -1, -1, rootTaskIndex));
+        TestHelpers::waitForEmptyJobQueue();
 
         // THEN
-        QVERIFY(taskRepositoryMock(&Domain::TaskRepository::associate).when(rootTask, childTask2).exactly(1));
-
+        // root (1)
+        // - child (2)
+        // - second child (48)
+        QCOMPARE(serializer->relatedUidFromItem(data.item(48)), QStringLiteral("1"));
+        QCOMPARE(model->rowCount(), 1);
+        QCOMPARE(model->rowCount(rootTaskIndex), 2);
+        QCOMPARE(model->rowCount(childTaskIndex), 0);
 
         // WHEN
-        auto childTask3 = Domain::Task::Ptr::create();
-        auto childTask4 = Domain::Task::Ptr::create();
-        taskRepositoryMock(&Domain::TaskRepository::associate).when(rootTask, childTask3).thenReturn(new FakeJob(this));
-        taskRepositoryMock(&Domain::TaskRepository::associate).when(rootTask, childTask4).thenReturn(new FakeJob(this));
-        data.reset(new QMimeData);
-        data->setData(QStringLiteral("application/x-zanshin-object"), "object");
-        data->setProperty("objects", QVariant::fromValue(Domain::Task::List() << childTask3 << childTask4));
-        model->dropMimeData(data.get(), Qt::MoveAction, -1, -1, rootTaskIndex);
+        // two more toplevel tasks
+        data.createItem(GenTodo().withId(49).withParent(42).withUid("49").withTitle(QStringLiteral("childTask3")));
+        auto task3 = model->data(model->index(1, 0), Presentation::QueryTreeModelBase::ObjectRole).value<Domain::Task::Ptr>();
+        QVERIFY(task3);
+        data.createItem(GenTodo().withId(50).withParent(42).withUid("50").withTitle(QStringLiteral("childTask4")));
+        auto task4 = model->data(model->index(2, 0), Presentation::QueryTreeModelBase::ObjectRole).value<Domain::Task::Ptr>();
+        QVERIFY(task4);
+        mimeData.reset(new QMimeData);
+        mimeData->setData(QStringLiteral("application/x-zanshin-object"), "object");
+        mimeData->setProperty("objects", QVariant::fromValue(Domain::Task::List() << task3 << task4));
+        QVERIFY(model->dropMimeData(mimeData.get(), Qt::MoveAction, -1, -1, rootTaskIndex));
+        TestHelpers::waitForEmptyJobQueue();
 
         // THEN
-        QVERIFY(taskRepositoryMock(&Domain::TaskRepository::associate).when(rootTask, childTask3).exactly(1));
-        QVERIFY(taskRepositoryMock(&Domain::TaskRepository::associate).when(rootTask, childTask4).exactly(1));
+        // root (1)
+        // - child (2)
+        // - second child (48)
+        // - task3 (49)
+        // - task4 (50)
+
+        QCOMPARE(serializer->relatedUidFromItem(data.item(49)), QStringLiteral("1"));
+        QCOMPARE(serializer->relatedUidFromItem(data.item(50)), QStringLiteral("1"));
+        QCOMPARE(model->rowCount(), 1);
+        QCOMPARE(model->rowCount(rootTaskIndex), 4);
     }
 
     void shouldAddTasksInInbox()
