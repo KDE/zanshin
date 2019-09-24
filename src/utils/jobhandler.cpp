@@ -90,8 +90,8 @@ void JobHandler::install(KJob *job, const ResultHandlerWithJob &handler, StartMo
 template<typename ResultHandler>
 void clearJobs(JobHandlerInstance *self, QHash<KJob*, QList<ResultHandler>> &jobs)
 {
-    foreach (auto *job, jobs.keys()) {
-        QObject::disconnect(job, 0, self, 0);
+    for (auto it = jobs.cbegin(); it != jobs.cend(); ++it) {
+        QObject::disconnect(it.key(), 0, self, 0);
     }
     jobs.clear();
 }
