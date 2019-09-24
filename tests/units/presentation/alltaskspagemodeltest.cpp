@@ -28,7 +28,6 @@
 #include <QMimeData>
 
 #include "utils/datetime.h"
-#include "utils/mockobject.h"
 
 #include "domain/taskqueries.h"
 #include "domain/taskrepository.h"
@@ -47,13 +46,18 @@
 #include "testlib/testhelpers.h"
 
 using namespace Testlib;
-using namespace mockitopp;
-using namespace mockitopp::matcher;
 
 class AllTasksPageModelTest : public QObject
 {
     Q_OBJECT
 private slots:
+    void cleanup()
+    {
+        // The first call to QueryTreeModelBase::data triggers fetchTaskExtraData which creates jobs.
+        // Wait for these to finish so they don't mess up subsequent tests
+        TestHelpers::waitForEmptyJobQueue();
+    }
+
     void shouldListAllTasksInCentralListModel()
     {
         // GIVEN
@@ -87,6 +91,8 @@ private slots:
         TestHelpers::waitForEmptyJobQueue();
 
         // THEN
+        QCOMPARE(model->rowCount(), 3);
+
         const QModelIndex task1Index = model->index(0, 0);
         const QModelIndex task2Index = model->index(1, 0);
         const QModelIndex task3Index = model->index(2, 0);
@@ -94,7 +100,6 @@ private slots:
         const QModelIndex childTask11Index = model->index(0, 0, task1Index);
         const QModelIndex childTask12Index = model->index(1, 0, task1Index);
 
-        QCOMPARE(model->rowCount(), 3);
         QCOMPARE(model->rowCount(task1Index), 2);
         QCOMPARE(model->rowCount(task2Index), 0);
         QCOMPARE(model->rowCount(task3Index), 0);
@@ -240,133 +245,137 @@ private slots:
     void shouldAddTasksInAllTasksPage()
     {
         // GIVEN
+        AkonadiFakeData data;
+        auto deps = data.createDependencies();
+        Integration::initializeDefaultDomainDependencies(*deps.get());
+        data.createCollection(GenCollection().withId(42).withRootAsParent().withTaskContent());
 
-        // ... in fact we won't list any model
-        Utils::MockObject<Domain::TaskQueries> taskQueriesMock;
-
-        // We'll gladly create a task though
-        Utils::MockObject<Domain::TaskRepository> taskRepositoryMock;
-        taskRepositoryMock(&Domain::TaskRepository::create).when(any<Domain::Task::Ptr>()).thenReturn(new FakeJob(this));
-
-        Presentation::AllTasksPageModel pageModel(taskQueriesMock.getInstance(),
-                                                  taskRepositoryMock.getInstance());
+        Presentation::AllTasksPageModel pageModel(deps->create<Domain::TaskQueries>(),
+                                                  deps->create<Domain::TaskRepository>());
+        QAbstractItemModel *model = pageModel.centralListModel();
 
         // WHEN
         auto title = QStringLiteral("New task");
-        auto task = pageModel.addItem(title);
+        auto createdTask = pageModel.addItem(title);
+        TestHelpers::waitForEmptyJobQueue();
 
         // THEN
-        QVERIFY(taskRepositoryMock(&Domain::TaskRepository::create).when(any<Domain::Task::Ptr>()).exactly(1));
+        QVERIFY(createdTask);
+        QCOMPARE(createdTask->title(), title);
+        QCOMPARE(createdTask->startDate(), QDate()); // that's one difference with the workday, which would set it to Utils::DateTime::currentDate()
 
-        QVERIFY(task);
-        QCOMPARE(task->title(), title);
-        QCOMPARE(task->startDate(), QDate()); // that's one difference with the workday, which would set it to Utils::DateTime::currentDate()
+        QCOMPARE(model->rowCount(), 1);
+        auto taskInModel = model->data(model->index(0, 0), Presentation::QueryTreeModelBase::ObjectRole).value<Domain::Task::Ptr>();
+        QVERIFY(taskInModel);
+        QCOMPARE(taskInModel->title(), createdTask->title());
+        QCOMPARE(taskInModel->startDate(), createdTask->startDate());
+
+        QCOMPARE(data.items().count(), 1);
     }
 
     void shouldAddChildTask()
     {
         // GIVEN
+        AkonadiFakeData data;
+        auto deps = data.createDependencies();
+        Integration::initializeDefaultDomainDependencies(*deps.get());
+        data.createCollection(GenCollection().withId(42).withRootAsParent().withTaskContent());
 
-        // Two tasks
-        auto task1 = Domain::Task::Ptr::create();
-        auto task2 = Domain::Task::Ptr::create();
-        auto taskProvider = Domain::QueryResultProvider<Domain::Task::Ptr>::Ptr::create();
-        auto taskResult = Domain::QueryResult<Domain::Task::Ptr>::create(taskProvider);
-        taskProvider->append(task1);
-        taskProvider->append(task2);
+        // One project
+        data.createItem(GenTodo().withId(47).withParent(42).withUid("47").withTitle(QStringLiteral("KDE")).asProject());
 
-        Utils::MockObject<Domain::TaskQueries> taskQueriesMock;
-        taskQueriesMock(&Domain::TaskQueries::findTopLevel).when().thenReturn(taskResult);
-        taskQueriesMock(&Domain::TaskQueries::findChildren).when(task1).thenReturn(Domain::QueryResult<Domain::Task::Ptr>::Ptr());
-        taskQueriesMock(&Domain::TaskQueries::findChildren).when(task2).thenReturn(Domain::QueryResult<Domain::Task::Ptr>::Ptr());
-        taskQueriesMock(&Domain::TaskQueries::findProject).when(any<Domain::Task::Ptr>()).thenReturn(Domain::QueryResult<Domain::Project::Ptr>::Ptr());
+        // One task
+        data.createItem(GenTodo().withId(42).withParent(42).withUid("42").withTitle(QStringLiteral("task1")));
+        QCOMPARE(data.items().count(), 2);
 
-        Utils::MockObject<Domain::TaskRepository> taskRepositoryMock;
-        taskRepositoryMock(&Domain::TaskRepository::createChild).when(any<Domain::Task::Ptr>(),
-                                                                      any<Domain::Task::Ptr>())
-                                                                .thenReturn(new FakeJob(this));
-
-        Presentation::AllTasksPageModel pageModel(taskQueriesMock.getInstance(),
-                                                  taskRepositoryMock.getInstance());
+        Presentation::AllTasksPageModel pageModel(deps->create<Domain::TaskQueries>(),
+                                                  deps->create<Domain::TaskRepository>());
+        QAbstractItemModel *model = pageModel.centralListModel();
+        TestHelpers::waitForEmptyJobQueue();
+        QCOMPARE(model->rowCount(), 1);
 
         // WHEN
         const auto title = QStringLiteral("New task");
-        const auto parentIndex = pageModel.centralListModel()->index(0, 0);
+        const auto parentIndex = model->index(0, 0);
         const auto createdTask = pageModel.addItem(title, parentIndex);
+        TestHelpers::waitForEmptyJobQueue();
 
         // THEN
-        QVERIFY(taskRepositoryMock(&Domain::TaskRepository::createChild).when(any<Domain::Task::Ptr>(),
-                                                                              any<Domain::Task::Ptr>())
-                                                                        .exactly(1));
-
         QVERIFY(createdTask);
         QCOMPARE(createdTask->title(), title);
         QVERIFY(!createdTask->startDate().isValid());
+
+        QCOMPARE(model->rowCount(parentIndex), 1);
+        auto taskInModel = model->data(model->index(0, 0, parentIndex), Presentation::QueryTreeModelBase::ObjectRole).value<Domain::Task::Ptr>();
+        QVERIFY(taskInModel);
+        QCOMPARE(taskInModel->title(), createdTask->title());
+        QCOMPARE(taskInModel->startDate(), createdTask->startDate());
+
+        QCOMPARE(data.items().count(), 3);
     }
 
     void shouldDeleteItems()
     {
         // GIVEN
+        AkonadiFakeData data;
+        auto deps = data.createDependencies();
+        Integration::initializeDefaultDomainDependencies(*deps.get());
+        data.createCollection(GenCollection().withId(42).withRootAsParent().withTaskContent());
 
         // Two tasks
-        auto task1 = Domain::Task::Ptr::create();
-        auto task2 = Domain::Task::Ptr::create();
-        auto taskProvider = Domain::QueryResultProvider<Domain::Task::Ptr>::Ptr::create();
-        auto taskResult = Domain::QueryResult<Domain::Task::Ptr>::create(taskProvider);
-        taskProvider->append(task1);
-        taskProvider->append(task2);
+        data.createItem(GenTodo().withId(42).withParent(42).withUid("42").withTitle(QStringLiteral("task1")));
+        data.createItem(GenTodo().withId(43).withParent(42).withUid("43").withTitle(QStringLiteral("task2")));
+        QCOMPARE(data.items().count(), 2);
 
-        Utils::MockObject<Domain::TaskQueries> taskQueriesMock;
-        taskQueriesMock(&Domain::TaskQueries::findTopLevel).when().thenReturn(taskResult);
-        taskQueriesMock(&Domain::TaskQueries::findChildren).when(task1).thenReturn(Domain::QueryResult<Domain::Task::Ptr>::Ptr());
-        taskQueriesMock(&Domain::TaskQueries::findChildren).when(task2).thenReturn(Domain::QueryResult<Domain::Task::Ptr>::Ptr());
-        taskQueriesMock(&Domain::TaskQueries::findProject).when(any<Domain::Task::Ptr>()).thenReturn(Domain::QueryResult<Domain::Project::Ptr>::Ptr());
-
-        Utils::MockObject<Domain::TaskRepository> taskRepositoryMock;
-        taskRepositoryMock(&Domain::TaskRepository::remove).when(task2).thenReturn(new FakeJob(this));
-
-        Presentation::AllTasksPageModel pageModel(taskQueriesMock.getInstance(),
-                                               taskRepositoryMock.getInstance());
+        Presentation::AllTasksPageModel pageModel(deps->create<Domain::TaskQueries>(),
+                                                  deps->create<Domain::TaskRepository>());
+        QAbstractItemModel *model = pageModel.centralListModel();
+        TestHelpers::waitForEmptyJobQueue();
+        QCOMPARE(model->rowCount(), 2);
 
         // WHEN
-        const QModelIndex index = pageModel.centralListModel()->index(1, 0);
+        const QModelIndex index = model->index(1, 0);
+        QVERIFY(index.isValid());
         pageModel.removeItem(index);
+        TestHelpers::waitForEmptyJobQueue();
 
         // THEN
-        QVERIFY(taskRepositoryMock(&Domain::TaskRepository::remove).when(task2).exactly(1));
+        QCOMPARE(model->rowCount(), 1);
+        QCOMPARE(data.items().count(), 1);
     }
 
     void shouldPromoteItem()
     {
         // GIVEN
+        AkonadiFakeData data;
+        auto deps = data.createDependencies();
+        Integration::initializeDefaultDomainDependencies(*deps.get());
+        data.createCollection(GenCollection().withId(42).withRootAsParent().withTaskContent());
 
         // Two tasks
-        auto task1 = Domain::Task::Ptr::create();
-        auto task2 = Domain::Task::Ptr::create();
-        auto taskProvider = Domain::QueryResultProvider<Domain::Task::Ptr>::Ptr::create();
-        auto taskResult = Domain::QueryResult<Domain::Task::Ptr>::create(taskProvider);
-        taskProvider->append(task1);
-        taskProvider->append(task2);
+        data.createItem(GenTodo().withId(42).withParent(42).withUid("42").withTitle(QStringLiteral("task1")));
+        data.createItem(GenTodo().withId(43).withParent(42).withUid("43").withTitle(QStringLiteral("task2")));
+        QCOMPARE(data.items().count(), 2);
 
-        Utils::MockObject<Domain::TaskQueries> taskQueriesMock;
-        taskQueriesMock(&Domain::TaskQueries::findTopLevel).when().thenReturn(taskResult);
-        taskQueriesMock(&Domain::TaskQueries::findChildren).when(task1).thenReturn(Domain::QueryResult<Domain::Task::Ptr>::Ptr());
-        taskQueriesMock(&Domain::TaskQueries::findChildren).when(task2).thenReturn(Domain::QueryResult<Domain::Task::Ptr>::Ptr());
-        taskQueriesMock(&Domain::TaskQueries::findDataSource).when(any<Domain::Task::Ptr>()).thenReturn(Domain::QueryResult<Domain::DataSource::Ptr>::Ptr());
-        taskQueriesMock(&Domain::TaskQueries::findProject).when(task2).thenReturn(Domain::QueryResult<Domain::Project::Ptr>::Ptr());
+        auto serializer = deps->create<Akonadi::SerializerInterface>();
 
-        Utils::MockObject<Domain::TaskRepository> taskRepositoryMock;
-        taskRepositoryMock(&Domain::TaskRepository::promoteToProject).when(task2).thenReturn(new FakeJob(this));
+        QVERIFY(!serializer->isProjectItem(data.items().at(1)));
 
-        Presentation::AllTasksPageModel pageModel(taskQueriesMock.getInstance(),
-                                                  taskRepositoryMock.getInstance());
+        Presentation::AllTasksPageModel pageModel(deps->create<Domain::TaskQueries>(),
+                                                  deps->create<Domain::TaskRepository>());
+        QAbstractItemModel *model = pageModel.centralListModel();
+        TestHelpers::waitForEmptyJobQueue();
+        QCOMPARE(model->rowCount(), 2);
 
         // WHEN
-        const QModelIndex index = pageModel.centralListModel()->index(1, 0);
+        const QModelIndex index = model->index(1, 0);
         pageModel.promoteItem(index);
+        TestHelpers::waitForEmptyJobQueue();
 
         // THEN
-        QVERIFY(taskRepositoryMock(&Domain::TaskRepository::promoteToProject).when(task2).exactly(1));
+        QCOMPARE(model->rowCount(), 1);
+        QCOMPARE(data.items().count(), 2);
+        QVERIFY(serializer->isProjectItem(data.items().at(1)));
     }
 };
 
