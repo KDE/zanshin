@@ -62,6 +62,18 @@ public:
     void setFetchItemBehavior(Akonadi::Item::Id id, FetchBehavior behavior);
     FetchBehavior fetchItemBehavior(Akonadi::Item::Id id) const;
 
+    void setCreateNextItemError(int errorCode, const QString &errorText);
+    int createNextItemErrorCode();
+    QString createNextItemErrorText();
+
+    void setDeleteNextItemError(int errorCode, const QString &errorText);
+    int deleteNextItemErrorCode();
+    QString deleteNextItemErrorText();
+
+    void setUpdateNextItemError(int errorCode, const QString &errorText);
+    int updateNextItemErrorCode();
+    QString updateNextItemErrorText();
+
 private:
     QHash<Akonadi::Collection::Id, int> m_fetchCollectionsErrorCode;
     QHash<Akonadi::Collection::Id, FetchBehavior> m_fetchCollectionsBehavior;
@@ -74,6 +86,15 @@ private:
 
     QHash<Akonadi::Item::Id, int> m_fetchItemErrorCode;
     QHash<Akonadi::Item::Id, FetchBehavior> m_fetchItemBehavior;
+
+    int m_createNextItemErrorCode = 0;
+    QString m_createNextItemErrorText;
+
+    int m_deleteNextItemErrorCode = 0;
+    QString m_deleteNextItemErrorText;
+
+    int m_updateNextItemErrorCode = 0;
+    QString m_updateNextItemErrorText;
 };
 
 }

@@ -109,12 +109,16 @@ KJob *AkonadiFakeStorage::createItem(Akonadi::Item item, Akonadi::Collection col
 
     auto job = new FakeJob;
     if (!m_data->item(item.id()).isValid()) {
+        job->setExpectedError(m_data->storageBehavior().createNextItemErrorCode(),
+                              m_data->storageBehavior().createNextItemErrorText());
         Utils::JobHandler::install(job, [=] () mutable {
-            item.setId(m_data->maxItemId() + 1);
-            item.setParentCollection(collection);
-            // Force payload detach
-            item.setPayloadFromData(item.payloadData());
-            m_data->createItem(item);
+            if (!job->error()) {
+                item.setId(m_data->maxItemId() + 1);
+                item.setParentCollection(collection);
+                // Force payload detach
+                item.setPayloadFromData(item.payloadData());
+                m_data->createItem(item);
+            }
         });
     } else {
         job->setExpectedError(1, QStringLiteral("Item already exists"));
@@ -129,10 +133,14 @@ KJob *AkonadiFakeStorage::updateItem(Akonadi::Item item, QObject *parent)
     auto startMode = startModeForParent(parent);
 
     if (m_data->item(item.id()).isValid()) {
+        job->setExpectedError(m_data->storageBehavior().updateNextItemErrorCode(),
+                              m_data->storageBehavior().updateNextItemErrorText());
         Utils::JobHandler::install(job, [=] () mutable {
-            // Force payload detach
-            item.setPayloadFromData(item.payloadData());
-            m_data->modifyItem(item);
+            if (!job->error()) {
+                // Force payload detach
+                item.setPayloadFromData(item.payloadData());
+                m_data->modifyItem(item);
+            }
         }, startMode);
     } else {
         job->setExpectedError(1, QStringLiteral("Item doesn't exist"));
@@ -146,7 +154,9 @@ KJob *AkonadiFakeStorage::removeItem(Akonadi::Item item)
     auto job = new FakeJob;
     if (m_data->item(item.id()).isValid()) {
         Utils::JobHandler::install(job, [=] {
-            m_data->removeItem(item);
+            if (!job->error()) {
+                m_data->removeItem(item);
+            }
         });
     } else {
         job->setExpectedError(1, QStringLiteral("Item doesn't exist"));
@@ -165,9 +175,13 @@ KJob *AkonadiFakeStorage::removeItems(Akonadi::Item::List items, QObject *parent
                                      });
 
     if (allItemsExist) {
+        job->setExpectedError(m_data->storageBehavior().deleteNextItemErrorCode(),
+                              m_data->storageBehavior().deleteNextItemErrorText());
         Utils::JobHandler::install(job, [=] {
-            foreach (const Akonadi::Item &item, items) {
-                m_data->removeItem(item);
+            if (!job->error()) {
+                foreach (const Akonadi::Item &item, items) {
+                    m_data->removeItem(item);
+                }
             }
         }, startMode);
     } else {
@@ -184,10 +198,12 @@ KJob *AkonadiFakeStorage::moveItem(Akonadi::Item item, Akonadi::Collection colle
     if (m_data->item(item.id()).isValid()
      && m_data->collection(collection.id()).isValid()) {
         Utils::JobHandler::install(job, [=] () mutable {
-            item.setParentCollection(collection);
-            // Force payload detach
-            item.setPayloadFromData(item.payloadData());
-            m_data->modifyItem(item);
+            if (!job->error()) {
+                item.setParentCollection(collection);
+                // Force payload detach
+                item.setPayloadFromData(item.payloadData());
+                m_data->modifyItem(item);
+            }
         }, startMode);
     } else {
         job->setExpectedError(1, QStringLiteral("The item or the collection doesn't exist"));
@@ -210,18 +226,20 @@ KJob *AkonadiFakeStorage::moveItems(Akonadi::Item::List items, Akonadi::Collecti
     if (allItemsExist
      && m_data->collection(collection.id()).isValid()) {
         Utils::JobHandler::install(job, [=] () mutable {
-            std::transform(items.constBegin(), items.constEnd(),
-                           items.begin(),
-                           [=] (const Akonadi::Item &item) {
-                               auto result = item;
-                               result.setParentCollection(collection);
-                               // Force payload detach
-                               result.setPayloadFromData(result.payloadData());
-                               return result;
-                           });
+            if (!job->error()) {
+                std::transform(items.constBegin(), items.constEnd(),
+                               items.begin(),
+                               [=] (const Akonadi::Item &item) {
+                    auto result = item;
+                    result.setParentCollection(collection);
+                    // Force payload detach
+                    result.setPayloadFromData(result.payloadData());
+                    return result;
+                });
 
-            foreach (const Akonadi::Item &item, items) {
-                m_data->modifyItem(item);
+                foreach (const Akonadi::Item &item, items) {
+                    m_data->modifyItem(item);
+                }
             }
         }, startMode);
     } else {
@@ -239,8 +257,10 @@ KJob *AkonadiFakeStorage::createCollection(Akonadi::Collection collection, QObje
     auto startMode = startModeForParent(parent);
     if (!m_data->collection(collection.id()).isValid()) {
         Utils::JobHandler::install(job, [=] () mutable {
-            collection.setId(m_data->maxCollectionId() + 1);
-            m_data->createCollection(collection);
+            if (!job->error()) {
+                collection.setId(m_data->maxCollectionId() + 1);
+                m_data->createCollection(collection);
+            }
         }, startMode);
     } else {
         job->setExpectedError(1, QStringLiteral("The collection already exists"));
@@ -255,7 +275,9 @@ KJob *AkonadiFakeStorage::updateCollection(Akonadi::Collection collection, QObje
     auto startMode = startModeForParent(parent);
     if (m_data->collection(collection.id()).isValid()) {
         Utils::JobHandler::install(job, [=] {
-            m_data->modifyCollection(collection);
+            if (!job->error()) {
+                m_data->modifyCollection(collection);
+            }
         }, startMode);
     } else {
         job->setExpectedError(1, QStringLiteral("The collection doesn't exist"));
@@ -270,7 +292,9 @@ KJob *AkonadiFakeStorage::removeCollection(Akonadi::Collection collection, QObje
     auto startMode = startModeForParent(parent);
     if (m_data->collection(collection.id()).isValid()) {
         Utils::JobHandler::install(job, [=] {
-            m_data->removeCollection(collection);
+            if (!job->error()) {
+                m_data->removeCollection(collection);
+            }
         }, startMode);
     } else {
         job->setExpectedError(1, QStringLiteral("The collection doesn't exist"));

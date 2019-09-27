@@ -112,3 +112,51 @@ AkonadiFakeStorageBehavior::FetchBehavior AkonadiFakeStorageBehavior::fetchItemB
 {
     return m_fetchItemBehavior.value(id, NormalFetch);
 }
+
+void AkonadiFakeStorageBehavior::setCreateNextItemError(int errorCode, const QString &errorText)
+{
+    m_createNextItemErrorCode = errorCode;
+    m_createNextItemErrorText = errorText;
+}
+
+int AkonadiFakeStorageBehavior::createNextItemErrorCode()
+{
+    return std::exchange(m_createNextItemErrorCode, KJob::NoError);
+}
+
+QString AkonadiFakeStorageBehavior::createNextItemErrorText()
+{
+    return std::exchange(m_createNextItemErrorText, QString());
+}
+
+void AkonadiFakeStorageBehavior::setDeleteNextItemError(int errorCode, const QString &errorText)
+{
+    m_deleteNextItemErrorCode = errorCode;
+    m_deleteNextItemErrorText = errorText;
+}
+
+int AkonadiFakeStorageBehavior::deleteNextItemErrorCode()
+{
+    return std::exchange(m_deleteNextItemErrorCode, KJob::NoError);
+}
+
+QString AkonadiFakeStorageBehavior::deleteNextItemErrorText()
+{
+    return std::exchange(m_deleteNextItemErrorText, QString());
+}
+
+void AkonadiFakeStorageBehavior::setUpdateNextItemError(int errorCode, const QString &errorText)
+{
+    m_updateNextItemErrorCode = errorCode;
+    m_updateNextItemErrorText = errorText;
+}
+
+int AkonadiFakeStorageBehavior::updateNextItemErrorCode()
+{
+    return std::exchange(m_updateNextItemErrorCode, KJob::NoError);
+}
+
+QString AkonadiFakeStorageBehavior::updateNextItemErrorText()
+{
+    return std::exchange(m_updateNextItemErrorText, QString());
+}
