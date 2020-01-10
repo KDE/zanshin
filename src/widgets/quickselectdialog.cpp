@@ -90,7 +90,7 @@ void QuickSelectDialog::applyFilterChanged(const QString &textFilter)
     else
         m_label->setText(i18n("Path: %1", textFilter));
 
-    m_filterProxyModel->setFilterFixedString(textFilter);
+    m_filterProxyModel->setFilterRegularExpression(QRegularExpression::escape(textFilter));
     m_tree->expandAll();
 }
 
@@ -98,7 +98,7 @@ bool QuickSelectDialog::eventFilter(QObject *, QEvent *ev)
 {
     if (ev->type() == QEvent::KeyPress) {
         auto event = static_cast<QKeyEvent*>(ev);
-        auto filter = m_filterProxyModel->filterRegExp().pattern();
+        auto filter = m_filterProxyModel->filterRegularExpression().pattern();
 
         switch (event->key()) {
         case Qt::Key_Backspace:
@@ -108,7 +108,7 @@ bool QuickSelectDialog::eventFilter(QObject *, QEvent *ev)
             filter = QString();
             break;
         default:
-            if (event->text().contains(QRegExp("^(\\w| )+$"))) {
+            if (event->text().contains(QRegularExpression(QStringLiteral("^(\\w| )+$")))) {
                 filter += event->text();
             }
             break;

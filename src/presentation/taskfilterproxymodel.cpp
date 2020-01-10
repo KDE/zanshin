@@ -21,6 +21,7 @@
    USA.
 */
 
+#include <QRegularExpression>
 
 #include "taskfilterproxymodel.h"
 
@@ -89,8 +90,8 @@ bool TaskFilterProxyModel::filterAcceptsRow(int sourceRow, const QModelIndex &so
     const QModelIndex index = sourceModel()->index(sourceRow, 0, sourceParent);
     const auto task = index.data(QueryTreeModelBase::ObjectRole).value<Domain::Task::Ptr>();
     if (task) {
-        QRegExp regexp = filterRegExp();
-        regexp.setCaseSensitivity(Qt::CaseInsensitive);
+        QRegularExpression regexp = filterRegularExpression();
+        regexp.setPatternOptions(QRegularExpression::CaseInsensitiveOption);
 
         if (task->title().contains(regexp)
          || task->text().contains(regexp)) {

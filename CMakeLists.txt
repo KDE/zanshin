@@ -13,7 +13,7 @@ include(ECMInstallIcons)
 include(ECMMarkAsTest)
 include(ECMPoQmTools)
 
-set(REQUIRED_QT_VERSION 5.10.0)
+set(REQUIRED_QT_VERSION 5.12.0)
 find_package(Qt5 ${QT_REQUIRED_VERSION} CONFIG REQUIRED Core Gui Widgets Test)
 find_package(Boost REQUIRED)
 find_package(Threads REQUIRED)

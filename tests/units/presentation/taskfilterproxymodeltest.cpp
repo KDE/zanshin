@@ -83,7 +83,7 @@ private slots:
         output.setSourceModel(&input);
 
         // WHEN
-        output.setFilterFixedString(QStringLiteral("find me"));
+        output.setFilterRegularExpression(QStringLiteral("find me"));
 
         // THEN
         QCOMPARE(output.rowCount(), 2);
@@ -139,7 +139,7 @@ private slots:
         output.setSourceModel(&input);
 
         // WHEN
-        output.setFilterFixedString(QStringLiteral("find me"));
+        output.setFilterRegularExpression(QStringLiteral("find me"));
 
         // THEN
         QCOMPARE(output.rowCount(), 2);

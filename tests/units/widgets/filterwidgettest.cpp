@@ -44,7 +44,7 @@ private slots:
 
         QVERIFY(filter.proxyModel());
         QVERIFY(!filter.proxyModel()->sourceModel());
-        QCOMPARE(filter.proxyModel()->filterRegExp(), QRegExp());
+        QCOMPARE(filter.proxyModel()->filterRegularExpression(), QRegularExpression());
         QCOMPARE(filter.proxyModel()->sortOrder(), Qt::AscendingOrder);
         QCOMPARE(filter.proxyModel()->sortType(), Presentation::TaskFilterProxyModel::TitleSort);
 
@@ -90,7 +90,7 @@ private slots:
         QTest::keyClicks(filterEdit, QStringLiteral("find me"));
 
         // THEN
-        QCOMPARE(filter.proxyModel()->filterRegExp().pattern(), QStringLiteral("find me"));
+        QCOMPARE(filter.proxyModel()->filterRegularExpression().pattern(), QStringLiteral("find\\ me"));
     }
 
     void shouldClearFilter()
@@ -107,7 +107,7 @@ private slots:
 
         // THEN
         QVERIFY(filterEdit->text().isEmpty());
-        QVERIFY(filter.proxyModel()->filterRegExp().pattern().isEmpty());
+        QVERIFY(filter.proxyModel()->filterRegularExpression().pattern().isEmpty());
     }
 
     void shouldShowExtension()

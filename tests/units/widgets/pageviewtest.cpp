@@ -637,7 +637,7 @@ private slots:
 
         QSortFilterProxyModel proxyModel;
         stubPageModel.setProxyModel(&proxyModel);
-        proxyModel.setFilterFixedString("B");
+        proxyModel.setFilterRegularExpression(QStringLiteral("B"));
 
         QPersistentModelIndex index = stubPageModel.centralListModel()->index(0, 0);
         QCOMPARE(index.data().toString(), QLatin1String("B"));

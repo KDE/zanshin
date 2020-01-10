@@ -76,7 +76,7 @@ void FilterWidget::setShowFutureTasks(bool show)
 
 void FilterWidget::onTextChanged(const QString &text)
 {
-    m_model->setFilterFixedString(text);
+    m_model->setFilterRegularExpression(QRegularExpression::escape(text));
 }
 
 void FilterWidget::onSortTypeChanged(int index)
