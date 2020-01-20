@@ -37,7 +37,7 @@ class QAbstractItemModel;
 class QLabel;
 class QTreeView;
 
-class KRecursiveFilterProxyModel;
+class QSortFilterProxyModel;
 
 namespace Widgets {
 
@@ -59,7 +59,7 @@ private slots:
 private:
     QString m_filter;
     QAbstractItemModel *m_model;
-    KRecursiveFilterProxyModel *m_filterProxyModel;
+    QSortFilterProxyModel *m_filterProxyModel;
 
     QLabel *m_label;
     QTreeView *m_tree;

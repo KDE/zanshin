@@ -30,18 +30,18 @@
 #include <QHeaderView>
 #include <QKeyEvent>
 #include <QLabel>
+#include <QSortFilterProxyModel>
 #include <QTreeView>
 #include <QVBoxLayout>
 
 #include <KLocalizedString>
-#include <KRecursiveFilterProxyModel>
 
 using namespace Widgets;
 
 QuickSelectDialog::QuickSelectDialog(QWidget *parent)
     : QDialog(parent),
       m_model(nullptr),
-      m_filterProxyModel(new KRecursiveFilterProxyModel(this)),
+      m_filterProxyModel(new QSortFilterProxyModel(this)),
       m_label(new QLabel(this)),
       m_tree(new QTreeView(this))
 {
@@ -49,6 +49,7 @@ QuickSelectDialog::QuickSelectDialog(QWidget *parent)
 
     m_label->setText(i18n("You can start typing to filter the list of available pages"));
     m_filterProxyModel->setFilterCaseSensitivity(Qt::CaseInsensitive);
+    m_filterProxyModel->setRecursiveFilteringEnabled(true);
 
     m_tree->setModel(m_filterProxyModel);
     m_tree->setObjectName(QStringLiteral("pagesView"));
