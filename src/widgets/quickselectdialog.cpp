@@ -48,7 +48,6 @@ QuickSelectDialog::QuickSelectDialog(QWidget *parent)
     setWindowTitle(i18n("Quick Select Dialog"));
 
     m_label->setText(i18n("You can start typing to filter the list of available pages"));
-    m_filterProxyModel->setFilterCaseSensitivity(Qt::CaseInsensitive);
     m_filterProxyModel->setRecursiveFilteringEnabled(true);
 
     m_tree->setModel(m_filterProxyModel);
@@ -90,7 +89,7 @@ void QuickSelectDialog::applyFilterChanged(const QString &textFilter)
     else
         m_label->setText(i18n("Path: %1", textFilter));
 
-    m_filterProxyModel->setFilterRegularExpression(QRegularExpression::escape(textFilter));
+    m_filterProxyModel->setFilterRegularExpression(QRegularExpression(textFilter, QRegularExpression::CaseInsensitiveOption));
     m_tree->expandAll();
 }
 
