@@ -42,6 +42,7 @@
   <summary xml:lang="fi">Tehtävienhallintasovellus</summary>
   <summary xml:lang="fr">Application de gestion de tâches à faire</summary>
   <summary xml:lang="gl">Aplicación de xestión de tarefas</summary>
+  <summary xml:lang="ia">Application per gerer agenda (actiones de facer)</summary>
   <summary xml:lang="id">Aplikasi Pengelolaan Hal Melakukan</summary>
   <summary xml:lang="it">Applicazione di gestione delle cose da fare</summary>
   <summary xml:lang="ko">할 일 관리 프로그램</summary>
@@ -92,6 +93,7 @@
     <p xml:lang="fi">Ominaisuuksia:</p>
     <p xml:lang="fr">Fonctionnalités :</p>
     <p xml:lang="gl">Funcionalidades:</p>
+    <p xml:lang="ia">Characteristicas:</p>
     <p xml:lang="id">Fitur:</p>
     <p xml:lang="it">Caratteristiche:</p>
     <p xml:lang="ko">기능:</p>
@@ -118,6 +120,7 @@
       <li xml:lang="fi">Kokoaa tehtävät kaikkialta</li>
       <li xml:lang="fr">Collection de tâches quelle que soit leur source</li>
       <li xml:lang="gl">Recolle tarefas de calquera parte.</li>
+      <li xml:lang="ia">Collige cargas ex ubique</li>
       <li xml:lang="id">Mengumpulkan tugas dari mana pun</li>
       <li xml:lang="it">Raccoglie le attività da qualsiasi posizione</li>
       <li xml:lang="ko">어디서든지 할 일 수집</li>
@@ -141,6 +144,7 @@
       <li xml:lang="fi">Järjestää tehtävät projekteiksi ja konteksteiksi</li>
       <li xml:lang="fr">Organisation des tâches en projets et contextes</li>
       <li xml:lang="gl">Organice as tarefas por proxectos e contextos.</li>
+      <li xml:lang="ia">Organisa cargas in projectos e contextos</li>
       <li xml:lang="id">Mengatur tugas dalam projek dan konteks</li>
       <li xml:lang="it">Organizza le attività in progetti e contesti</li>
       <li xml:lang="ko">할 일을 프로젝트와 문맥별로 정리</li>
@@ -193,6 +197,7 @@
       <caption xml:lang="fi">Zanshinin pääikkuna</caption>
       <caption xml:lang="fr">La fenêtre principale de Zanshin</caption>
       <caption xml:lang="gl">Xanela principal de Zanshin</caption>
+      <caption xml:lang="ia">Fenestra principal de Zanshin</caption>
       <caption xml:lang="id">Window utama Zanshin</caption>
       <caption xml:lang="it">Finestra principale di Zanshin</caption>
       <caption xml:lang="ko">Zanshin 주 창</caption>
