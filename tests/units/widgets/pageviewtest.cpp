@@ -275,7 +275,8 @@ private slots:
         auto filterEdit = filter->findChild<QLineEdit*>();
         QVERIFY(filterEdit);
         page.show();
-        QVERIFY(QTest::qWaitForWindowExposed(&page));
+        page.activateWindow();
+        QVERIFY(QTest::qWaitForWindowActive(&page));
 
         centralView->setFocus();
         QVERIFY(centralView->hasFocus());
@@ -333,7 +334,8 @@ private slots:
         auto filterEdit = filter->findChild<QLineEdit*>();
         QVERIFY(filterEdit);
         page.show();
-        QVERIFY(QTest::qWaitForWindowExposed(&page));
+        page.activateWindow();
+        QVERIFY(QTest::qWaitForWindowActive(&page));
 
         centralView->setFocus();
         QVERIFY(centralView->hasFocus());
@@ -555,8 +557,8 @@ private slots:
 
         // Needed for shortcuts to work
         page.show();
-        QVERIFY(QTest::qWaitForWindowExposed(&page));
-        QTest::qWait(100);
+        page.activateWindow();
+        QVERIFY(QTest::qWaitForWindowActive(&page));
 
         // WHEN
         QTest::keyPress(centralView, Qt::Key_Delete);
@@ -582,8 +584,8 @@ private slots:
 
         // Needed for shortcuts to work
         page.show();
-        QVERIFY(QTest::qWaitForWindowExposed(&page));
-        QTest::qWait(100);
+        page.activateWindow();
+        QVERIFY(QTest::qWaitForWindowActive(&page));
 
         // WHEN
         QTest::keyPress(centralView, Qt::Key_Delete);
@@ -614,8 +616,8 @@ private slots:
 
         // Needed for shortcuts to work
         page.show();
-        QVERIFY(QTest::qWaitForWindowExposed(&page));
-        QTest::qWait(100);
+        page.activateWindow();
+        QVERIFY(QTest::qWaitForWindowActive(&page));
 
         // WHEN
         QTest::keyPress(centralView, Qt::Key_Delete);
@@ -653,8 +655,8 @@ private slots:
 
         // Needed for shortcuts to work
         page.show();
-        QVERIFY(QTest::qWaitForWindowExposed(&page));
-        QTest::qWait(100);
+        page.activateWindow();
+        QVERIFY(QTest::qWaitForWindowActive(&page));
 
         // WHEN
         QTest::keyPress(centralView, Qt::Key_Delete);
@@ -686,8 +688,8 @@ private slots:
 
         // Needed for shortcuts to work
         page.show();
-        QVERIFY(QTest::qWaitForWindowExposed(&page));
-        QTest::qWait(100);
+        page.activateWindow();
+        QVERIFY(QTest::qWaitForWindowActive(&page));
 
         // WHEN
         QTest::keyPress(centralView, Qt::Key_Delete);
