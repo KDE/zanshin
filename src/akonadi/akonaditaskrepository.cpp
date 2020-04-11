@@ -127,7 +127,7 @@ KJob *TaskRepository::update(Domain::Task::Ptr task)
 {
     auto item = m_serializer->createItemFromTask(task);
     Q_ASSERT(item.isValid());
-    return m_storage->updateItem(item);
+    return m_storage->updateItem(item, this);
 }
 
 KJob *TaskRepository::remove(Domain::Task::Ptr task)
@@ -152,7 +152,7 @@ KJob *TaskRepository::remove(Domain::Task::Ptr task)
             Item::List childItems = m_serializer->filterDescendantItems(fetchCollectionItemsJob->items(), item);
             childItems << item;
 
-            auto removeJob = m_storage->removeItems(childItems);
+            auto removeJob = m_storage->removeItems(childItems, this);
             compositeJob->addSubjob(removeJob);
             removeJob->start();
         });
@@ -175,7 +175,7 @@ KJob *TaskRepository::promoteToProject(Domain::Task::Ptr task)
         auto item = fetchJob->items().at(0);
         m_serializer->promoteItemToProject(item);
 
-        auto updateJob = m_storage->updateItem(item);
+        auto updateJob = m_storage->updateItem(item, this);
         job->addSubjob(updateJob);
         updateJob->start();
     });
@@ -247,7 +247,7 @@ KJob *TaskRepository::associate(Domain::Task::Ptr parent, Domain::Task::Ptr chil
                     transaction->start();
                 });
             } else {
-                auto updateJob = m_storage->updateItem(childItem);
+                auto updateJob = m_storage->updateItem(childItem, this);
                 job->addSubjob(updateJob);
                 updateJob->start();
             }
@@ -271,7 +271,7 @@ KJob *TaskRepository::dissociate(Domain::Task::Ptr child)
 
         m_serializer->removeItemParent(childItem);
 
-        auto updateJob = m_storage->updateItem(childItem);
+        auto updateJob = m_storage->updateItem(childItem, this);
         job->addSubjob(updateJob);
         updateJob->start();
     });
@@ -294,7 +294,7 @@ KJob *TaskRepository::dissociateAll(Domain::Task::Ptr child)
         m_serializer->removeItemParent(childItem);
         m_serializer->clearItem(&childItem);
 
-        auto updateJob = m_storage->updateItem(childItem);
+        auto updateJob = m_storage->updateItem(childItem, this);
         job->addSubjob(updateJob);
         updateJob->start();
     });

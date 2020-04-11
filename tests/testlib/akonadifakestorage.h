@@ -38,15 +38,15 @@ public:
     Akonadi::Collection defaultCollection() override;
 
     KJob *createItem(Akonadi::Item item, Akonadi::Collection collection) override;
-    KJob *updateItem(Akonadi::Item item, QObject *parent = nullptr) override;
+    KJob *updateItem(Akonadi::Item item, QObject *parent) override;
     KJob *removeItem(Akonadi::Item item) override;
-    KJob *removeItems(Akonadi::Item::List items, QObject *parent = nullptr) override;
-    KJob *moveItem(Akonadi::Item item, Akonadi::Collection collection, QObject *parent = nullptr) override;
-    KJob *moveItems(Akonadi::Item::List items, Akonadi::Collection collection, QObject *parent = nullptr) override;
+    KJob *removeItems(Akonadi::Item::List items, QObject *parent) override;
+    KJob *moveItem(Akonadi::Item item, Akonadi::Collection collection, QObject *parent) override;
+    KJob *moveItems(Akonadi::Item::List items, Akonadi::Collection collection, QObject *parent) override;
 
-    KJob *createCollection(Akonadi::Collection collection, QObject *parent = nullptr) override;
-    KJob *updateCollection(Akonadi::Collection collection, QObject *parent = nullptr) override;
-    KJob *removeCollection(Akonadi::Collection collection, QObject *parent = nullptr) override;
+    KJob *createCollection(Akonadi::Collection collection, QObject *parent) override;
+    KJob *updateCollection(Akonadi::Collection collection, QObject *parent) override;
+    KJob *removeCollection(Akonadi::Collection collection, QObject *parent) override;
 
     KJob *createTransaction() override;
 

@@ -50,7 +50,7 @@ KJob *ProjectRepository::update(Domain::Project::Ptr project)
 {
     auto item = m_serializer->createItemFromProject(project);
     Q_ASSERT(item.isValid());
-    return m_storage->updateItem(item);
+    return m_storage->updateItem(item, this);
 }
 
 KJob *ProjectRepository::remove(Domain::Project::Ptr project)
@@ -104,7 +104,7 @@ KJob *ProjectRepository::associate(Domain::Project::Ptr parent, Domain::Task::Pt
                     transaction->start();
                 });
             } else {
-                auto updateJob = m_storage->updateItem(childItem);
+                auto updateJob = m_storage->updateItem(childItem, this);
                 job->addSubjob(updateJob);
                 updateJob->start();
             }
@@ -130,7 +130,7 @@ KJob *ProjectRepository::dissociate(Domain::Task::Ptr child)
 
         m_serializer->removeItemParent(childItem);
 
-        auto updateJob = m_storage->updateItem(childItem);
+        auto updateJob = m_storage->updateItem(childItem, this);
         job->addSubjob(updateJob);
         updateJob->start();
     });

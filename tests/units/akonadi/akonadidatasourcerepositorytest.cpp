@@ -51,23 +51,24 @@ private slots:
         // A mock modify job
         auto collectionModifyJob = new FakeJob(this);
 
-        // Storage mock returning the create job
         Utils::MockObject<Akonadi::StorageInterface> storageMock;
-        storageMock(&Akonadi::StorageInterface::updateCollection).when(collection, nullptr)
+        Utils::MockObject<Akonadi::SerializerInterface> serializerMock;
+        QScopedPointer<Akonadi::DataSourceRepository> repository(new Akonadi::DataSourceRepository(storageMock.getInstance(),
+                                                                                                   serializerMock.getInstance()));
+
+        // Storage mock returning the create job
+        storageMock(&Akonadi::StorageInterface::updateCollection).when(collection, repository.get())
                                                                  .thenReturn(collectionModifyJob);
 
         // Serializer mock returning the item for the project
-        Utils::MockObject<Akonadi::SerializerInterface> serializerMock;
         serializerMock(&Akonadi::SerializerInterface::createCollectionFromDataSource).when(source).thenReturn(collection);
 
         // WHEN
-        QScopedPointer<Akonadi::DataSourceRepository> repository(new Akonadi::DataSourceRepository(storageMock.getInstance(),
-                                                                                                   serializerMock.getInstance()));
         repository->update(source)->exec();
 
         // THEN
         QVERIFY(serializerMock(&Akonadi::SerializerInterface::createCollectionFromDataSource).when(source).exactly(1));
-        QVERIFY(storageMock(&Akonadi::StorageInterface::updateCollection).when(collection, nullptr).exactly(1));
+        QVERIFY(storageMock(&Akonadi::StorageInterface::updateCollection).when(collection, repository.get()).exactly(1));
     }
 };
 

@@ -52,7 +52,7 @@ KJob *ContextRepository::update(Domain::Context::Ptr context)
 {
     auto item = m_serializer->createItemFromContext(context);
     Q_ASSERT(item.isValid());
-    return m_storage->updateItem(item);
+    return m_storage->updateItem(item, this);
 }
 
 KJob *ContextRepository::remove(Domain::Context::Ptr context)
@@ -77,7 +77,7 @@ KJob *ContextRepository::associate(Domain::Context::Ptr context, Domain::Task::P
         auto childItem = fetchItemJob->items().at(0);
         m_serializer->addContextToTask(context, childItem);
 
-        auto updateJob = m_storage->updateItem(childItem);
+        auto updateJob = m_storage->updateItem(childItem, this);
         job->addSubjob(updateJob);
         updateJob->start();
     });
@@ -99,7 +99,7 @@ KJob *ContextRepository::dissociate(Domain::Context::Ptr context, Domain::Task::
         auto childItem = fetchItemJob->items().at(0);
         m_serializer->removeContextFromTask(context, childItem);
 
-        auto updateJob = m_storage->updateItem(childItem);
+        auto updateJob = m_storage->updateItem(childItem, this);
         job->addSubjob(updateJob);
         updateJob->start();
     });
@@ -123,7 +123,7 @@ KJob *ContextRepository::dissociateAll(Domain::Task::Ptr child)
         auto childItem = fetchItemJob->items().at(0);
         childItem.clearTags();
 
-        auto updateJob = m_storage->updateItem(childItem);
+        auto updateJob = m_storage->updateItem(childItem, this);
         job->addSubjob(updateJob);
         updateJob->start();
     });

@@ -200,7 +200,7 @@ void AkonadiStorageTestBase::shouldNotifyCollectionAdded()
 
     // WHEN
     auto storage = createStorage();
-    auto job = storage->createCollection(collection);
+    auto job = storage->createCollection(collection, nullptr);
     AKVERIFYEXEC(job);
     monitorSpy.waitForStableState();
     QTRY_VERIFY(!spy.isEmpty());
@@ -232,7 +232,7 @@ void AkonadiStorageTestBase::shouldNotifyCollectionRemoved()
 
     // WHEN
     auto storage = createStorage();
-    auto job = storage->removeCollection(collection);
+    auto job = storage->removeCollection(collection, nullptr);
     AKVERIFYEXEC(job);
     monitorSpy.waitForStableState();
     QTRY_VERIFY(!spy.isEmpty());
@@ -259,7 +259,7 @@ void AkonadiStorageTestBase::shouldNotifyCollectionChanged()
 
     // WHEN
     auto storage = createStorage();
-    auto job = storage->updateCollection(collection);
+    auto job = storage->updateCollection(collection, nullptr);
     AKVERIFYEXEC(job);
     monitorSpy.waitForStableState();
     QTRY_VERIFY(!spy.isEmpty());
@@ -377,7 +377,7 @@ void AkonadiStorageTestBase::shouldNotifyItemChanged()
 
     // WHEN
     auto storage = createStorage();
-    auto job = storage->updateItem(item);
+    auto job = storage->updateItem(item, nullptr);
     AKVERIFYEXEC(job);
     monitorSpy.waitForStableState();
     QTRY_VERIFY(!spy.isEmpty());
@@ -433,7 +433,7 @@ void AkonadiStorageTestBase::shouldUpdateItem()
     item.setPayload<KCalCore::Todo::Ptr>(todo);
 
     // WHEN
-    auto job = storage->updateItem(item);
+    auto job = storage->updateItem(item, nullptr);
     AKVERIFYEXEC(job);
     monitorSpy.waitForStableState();
     QTRY_VERIFY(!spy.isEmpty());
@@ -575,7 +575,7 @@ void AkonadiStorageTestBase::shouldMoveItem()
     QSignalSpy spyMoved(monitor.data(), &Akonadi::MonitorInterface::itemMoved);
     MonitorSpy monitorSpy(monitor.data());
 
-    auto job = storage->moveItem(item, calendar1());
+    auto job = storage->moveItem(item, calendar1(), nullptr);
     AKVERIFYEXEC(job);
     monitorSpy.waitForStableState();
     QTRY_VERIFY(!spyMoved.isEmpty());
@@ -600,7 +600,7 @@ void AkonadiStorageTestBase::shouldMoveItems()
     QSignalSpy spyMoved(monitor.data(), &Akonadi::MonitorInterface::itemMoved);
     MonitorSpy monitorSpy(monitor.data());
 
-    auto job = storage->moveItems(list, calendar1());
+    auto job = storage->moveItems(list, calendar1(), nullptr);
     AKVERIFYEXEC(job);
     monitorSpy.waitForStableState();
     QTRY_VERIFY(!spyMoved.isEmpty());
@@ -656,7 +656,7 @@ void AkonadiStorageTestBase::shouldDeleteItems()
     list << item << item2;
 
     //When
-    auto job = storage->removeItems(list);
+    auto job = storage->removeItems(list, nullptr);
     AKVERIFYEXEC(job);
     monitorSpy.waitForStableState();
     QTRY_VERIFY(!spy.isEmpty());
@@ -689,7 +689,7 @@ void AkonadiStorageTestBase::shouldUpdateCollection()
     auto attr = new Akonadi::EntityDisplayAttribute;
     attr->setDisplayName(QStringLiteral("Foo"));
     collection.addAttribute(attr);
-    auto job = storage->updateCollection(collection);
+    auto job = storage->updateCollection(collection, nullptr);
     AKVERIFYEXEC(job);
     monitorSpy.waitForStableState();
     QTRY_VERIFY(!changeSpy.isEmpty());
@@ -720,7 +720,7 @@ void AkonadiStorageTestBase::shouldNotifyCollectionTimestampChanges()
 
     // WHEN
     collection.attribute<Akonadi::TimestampAttribute>(Akonadi::Collection::AddIfMissing)->refreshTimestamp();
-    auto job = storage->updateCollection(collection);
+    auto job = storage->updateCollection(collection, nullptr);
     AKVERIFYEXEC(job);
     monitorSpy.waitForStableState();
     QTRY_VERIFY(!changeSpy.isEmpty());
@@ -753,7 +753,7 @@ void AkonadiStorageTestBase::shouldNotifyCollectionSelectionChanges()
     auto attr = new Akonadi::ApplicationSelectedAttribute;
     attr->setSelected(false);
     collection.addAttribute(attr);
-    auto job = storage->updateCollection(collection);
+    auto job = storage->updateCollection(collection, nullptr);
     AKVERIFYEXEC(job);
     monitorSpy.waitForStableState();
     QTRY_VERIFY(!changeSpy.isEmpty());

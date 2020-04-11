@@ -55,15 +55,15 @@ public:
     virtual Akonadi::Collection defaultCollection() = 0;
 
     virtual KJob *createItem(Akonadi::Item item, Akonadi::Collection collection) = 0;
-    virtual KJob *updateItem(Akonadi::Item item, QObject *parent = nullptr) = 0;
+    virtual KJob *updateItem(Akonadi::Item item, QObject *parent) = 0;
     virtual KJob *removeItem(Akonadi::Item item) = 0;
-    virtual KJob *removeItems(Item::List items, QObject *parent = nullptr) = 0;
-    virtual KJob *moveItem(Item item, Collection collection, QObject *parent = nullptr) = 0;
-    virtual KJob *moveItems(Item::List item, Collection collection, QObject *parent = nullptr) = 0;
+    virtual KJob *removeItems(Item::List items, QObject *parent) = 0;
+    virtual KJob *moveItem(Item item, Collection collection, QObject *parent) = 0;
+    virtual KJob *moveItems(Item::List item, Collection collection, QObject *parent) = 0;
 
-    virtual KJob *createCollection(Collection collection, QObject *parent = nullptr) = 0;
-    virtual KJob *updateCollection(Collection collection, QObject *parent = nullptr) = 0;
-    virtual KJob *removeCollection(Collection collection, QObject *parent = nullptr) = 0;
+    virtual KJob *createCollection(Collection collection, QObject *parent) = 0;
+    virtual KJob *updateCollection(Collection collection, QObject *parent) = 0;
+    virtual KJob *removeCollection(Collection collection, QObject *parent) = 0;
 
     virtual KJob *createTransaction() = 0;
 

@@ -43,7 +43,7 @@ KJob *DataSourceRepository::update(Domain::DataSource::Ptr source)
 {
     auto collection = m_serializer->createCollectionFromDataSource(source);
     Q_ASSERT(collection.isValid());
-    return m_storage->updateCollection(collection);
+    return m_storage->updateCollection(collection, this);
 }
 
 void DataSourceRepository::showConfigDialog()
