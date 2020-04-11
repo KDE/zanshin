@@ -110,7 +110,7 @@ TaskQueries::DataSourceResult::Ptr TaskQueries::findDataSource(Domain::Task::Ptr
 {
     Akonadi::Item item = m_serializer->createItemFromTask(task);
     auto &query = m_findDataSource[item.id()];
-    auto fetch = m_helpers->fetchItemCollection(item);
+    auto fetch = m_helpers->fetchItemCollection(item, const_cast<TaskQueries*>(this));
     auto predicate = [] (const Akonadi::Collection &) { return true; };
 
     m_integrator->bind("TaskQueries::findDataSource", query, fetch, predicate);

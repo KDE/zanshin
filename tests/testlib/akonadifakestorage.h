@@ -50,7 +50,7 @@ public:
 
     KJob *createTransaction(QObject *parent) override;
 
-    Akonadi::CollectionFetchJobInterface *fetchCollections(Akonadi::Collection collection, FetchDepth depth) override;
+    Akonadi::CollectionFetchJobInterface *fetchCollections(Akonadi::Collection collection, FetchDepth depth, QObject *parent) override;
     Akonadi::ItemFetchJobInterface *fetchItems(Akonadi::Collection collection, QObject *parent) override;
     Akonadi::ItemFetchJobInterface *fetchItem(Akonadi::Item item, QObject *parent) override;
 

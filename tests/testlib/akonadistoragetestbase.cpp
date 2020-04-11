@@ -100,7 +100,7 @@ void AkonadiStorageTestBase::shouldListCollections()
     auto storage = createStorage();
 
     // WHEN
-    auto job = storage->fetchCollections(collection, depth);
+    auto job = storage->fetchCollections(collection, depth, nullptr);
     AKVERIFYEXEC(job->kjob());
 
     // THEN
@@ -122,7 +122,8 @@ void AkonadiStorageTestBase::shouldRetrieveAllCollectionAncestors()
 
     // WHEN
     auto job = storage->fetchCollections(Akonadi::Collection::root(),
-                                         Akonadi::Storage::Recursive);
+                                         Akonadi::Storage::Recursive,
+                                         nullptr);
     AKVERIFYEXEC(job->kjob());
 
     // THEN
@@ -798,7 +799,7 @@ Akonadi::Collection AkonadiStorageTestBase::fetchCollectionByRID(const QString &
     Akonadi::Collection collection;
     collection.setRemoteId(remoteId);
 
-    auto job = createStorage()->fetchCollections(collection, Akonadi::StorageInterface::Base);
+    auto job = createStorage()->fetchCollections(collection, Akonadi::StorageInterface::Base, nullptr);
     job->setResource(QStringLiteral("akonadi_knut_resource_0"));
     if (!job->kjob()->exec()) {
         qWarning() << job->kjob()->errorString() << remoteId;

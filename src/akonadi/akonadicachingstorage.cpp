@@ -61,7 +61,8 @@ public:
             QTimer::singleShot(0, this, &CachingCollectionFetchJob::retrieveFromCache);
         } else {
             auto job = m_storage->fetchCollections(Akonadi::Collection::root(),
-                                                   Akonadi::StorageInterface::Recursive);
+                                                   Akonadi::StorageInterface::Recursive,
+                                                   this);
             job->setResource(m_resource);
             addSubjob(job->kjob());
         }
@@ -363,9 +364,9 @@ KJob *CachingStorage::createTransaction(QObject *parent)
     return m_storage->createTransaction(parent);
 }
 
-CollectionFetchJobInterface *CachingStorage::fetchCollections(Collection collection, StorageInterface::FetchDepth depth)
+CollectionFetchJobInterface *CachingStorage::fetchCollections(Collection collection, StorageInterface::FetchDepth depth, QObject *parent)
 {
-    return new CachingCollectionFetchJob(m_storage, m_cache, collection, depth);
+    return new CachingCollectionFetchJob(m_storage, m_cache, collection, depth, parent);
 }
 
 ItemFetchJobInterface *CachingStorage::fetchItems(Collection collection, QObject *parent)

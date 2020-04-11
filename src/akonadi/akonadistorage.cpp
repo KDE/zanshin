@@ -193,9 +193,9 @@ KJob *Storage::createTransaction(QObject *parent)
     return new TransactionSequence(parent);
 }
 
-CollectionFetchJobInterface *Storage::fetchCollections(Collection collection, StorageInterface::FetchDepth depth)
+CollectionFetchJobInterface *Storage::fetchCollections(Collection collection, StorageInterface::FetchDepth depth, QObject *parent)
 {
-    auto job = new CollectionJob(collection, jobTypeFromDepth(depth));
+    auto job = new CollectionJob(collection, jobTypeFromDepth(depth), parent);
 
     auto scope = job->fetchScope();
     scope.setContentMimeTypes({KCalCore::Todo::todoMimeType()});

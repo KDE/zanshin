@@ -54,7 +54,7 @@ void DataSourceQueries::changeDefaultSource(Domain::DataSource::Ptr source)
 
 DataSourceQueries::DataSourceResult::Ptr DataSourceQueries::findTopLevel() const
 {
-    auto fetch = m_helpers->fetchCollections(Collection::root());
+    auto fetch = m_helpers->fetchCollections(Collection::root(), const_cast<DataSourceQueries*>(this));
     auto predicate = createFetchPredicate(Collection::root());
     m_integrator->bind("DataSourceQueries::findTopLevel", m_findTopLevel, fetch, predicate);
     return m_findTopLevel->result();
@@ -64,7 +64,7 @@ DataSourceQueries::DataSourceResult::Ptr DataSourceQueries::findChildren(Domain:
 {
     Collection root = m_serializer->createCollectionFromDataSource(source);
     auto &query = m_findChildren[root.id()];
-    auto fetch = m_helpers->fetchCollections(root);
+    auto fetch = m_helpers->fetchCollections(root, const_cast<DataSourceQueries*>(this));
     auto predicate = createFetchPredicate(root);
     m_integrator->bind("DataSourceQueries::findChildren", query, fetch, predicate);
     return query->result();
@@ -72,7 +72,7 @@ DataSourceQueries::DataSourceResult::Ptr DataSourceQueries::findChildren(Domain:
 
 DataSourceQueries::DataSourceResult::Ptr DataSourceQueries::findAllSelected() const
 {
-    auto fetch = m_helpers->fetchAllCollections();
+    auto fetch = m_helpers->fetchAllCollections(const_cast<DataSourceQueries*>(this));
     auto predicate = [this] (const Akonadi::Collection &collection) {
         return collection.isValid() && m_serializer->isSelectedCollection(collection);
     };

@@ -311,9 +311,10 @@ KJob *AkonadiFakeStorage::createTransaction(QObject *parent)
 }
 
 Akonadi::CollectionFetchJobInterface *AkonadiFakeStorage::fetchCollections(Akonadi::Collection collection,
-                                                                           Akonadi::StorageInterface::FetchDepth depth)
+                                                                           Akonadi::StorageInterface::FetchDepth depth,
+                                                                           QObject *parent)
 {
-    auto job = new AkonadiFakeCollectionFetchJob;
+    auto job = new AkonadiFakeCollectionFetchJob(parent);
     auto children = Akonadi::Collection::List();
 
     switch (depth) {

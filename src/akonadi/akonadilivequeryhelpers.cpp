@@ -39,11 +39,11 @@ LiveQueryHelpers::LiveQueryHelpers(const SerializerInterface::Ptr &serializer,
 {
 }
 
-LiveQueryHelpers::CollectionFetchFunction LiveQueryHelpers::fetchAllCollections() const
+LiveQueryHelpers::CollectionFetchFunction LiveQueryHelpers::fetchAllCollections(QObject *parent) const
 {
     auto storage = m_storage;
-    return [storage] (const Domain::LiveQueryInput<Collection>::AddFunction &add) {
-        auto job = storage->fetchCollections(Collection::root(), StorageInterface::Recursive);
+    return [storage, parent] (const Domain::LiveQueryInput<Collection>::AddFunction &add) {
+        auto job = storage->fetchCollections(Collection::root(), StorageInterface::Recursive, parent);
         Utils::JobHandler::install(job->kjob(), [job, add] {
             if (job->kjob()->error())
                 return;
@@ -54,11 +54,11 @@ LiveQueryHelpers::CollectionFetchFunction LiveQueryHelpers::fetchAllCollections(
     };
 }
 
-LiveQueryHelpers::CollectionFetchFunction LiveQueryHelpers::fetchCollections(const Collection &root) const
+LiveQueryHelpers::CollectionFetchFunction LiveQueryHelpers::fetchCollections(const Collection &root, QObject *parent) const
 {
     auto storage = m_storage;
-    return [storage, root] (const Domain::LiveQueryInput<Collection>::AddFunction &add) {
-        auto job = storage->fetchCollections(root, StorageInterface::Recursive);
+    return [storage, root, parent] (const Domain::LiveQueryInput<Collection>::AddFunction &add) {
+        auto job = storage->fetchCollections(root, StorageInterface::Recursive, parent);
         Utils::JobHandler::install(job->kjob(), [root, job, add] {
             if (job->kjob()->error())
                 return;
@@ -84,7 +84,8 @@ LiveQueryHelpers::ItemFetchFunction LiveQueryHelpers::fetchItems(QObject *parent
     auto storage = m_storage;
     return [serializer, storage, parent] (const Domain::LiveQueryInput<Item>::AddFunction &add) {
         auto job = storage->fetchCollections(Akonadi::Collection::root(),
-                                             StorageInterface::Recursive);
+                                             StorageInterface::Recursive,
+                                             parent);
         Utils::JobHandler::install(job->kjob(), [serializer, storage, job, add, parent] {
             if (job->kjob()->error() != KJob::NoError)
                 return;
@@ -178,11 +179,11 @@ LiveQueryHelpers::ItemFetchFunction LiveQueryHelpers::fetchTaskAndAncestors(Doma
     };
 }
 
-LiveQueryHelpers::CollectionFetchFunction LiveQueryHelpers::fetchItemCollection(const Item& item) const
+LiveQueryHelpers::CollectionFetchFunction LiveQueryHelpers::fetchItemCollection(const Item& item, QObject *parent) const
 {
     auto storage = m_storage;
-    return [storage, item] (const Domain::LiveQueryInput<Collection>::AddFunction &add) {
-        auto job = storage->fetchCollections(item.parentCollection(), StorageInterface::Base);
+    return [storage, item, parent] (const Domain::LiveQueryInput<Collection>::AddFunction &add) {
+        auto job = storage->fetchCollections(item.parentCollection(), StorageInterface::Base, parent);
         Utils::JobHandler::install(job->kjob(), [storage, job, add] {
             if (job->kjob()->error() != KJob::NoError)
                 return;

@@ -100,7 +100,7 @@ private slots:
         };
 
         // WHEN
-        auto fetch = helpers->fetchAllCollections();
+        auto fetch = helpers->fetchAllCollections(nullptr);
         fetch(add);
         TestHelpers::waitForEmptyJobQueue();
 
@@ -172,7 +172,7 @@ private slots:
 
         // WHEN
         QFETCH(Akonadi::Collection, root);
-        auto fetch = helpers->fetchCollections(root);
+        auto fetch = helpers->fetchCollections(root, nullptr);
         fetch(add);
         TestHelpers::waitForEmptyJobQueue();
 

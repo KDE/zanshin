@@ -46,7 +46,7 @@ ZanshinContextItemsMigrator::FetchResult ZanshinContextItemsMigrator::fetchAllIt
 {
     FetchResult result;
 
-    auto collectionsJob = m_storage.fetchCollections(Akonadi::Collection::root(), Akonadi::Storage::Recursive);
+    auto collectionsJob = m_storage.fetchCollections(Akonadi::Collection::root(), Akonadi::Storage::Recursive, nullptr);
     collectionsJob->kjob()->exec();
 
     int deletedCount = 0;

@@ -43,9 +43,9 @@ public:
     LiveQueryHelpers(const SerializerInterface::Ptr &serializer,
                      const StorageInterface::Ptr &storage);
 
-    CollectionFetchFunction fetchAllCollections() const;
-    CollectionFetchFunction fetchCollections(const Collection &root) const;
-    CollectionFetchFunction fetchItemCollection(const Item &item) const;
+    CollectionFetchFunction fetchAllCollections(QObject *parent) const;
+    CollectionFetchFunction fetchCollections(const Collection &root, QObject *parent) const;
+    CollectionFetchFunction fetchItemCollection(const Item &item, QObject *parent) const;
 
     ItemFetchFunction fetchItems(QObject *parent) const;
     ItemFetchFunction fetchItems(const Collection &collection, QObject *parent) const;

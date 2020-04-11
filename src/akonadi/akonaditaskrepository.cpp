@@ -51,7 +51,8 @@ KJob *TaskRepository::createItem(const Item &item)
     } else {
         auto job = new CompositeJob();
         CollectionFetchJobInterface *fetchCollectionJob = m_storage->fetchCollections(Akonadi::Collection::root(),
-                                                                                      StorageInterface::Recursive);
+                                                                                      StorageInterface::Recursive,
+                                                                                      this);
         job->install(fetchCollectionJob->kjob(), [fetchCollectionJob, item, job, this] {
             if (fetchCollectionJob->kjob()->error() != KJob::NoError)
                 return;

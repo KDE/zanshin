@@ -75,9 +75,9 @@ private:
         return Akonadi::SerializerInterface::Ptr(new Akonadi::Serializer);
     }
 
-    auto fetchCollectionsFunction(Akonadi::StorageInterface::Ptr storage) {
-        return [storage] (const Domain::LiveQueryInput<Akonadi::Collection>::AddFunction &add) {
-            auto job = storage->fetchCollections(Akonadi::Collection::root(), Akonadi::Storage::Recursive);
+    auto fetchCollectionsFunction(Akonadi::StorageInterface::Ptr storage, QObject *parent) {
+        return [storage, parent] (const Domain::LiveQueryInput<Akonadi::Collection>::AddFunction &add) {
+            auto job = storage->fetchCollections(Akonadi::Collection::root(), Akonadi::Storage::Recursive, parent);
             Utils::JobHandler::install(job->kjob(), [add, job] {
                 foreach (const auto &col, job->collections()) {
                     add(col);
@@ -86,9 +86,9 @@ private:
         };
     }
 
-    auto fetchItemsInAllCollectionsFunction(Akonadi::StorageInterface::Ptr storage) {
-        return [storage] (const Domain::LiveQueryInput<Akonadi::Item>::AddFunction &add) {
-            auto job = storage->fetchCollections(Akonadi::Collection::root(), Akonadi::Storage::Recursive);
+    auto fetchItemsInAllCollectionsFunction(Akonadi::StorageInterface::Ptr storage, QObject *parent) {
+        return [storage, parent] (const Domain::LiveQueryInput<Akonadi::Item>::AddFunction &add) {
+            auto job = storage->fetchCollections(Akonadi::Collection::root(), Akonadi::Storage::Recursive, parent);
             Utils::JobHandler::install(job->kjob(), [add, job, storage] {
                 foreach (const auto &col, job->collections()) {
                     auto itemJob = storage->fetchItems(col, nullptr);
@@ -101,10 +101,10 @@ private:
         };
     }
 
-    auto fetchItemsInSelectedCollectionsFunction(Akonadi::StorageInterface::Ptr storage, Akonadi::SerializerInterface::Ptr serializer)
+    auto fetchItemsInSelectedCollectionsFunction(Akonadi::StorageInterface::Ptr storage, Akonadi::SerializerInterface::Ptr serializer, QObject *parent)
     {
-        return [storage, serializer] (const Domain::LiveQueryInput<Akonadi::Item>::AddFunction &add) {
-            auto job = storage->fetchCollections(Akonadi::Collection::root(), Akonadi::Storage::Recursive);
+        return [storage, serializer, parent] (const Domain::LiveQueryInput<Akonadi::Item>::AddFunction &add) {
+            auto job = storage->fetchCollections(Akonadi::Collection::root(), Akonadi::Storage::Recursive, parent);
             Utils::JobHandler::install(job->kjob(), [add, job, storage, serializer] {
                 foreach (const auto &col, job->collections()) {
                     if (!serializer->isSelectedCollection(col))
@@ -307,7 +307,7 @@ private slots:
         auto storage = createStorage(data);
 
         auto query = Domain::LiveQueryOutput<Domain::DataSource::Ptr>::Ptr();
-        auto fetch = fetchCollectionsFunction(storage);
+        auto fetch = fetchCollectionsFunction(storage, nullptr);
         auto predicate = [] (const Akonadi::Collection &collection) {
             return collection.name().endsWith(QLatin1String("-in"));
         };
@@ -410,7 +410,7 @@ private slots:
 
         auto inQuery = Domain::LiveQueryOutput<Domain::DataSource::Ptr>::Ptr();
         auto exQuery = Domain::LiveQueryOutput<Domain::DataSource::Ptr>::Ptr();
-        auto fetch = fetchCollectionsFunction(storage);
+        auto fetch = fetchCollectionsFunction(storage, nullptr);
         auto inPredicate = [] (const Akonadi::Collection &collection) {
             return collection.name().endsWith(QLatin1String("-in"));
         };
@@ -461,7 +461,7 @@ private slots:
         auto storage = createStorage(data);
 
         auto query = Domain::LiveQueryOutput<Domain::Project::Ptr>::Ptr();
-        auto fetch = fetchItemsInAllCollectionsFunction(storage);
+        auto fetch = fetchItemsInAllCollectionsFunction(storage, nullptr);
         auto predicate = [] (const Akonadi::Item &item) {
             return titleFromItem(item).endsWith(QLatin1String("-in"));
         };
@@ -572,7 +572,7 @@ private slots:
 
         auto inQuery = Domain::LiveQueryOutput<Domain::Project::Ptr>::Ptr();
         auto exQuery = Domain::LiveQueryOutput<Domain::Project::Ptr>::Ptr();
-        auto fetch = fetchItemsInAllCollectionsFunction(storage);
+        auto fetch = fetchItemsInAllCollectionsFunction(storage, nullptr);
         auto inPredicate = [] (const Akonadi::Item &item) {
             return titleFromItem(item).endsWith(QLatin1String("-in"));
         };
@@ -621,7 +621,7 @@ private slots:
         auto serializer = createSerializer();
 
         auto query = Domain::LiveQueryOutput<Domain::Project::Ptr>::Ptr();
-        auto fetch = fetchItemsInSelectedCollectionsFunction(storage, serializer);
+        auto fetch = fetchItemsInSelectedCollectionsFunction(storage, serializer, nullptr);
         auto predicate = [] (const Akonadi::Item &) {
             return true;
         };
@@ -665,7 +665,7 @@ private slots:
         auto storage = createStorage(data);
 
         auto query = Domain::LiveQueryOutput<Domain::Task::Ptr>::Ptr();
-        auto fetch = fetchItemsInAllCollectionsFunction(storage);
+        auto fetch = fetchItemsInAllCollectionsFunction(storage, nullptr);
         auto predicate = [] (const Akonadi::Item &item) {
             return titleFromItem(item).endsWith(QLatin1String("-in"));
         };
@@ -771,7 +771,7 @@ private slots:
 
         auto inQuery = Domain::LiveQueryOutput<Domain::Task::Ptr>::Ptr();
         auto exQuery = Domain::LiveQueryOutput<Domain::Task::Ptr>::Ptr();
-        auto fetch = fetchItemsInAllCollectionsFunction(storage);
+        auto fetch = fetchItemsInAllCollectionsFunction(storage, nullptr);
         auto inPredicate = [] (const Akonadi::Item &item) {
             return titleFromItem(item).endsWith(QLatin1String("-in"));
         };
@@ -820,7 +820,7 @@ private slots:
         auto serializer = createSerializer();
 
         auto query = Domain::LiveQueryOutput<Domain::Task::Ptr>::Ptr();
-        auto fetch = fetchItemsInSelectedCollectionsFunction(storage, serializer);
+        auto fetch = fetchItemsInSelectedCollectionsFunction(storage, serializer, nullptr);
         auto predicate = [] (const Akonadi::Item &) {
             return true;
         };

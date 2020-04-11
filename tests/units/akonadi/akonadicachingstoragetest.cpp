@@ -141,7 +141,7 @@ private slots:
         // WHEN
         QFETCH(Akonadi::Collection, rootCollection);
         QFETCH(Akonadi::StorageInterface::FetchDepth, fetchDepth);
-        auto job = storage.fetchCollections(rootCollection, fetchDepth);
+        auto job = storage.fetchCollections(rootCollection, fetchDepth, nullptr);
         QVERIFY2(job->kjob()->exec(), qPrintable(job->kjob()->errorString()));
 
         // THEN
@@ -170,7 +170,7 @@ private slots:
         // WHEN (second time shouldn't hit the original storage)
         data.storageBehavior().setFetchCollectionsBehavior(rootCollection.id(), AkonadiFakeStorageBehavior::EmptyFetch);
         data.storageBehavior().setFetchCollectionsErrorCode(rootCollection.id(), 128);
-        job = storage.fetchCollections(rootCollection, fetchDepth);
+        job = storage.fetchCollections(rootCollection, fetchDepth, nullptr);
         QVERIFY2(job->kjob()->exec(), qPrintable(job->kjob()->errorString()));
 
         {
