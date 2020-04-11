@@ -149,9 +149,9 @@ KJob *AkonadiFakeStorage::updateItem(Akonadi::Item item, QObject *parent)
     return job;
 }
 
-KJob *AkonadiFakeStorage::removeItem(Akonadi::Item item)
+KJob *AkonadiFakeStorage::removeItem(Akonadi::Item item, QObject *parent)
 {
-    auto job = new FakeJob;
+    auto job = new FakeJob(parent);
     if (m_data->item(item.id()).isValid()) {
         Utils::JobHandler::install(job, [=] {
             if (!job->error()) {

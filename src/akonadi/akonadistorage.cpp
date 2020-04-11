@@ -153,9 +153,9 @@ KJob *Storage::updateItem(Item item, QObject *parent)
     return new ItemModifyJob(item, parent);
 }
 
-KJob *Storage::removeItem(Item item)
+KJob *Storage::removeItem(Item item, QObject *parent)
 {
-    return new ItemDeleteJob(item);
+    return new ItemDeleteJob(item, parent);
 }
 
 KJob *Storage::removeItems(Item::List items, QObject *parent)

@@ -116,22 +116,23 @@ private slots:
         // A mock remove job
         auto itemRemoveJob = new FakeJob(this);
 
-        // Storage mock returning the create job
         Utils::MockObject<Akonadi::StorageInterface> storageMock;
-        storageMock(&Akonadi::StorageInterface::removeItem).when(item)
+        Utils::MockObject<Akonadi::SerializerInterface> serializerMock;
+        QScopedPointer<Akonadi::ProjectRepository> repository(new Akonadi::ProjectRepository(storageMock.getInstance(),
+                                                                                             serializerMock.getInstance()));
+
+        // Storage mock returning the create job
+        storageMock(&Akonadi::StorageInterface::removeItem).when(item, repository.get())
                                                            .thenReturn(itemRemoveJob);
 
         // Serializer mock returning the item for the project
-        Utils::MockObject<Akonadi::SerializerInterface> serializerMock;
         serializerMock(&Akonadi::SerializerInterface::createItemFromProject).when(project).thenReturn(item);
 
         // WHEN
-        QScopedPointer<Akonadi::ProjectRepository> repository(new Akonadi::ProjectRepository(storageMock.getInstance(),
-                                                                                             serializerMock.getInstance()));
         repository->remove(project)->exec();
 
         // THEN
-        QVERIFY(storageMock(&Akonadi::StorageInterface::removeItem).when(item).exactly(1));
+        QVERIFY(storageMock(&Akonadi::StorageInterface::removeItem).when(item, repository.get()).exactly(1));
     }
 
     void shouldAssociateATaskToAProject_data()

@@ -57,7 +57,7 @@ KJob *ProjectRepository::remove(Domain::Project::Ptr project)
 {
     auto item = m_serializer->createItemFromProject(project);
     Q_ASSERT(item.isValid());
-    return m_storage->removeItem(item);
+    return m_storage->removeItem(item, this);
 }
 
 KJob *ProjectRepository::associate(Domain::Project::Ptr parent, Domain::Task::Ptr child)

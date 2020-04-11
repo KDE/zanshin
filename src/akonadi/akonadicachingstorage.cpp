@@ -323,9 +323,9 @@ KJob *CachingStorage::updateItem(Item item, QObject *parent)
     return m_storage->updateItem(item, parent);
 }
 
-KJob *CachingStorage::removeItem(Item item)
+KJob *CachingStorage::removeItem(Item item, QObject *parent)
 {
-    return m_storage->removeItem(item);
+    return m_storage->removeItem(item, parent);
 }
 
 KJob *CachingStorage::removeItems(Item::List items, QObject *parent)

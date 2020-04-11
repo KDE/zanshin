@@ -39,7 +39,7 @@ public:
 
     KJob *createItem(Akonadi::Item item, Akonadi::Collection collection) override;
     KJob *updateItem(Akonadi::Item item, QObject *parent) override;
-    KJob *removeItem(Akonadi::Item item) override;
+    KJob *removeItem(Akonadi::Item item, QObject *parent) override;
     KJob *removeItems(Akonadi::Item::List items, QObject *parent) override;
     KJob *moveItem(Akonadi::Item item, Akonadi::Collection collection, QObject *parent) override;
     KJob *moveItems(Akonadi::Item::List items, Akonadi::Collection collection, QObject *parent) override;

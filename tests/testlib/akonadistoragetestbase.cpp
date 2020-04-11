@@ -334,7 +334,7 @@ void AkonadiStorageTestBase::shouldNotifyItemRemoved()
 
     // WHEN
     auto storage = createStorage();
-    auto job = storage->removeItem(item);
+    auto job = storage->removeItem(item, nullptr);
     AKVERIFYEXEC(job);
     monitorSpy.waitForStableState();
     QTRY_VERIFY(!spy.isEmpty());
@@ -625,7 +625,7 @@ void AkonadiStorageTestBase::shouldDeleteItem()
     QVERIFY(item.isValid());
 
     //When
-    auto job = storage->removeItem(item);
+    auto job = storage->removeItem(item, nullptr);
     AKVERIFYEXEC(job);
     monitorSpy.waitForStableState();
     QTRY_VERIFY(!spy.isEmpty());

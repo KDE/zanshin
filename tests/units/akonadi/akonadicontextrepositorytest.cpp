@@ -115,23 +115,24 @@ private slots:
         // A mock job
         auto contextItemDeleteJob = new FakeJob(this);
 
-        // Storage mock returning the mock job
         Utils::MockObject<Akonadi::StorageInterface> storageMock;
-        storageMock(&Akonadi::StorageInterface::removeItem).when(contextItem)
+        Utils::MockObject<Akonadi::SerializerInterface> serializerMock;
+        QScopedPointer<Akonadi::ContextRepository> repository(new Akonadi::ContextRepository(storageMock.getInstance(),
+                                                                                             serializerMock.getInstance()));
+
+        // Storage mock returning the mock job
+        storageMock(&Akonadi::StorageInterface::removeItem).when(contextItem, repository.get())
                                                            .thenReturn(contextItemDeleteJob);
 
         // Serializer mock
-        Utils::MockObject<Akonadi::SerializerInterface> serializerMock;
         serializerMock(&Akonadi::SerializerInterface::createItemFromContext).when(context).thenReturn(contextItem);
 
         // WHEN
-        QScopedPointer<Akonadi::ContextRepository> repository(new Akonadi::ContextRepository(storageMock.getInstance(),
-                                                                                             serializerMock.getInstance()));
         repository->remove(context)->exec();
 
         // THEN
         QVERIFY(serializerMock(&Akonadi::SerializerInterface::createItemFromContext).when(context).exactly(1));
-        QVERIFY(storageMock(&Akonadi::StorageInterface::removeItem).when(contextItem).exactly(1));
+        QVERIFY(storageMock(&Akonadi::StorageInterface::removeItem).when(contextItem, repository.get()).exactly(1));
     }
 
     void shouldAssociateATaskToAContext_data()

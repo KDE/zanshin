@@ -59,7 +59,7 @@ KJob *ContextRepository::remove(Domain::Context::Ptr context)
 {
     auto item = m_serializer->createItemFromContext(context);
     Q_ASSERT(item.isValid());
-    return m_storage->removeItem(item);
+    return m_storage->removeItem(item, this);
 }
 
 KJob *ContextRepository::associate(Domain::Context::Ptr context, Domain::Task::Ptr child)
