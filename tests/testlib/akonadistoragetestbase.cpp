@@ -471,7 +471,7 @@ void AkonadiStorageTestBase::shouldUseTransaction()
     todo = item2.payload<KCalCore::Todo::Ptr>();
     todo->setSummary(QStringLiteral("Buy chocolate"));
 
-    auto transaction = storage->createTransaction();
+    auto transaction = storage->createTransaction(nullptr);
     storage->updateItem(item1, transaction);
     storage->updateItem(item3, transaction); // this job should fail
     storage->updateItem(item2, transaction);

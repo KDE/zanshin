@@ -65,7 +65,7 @@ public:
     virtual KJob *updateCollection(Collection collection, QObject *parent) = 0;
     virtual KJob *removeCollection(Collection collection, QObject *parent) = 0;
 
-    virtual KJob *createTransaction() = 0;
+    virtual KJob *createTransaction(QObject *parent) = 0;
 
     virtual CollectionFetchJobInterface *fetchCollections(Akonadi::Collection collection, FetchDepth depth) = 0;
     virtual ItemFetchJobInterface *fetchItems(Akonadi::Collection collection, QObject *parent) = 0;

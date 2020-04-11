@@ -358,9 +358,9 @@ KJob *CachingStorage::removeCollection(Collection collection, QObject *parent)
     return m_storage->removeCollection(collection, parent);
 }
 
-KJob *CachingStorage::createTransaction()
+KJob *CachingStorage::createTransaction(QObject *parent)
 {
-    return m_storage->createTransaction();
+    return m_storage->createTransaction(parent);
 }
 
 CollectionFetchJobInterface *CachingStorage::fetchCollections(Collection collection, StorageInterface::FetchDepth depth)

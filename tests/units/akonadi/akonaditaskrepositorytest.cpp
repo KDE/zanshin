@@ -590,7 +590,7 @@ private slots:
         if (parentItem.parentCollection().id() != childItem.parentCollection().id()) {
             storageMock(&Akonadi::StorageInterface::fetchItems).when(childItem.parentCollection(), repository.get())
                                                                .thenReturn(itemFetchJob3);
-            storageMock(&Akonadi::StorageInterface::createTransaction).when().thenReturn(transactionJob);
+            storageMock(&Akonadi::StorageInterface::createTransaction).when(repository.get()).thenReturn(transactionJob);
             storageMock(&Akonadi::StorageInterface::updateItem).when(childItem, transactionJob)
                                                                .thenReturn(itemModifyJob);
             storageMock(&Akonadi::StorageInterface::moveItems).when(movedList, parentItem.parentCollection(), transactionJob)
@@ -632,7 +632,7 @@ private slots:
                 else {
                     //QVERIFY(serializerMock(&Akonadi::SerializerInterface::filterDescendantItems).when(list, childItem).exactly(1));
                     QVERIFY(storageMock(&Akonadi::StorageInterface::fetchItems).when(childItem.parentCollection(), repository.get()).exactly(1));
-                    QVERIFY(storageMock(&Akonadi::StorageInterface::createTransaction).when().thenReturn(transactionJob).exactly(1));
+                    QVERIFY(storageMock(&Akonadi::StorageInterface::createTransaction).when(repository.get()).thenReturn(transactionJob).exactly(1));
                     QVERIFY(storageMock(&Akonadi::StorageInterface::updateItem).when(childItem, transactionJob).exactly(1));
                     QVERIFY(storageMock(&Akonadi::StorageInterface::moveItems).when(movedList, parentItem.parentCollection(), transactionJob).exactly(1));
                 }

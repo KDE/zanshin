@@ -48,7 +48,7 @@ public:
     KJob *updateCollection(Akonadi::Collection collection, QObject *parent) override;
     KJob *removeCollection(Akonadi::Collection collection, QObject *parent) override;
 
-    KJob *createTransaction() override;
+    KJob *createTransaction(QObject *parent) override;
 
     Akonadi::CollectionFetchJobInterface *fetchCollections(Akonadi::Collection collection, FetchDepth depth) override;
     Akonadi::ItemFetchJobInterface *fetchItems(Akonadi::Collection collection, QObject *parent) override;

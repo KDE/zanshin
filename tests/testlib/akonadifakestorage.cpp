@@ -37,8 +37,8 @@ class AkonadiFakeTransaction : public FakeJob
 {
     Q_OBJECT
 public:
-    explicit AkonadiFakeTransaction()
-        : FakeJob(),
+    explicit AkonadiFakeTransaction(QObject *parent = nullptr)
+        : FakeJob(parent),
           m_nextIdx(0)
     {
     }
@@ -303,9 +303,9 @@ KJob *AkonadiFakeStorage::removeCollection(Akonadi::Collection collection, QObje
     return job;
 }
 
-KJob *AkonadiFakeStorage::createTransaction()
+KJob *AkonadiFakeStorage::createTransaction(QObject *parent)
 {
-    auto job = new AkonadiFakeTransaction;
+    auto job = new AkonadiFakeTransaction(parent);
     Utils::JobHandler::install(job, noop);
     return job;
 }

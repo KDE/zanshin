@@ -96,7 +96,7 @@ KJob *ProjectRepository::associate(Domain::Project::Ptr parent, Domain::Task::Pt
 
                     Item::List childItems = m_serializer->filterDescendantItems(fetchChildrenItemJob->items(), childItem);
 
-                    auto transaction = m_storage->createTransaction();
+                    auto transaction = m_storage->createTransaction(this);
                     m_storage->updateItem(childItem, transaction);
                     childItems.push_front(childItem);
                     m_storage->moveItems(childItems, parentItem.parentCollection(), transaction);

@@ -188,9 +188,9 @@ KJob *Storage::removeCollection(Collection collection, QObject *parent)
     return new CollectionDeleteJob(collection, parent);
 }
 
-KJob *Storage::createTransaction()
+KJob *Storage::createTransaction(QObject *parent)
 {
-    return new TransactionSequence();
+    return new TransactionSequence(parent);
 }
 
 CollectionFetchJobInterface *Storage::fetchCollections(Collection collection, StorageInterface::FetchDepth depth)
