@@ -33,8 +33,9 @@
 
 namespace Akonadi {
 
-class ContextQueries : public Domain::ContextQueries
+class ContextQueries : public QObject, public Domain::ContextQueries
 {
+    Q_OBJECT
 public:
     typedef QSharedPointer<ContextQueries> Ptr;
 

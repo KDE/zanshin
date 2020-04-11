@@ -249,7 +249,7 @@ private slots:
         };
 
         // WHEN
-        auto fetch = helpers->fetchItems();
+        auto fetch = helpers->fetchItems(nullptr);
         fetch(add);
         TestHelpers::waitForEmptyJobQueue();
 
@@ -312,7 +312,7 @@ private slots:
 
         // WHEN
         QFETCH(Akonadi::Collection, collection);
-        auto fetch = helpers->fetchItems(collection);
+        auto fetch = helpers->fetchItems(collection, nullptr);
         fetch(add);
         TestHelpers::waitForEmptyJobQueue();
 
@@ -399,7 +399,7 @@ private slots:
 
         // WHEN
         QFETCH(Domain::Context::Ptr, context);
-        auto fetch = helpers->fetchItemsForContext(context);
+        auto fetch = helpers->fetchItemsForContext(context, nullptr);
         fetch(add);
         TestHelpers::waitForEmptyJobQueue();
 
@@ -472,7 +472,7 @@ private slots:
 
         // WHEN
         QFETCH(Akonadi::Item, item);
-        auto fetch = helpers->fetchSiblings(item);
+        auto fetch = helpers->fetchSiblings(item, nullptr);
         fetch(add);
         TestHelpers::waitForEmptyJobQueue();
 

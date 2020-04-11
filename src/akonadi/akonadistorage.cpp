@@ -207,18 +207,18 @@ CollectionFetchJobInterface *Storage::fetchCollections(Collection collection, St
     return job;
 }
 
-ItemFetchJobInterface *Storage::fetchItems(Collection collection)
+ItemFetchJobInterface *Storage::fetchItems(Collection collection, QObject *parent)
 {
-    auto job = new ItemJob(collection);
+    auto job = new ItemJob(collection, parent);
 
     configureItemFetchJob(job);
 
     return job;
 }
 
-ItemFetchJobInterface *Storage::fetchItem(Akonadi::Item item)
+ItemFetchJobInterface *Storage::fetchItem(Akonadi::Item item, QObject *parent)
 {
-    auto job = new ItemJob(item);
+    auto job = new ItemJob(item, parent);
 
     configureItemFetchJob(job);
 

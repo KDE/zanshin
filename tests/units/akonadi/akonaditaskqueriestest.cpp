@@ -1644,7 +1644,7 @@ private slots:
                                                                              cache));
         auto task = serializer->createTaskFromItem(data.item(44));
         // populate cache for collection
-        auto *fetchJob = storage->fetchItems(collection);
+        auto *fetchJob = storage->fetchItems(collection, nullptr);
         QVERIFY2(fetchJob->kjob()->exec(), qPrintable(fetchJob->kjob()->errorString()));
 
         auto result = queries->findProject(task);
@@ -1839,9 +1839,9 @@ private slots:
                                                                              cache));
         auto task = serializer->createTaskFromItem(data.item(42));
         // populate cache for collection
-        auto *fetchJob = storage->fetchItems(collection1);
+        auto *fetchJob = storage->fetchItems(collection1, nullptr);
         QVERIFY2(fetchJob->kjob()->exec(), qPrintable(fetchJob->kjob()->errorString()));
-        fetchJob = storage->fetchItems(collection2);
+        fetchJob = storage->fetchItems(collection2, nullptr);
         QVERIFY2(fetchJob->kjob()->exec(), qPrintable(fetchJob->kjob()->errorString()));
 
         auto result = queries->findContexts(task);
@@ -1893,9 +1893,9 @@ private slots:
                                                                              cache));
         auto task = serializer->createTaskFromItem(data.item(42));
         // populate cache for collection
-        auto *fetchJob = storage->fetchItems(collection1);
+        auto *fetchJob = storage->fetchItems(collection1, nullptr);
         QVERIFY2(fetchJob->kjob()->exec(), qPrintable(fetchJob->kjob()->errorString()));
-        fetchJob = storage->fetchItems(collection2);
+        fetchJob = storage->fetchItems(collection2, nullptr);
         QVERIFY2(fetchJob->kjob()->exec(), qPrintable(fetchJob->kjob()->errorString()));
 
         auto result = queries->findContexts(task);
@@ -1961,9 +1961,9 @@ private slots:
                                                                              cache));
         auto task = serializer->createTaskFromItem(data.item(42));
         // populate cache for collection
-        auto *fetchJob = storage->fetchItems(collection1);
+        auto *fetchJob = storage->fetchItems(collection1, nullptr);
         QVERIFY2(fetchJob->kjob()->exec(), qPrintable(fetchJob->kjob()->errorString()));
-        fetchJob = storage->fetchItems(collection2);
+        fetchJob = storage->fetchItems(collection2, nullptr);
         QVERIFY2(fetchJob->kjob()->exec(), qPrintable(fetchJob->kjob()->errorString()));
 
         auto result = queries->findContexts(task);

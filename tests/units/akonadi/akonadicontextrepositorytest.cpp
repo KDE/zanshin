@@ -174,30 +174,30 @@ private slots:
         // A mock update job
         auto itemModifyJob = new FakeJob(this);
 
-        // Storage mock returning the create job
         Utils::MockObject<Akonadi::StorageInterface> storageMock;
-        storageMock(&Akonadi::StorageInterface::fetchItem).when(item)
+        Utils::MockObject<Akonadi::SerializerInterface> serializerMock;
+        QScopedPointer<Akonadi::ContextRepository> repository(new Akonadi::ContextRepository(storageMock.getInstance(),
+                                                                                             serializerMock.getInstance()));
+
+        // Storage mock returning the create job
+        storageMock(&Akonadi::StorageInterface::fetchItem).when(item, repository.get())
                                                           .thenReturn(itemFetchJob);
         storageMock(&Akonadi::StorageInterface::updateItem).when(item, nullptr)
                                                            .thenReturn(itemModifyJob);
 
         // Serializer mock returning the item for the task
-        Utils::MockObject<Akonadi::SerializerInterface> serializerMock;
         serializerMock(&Akonadi::SerializerInterface::createItemFromTask).when(task)
                                                                          .thenReturn(item);
         serializerMock(&Akonadi::SerializerInterface::addContextToTask).when(context, item)
                                                                        .thenReturn();
 
         // WHEN
-        QScopedPointer<Akonadi::ContextRepository> repository(new Akonadi::ContextRepository(storageMock.getInstance(),
-                                                                                             serializerMock.getInstance()));
-
         auto associateJob = repository->associate(context, task);
         if (execJob)
             associateJob->exec();
 
         // THEN
-        QVERIFY(storageMock(&Akonadi::StorageInterface::fetchItem).when(item).exactly(1));
+        QVERIFY(storageMock(&Akonadi::StorageInterface::fetchItem).when(item, repository.get()).exactly(1));
         if (execJob) {
             QVERIFY(serializerMock(&Akonadi::SerializerInterface::createItemFromTask).when(task).exactly(1));
             QVERIFY(serializerMock(&Akonadi::SerializerInterface::addContextToTask).when(context, item).exactly(1));
@@ -238,31 +238,31 @@ private slots:
         // A mock update job
         auto itemModifyJob = new FakeJob(this);
 
-        // Storage mock returning the create job
         Utils::MockObject<Akonadi::StorageInterface> storageMock;
-        storageMock(&Akonadi::StorageInterface::fetchItem).when(item)
+        Utils::MockObject<Akonadi::SerializerInterface> serializerMock;
+        QScopedPointer<Akonadi::ContextRepository> repository(new Akonadi::ContextRepository(storageMock.getInstance(),
+                                                                                             serializerMock.getInstance()));
+
+        // Storage mock returning the create job
+        storageMock(&Akonadi::StorageInterface::fetchItem).when(item, repository.get())
                                                           .thenReturn(itemFetchJob);
         storageMock(&Akonadi::StorageInterface::updateItem).when(item, nullptr)
                                                            .thenReturn(itemModifyJob);
 
         // Serializer mock returning the item for the task
-        Utils::MockObject<Akonadi::SerializerInterface> serializerMock;
         serializerMock(&Akonadi::SerializerInterface::createItemFromTask).when(task)
                                                                          .thenReturn(item);
         serializerMock(&Akonadi::SerializerInterface::removeContextFromTask).when(context, item)
                                                                             .thenReturn();
 
         // WHEN
-        QScopedPointer<Akonadi::ContextRepository> repository(new Akonadi::ContextRepository(storageMock.getInstance(),
-                                                                                             serializerMock.getInstance()));
-
         auto dissociateJob = repository->dissociate(context, task);
 
         if (execJob)
             dissociateJob->exec();
 
         // THEN
-        QVERIFY(storageMock(&Akonadi::StorageInterface::fetchItem).when(item).exactly(1));
+        QVERIFY(storageMock(&Akonadi::StorageInterface::fetchItem).when(item, repository.get()).exactly(1));
         if (execJob) {
             QVERIFY(serializerMock(&Akonadi::SerializerInterface::removeContextFromTask).when(context, item).exactly(1));
             QVERIFY(storageMock(&Akonadi::StorageInterface::updateItem).when(item, nullptr).exactly(1));
@@ -298,29 +298,29 @@ private slots:
         // A mock update job
         auto itemModifyJob = new FakeJob(this);
 
-        // Storage mock returning the create job
         Utils::MockObject<Akonadi::StorageInterface> storageMock;
-        storageMock(&Akonadi::StorageInterface::fetchItem).when(item)
+        Utils::MockObject<Akonadi::SerializerInterface> serializerMock;
+        QScopedPointer<Akonadi::ContextRepository> repository(new Akonadi::ContextRepository(storageMock.getInstance(),
+                                                                                             serializerMock.getInstance()));
+
+        // Storage mock returning the create job
+        storageMock(&Akonadi::StorageInterface::fetchItem).when(item, repository.get())
                                                           .thenReturn(itemFetchJob);
         storageMock(&Akonadi::StorageInterface::updateItem).when(item, nullptr)
                                                            .thenReturn(itemModifyJob);
 
         // Serializer mock returning the item for the task
-        Utils::MockObject<Akonadi::SerializerInterface> serializerMock;
         serializerMock(&Akonadi::SerializerInterface::createItemFromTask).when(task)
                                                                          .thenReturn(item);
 
         // WHEN
-        QScopedPointer<Akonadi::ContextRepository> repository(new Akonadi::ContextRepository(storageMock.getInstance(),
-                                                                                             serializerMock.getInstance()));
-
         auto dissociateJob = repository->dissociateAll(task);
 
         if (execJob)
             dissociateJob->exec();
 
         // THEN
-        QVERIFY(storageMock(&Akonadi::StorageInterface::fetchItem).when(item).exactly(1));
+        QVERIFY(storageMock(&Akonadi::StorageInterface::fetchItem).when(item, repository.get()).exactly(1));
         if (execJob) {
             QVERIFY(storageMock(&Akonadi::StorageInterface::updateItem).when(item, nullptr).exactly(1));
         } else {

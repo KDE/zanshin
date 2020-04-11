@@ -26,6 +26,8 @@
 
 #include <KJob>
 
+class QTimer;
+
 class FakeJob : public KJob
 {
     Q_OBJECT
@@ -46,6 +48,7 @@ public:
     QString expectedErrorText() const;
 
 private:
+    QTimer *m_timer;
     bool m_done;
     bool m_launched;
     int m_errorCode;

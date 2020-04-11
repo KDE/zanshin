@@ -31,8 +31,9 @@
 
 namespace Akonadi {
 
-class DataSourceQueries : public Domain::DataSourceQueries
+class DataSourceQueries : public QObject, public Domain::DataSourceQueries
 {
+    Q_OBJECT
 public:
     typedef QSharedPointer<DataSourceQueries> Ptr;
 

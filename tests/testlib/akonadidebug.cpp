@@ -35,7 +35,7 @@ void TestLib::AkonadiDebug::dumpTree(const Akonadi::StorageInterface::Ptr &stora
     colJob->kjob()->exec();
     foreach (const auto &col, colJob->collections()) {
         qDebug() << "COL:" << col.id() << col.name() << col.remoteId();
-        auto itemJob = storage->fetchItems(col);
+        auto itemJob = storage->fetchItems(col, nullptr);
         itemJob->kjob()->exec();
         foreach (const auto &item, itemJob->items()) {
             QString summary;

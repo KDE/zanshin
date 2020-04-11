@@ -47,15 +47,15 @@ public:
     CollectionFetchFunction fetchCollections(const Collection &root) const;
     CollectionFetchFunction fetchItemCollection(const Item &item) const;
 
-    ItemFetchFunction fetchItems() const;
-    ItemFetchFunction fetchItems(const Collection &collection) const;
-    ItemFetchFunction fetchItemsForContext(const Domain::Context::Ptr &context) const;
+    ItemFetchFunction fetchItems(QObject *parent) const;
+    ItemFetchFunction fetchItems(const Collection &collection, QObject *parent) const;
+    ItemFetchFunction fetchItemsForContext(const Domain::Context::Ptr &context, QObject *parent) const;
 
     /// Returns a fetch function which calls a LiveQueryInput::AddFunction (provided as argument to the fetch function)
     /// with the given task, then its parent, its grandparent etc. up until the project.
-    ItemFetchFunction fetchTaskAndAncestors(Domain::Task::Ptr task) const;
+    ItemFetchFunction fetchTaskAndAncestors(Domain::Task::Ptr task, QObject *parent) const;
 
-    ItemFetchFunction fetchSiblings(const Item &item) const;
+    ItemFetchFunction fetchSiblings(const Item &item, QObject *parent) const;
 
 private:
     SerializerInterface::Ptr m_serializer;

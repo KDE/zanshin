@@ -152,7 +152,7 @@ void AkonadiStorageTestBase::shouldListFullItemsInACollection()
                                           };
 
     // WHEN
-    auto job = storage->fetchItems(calendar2());
+    auto job = storage->fetchItems(calendar2(), nullptr);
     AKVERIFYEXEC(job->kjob());
 
     // THEN
@@ -480,12 +480,12 @@ void AkonadiStorageTestBase::shouldUseTransaction()
 
     // THEN
     QCOMPARE(spyUpdated.size(), 0);
-    auto job = storage->fetchItem(item1);
+    auto job = storage->fetchItem(item1, nullptr);
     AKVERIFYEXEC(job->kjob());
     QCOMPARE(job->items().size(), 1);
     item1 = job->items().at(0);
 
-    job = storage->fetchItem(item2);
+    job = storage->fetchItem(item2, nullptr);
     AKVERIFYEXEC(job->kjob());
     QCOMPARE(job->items().size(), 1);
     item2 = job->items().at(0);
@@ -540,7 +540,7 @@ void AkonadiStorageTestBase::shouldRetrieveItem()
     QVERIFY(findItem.isValid());
 
     // WHEN
-    auto job = storage->fetchItem(findItem);
+    auto job = storage->fetchItem(findItem, nullptr);
     AKVERIFYEXEC(job->kjob());
 
     // THEN
@@ -778,7 +778,7 @@ Akonadi::Item AkonadiStorageTestBase::fetchItemByRID(const QString &remoteId, co
     Akonadi::Item item;
     item.setRemoteId(remoteId);
 
-    auto job = createStorage()->fetchItem(item);
+    auto job = createStorage()->fetchItem(item, nullptr);
     job->setCollection(collection);
     if (!job->kjob()->exec()) {
         qWarning() << job->kjob()->errorString();

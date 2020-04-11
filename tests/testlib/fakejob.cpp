@@ -26,8 +26,15 @@
 #include <QTimer>
 
 FakeJob::FakeJob(QObject *parent)
-    : KJob(parent), m_done(false), m_launched(false), m_errorCode(KJob::NoError)
+    : KJob(parent),
+      m_timer(new QTimer(this)),
+      m_done(false),
+      m_launched(false),
+      m_errorCode(KJob::NoError)
 {
+    m_timer->setTimerType(Qt::PreciseTimer);
+    m_timer->setSingleShot(true);
+    connect(m_timer, &QTimer::timeout, this, &FakeJob::onTimeout);
 }
 
 void FakeJob::setExpectedError(int errorCode, const QString &errorText)
@@ -40,7 +47,7 @@ void FakeJob::start()
 {
     if (!m_launched) {
         m_launched = true;
-        QTimer::singleShot(DURATION, Qt::PreciseTimer, this, &FakeJob::onTimeout);
+        m_timer->start(DURATION);
     }
 }
 

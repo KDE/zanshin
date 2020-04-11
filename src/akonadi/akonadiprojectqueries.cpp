@@ -38,7 +38,7 @@ ProjectQueries::ProjectQueries(const StorageInterface::Ptr &storage, const Seria
 
 ProjectQueries::ProjectResult::Ptr ProjectQueries::findAll() const
 {
-    auto fetch = m_helpers->fetchItems();
+    auto fetch = m_helpers->fetchItems(const_cast<ProjectQueries*>(this));
     auto predicate = [this] (const Akonadi::Item &item) {
         return m_serializer->isProjectItem(item);
     };
@@ -50,7 +50,7 @@ ProjectQueries::TaskResult::Ptr ProjectQueries::findTopLevel(Domain::Project::Pt
 {
     Akonadi::Item item = m_serializer->createItemFromProject(project);
     auto &query = m_findTopLevel[item.id()];
-    auto fetch = m_helpers->fetchSiblings(item);
+    auto fetch = m_helpers->fetchSiblings(item, const_cast<ProjectQueries*>(this));
     auto predicate = [this, project] (const Akonadi::Item &item) {
         return m_serializer->isProjectChild(project, item);
     };

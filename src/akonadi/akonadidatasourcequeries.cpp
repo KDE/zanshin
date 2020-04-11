@@ -85,7 +85,7 @@ DataSourceQueries::ProjectResult::Ptr DataSourceQueries::findProjects(Domain::Da
 {
     Collection root = m_serializer->createCollectionFromDataSource(source);
     auto &query = m_findProjects[root.id()];
-    auto fetch = m_helpers->fetchItems(root);
+    auto fetch = m_helpers->fetchItems(root, const_cast<DataSourceQueries*>(this));
     auto predicate = [this, root] (const Akonadi::Item &item) {
         return root == item.parentCollection()
             && m_serializer->isProjectItem(item);

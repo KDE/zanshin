@@ -204,7 +204,7 @@ private slots:
         Akonadi::CachingStorage storage(cache, Akonadi::StorageInterface::Ptr(data.createStorage()));
 
         // WHEN
-        auto job = storage.fetchItems(Akonadi::Collection(42));
+        auto job = storage.fetchItems(Akonadi::Collection(42), nullptr);
         QVERIFY2(job->kjob()->exec(), qPrintable(job->kjob()->errorString()));
 
         // THEN
@@ -231,7 +231,7 @@ private slots:
         // WHEN (second time shouldn't hit the original storage)
         data.storageBehavior().setFetchItemsBehavior(42, AkonadiFakeStorageBehavior::EmptyFetch);
         data.storageBehavior().setFetchItemsErrorCode(42, 128);
-        job = storage.fetchItems(Akonadi::Collection(42));
+        job = storage.fetchItems(Akonadi::Collection(42), nullptr);
         QVERIFY2(job->kjob()->exec(), qPrintable(job->kjob()->errorString()));
 
         {
@@ -265,7 +265,7 @@ private slots:
         Akonadi::CachingStorage storage(cache, Akonadi::StorageInterface::Ptr(data.createStorage()));
 
         // WHEN
-        auto job = storage.fetchItem(Akonadi::Item(44));
+        auto job = storage.fetchItem(Akonadi::Item(44), nullptr);
         QVERIFY2(job->kjob()->exec(), qPrintable(job->kjob()->errorString()));
 
         // THEN
@@ -287,12 +287,12 @@ private slots:
         }
 
         // WHEN (if collection is populated, shouldn't hit the original storage)
-        job = storage.fetchItems(Akonadi::Collection(43));
+        job = storage.fetchItems(Akonadi::Collection(43), nullptr);
         QVERIFY2(job->kjob()->exec(), qPrintable(job->kjob()->errorString()));
 
         data.storageBehavior().setFetchItemBehavior(44, AkonadiFakeStorageBehavior::EmptyFetch);
         data.storageBehavior().setFetchItemErrorCode(44, 128);
-        job = storage.fetchItem(Akonadi::Item(44));
+        job = storage.fetchItem(Akonadi::Item(44), nullptr);
         QVERIFY2(job->kjob()->exec(), qPrintable(job->kjob()->errorString()));
 
         {

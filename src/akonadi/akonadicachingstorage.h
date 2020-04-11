@@ -52,8 +52,8 @@ public:
     KJob *createTransaction() override;
 
     CollectionFetchJobInterface *fetchCollections(Akonadi::Collection collection, FetchDepth depth) override;
-    ItemFetchJobInterface *fetchItems(Akonadi::Collection collection) override;
-    ItemFetchJobInterface *fetchItem(Akonadi::Item item) override;
+    ItemFetchJobInterface *fetchItems(Akonadi::Collection collection, QObject *parent) override;
+    ItemFetchJobInterface *fetchItem(Akonadi::Item item, QObject *parent) override;
 
 private:
     Cache::Ptr m_cache;

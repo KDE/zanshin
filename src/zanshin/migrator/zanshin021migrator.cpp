@@ -55,7 +55,7 @@ Zanshin021Migrator::SeenItemHash Zanshin021Migrator::fetchAllItems()
 
     auto collections = collectionsJob->collections();
     foreach (const auto &collection, collections) {
-        auto job = m_storage.fetchItems(collection);
+        auto job = m_storage.fetchItems(collection, nullptr);
         job->kjob()->exec();
         auto items = job->items();
         foreach (const Akonadi::Item &item, items) {

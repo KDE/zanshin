@@ -31,8 +31,9 @@
 
 namespace Akonadi {
 
-class ProjectQueries : public Domain::ProjectQueries
+class ProjectQueries : public QObject, public Domain::ProjectQueries
 {
+    Q_OBJECT
 public:
     typedef QSharedPointer<ProjectQueries> Ptr;
 

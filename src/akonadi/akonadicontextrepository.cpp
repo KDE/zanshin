@@ -68,7 +68,7 @@ KJob *ContextRepository::associate(Domain::Context::Ptr context, Domain::Task::P
     Q_ASSERT(childItem.isValid());
 
     auto job = new Utils::CompositeJob();
-    ItemFetchJobInterface *fetchItemJob = m_storage->fetchItem(childItem);
+    ItemFetchJobInterface *fetchItemJob = m_storage->fetchItem(childItem, this);
     job->install(fetchItemJob->kjob(), [fetchItemJob, context, job, this] {
         if (fetchItemJob->kjob()->error() != KJob::NoError)
             return;
@@ -90,7 +90,7 @@ KJob *ContextRepository::dissociate(Domain::Context::Ptr context, Domain::Task::
     Item childItem = m_serializer->createItemFromTask(child);
     Q_ASSERT(childItem.isValid());
     auto job = new Utils::CompositeJob();
-    ItemFetchJobInterface *fetchItemJob = m_storage->fetchItem(childItem);
+    ItemFetchJobInterface *fetchItemJob = m_storage->fetchItem(childItem, this);
     job->install(fetchItemJob->kjob(), [fetchItemJob, context, job, this] {
         if (fetchItemJob->kjob()->error() != KJob::NoError)
             return;
@@ -114,7 +114,7 @@ KJob *ContextRepository::dissociateAll(Domain::Task::Ptr child)
     childItem = m_serializer->createItemFromTask(child);
     Q_ASSERT(childItem.isValid());
     auto job = new Utils::CompositeJob();
-    ItemFetchJobInterface *fetchItemJob = m_storage->fetchItem(childItem);
+    ItemFetchJobInterface *fetchItemJob = m_storage->fetchItem(childItem, this);
     job->install(fetchItemJob->kjob(), [fetchItemJob, job, this] {
         if (fetchItemJob->kjob()->error() != KJob::NoError)
             return;

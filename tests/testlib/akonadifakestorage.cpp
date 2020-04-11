@@ -348,7 +348,7 @@ Akonadi::CollectionFetchJobInterface *AkonadiFakeStorage::fetchCollections(Akona
     return job;
 }
 
-Akonadi::ItemFetchJobInterface *AkonadiFakeStorage::fetchItems(Akonadi::Collection collection)
+Akonadi::ItemFetchJobInterface *AkonadiFakeStorage::fetchItems(Akonadi::Collection collection, QObject *parent)
 {
     auto items = m_data->childItems(findId(collection));
     std::transform(items.begin(), items.end(),
@@ -360,7 +360,7 @@ Akonadi::ItemFetchJobInterface *AkonadiFakeStorage::fetchItems(Akonadi::Collecti
                        return result;
                    });
 
-    auto job = new AkonadiFakeItemFetchJob;
+    auto job = new AkonadiFakeItemFetchJob(parent);
     const auto behavior = m_data->storageBehavior().fetchItemsBehavior(collection.id());
     if (behavior == AkonadiFakeStorageBehavior::NormalFetch)
         job->setItems(items);
@@ -369,14 +369,14 @@ Akonadi::ItemFetchJobInterface *AkonadiFakeStorage::fetchItems(Akonadi::Collecti
     return job;
 }
 
-Akonadi::ItemFetchJobInterface *AkonadiFakeStorage::fetchItem(Akonadi::Item item)
+Akonadi::ItemFetchJobInterface *AkonadiFakeStorage::fetchItem(Akonadi::Item item, QObject *parent)
 {
     auto fullItem = m_data->item(findId(item));
     fullItem = m_data->reconstructItemDependencies(fullItem);
     // Force payload detach
     fullItem.setPayloadFromData(fullItem.payloadData());
 
-    auto job = new AkonadiFakeItemFetchJob;
+    auto job = new AkonadiFakeItemFetchJob(parent);
     const auto behavior = m_data->storageBehavior().fetchItemBehavior(item.id());
     if (behavior == AkonadiFakeStorageBehavior::NormalFetch)
         job->setItems(Akonadi::Item::List() << fullItem);

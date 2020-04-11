@@ -177,7 +177,7 @@ public:
         if (m_cache->isCollectionPopulated(m_collection.id())) {
             QTimer::singleShot(0, this, &CachingCollectionItemsFetchJob::retrieveFromCache);
         } else {
-            auto job = m_storage->fetchItems(m_collection);
+            auto job = m_storage->fetchItems(m_collection, this);
             addSubjob(job->kjob());
         }
 
@@ -251,7 +251,7 @@ public:
                 retrieveFromCache(item);
             });
         } else {
-            auto job = m_storage->fetchItem(m_item);
+            auto job = m_storage->fetchItem(m_item, this);
             job->setCollection(m_collection);
             addSubjob(job->kjob());
         }
@@ -368,14 +368,14 @@ CollectionFetchJobInterface *CachingStorage::fetchCollections(Collection collect
     return new CachingCollectionFetchJob(m_storage, m_cache, collection, depth);
 }
 
-ItemFetchJobInterface *CachingStorage::fetchItems(Collection collection)
+ItemFetchJobInterface *CachingStorage::fetchItems(Collection collection, QObject *parent)
 {
-    return new CachingCollectionItemsFetchJob(m_storage, m_cache, collection);
+    return new CachingCollectionItemsFetchJob(m_storage, m_cache, collection, parent);
 }
 
-ItemFetchJobInterface *CachingStorage::fetchItem(Akonadi::Item item)
+ItemFetchJobInterface *CachingStorage::fetchItem(Akonadi::Item item, QObject *parent)
 {
-    return new CachingSingleItemFetchJob(m_storage, m_cache, item);
+    return new CachingSingleItemFetchJob(m_storage, m_cache, item, parent);
 }
 
 #include "akonadicachingstorage.moc"

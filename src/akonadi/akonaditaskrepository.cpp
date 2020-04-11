@@ -136,7 +136,7 @@ KJob *TaskRepository::remove(Domain::Task::Ptr task)
     Q_ASSERT(item.isValid());
 
     auto compositeJob = new CompositeJob();
-    ItemFetchJobInterface *fetchItemJob = m_storage->fetchItem(item);
+    ItemFetchJobInterface *fetchItemJob = m_storage->fetchItem(item, this);
     compositeJob->install(fetchItemJob->kjob(), [fetchItemJob, compositeJob, this] {
         if (fetchItemJob->kjob()->error() != KJob::NoError)
            return;
@@ -144,7 +144,7 @@ KJob *TaskRepository::remove(Domain::Task::Ptr task)
         Q_ASSERT(fetchItemJob->items().size() == 1);
         auto item = fetchItemJob->items().at(0);
 
-        ItemFetchJobInterface *fetchCollectionItemsJob = m_storage->fetchItems(item.parentCollection());
+        ItemFetchJobInterface *fetchCollectionItemsJob = m_storage->fetchItems(item.parentCollection(), this);
         compositeJob->install(fetchCollectionItemsJob->kjob(), [fetchCollectionItemsJob, item, compositeJob, this] {
             if (fetchCollectionItemsJob->kjob()->error() != KJob::NoError)
                 return;
@@ -166,7 +166,7 @@ KJob *TaskRepository::promoteToProject(Domain::Task::Ptr task)
     auto item = m_serializer->createItemFromTask(task);
 
     auto job = new CompositeJob();
-    auto fetchJob = m_storage->fetchItem(item);
+    auto fetchJob = m_storage->fetchItem(item, this);
     job->install(fetchJob->kjob(), [fetchJob, job, this] {
         if (fetchJob->kjob()->error() != KJob::NoError)
            return;
@@ -187,7 +187,7 @@ KJob *TaskRepository::associate(Domain::Task::Ptr parent, Domain::Task::Ptr chil
     auto childItem = m_serializer->createItemFromTask(child);
 
     auto job = new CompositeJob();
-    ItemFetchJobInterface *fetchItemJob = m_storage->fetchItem(childItem);
+    ItemFetchJobInterface *fetchItemJob = m_storage->fetchItem(childItem, this);
     job->install(fetchItemJob->kjob(), [fetchItemJob, child, parent, job, this] {
         if (fetchItemJob->kjob()->error() != KJob::NoError)
            return;
@@ -198,7 +198,7 @@ KJob *TaskRepository::associate(Domain::Task::Ptr parent, Domain::Task::Ptr chil
 
         // Check collections to know if we need to move child
         auto partialParentItem = m_serializer->createItemFromTask(parent);
-        ItemFetchJobInterface *fetchParentItemJob = m_storage->fetchItems(partialParentItem.parentCollection());
+        ItemFetchJobInterface *fetchParentItemJob = m_storage->fetchItems(partialParentItem.parentCollection(), this);
         job->install(fetchParentItemJob->kjob(), [child, parent, fetchParentItemJob, partialParentItem, childItem, job, this] {
             if (fetchParentItemJob->kjob()->error() != KJob::NoError)
                 return;
@@ -232,7 +232,7 @@ KJob *TaskRepository::associate(Domain::Task::Ptr parent, Domain::Task::Ptr chil
             const int parentCollectionId = parentItem.parentCollection().id();
 
             if (itemCollectionId != parentCollectionId) {
-                ItemFetchJobInterface *fetchChildrenItemJob = m_storage->fetchItems(childItem.parentCollection());
+                ItemFetchJobInterface *fetchChildrenItemJob = m_storage->fetchItems(childItem.parentCollection(), this);
                 job->install(fetchChildrenItemJob->kjob(), [fetchChildrenItemJob, childItem, parentItem, job, this] {
                     if (fetchChildrenItemJob->kjob()->error() != KJob::NoError)
                         return;
@@ -261,7 +261,7 @@ KJob *TaskRepository::dissociate(Domain::Task::Ptr child)
 {
     auto job = new CompositeJob();
     auto childItem = m_serializer->createItemFromTask(child);
-    ItemFetchJobInterface *fetchItemJob = m_storage->fetchItem(childItem);
+    ItemFetchJobInterface *fetchItemJob = m_storage->fetchItem(childItem, this);
     job->install(fetchItemJob->kjob(), [fetchItemJob, job, this] {
         if (fetchItemJob->kjob()->error() != KJob::NoError)
             return;
@@ -283,7 +283,7 @@ KJob *TaskRepository::dissociateAll(Domain::Task::Ptr child)
 {
     auto job = new CompositeJob();
     auto childItem = m_serializer->createItemFromTask(child);
-    ItemFetchJobInterface *fetchItemJob = m_storage->fetchItem(childItem);
+    ItemFetchJobInterface *fetchItemJob = m_storage->fetchItem(childItem, this);
     job->install(fetchItemJob->kjob(), [fetchItemJob, job, this] {
         if (fetchItemJob->kjob()->error() != KJob::NoError)
             return;

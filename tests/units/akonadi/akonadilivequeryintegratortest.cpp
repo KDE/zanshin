@@ -91,7 +91,7 @@ private:
             auto job = storage->fetchCollections(Akonadi::Collection::root(), Akonadi::Storage::Recursive);
             Utils::JobHandler::install(job->kjob(), [add, job, storage] {
                 foreach (const auto &col, job->collections()) {
-                    auto itemJob = storage->fetchItems(col);
+                    auto itemJob = storage->fetchItems(col, nullptr);
                     Utils::JobHandler::install(itemJob->kjob(), [add, itemJob] {
                         foreach (const auto &item, itemJob->items())
                             add(item);
@@ -110,7 +110,7 @@ private:
                     if (!serializer->isSelectedCollection(col))
                         continue;
 
-                    auto itemJob = storage->fetchItems(col);
+                    auto itemJob = storage->fetchItems(col, nullptr);
                     Utils::JobHandler::install(itemJob->kjob(), [add, itemJob] {
                         foreach (const auto &item, itemJob->items())
                             add(item);
@@ -140,7 +140,7 @@ private slots:
 
         auto query = Domain::LiveQueryOutput<Domain::Context::Ptr>::Ptr();
         auto fetch = [storage, collection] (const Domain::LiveQueryInput<Akonadi::Item>::AddFunction &add) {
-            auto job = storage->fetchItems(collection);
+            auto job = storage->fetchItems(collection, nullptr);
             Utils::JobHandler::install(job->kjob(), [add, job] {
                 foreach (const auto &item, job->items()) {
                     add(item);
@@ -255,7 +255,7 @@ private slots:
         auto inQuery = Domain::LiveQueryOutput<Domain::Context::Ptr>::Ptr();
         auto exQuery = Domain::LiveQueryOutput<Domain::Context::Ptr>::Ptr();
         auto fetch = [storage, collection] (const Domain::LiveQueryInput<Akonadi::Item>::AddFunction &add) {
-            auto job = storage->fetchItems(collection);
+            auto job = storage->fetchItems(collection, nullptr);
             Utils::JobHandler::install(job->kjob(), [add, job] {
                 foreach (const auto &item, job->items()) {
                     add(item);

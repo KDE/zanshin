@@ -44,7 +44,7 @@ ContextQueries::ContextQueries(const StorageInterface::Ptr &storage,
 
 ContextQueries::ContextResult::Ptr ContextQueries::findAll() const
 {
-    auto fetch = m_helpers->fetchItems();
+    auto fetch = m_helpers->fetchItems(const_cast<ContextQueries*>(this));
     auto predicate = [this] (const Akonadi::Item &item) {
         return m_serializer->isContext(item);
     };
@@ -55,7 +55,7 @@ ContextQueries::ContextResult::Ptr ContextQueries::findAll() const
 ContextQueries::TaskResult::Ptr ContextQueries::findTopLevelTasks(Domain::Context::Ptr context) const
 {
     Q_ASSERT(context);
-    auto fetch = m_helpers->fetchItemsForContext(context);
+    auto fetch = m_helpers->fetchItemsForContext(context, const_cast<ContextQueries*>(this));
     auto predicate = [this, context] (const Akonadi::Item &item) {
         if (!m_serializer->isContextChild(context, item))
             return false;

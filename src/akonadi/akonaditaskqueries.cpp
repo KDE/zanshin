@@ -71,7 +71,7 @@ void TaskQueries::setWorkdayPollInterval(int interval)
 
 TaskQueries::TaskResult::Ptr TaskQueries::findAll() const
 {
-    auto fetch = m_helpers->fetchItems();
+    auto fetch = m_helpers->fetchItems(const_cast<TaskQueries*>(this));
     auto predicate = [this] (const Akonadi::Item &item) {
         return m_serializer->isTaskItem(item);
     };
@@ -83,7 +83,7 @@ TaskQueries::TaskResult::Ptr TaskQueries::findChildren(Domain::Task::Ptr task) c
 {
     Akonadi::Item item = m_serializer->createItemFromTask(task);
     auto &query = m_findChildren[item.id()];
-    auto fetch = m_helpers->fetchSiblings(item);
+    auto fetch = m_helpers->fetchSiblings(item, const_cast<TaskQueries*>(this));
     auto predicate = [this, task] (const Akonadi::Item &childItem) {
         return m_serializer->isTaskChild(task, childItem);
     };
@@ -95,7 +95,7 @@ TaskQueries::ProjectResult::Ptr TaskQueries::findProject(Domain::Task::Ptr task)
 {
     Akonadi::Item childItem = m_serializer->createItemFromTask(task);
     auto &query = m_findProject[childItem.id()];
-    auto fetch = m_helpers->fetchTaskAndAncestors(task);
+    auto fetch = m_helpers->fetchTaskAndAncestors(task, const_cast<TaskQueries*>(this));
     auto predicate = [this, childItem] (const Akonadi::Item &item) {
         return m_serializer->isProjectItem(item);
     };
@@ -120,7 +120,7 @@ TaskQueries::DataSourceResult::Ptr TaskQueries::findDataSource(Domain::Task::Ptr
 TaskQueries::TaskResult::Ptr TaskQueries::findTopLevel() const
 {
     Q_ASSERT(m_cache);
-    auto fetch = m_helpers->fetchItems();
+    auto fetch = m_helpers->fetchItems(const_cast<TaskQueries*>(this));
     auto predicate = [this] (const Akonadi::Item &item) {
         // Tasks with no parent, or whose parent is a project (not a task)
         if (!m_serializer->isTaskItem(item))
@@ -151,7 +151,7 @@ TaskQueries::TaskResult::Ptr TaskQueries::findTopLevel() const
 
 TaskQueries::TaskResult::Ptr TaskQueries::findInboxTopLevel() const
 {
-    auto fetch = m_helpers->fetchItems();
+    auto fetch = m_helpers->fetchItems(const_cast<TaskQueries*>(this));
     auto predicate = [this] (const Akonadi::Item &item) {
         // Tasks without a parent (neither task nor project)
         return m_serializer->isTaskItem(item) && m_serializer->relatedUidFromItem(item).isEmpty();
@@ -167,7 +167,7 @@ TaskQueries::TaskResult::Ptr TaskQueries::findWorkdayTopLevel() const
         m_today = Utils::DateTime::currentDate();
     }
 
-    auto fetch = m_helpers->fetchItems();
+    auto fetch = m_helpers->fetchItems(const_cast<TaskQueries*>(this));
     auto isWorkdayItem = [this] (const Akonadi::Item &item) {
         if (!m_serializer->isTaskItem(item))
             return false;
@@ -223,7 +223,7 @@ TaskQueries::ContextResult::Ptr TaskQueries::findContexts(Domain::Task::Ptr task
     m_findContextsItem[taskItemId] = taskItem;
 
     auto &query = m_findContexts[taskItemId];
-    auto fetch = m_helpers->fetchItems();
+    auto fetch = m_helpers->fetchItems(const_cast<TaskQueries*>(this));
     auto predicate = [this, taskItemId] (const Akonadi::Item &contextItem) {
         auto context = m_serializer->createContextFromItem(contextItem);
         if (!context)
