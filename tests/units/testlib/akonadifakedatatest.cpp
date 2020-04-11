@@ -65,6 +65,19 @@ inline bool qCompare(const Akonadi::Item &left, const Akonadi::Item &right,
 
 }
 
+namespace
+{
+    template<typename T>
+    QSet<T> listToSet(const QVector<T> &list)
+    {
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
+        return list.toList().toSet();
+#else
+        return {list.cbegin(), list.cend()};
+#endif
+    }
+}
+
 class AkonadiFakeDataTest : public QObject
 {
     Q_OBJECT
@@ -106,7 +119,7 @@ private slots:
         data.createCollection(c2);
 
         // THEN
-        QCOMPARE(data.collections().toList().toSet(), colSet);
+        QCOMPARE(listToSet(data.collections()), colSet);
         QCOMPARE(data.collection(c1.id()), c1);
         QCOMPARE(data.collection(c2.id()), c2);
 
@@ -183,7 +196,7 @@ private slots:
 
         // THEN
         QVERIFY(data.childCollections(c2.id()).isEmpty());
-        QCOMPARE(data.childCollections(c1.id()).toList().toSet(), colSet);
+        QCOMPARE(listToSet(data.childCollections(c1.id())), colSet);
     }
 
     void shouldReparentCollectionsOnModify()
@@ -393,7 +406,7 @@ private slots:
         QCOMPARE(data.contextItems("ctx-1").at(0), i1);
         QVERIFY(data.contextItems("ctx-2").isEmpty());
 
-        QCOMPARE(data.items().toList().toSet(), itemSet);
+        QCOMPARE(listToSet(data.items()), itemSet);
 
         QVERIFY(data.item(i1.id()).isValid());
         const auto item2 = data.item(i2.id());
@@ -427,7 +440,7 @@ private slots:
         data.createItem(i2);
 
         // THEN
-        QCOMPARE(data.items().toList().toSet(), itemSet);
+        QCOMPARE(listToSet(data.items()), itemSet);
         QCOMPARE(data.item(i1.id()), i1);
         QCOMPARE(data.item(i2.id()), i2);
 

@@ -76,7 +76,7 @@ class DateValidator : public QValidator
       : QValidator( parent ), mKeywords( keywords )
     {}
 
-    virtual State validate( QString &str, int & ) const
+    virtual State validate( QString &str, int & ) const override
     {
       int length = str.length();
 
@@ -450,7 +450,7 @@ void KDateEdit::setupKeywords()
 
   QString dayName;
   for ( int i = 1; i <= 7; ++i ) {
-    dayName = QDate::longDayName( i ).toLower();
+    dayName = QLocale().standaloneDayName( i ).toLower();
     mKeywordMap.insert( dayName, i + 100 );
   }
 

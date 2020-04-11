@@ -115,7 +115,7 @@ void ItemDelegate::paint(QPainter *painter,
                                                : QString();
 
     const auto textMargin = style->pixelMetric(QStyle::PM_FocusFrameHMargin, nullptr, widget) + 1;
-    const auto dueDateWidth = dueDate.isValid() ? (summaryMetrics.width(dueDateText) + 2 * textMargin) : 0;
+    const auto dueDateWidth = dueDate.isValid() ? (summaryMetrics.horizontalAdvance(dueDateText) + 2 * textMargin) : 0;
 
 
     const auto checkRect = style->subElementRect(QStyle::SE_ItemViewItemCheckIndicator, &opt, widget);

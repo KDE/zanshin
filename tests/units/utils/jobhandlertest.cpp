@@ -30,6 +30,19 @@
 
 using namespace Utils;
 
+namespace
+{
+    template<typename T>
+    QSet<T> listToSet(const QList<T> &list)
+    {
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
+        return list.toSet();
+#else
+        return {list.cbegin(), list.cend()};
+#endif
+    }
+}
+
 class JobHandlerTest : public QObject
 {
     Q_OBJECT
@@ -63,7 +76,7 @@ private slots:
         QTest::qWait(FakeJob::DURATION + 10);
 
         QCOMPARE(callCount, 4);
-        QCOMPARE(seenJobs.toSet(), QSet<KJob*>() << job1 << job2);
+        QCOMPARE(listToSet(seenJobs), QSet<KJob*>() << job1 << job2);
         QCOMPARE(JobHandler::jobCount(), 0);
     }
 };

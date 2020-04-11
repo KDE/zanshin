@@ -46,6 +46,19 @@
 
 using namespace Akonadi;
 
+namespace
+{
+    template<typename T>
+    QSet<T> listToSet(const QList<T> &list)
+    {
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
+        return list.toSet();
+#else
+        return {list.cbegin(), list.cend()};
+#endif
+    }
+}
+
 class CollectionJob : public CollectionFetchJob, public CollectionFetchJobInterface
 {
     Q_OBJECT
@@ -70,12 +83,12 @@ public:
 
         // Why the hell isn't fetchScope() const and returning a reference???
         auto self = const_cast<CollectionJob*>(this);
-        const auto allowedMimeTypes = self->fetchScope().contentMimeTypes().toSet();
+        const auto allowedMimeTypes = listToSet(self->fetchScope().contentMimeTypes());
 
         if (!allowedMimeTypes.isEmpty()) {
             collections.erase(std::remove_if(collections.begin(), collections.end(),
                                              [allowedMimeTypes] (const Collection &collection) {
-                                                auto mimeTypes = collection.contentMimeTypes().toSet();
+                                                auto mimeTypes = listToSet(collection.contentMimeTypes());
                                                 return !mimeTypes.intersects(allowedMimeTypes);
                                              }),
                               collections.end());

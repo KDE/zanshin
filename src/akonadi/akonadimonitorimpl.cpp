@@ -36,6 +36,19 @@
 
 using namespace Akonadi;
 
+namespace
+{
+    template<typename T>
+    QSet<T> listToSet(const QList<T> &list)
+    {
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
+        return list.toSet();
+#else
+        return {list.cbegin(), list.cend()};
+#endif
+    }
+}
+
 MonitorImpl::MonitorImpl()
     : m_monitor(new Akonadi::Monitor(this))
 {
@@ -98,7 +111,7 @@ void MonitorImpl::onCollectionChanged(const Collection &collection, const QSet<Q
 
 bool MonitorImpl::hasSupportedMimeTypes(const Collection &collection)
 {
-    QSet<QString> mimeIntersection = m_monitor->mimeTypesMonitored().toSet();
-    mimeIntersection.intersect(collection.contentMimeTypes().toSet());
+    QSet<QString> mimeIntersection = listToSet(m_monitor->mimeTypesMonitored());
+    mimeIntersection.intersect(listToSet(collection.contentMimeTypes()));
     return !mimeIntersection.isEmpty();
 }
