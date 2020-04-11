@@ -33,9 +33,16 @@ Plugin::Plugin(KontactInterface::Core *core, const QVariantList&)
     setComponentName(QStringLiteral("zanshin"), QStringLiteral("zanshin"));
 }
 
+#if KONTACTINTERFACE_VERSION >= QT_VERSION_CHECK(5, 14, 42)
+KParts::Part *Plugin::createPart()
+{
+    return loadPart();
+}
+#else
 KParts::ReadOnlyPart *Plugin::createPart()
 {
     return loadPart();
 }
+#endif
 
 #include "kontact_plugin.moc"
