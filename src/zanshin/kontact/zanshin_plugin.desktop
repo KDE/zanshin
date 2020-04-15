@@ -3,7 +3,7 @@ Type=Service
 Icon=zanshin
 X-KDE-ServiceTypes=Kontact/Plugin,KPluginInfo
 
-X-KDE-Library=kontact_zanshinplugin
+X-KDE-Library=kontact5/kontact_zanshinplugin
 X-KDE-KontactPluginVersion=10
 X-KDE-KontactPartLibraryName=zanshin_part
 X-KDE-KontactPartExecutableName=zanshin
