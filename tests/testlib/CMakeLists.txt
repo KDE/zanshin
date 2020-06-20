@@ -21,6 +21,7 @@ target_link_libraries(testlib
     KF5::AkonadiCore
     KF5::AkonadiXml
     KF5::CalendarCore
+    Qt5::DBus
     Qt5::Test
 )
 
