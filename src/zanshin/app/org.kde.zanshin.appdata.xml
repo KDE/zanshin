@@ -37,6 +37,7 @@
   <summary xml:lang="ca">Aplicació per a gestionar les tasques pendents</summary>
   <summary xml:lang="ca-valencia">Aplicació per a gestionar les tasques pendents</summary>
   <summary xml:lang="cs">Aplikace pro správu úloh</summary>
+  <summary xml:lang="da">Program til håndtering af gøremål</summary>
   <summary xml:lang="de">Verwaltungsprogramm für Aufgaben</summary>
   <summary xml:lang="en-GB">To Do Management Application</summary>
   <summary xml:lang="es">Aplicación de gestión de lista de tareas pendientes</summary>
@@ -204,6 +205,7 @@
       <caption xml:lang="ca">Finestra principal del Zanshin</caption>
       <caption xml:lang="ca-valencia">Finestra principal del Zanshin</caption>
       <caption xml:lang="cs">Hlavní okno Zanshin</caption>
+      <caption xml:lang="da">Zanshins hovedvindue</caption>
       <caption xml:lang="de">Hauptfenster von Zanshin</caption>
       <caption xml:lang="en-GB">Zanshin main window</caption>
       <caption xml:lang="es">Ventana principal de Zanshin</caption>
