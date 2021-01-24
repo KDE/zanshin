@@ -186,7 +186,7 @@
       <li xml:lang="et">Akonadi kasutamise võimalusega rakendus lubab andmeid hankida sisuliselt kõikjal (kohalikust arvutist, IMAP-i kaudu, veebiteenusest ...)</li>
       <li xml:lang="eu">Akonadi-gaitutako aplikazioa, hori dela eta ia edozein lekutatik datuak lortu ditzake (lokalak, imap, web zerbitzuak, ...)</li>
       <li xml:lang="fi">Akonadiin perustuva sovellus sallii etsiä tietoa käytännössä mistä vain (kiintolevyltä, IMAPista, verkkopalveluista…)</li>
-      <li xml:lang="fr">Prise en charge d'Akonadi dans l'application afin de recevoir les données quelle que soit leur source (local, imap, service web, ...)</li>
+      <li xml:lang="fr">Prise en charge d'Akonadi dans l'application afin de recevoir les données quelle que soit leur source (local, imap, service web, etc.).</li>
       <li xml:lang="gl">A aplicación é compatíbel con Akonadi, e permítelle obter datos de practicamente calquera lugar (local, IMAP, servizos web).</li>
       <li xml:lang="hu">Akonadi támogatással rendelkező alkalmazás, amely lényegében bárhonnan tud adatot gyűjteni (helyi, IMAP, webes szolgáltatás…)</li>
       <li xml:lang="id">Memungkinkan aplikasi akonadi difungsikan untuk mendapatkan data dari (layanan web, imap, local...) mana pun secara visual</li>
