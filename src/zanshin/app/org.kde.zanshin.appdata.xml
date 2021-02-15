@@ -23,6 +23,7 @@
   <name xml:lang="it">Zanshin</name>
   <name xml:lang="ko">Zanshin</name>
   <name xml:lang="nl">Zanshin</name>
+  <name xml:lang="nn">Zanshin</name>
   <name xml:lang="pl">Zanshin</name>
   <name xml:lang="pt">Zanshin</name>
   <name xml:lang="pt-BR">Zanshin</name>
@@ -53,6 +54,7 @@
   <summary xml:lang="it">Applicazione di gestione delle cose da fare</summary>
   <summary xml:lang="ko">할 일 관리 프로그램</summary>
   <summary xml:lang="nl">Beheertoepassing voor te verrichten taken</summary>
+  <summary xml:lang="nn">Oppgåveliste-program</summary>
   <summary xml:lang="pl">Program do zarządzania zadaniami</summary>
   <summary xml:lang="pt">Aplicação de Gestão de Tarefas</summary>
   <summary xml:lang="pt-BR">Aplicativo de gerenciamento de tarefas</summary>
@@ -81,6 +83,7 @@
     <p xml:lang="it">Zanshin è un'applicazione semplice ma potente per la gestione delle tue attività giornaliere. Ti aiuta a organizzarti e riduce lo stress mentale che ciascuno di noi sperimenta durante la propria vita privata e lavorativa. Non dimenticherai più nulla, e la tua mente sarà fresca e leggera come l'acqua.</p>
     <p xml:lang="ko">Zanshin은 매일 할 일을 관리하는 강력하고 간단한 프로그램입니다. 공적 및 사적으로 할 일을 정리하고 인지 압박을 줄입니다. 더 이상 무언가를 잊어버리지 않아도 됩니다.</p>
     <p xml:lang="nl">Zanshin is een krachtig en toch eenvoudige toepassing voor het beheer van uw dagelijkse acties. Het helpt u bij het organiseren en reduceert de mentale druk over wat er allemaal gedaan moet worden op het persoonlijke en zakelijke vlak. U zult nooit meer iets vergeten, uw geheugen is geen zeef meer.</p>
+    <p xml:lang="nn">Zanshin er eit kraftig program for å halda oversikt over daglege gjeremål. Det frigjer tankekraft du no må bruka på å halda oversikta over oppgåver du må få gjort på jobben og i privatlivet, og det syrgjer for at du ikkje lenger gløymer noko.</p>
     <p xml:lang="pl">Zanshin jest zaawansowanym, a zarazem prostym programem do zarządzania codziennymi zadaniami. Pomaga zorganizować i zmniejszyć natłok czynności, które użytkownik musi wykonać w swojej pracy lub życiu osobistym. Nigdy już nie zapomnisz o niczym, twoje myśli staną się jak woda.</p>
     <p xml:lang="pt">O Zanshin é uma aplicação poderosa, no entanto simples, para gerir as suas acções e notas do dia-a-dia. Ajuda-o a organizar e a reduzir a pressão cognitiva do que uma pessoa tem de fazer na sua vida pessoal e profissional. Não se voltará a esquecer de mais nada, limpando a sua mente.</p>
     <p xml:lang="pt-BR">Zanshin é um aplicativo simples e poderoso, para gerenciar suas ações do dia a dia. Ajuda-o a organizar e a reduzir a pressão cognitiva do que uma pessoa tem que fazer na sua vida pessoal e profissional. Você nunca mais esquecerá de nada, mantendo sua mente limpa.</p>
@@ -110,6 +113,7 @@
     <p xml:lang="it">Caratteristiche:</p>
     <p xml:lang="ko">기능:</p>
     <p xml:lang="nl">Mogelijkheden:</p>
+    <p xml:lang="nn">Funksjonar:</p>
     <p xml:lang="pl">Możliwości:</p>
     <p xml:lang="pt">Funcionalidades:</p>
     <p xml:lang="pt-BR">Funcionalidades:</p>
@@ -140,6 +144,7 @@
       <li xml:lang="it">Raccoglie le attività da qualsiasi posizione</li>
       <li xml:lang="ko">어디서든지 할 일 수집</li>
       <li xml:lang="nl">Verzamelt notities overal vandaan</li>
+      <li xml:lang="nn">Samla oppgåver frå ulike stadar</li>
       <li xml:lang="pl">Zbieranie zadań z każdego miejsca</li>
       <li xml:lang="pt">Recolhe tarefas e notas de todo o lado</li>
       <li xml:lang="pt-BR">Coleta tarefas de qualquer lugar</li>
@@ -167,6 +172,7 @@
       <li xml:lang="it">Organizza le attività in progetti e contesti</li>
       <li xml:lang="ko">할 일을 프로젝트와 문맥별로 정리</li>
       <li xml:lang="nl">Organiseert taken in projecten en contexten</li>
+      <li xml:lang="nn">Organisera oppgåver i prosjekt og kontekstar</li>
       <li xml:lang="pl">Porządkowanie zadań w projekty i konteksty</li>
       <li xml:lang="pt">Organiza as tarefas e notas em projectos e contextos</li>
       <li xml:lang="pt-BR">Organiza as tarefas em projetos e contextos</li>
@@ -193,6 +199,7 @@
       <li xml:lang="it">Applicazione abilitata da Akonadi, che permette di recuperare i dati virtualmente da qualsiasi posizione (locale, imap, servizi web...)</li>
       <li xml:lang="ko">Akonadi를 사용하여 어디서든지 데이터 수집(로컬, IMAP, 웹 서비스 등)</li>
       <li xml:lang="nl">In Akonadi opgenomen toepassing waarmee de gegevens werkelijk overal vandaan kunt halen (lokaal, imap, webservice...)</li>
+      <li xml:lang="nn">Akonadi-basert program som lèt deg henta data frå omtrent kor som helst (lokalt, IMAP, vevtenester, …)</li>
       <li xml:lang="pl">Program wykorzystuje Akonadi, więc można pobierać dane praktycznie z każdego miejsca (lokalnie, imap, usługa sieciowa...)</li>
       <li xml:lang="pt">Aplicação com suporte para o Akonadi, permitindo-lhe recolher os dados de praticamente todo o lado (local, IMAP, serviço Web...)</li>
       <li xml:lang="pt-BR">Aplicativo com suporte para o Akonadi, permitindo-lhe coletar os dados de praticamente tudo (local, IMAP, serviço Web...)</li>
@@ -227,6 +234,7 @@
       <caption xml:lang="it">Finestra principale di Zanshin</caption>
       <caption xml:lang="ko">Zanshin 주 창</caption>
       <caption xml:lang="nl">Hoofdvenster van Zanshin</caption>
+      <caption xml:lang="nn">Hovudvindauget i Zanshin</caption>
       <caption xml:lang="pl">Główne okno Zanshin</caption>
       <caption xml:lang="pt">Janela principal do Zanshin</caption>
       <caption xml:lang="pt-BR">Janela principal do Zanshin</caption>
