@@ -52,6 +52,7 @@ public:
 
 public slots:
     void clear();
+    void setShowDoneTasks(bool show);
     void setShowFutureTasks(bool show);
 
 private slots:

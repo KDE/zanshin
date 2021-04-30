@@ -210,6 +210,22 @@ private slots:
         // THEN
         QVERIFY(filter.proxyModel()->showFutureTasks());
     }
+
+    void shouldShowDoneTasks()
+    {
+        // GIVEN
+        Widgets::FilterWidget filter;
+        filter.setShowDoneTasks(false);
+
+        // THEN
+        QVERIFY(!filter.proxyModel()->showDoneTasks());
+
+        // WHEN
+        filter.setShowDoneTasks(true);
+
+        // THEN
+        QVERIFY(filter.proxyModel()->showDoneTasks());
+    }
 };
 
 ZANSHIN_TEST_MAIN(FilterWidgetTest)

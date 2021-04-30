@@ -46,6 +46,9 @@ public:
 
     void setSortOrder(Qt::SortOrder order);
 
+    bool showDoneTasks() const;
+    void setShowDoneTasks(bool show);
+
     bool showFutureTasks() const;
     void setShowFutureTasks(bool show);
 
@@ -55,6 +58,7 @@ protected:
 
 private:
     SortType m_sortType;
+    bool m_showDone;
     bool m_showFuture;
 };
 

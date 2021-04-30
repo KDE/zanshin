@@ -218,6 +218,14 @@ PageView::PageView(QWidget *parent)
     filterViewAction->setCheckable(true);
     connect(filterViewAction, &QAction::triggered, this, &PageView::onFilterToggled);
 
+    auto doneViewAction = new QAction(this);
+    doneViewAction->setObjectName(QStringLiteral("doneViewAction"));
+    doneViewAction->setText(i18n("Show done tasks"));
+    doneViewAction->setIcon(QIcon::fromTheme(QStringLiteral("view-pim-tasks")));
+    doneViewAction->setShortcut(Qt::CTRL | Qt::SHIFT | Qt::Key_D);
+    doneViewAction->setCheckable(true);
+    connect(doneViewAction, &QAction::triggered, m_filterWidget, &FilterWidget::setShowDoneTasks);
+
     auto futureViewAction = new QAction(this);
     futureViewAction->setObjectName(QStringLiteral("futureViewAction"));
     futureViewAction->setText(i18n("Show future tasks"));
@@ -227,6 +235,14 @@ PageView::PageView(QWidget *parent)
     connect(futureViewAction, &QAction::triggered, m_filterWidget, &FilterWidget::setShowFutureTasks);
 
     auto configGroup = KConfigGroup(KSharedConfig::openConfig(), "General");
+    if (configGroup.readEntry("ShowDone", true))
+        doneViewAction->trigger();
+
+    connect(doneViewAction, &QAction::triggered,
+            doneViewAction, [configGroup] (bool checked) mutable {
+                configGroup.writeEntry("ShowDone", checked);
+            });
+
     if (configGroup.readEntry("ShowFuture", true))
         futureViewAction->trigger();
 
@@ -247,6 +263,7 @@ PageView::PageView(QWidget *parent)
     m_actions.insert(QStringLiteral("page_view_remove"), removeItemAction);
     m_actions.insert(QStringLiteral("page_view_promote"), promoteItemAction);
     m_actions.insert(QStringLiteral("page_view_filter"), filterViewAction);
+    m_actions.insert(QStringLiteral("page_view_done"), doneViewAction);
     m_actions.insert(QStringLiteral("page_view_future"), futureViewAction);
     m_actions.insert(QStringLiteral("page_run_task"), m_runTaskAction);
 }

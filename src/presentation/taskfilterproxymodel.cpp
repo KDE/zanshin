@@ -37,6 +37,7 @@ using namespace Presentation;
 TaskFilterProxyModel::TaskFilterProxyModel(QObject *parent)
     : QSortFilterProxyModel(parent),
       m_sortType(TitleSort),
+      m_showDone(false),
       m_showFuture(false)
 {
     setDynamicSortFilter(true);
@@ -58,6 +59,28 @@ void TaskFilterProxyModel::setSortType(TaskFilterProxyModel::SortType type)
 void TaskFilterProxyModel::setSortOrder(Qt::SortOrder order)
 {
     sort(0, order);
+}
+
+bool TaskFilterProxyModel::showDoneTasks() const
+{
+    return m_showDone;
+}
+
+void TaskFilterProxyModel::setShowDoneTasks(bool show)
+{
+    if (m_showDone == show)
+        return;
+
+    m_showDone = show;
+    invalidate();
+}
+
+static bool isDoneTask(const Domain::Task::Ptr &task)
+{
+    if (!task)
+        return false;
+
+    return task->isDone();
 }
 
 bool TaskFilterProxyModel::showFutureTasks() const
@@ -95,7 +118,7 @@ bool TaskFilterProxyModel::filterAcceptsRow(int sourceRow, const QModelIndex &so
 
         if (task->title().contains(regexp)
          || task->text().contains(regexp)) {
-            return m_showFuture || !isFutureTask(task);
+            return (m_showDone || !isDoneTask(task)) && (m_showFuture || !isFutureTask(task));
         }
     }
 

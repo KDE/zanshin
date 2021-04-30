@@ -199,6 +199,10 @@ private slots:
         QVERIFY(filterAction);
         QVERIFY(filterAction->isCheckable());
         QVERIFY(!filterAction->isChecked());
+	auto doneAction = page.findChild<QAction*>(QStringLiteral("doneViewAction"));
+        QVERIFY(doneAction);
+        QVERIFY(doneAction->isCheckable());
+        QVERIFY(doneAction->isChecked());
         auto futureAction = page.findChild<QAction*>(QStringLiteral("futureViewAction"));
         QVERIFY(futureAction);
         QVERIFY(futureAction->isCheckable());
@@ -212,6 +216,7 @@ private slots:
         QCOMPARE(actions.value(QStringLiteral("page_view_remove")), removeAction);
         QCOMPARE(actions.value(QStringLiteral("page_view_promote")), promoteAction);
         QCOMPARE(actions.value(QStringLiteral("page_view_filter")), filterAction);
+	QCOMPARE(actions.value(QStringLiteral("page_view_done")), doneAction);
         QCOMPARE(actions.value(QStringLiteral("page_view_future")), futureAction);
         QCOMPARE(actions.value(QStringLiteral("page_run_task")), runTaskAction);
     }
@@ -366,6 +371,94 @@ private slots:
         QVERIFY(!filter->isVisibleTo(&page));
         QVERIFY(!filterEdit->hasFocus());
         QVERIFY(filterEdit->text().isEmpty());
+    }
+
+    void shouldManageDoneTasksVisibilityThroughAction()
+    {
+        // GIVEN
+        Widgets::PageView page;
+        auto filter = page.findChild<Widgets::FilterWidget*>(QStringLiteral("filterWidget"));
+        auto filterProxy = filter->proxyModel();
+        QVERIFY(filterProxy);
+
+        QVERIFY(filterProxy->showDoneTasks());
+
+        auto doneAction = page.findChild<QAction*>(QStringLiteral("doneViewAction"));
+
+        // WHEN
+        doneAction->trigger();
+
+        // THEN
+        QVERIFY(!filterProxy->showDoneTasks());
+
+        // WHEN
+        doneAction->trigger();
+
+        // THEN
+        QVERIFY(filterProxy->showDoneTasks());
+    }
+
+    void shouldStoreDoneTasksVisibilityDefaultState()
+    {
+        // GIVEN
+        configGroup().deleteEntry("ShowDone");
+
+        {
+            Widgets::PageView page;
+            auto doneAction = page.findChild<QAction*>(QStringLiteral("doneViewAction"));
+
+            // THEN
+            QVERIFY(doneAction->isChecked());
+        }
+
+        // WHEN
+        configGroup().writeEntry("ShowDone", false);
+
+        {
+            Widgets::PageView page;
+            auto doneAction = page.findChild<QAction*>(QStringLiteral("doneViewAction"));
+
+            // THEN
+            QVERIFY(!doneAction->isChecked());
+        }
+
+        // WHEN
+        configGroup().writeEntry("ShowDone", true);
+
+        {
+            Widgets::PageView page;
+            auto doneAction = page.findChild<QAction*>(QStringLiteral("doneViewAction"));
+
+            // THEN
+            QVERIFY(doneAction->isChecked());
+        }
+
+        // WHEN
+        configGroup().deleteEntry("ShowDone");
+
+        {
+            Widgets::PageView page;
+            auto doneAction = page.findChild<QAction*>(QStringLiteral("doneViewAction"));
+
+            // THEN
+            QVERIFY(doneAction->isChecked());
+        }
+
+        // WHEN
+        Widgets::PageView page;
+        auto doneAction = page.findChild<QAction*>(QStringLiteral("doneViewAction"));
+        doneAction->trigger();
+
+        // THEN
+        QVERIFY(configGroup().hasKey("ShowDone"));
+        QVERIFY(!configGroup().readEntry("ShowDone", true));
+
+        // WHEN
+        doneAction->trigger();
+
+        // THEN
+        QVERIFY(configGroup().hasKey("ShowDone"));
+        QVERIFY(configGroup().readEntry("ShowDone", false));
     }
 
     void shouldManageFutureTasksVisibilityThroughAction()

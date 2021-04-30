@@ -39,13 +39,15 @@ class TaskFilterProxyModelTest : public QObject
 private:
     QStandardItem *createTaskItem(const QString &title, const QString &text,
                                   const QDate &start = QDate(),
-                                  const QDate &due = QDate()) const
+                                  const QDate &due = QDate(),
+				  bool done = false) const
     {
         auto task = Domain::Task::Ptr::create();
         task->setTitle(title);
         task->setText(text);
         task->setStartDate(start);
         task->setDueDate(due);
+	task->setDone(done);
 
         auto item = new QStandardItem;
         item->setData(task->title(), Qt::DisplayRole);
@@ -68,6 +70,7 @@ private slots:
         QCOMPARE(proxy.sortOrder(), Qt::AscendingOrder);
         QCOMPARE(proxy.sortType(), Presentation::TaskFilterProxyModel::TitleSort);
         QCOMPARE(proxy.sortCaseSensitivity(), Qt::CaseInsensitive);
+	QVERIFY(!proxy.showDoneTasks());
         QVERIFY(!proxy.showFutureTasks());
     }
 
@@ -89,6 +92,38 @@ private slots:
         QCOMPARE(output.rowCount(), 2);
         QCOMPARE(output.index(0, 0).data().toString(), QStringLiteral("1. foo"));
         QCOMPARE(output.index(1, 0).data().toString(), QStringLiteral("2. Find Me"));
+    }
+
+    void shouldFilterByDoneState()
+    {
+        // GIVEN
+        QStandardItemModel input;
+        const auto today = Utils::DateTime::currentDate();
+        input.appendRow(createTaskItem(QStringLiteral("1. Done"), QString(), today.addDays(-1), today, true));
+        input.appendRow(createTaskItem(QStringLiteral("2. Done"), QString(), today, QDate(), true));
+        input.appendRow(createTaskItem(QStringLiteral("3. Not Done"), QString(), today));
+        input.appendRow(createTaskItem(QStringLiteral("4. Not Done"), QString()));
+
+        Presentation::TaskFilterProxyModel output;
+        output.setSourceModel(&input);
+
+        // WHEN
+        output.setShowDoneTasks(true);
+
+        // THEN
+        QCOMPARE(output.rowCount(), 4);
+        QCOMPARE(output.index(0, 0).data().toString(), QStringLiteral("1. Done"));
+        QCOMPARE(output.index(1, 0).data().toString(), QStringLiteral("2. Done"));
+        QCOMPARE(output.index(2, 0).data().toString(), QStringLiteral("3. Not Done"));
+        QCOMPARE(output.index(3, 0).data().toString(), QStringLiteral("4. Not Done"));
+
+        // WHEN
+        output.setShowDoneTasks(false);
+
+        // THEN
+        QCOMPARE(output.rowCount(), 2);
+        QCOMPARE(output.index(0, 0).data().toString(), QStringLiteral("3. Not Done"));
+        QCOMPARE(output.index(1, 0).data().toString(), QStringLiteral("4. Not Done"));
     }
 
     void shouldFilterByStartDate()

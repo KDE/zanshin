@@ -14,6 +14,7 @@
   <Menu name="go">
    <text>&amp;Go</text>
    <Action name="page_view_filter" />
+   <Action name="page_view_done" />
    <Action name="page_view_future" />
    <Separator />
    <Action name="pages_go_previous" />
@@ -38,6 +39,7 @@
   <Action name="page_view_add" />
   <Separator />
   <Action name="page_view_filter" />
+  <Action name="page_view_done" />
   <Action name="page_view_future" />
   <Separator />
   <Action name="page_run_task" />

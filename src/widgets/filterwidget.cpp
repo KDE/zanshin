@@ -69,6 +69,11 @@ void FilterWidget::clear()
     ui->filterEdit->clear();
 }
 
+void FilterWidget::setShowDoneTasks(bool show)
+{
+    m_model->setShowDoneTasks(show);
+}
+
 void FilterWidget::setShowFutureTasks(bool show)
 {
     m_model->setShowFutureTasks(show);
