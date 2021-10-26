@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: 2008 Trevor Pounds
+ * SPDX-License-Identifier: MIT
+ */
+
 #ifndef __MOCKITOPP_MATCHER_ANY_HPP__
 #define __MOCKITOPP_MATCHER_ANY_HPP__
 

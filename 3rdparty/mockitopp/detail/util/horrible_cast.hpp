@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: 2008 Trevor Pounds
+ * SPDX-License-Identifier: MIT
+ */
+
 #ifndef __MOCKITOPP_HORRIBLE_CAST_HPP__
 #define __MOCKITOPP_HORRIBLE_CAST_HPP__
 

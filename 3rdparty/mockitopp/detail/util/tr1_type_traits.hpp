@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: 2008 Trevor Pounds
+ * SPDX-License-Identifier: MIT
+ */
+
 #ifndef __MOCKITOPP_TR1_TYPE_TRAITS_HPP__
 #define __MOCKITOPP_TR1_TYPE_TRAITS_HPP__
 

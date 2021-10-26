@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: 2008 Trevor Pounds
+ * SPDX-License-Identifier: MIT
+ */
+
 #ifndef __MOCKITOPP_REMOVE_MEMBER_FUNCTION_POINTER_CV_HPP__
 #define __MOCKITOPP_REMOVE_MEMBER_FUNCTION_POINTER_CV_HPP__
 
