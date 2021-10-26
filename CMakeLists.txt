@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: 2010 Kevin Ottens <ervin@kde.org> 
+# SPDX-License-Identifier: GPL-2.0-only OR GPL-3.0-only OR LicenseRef-KDE-Accepted-GPL
+
 cmake_minimum_required(VERSION 3.16)
 # KDE Application Version, managed by release script
 set(RELEASE_SERVICE_VERSION_MAJOR "21")
