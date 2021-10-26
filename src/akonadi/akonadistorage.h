@@ -26,7 +26,7 @@
 
 #include "akonadistorageinterface.h"
 
-#include <AkonadiCore/CollectionFetchJob>
+#include <AkonadiCore/Akonadi/CollectionFetchJob>
 
 class ItemJob;
 namespace Akonadi {

@@ -26,7 +26,7 @@
 
 #include <QApplication>
 
-#include <AkonadiWidgets/ControlGui>
+#include <AkonadiWidgets/Akonadi/ControlGui>
 
 #include "akonadiconfigdialog.h"
 

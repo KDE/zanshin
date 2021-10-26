@@ -26,8 +26,8 @@
 
 #include <QObject>
 
-#include <AkonadiCore/Collection>
-#include <AkonadiCore/Item>
+#include <AkonadiCore/Akonadi/Collection>
+#include <AkonadiCore/Akonadi/Item>
 
 #include "testlib/akonadifakestoragebehavior.h"
 

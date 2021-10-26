@@ -26,8 +26,8 @@
 #include <akonadi/akonadiitemfetchjobinterface.h>
 #include <akonadi/akonadiserializer.h>
 
-#include <AkonadiCore/TransactionSequence>
-#include <AkonadiCore/ItemModifyJob>
+#include <AkonadiCore/Akonadi/TransactionSequence>
+#include <AkonadiCore/Akonadi/ItemModifyJob>
 
 #include <QStringList>
 #include <KCalCore/Todo>

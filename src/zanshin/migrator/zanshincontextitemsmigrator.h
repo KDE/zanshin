@@ -24,7 +24,7 @@
 #ifndef ZANSHINCONTEXTITEMSMIGRATOR_H
 #define ZANSHINCONTEXTITEMSMIGRATOR_H
 
-#include <AkonadiCore/Item>
+#include <AkonadiCore/Akonadi/Item>
 #include <akonadi/akonadistorage.h>
 #include <akonadi/akonadiserializer.h>
 

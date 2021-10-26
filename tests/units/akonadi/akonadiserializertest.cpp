@@ -28,9 +28,9 @@
 #include "akonadi/akonadiapplicationselectedattribute.h"
 #include "akonadi/akonaditimestampattribute.h"
 
-#include <AkonadiCore/Collection>
-#include <AkonadiCore/EntityDisplayAttribute>
-#include <AkonadiCore/Item>
+#include <AkonadiCore/Akonadi/Collection>
+#include <AkonadiCore/Akonadi/EntityDisplayAttribute>
+#include <AkonadiCore/Akonadi/Item>
 #include <KCalCore/Todo>
 #if __has_include(<kcalcore_version.h>)
 #include <kcalcore_version.h>

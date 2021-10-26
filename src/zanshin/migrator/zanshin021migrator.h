@@ -24,7 +24,7 @@
 #ifndef ZANSHIN021MIGRATOR_H
 #define ZANSHIN021MIGRATOR_H
 
-#include <AkonadiCore/Item>
+#include <AkonadiCore/Akonadi/Item>
 #include <akonadi/akonadistorage.h>
 
 namespace Akonadi {

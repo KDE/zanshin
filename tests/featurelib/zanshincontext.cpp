@@ -39,7 +39,7 @@
 #include "utils/jobhandler.h"
 #include "integration/dependencies.h"
 
-#include <AkonadiCore/AttributeFactory>
+#include <AkonadiCore/Akonadi/AttributeFactory>
 
 #include <KConfigGroup>
 #include <KSharedConfig>

@@ -22,14 +22,14 @@
 */
 
 #include "aboutdata.h"
-#include "../../appversion.h"
+#include "../../zanshin_version.h"
 #include <QObject>
 #include <KLocalizedString>
 
 KAboutData App::getAboutData()
 {
     KAboutData about(QStringLiteral("zanshin"),
-                     i18n("Zanshin Tasks"), QStringLiteral(APPLICATION_VERSION),
+                     i18n("Zanshin Tasks"), QStringLiteral(ZANSHIN_VERSION_STRING),
                      i18n("A Getting Things Done application which aims at getting your mind like water"),
                      KAboutLicense::GPL_V3,
                      i18n("Copyright 2008-2016, Kevin Ottens <ervin@kde.org>"));

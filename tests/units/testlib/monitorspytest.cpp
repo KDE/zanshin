@@ -25,7 +25,7 @@
 
 #include "testlib/monitorspy.h"
 #include "testlib/akonadifakemonitor.h"
-#include <AkonadiCore/Item>
+#include <AkonadiCore/Akonadi/Item>
 
 using namespace Testlib;
 

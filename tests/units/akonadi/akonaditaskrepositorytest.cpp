@@ -23,8 +23,8 @@
 
 #include <testlib/qtest_zanshin.h>
 
-#include <AkonadiCore/Collection>
-#include <AkonadiCore/Item>
+#include <AkonadiCore/Akonadi/Collection>
+#include <AkonadiCore/Akonadi/Item>
 
 #include "utils/mockobject.h"
 

@@ -29,7 +29,7 @@
 #include "domain/project.h"
 #include "domain/context.h"
 
-#include <AkonadiCore/Item>
+#include <AkonadiCore/Akonadi/Item>
 
 namespace Akonadi {
 

@@ -28,18 +28,18 @@
 
 #include <KCalCore/Todo>
 
-#include <AkonadiCore/CollectionCreateJob>
-#include <AkonadiCore/CollectionDeleteJob>
-#include <AkonadiCore/CollectionFetchScope>
-#include <AkonadiCore/CollectionModifyJob>
-#include <AkonadiCore/ItemCreateJob>
-#include <AkonadiCore/ItemDeleteJob>
-#include <AkonadiCore/ItemFetchJob>
-#include <AkonadiCore/ItemFetchScope>
-#include <AkonadiCore/ItemModifyJob>
-#include <AkonadiCore/ItemMoveJob>
-#include <AkonadiCore/TagFetchScope>
-#include <AkonadiCore/TransactionSequence>
+#include <AkonadiCore/Akonadi/CollectionCreateJob>
+#include <AkonadiCore/Akonadi/CollectionDeleteJob>
+#include <AkonadiCore/Akonadi/CollectionFetchScope>
+#include <AkonadiCore/Akonadi/CollectionModifyJob>
+#include <AkonadiCore/Akonadi/ItemCreateJob>
+#include <AkonadiCore/Akonadi/ItemDeleteJob>
+#include <AkonadiCore/Akonadi/ItemFetchJob>
+#include <AkonadiCore/Akonadi/ItemFetchScope>
+#include <AkonadiCore/Akonadi/ItemModifyJob>
+#include <AkonadiCore/Akonadi/ItemMoveJob>
+#include <AkonadiCore/Akonadi/TagFetchScope>
+#include <AkonadiCore/Akonadi/TransactionSequence>
 #include "akonadi/akonadicollectionfetchjobinterface.h"
 #include "akonadi/akonadiitemfetchjobinterface.h"
 #include "akonadi/akonadistoragesettings.h"

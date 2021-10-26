@@ -22,7 +22,7 @@
 */
 
 #include <testlib/qtest_zanshin.h>
-#include <AkonadiCore/Item>
+#include <AkonadiCore/Akonadi/Item>
 #include <KCalCore/Todo>
 #include "domain/task.h"
 #include "akonadi/akonadiserializer.h"

@@ -27,8 +27,8 @@
 #include <QObject>
 #include <QSharedPointer>
 
-#include <AkonadiCore/Collection>
-#include <AkonadiCore/Item>
+#include <AkonadiCore/Akonadi/Collection>
+#include <AkonadiCore/Akonadi/Item>
 
 #include <functional>
 

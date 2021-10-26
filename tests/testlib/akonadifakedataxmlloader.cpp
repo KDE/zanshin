@@ -25,7 +25,7 @@
 #include "akonadifakedata.h"
 
 #include <QDateTime>
-#include <AkonadiXml/xmldocument.h>
+#include <AkonadiXml/Akonadi/XmlDocument>
 
 #include <KCalCore/Todo>
 

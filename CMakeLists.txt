@@ -1,5 +1,11 @@
-project(zanshin)
-cmake_minimum_required(VERSION 3.2)
+cmake_minimum_required(VERSION 3.16)
+# KDE Application Version, managed by release script
+set(RELEASE_SERVICE_VERSION_MAJOR "21")
+set(RELEASE_SERVICE_VERSION_MINOR "11")
+set(RELEASE_SERVICE_VERSION_MICRO "70")
+set(RELEASE_SERVICE_VERSION "${RELEASE_SERVICE_VERSION_MAJOR}.${RELEASE_SERVICE_VERSION_MINOR}.${RELEASE_SERVICE_VERSION_MICRO}")
+
+project(zanshin VERSION ${RELEASE_SERVICE_VERSION})
 
 find_package(ECM REQUIRED CONFIG)
 set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/ ${CMAKE_MODULE_PATH} ${ECM_MODULE_PATH})
@@ -12,6 +18,7 @@ include(FeatureSummary)
 include(ECMInstallIcons)
 include(ECMMarkAsTest)
 include(ECMPoQmTools)
+include(ECMSetupVersion)
 
 set(REQUIRED_QT_VERSION 5.12.0)
 find_package(Qt5 ${QT_REQUIRED_VERSION} CONFIG REQUIRED Core Gui Widgets Test)
