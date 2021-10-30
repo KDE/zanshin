@@ -7,6 +7,7 @@
   <name xml:lang="ca">Zanshin</name>
   <name xml:lang="ca-valencia">Zanshin</name>
   <name xml:lang="es">Zanshin</name>
+  <name xml:lang="fr">Zanshin</name>
   <name xml:lang="pt">Zanshin</name>
   <name xml:lang="pt-BR">Zanshin</name>
   <name xml:lang="sv">Zanshin</name>
@@ -16,6 +17,7 @@
   <summary xml:lang="ca">Aplicació de gestió de tasques pendents</summary>
   <summary xml:lang="ca-valencia">Aplicació de gestió de tasques pendents</summary>
   <summary xml:lang="es">Aplicación de gestión de tareas pendientes</summary>
+  <summary xml:lang="fr">Application de gestion des tâches à faire</summary>
   <summary xml:lang="pt">Aplicação de Gestão de Tarefas</summary>
   <summary xml:lang="sv">Hanteringsprogram av uppgifter</summary>
   <summary xml:lang="uk">Програма для керування завданнями</summary>
@@ -29,6 +31,7 @@
     <p xml:lang="ca">El Zanshin és una aplicació potent i senzilla per a la gestió de les accions del vostre dia a dia. Us ajudarà a organitzar i reduir la pressió cognitiva del que un ha de fer en el seu treball i vida personal. Mai oblidareu res més, fareu que la vostra ment sigui com l'aigua.</p>
     <p xml:lang="ca-valencia">El Zanshin és una aplicació potent i senzilla per a la gestió de les accions del vostre dia a dia. Vos ajudarà a organitzar i reduir la pressió cognitiva del que un ha de fer en el seu treball i vida personal. Mai oblidareu res més, fareu que la vostra ment siga com l'aigua.</p>
     <p xml:lang="es">Zanshin es una potente a la vez que sencilla aplicación para la gestión de acciones diarias. Le ayudad a organizar y reducir la presión cognitiva de todo lo que debe hacer en el trabajo y en su vida personal. Nunca volverá a olvidarse de nada, haciendo que su mente sea clara como el agua.</p>
+    <p xml:lang="fr">Zanshin est une application puissante mais simple pour la gestion de vos actions quotidiennes. Elle vous aide à organiser et à réduire la pression cognitive de ce que l'on doit faire dans son travail et dans sa vie personnelle. Vous n'oublierez plus rien, votre esprit devenant aussi limpide que l'eau.</p>
     <p xml:lang="pt">O Zanshin é uma aplicação poderosa, no entanto simples, para gerir as suas acções e notas do dia-a-dia. Ajuda-o a organizar e a reduzir a pressão cognitiva do que uma pessoa tem de fazer na sua vida pessoal e profissional. Não se voltará a esquecer de mais nada, limpando a sua mente.</p>
     <p xml:lang="sv">Zanshin är ett kraftfullt men ändå enkelt program för att hantera åtgärder från dag till dag. Det hjälper till att organisera och minska det kognitiva trycket av det som måste göras i arbetet och i det personliga livet. Du kommer inte att glömma något längre, och ditt sinne blir som flödande vatten.</p>
     <p xml:lang="uk">Zanshin — потужна і водночас проста програма для керування записами ваших щоденних завдань. За її допомогою ви зможете впорядкувати ваше життя і уникнути постійного тиску обставин та нестачі часу. Користуючись Zanshin, ви не забуватимете про події і почуватимете себе спокійнішими.</p>
@@ -37,6 +40,7 @@
     <p xml:lang="ca">Característiques:</p>
     <p xml:lang="ca-valencia">Característiques:</p>
     <p xml:lang="es">Funcionalidades:</p>
+    <p xml:lang="fr">Fonctionnalités :</p>
     <p xml:lang="pt">Funcionalidades:</p>
     <p xml:lang="pt-BR">Funcionalidades:</p>
     <p xml:lang="sv">Funktioner:</p>
@@ -47,6 +51,7 @@
       <li xml:lang="ca">Recull les tasques de tot arreu</li>
       <li xml:lang="ca-valencia">Recull les tasques de tot arreu</li>
       <li xml:lang="es">Recopila tareas de todas partes</li>
+      <li xml:lang="fr">Collecte les tâches à partir de n'importe quelle source</li>
       <li xml:lang="pt">Recolhe tarefas e notas de todo o lado</li>
       <li xml:lang="sv">Samla in uppgifter från alla möjliga ställen</li>
       <li xml:lang="uk">Збирання різноманітних записів завдань</li>
@@ -55,6 +60,7 @@
       <li xml:lang="ca">Organitza les tasques en projectes i contextos</li>
       <li xml:lang="ca-valencia">Organitza les tasques en projectes i contextos</li>
       <li xml:lang="es">Organiza tareas en proyectos y contextos</li>
+      <li xml:lang="fr">Organiser des tâches dans des projets ou des environnements</li>
       <li xml:lang="pt">Organiza as tarefas e notas em projectos e contextos</li>
       <li xml:lang="sv">Organisera uppgifter i projekt och sammanhang</li>
       <li xml:lang="uk">Упорядковування завдань за проектами та контекстами</li>
@@ -63,6 +69,7 @@
       <li xml:lang="ca">Habilitant les capacitats de l'Akonadi es permet obtenir les dades des de pràcticament qualsevol lloc (local, IMAP, servei web...)</li>
       <li xml:lang="ca-valencia">Habilitant les capacitats de l'Akonadi es permet obtindre les dades des de pràcticament qualsevol lloc (local, IMAP, servei web...)</li>
       <li xml:lang="es">Al funcionar con Akonadi le permite obtener datos de virtualmente cualquier parte (local, imap, servicio web...)</li>
+      <li xml:lang="fr">Application compatible avec Akonadi vous permettant d'obtenir des données de pratiquement n'importe quelle source (locale, imap, service Internet, etc.)</li>
       <li xml:lang="pt">Aplicação com suporte para o Akonadi, permitindo-lhe recolher os dados de praticamente todo o lado (local, IMAP, serviço Web...)</li>
       <li xml:lang="sv">Program med Akonadi-stöd som gör det möjligt att hämta data från i stort sett var som helst (lokalt, IMAP, webbtjänster ...)</li>
       <li xml:lang="uk">Інтеграція з Akonadi, що надає програмі змогу отримувати дані практично з будь-яких джерел (локальна мережа, imap, інтернет-служба...)</li>
@@ -77,6 +84,7 @@
       <caption xml:lang="ca">Finestra principal del Zanshin</caption>
       <caption xml:lang="ca-valencia">Finestra principal del Zanshin</caption>
       <caption xml:lang="es">Ventana principal de Zanshin</caption>
+      <caption xml:lang="fr">Fenêtre principale de Zanshin</caption>
       <caption xml:lang="pt">Janela principal do Zanshin</caption>
       <caption xml:lang="pt-BR">Janela principal do Zanshin</caption>
       <caption xml:lang="sv">Huvudfönstret i Zanshin</caption>
