@@ -1,6 +1,3 @@
-# SPDX-FileCopyrightText: 2010 Kevin Ottens <ervin@kde.org> 
-# SPDX-License-Identifier: GPL-2.0-only OR GPL-3.0-only OR LicenseRef-KDE-Accepted-GPL
-
 # TODO: remove once kontactinterface 5.14.42 is required
 
 if(NOT CMAKE_VERSION VERSION_LESS "3.10.0")
