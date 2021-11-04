@@ -79,13 +79,15 @@ include_directories (
 )
 
 find_package(KF5 REQUIRED COMPONENTS
-    AkonadiCalendar
-    KontactInterface
     Runner
     WindowSystem
     I18n
 )
-find_package(KF5Akonadi "5.1" CONFIG REQUIRED)
+find_package(KF5 "5.18.40" REQUIRED COMPONENTS
+    Akonadi
+    AkonadiCalendar
+    KontactInterface
+)
 
 add_subdirectory(3rdparty)
 add_subdirectory(src)
