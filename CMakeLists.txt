@@ -7,8 +7,10 @@ set(RELEASE_SERVICE_VERSION "${RELEASE_SERVICE_VERSION_MAJOR}.${RELEASE_SERVICE_
 
 project(zanshin VERSION ${RELEASE_SERVICE_VERSION})
 
-find_package(ECM REQUIRED CONFIG)
+set(KF5_MIN_VERSION "5.87.0")
+find_package(ECM ${KF5_MIN_VERSION} REQUIRED CONFIG)
 set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/ ${CMAKE_MODULE_PATH} ${ECM_MODULE_PATH})
+set(KDE_COMPILERSETTINGS_LEVEL "5.84")
 
 include(GenerateExportHeader)
 include(KDEInstallDirs)
@@ -20,7 +22,7 @@ include(ECMMarkAsTest)
 include(ECMPoQmTools)
 include(ECMSetupVersion)
 
-set(REQUIRED_QT_VERSION 5.12.0)
+set(REQUIRED_QT_VERSION "5.15.2")
 find_package(Qt5 ${QT_REQUIRED_VERSION} CONFIG REQUIRED Core Gui Widgets Test)
 find_package(Boost REQUIRED)
 find_package(Threads REQUIRED)
@@ -78,7 +80,7 @@ include_directories (
     3rdparty/kdepim/libkdepim/
 )
 
-find_package(KF5 REQUIRED COMPONENTS
+find_package(KF5 ${KF5_MIN_VERSION} REQUIRED COMPONENTS
     Runner
     WindowSystem
     I18n
