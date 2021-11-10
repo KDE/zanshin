@@ -57,6 +57,7 @@
   <summary xml:lang="nn">Oppgåveliste-program</summary>
   <summary xml:lang="pl">Program do zarządzania zadaniami</summary>
   <summary xml:lang="pt">Aplicação de Gestão de Tarefas</summary>
+  <summary xml:lang="pt-BR">Aplicativo de gerenciamento de tarefas</summary>
   <summary xml:lang="sl">Upravljanje nalog</summary>
   <summary xml:lang="sv">Hanteringsprogram av uppgifter</summary>
   <summary xml:lang="uk">Програма для керування завданнями</summary>
@@ -146,6 +147,7 @@
       <li xml:lang="nn">Samla oppgåver frå ulike stadar</li>
       <li xml:lang="pl">Zbieranie zadań z każdego miejsca</li>
       <li xml:lang="pt">Recolhe tarefas e notas de todo o lado</li>
+      <li xml:lang="pt-BR">Coletar tarefas de qualquer lugar</li>
       <li xml:lang="sk">Zbiera úlohy a poznámky odvšadiaľ</li>
       <li xml:lang="sl">Nabira naloge od vsepovsod</li>
       <li xml:lang="sv">Samla in uppgifter från alla möjliga ställen</li>
@@ -173,6 +175,7 @@
       <li xml:lang="nn">Organisera oppgåver i prosjekt og kontekstar</li>
       <li xml:lang="pl">Porządkowanie zadań w projekty i konteksty</li>
       <li xml:lang="pt">Organiza as tarefas e notas em projectos e contextos</li>
+      <li xml:lang="pt-BR">Organizar tarefas em projetos de contextos</li>
       <li xml:lang="sk">Organizuje úlohy v projektoch a kontextoch</li>
       <li xml:lang="sl">Organizira naloge v projektih in kontekstih</li>
       <li xml:lang="sv">Organisera uppgifter i projekt och sammanhang</li>
