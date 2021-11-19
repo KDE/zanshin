@@ -87,6 +87,7 @@
     <p xml:lang="nn">Zanshin er eit kraftig program for å halda oversikt over daglege gjeremål. Det frigjer tankekraft du no må bruka på å halda oversikta over oppgåver du må få gjort på jobben og i privatlivet, og det syrgjer for at du ikkje lenger gløymer noko.</p>
     <p xml:lang="pl">Zanshin jest zaawansowanym, a zarazem prostym programem do zarządzania codziennymi zadaniami. Pomaga zorganizować i zmniejszyć natłok czynności, które użytkownik musi wykonać w swojej pracy lub życiu osobistym. Nigdy już nie zapomnisz o niczym, twoje myśli staną się jak woda.</p>
     <p xml:lang="pt">O Zanshin é uma aplicação poderosa, no entanto simples, para gerir as suas acções e notas do dia-a-dia. Ajuda-o a organizar e a reduzir a pressão cognitiva do que uma pessoa tem de fazer na sua vida pessoal e profissional. Não se voltará a esquecer de mais nada, limpando a sua mente.</p>
+    <p xml:lang="pt-BR">Zanshin é um aplicativo poderoso e simples para gerenciar suas ações do dia a dia. Ele ajuda você a organizar e reduzir a pressão cognitiva do que uma pessoa deve fazer no trabalho e na vida pessoal. Você nunca mais esquecerá de nada, deixando sua mente como água.</p>
     <p xml:lang="sk">Zanshin je silná, ale jednoduchá aplikácia na správu vašich denných akcií a poznámok. Pomôže vám zorganizovať a znížiť kognitívny tlak, čo treba urobiť v práci a osobnom živote. Nikdy už nič nezabudnete, a vaša myseľ bude voľná.</p>
     <p xml:lang="sl">Zanshin je močan, a preprost program za upravljanje vaših dnevnih dejavnosti. Pomaga vam organizirati in zmanjšati kognitivni pritisk vsega kar morate opraviti v svojem službenem in osebnem življenju. Nikoli ne boste več ničesar pozabili, vaše misli bodo mirne kot voda.</p>
     <p xml:lang="sv">Zanshin är ett kraftfullt men ändå enkelt program för att hantera åtgärder från dag till dag. Det hjälper till att organisera och minska det kognitiva trycket av det som måste göras i arbetet och i det personliga livet. Du kommer inte att glömma något längre, och ditt sinne blir som flödande vatten.</p>
@@ -203,6 +204,7 @@
       <li xml:lang="nn">Akonadi-basert program som lèt deg henta data frå omtrent kor som helst (lokalt, IMAP, vevtenester, …)</li>
       <li xml:lang="pl">Program wykorzystuje Akonadi, więc można pobierać dane praktycznie z każdego miejsca (lokalnie, imap, usługa sieciowa...)</li>
       <li xml:lang="pt">Aplicação com suporte para o Akonadi, permitindo-lhe recolher os dados de praticamente todo o lado (local, IMAP, serviço Web...)</li>
+      <li xml:lang="pt-BR">Aplicativo habilitado para Akonadi que permite obter dados de virtualmente qualquer lugar (local, imap, serviço Web...)</li>
       <li xml:lang="sk">Aplikácia používajúca Akonadi umožňujúca získanie údajov zdanlivo odvšadiaľ (miestne, imap, webové služby...)</li>
       <li xml:lang="sl">Akonadi aplikacija omogoča pridobivanje podatkov iz skoraj kjer koli (lokalno, imap, spletne storitve...)</li>
       <li xml:lang="sv">Program med Akonadi-stöd som gör det möjligt att hämta data från i stort sett var som helst (lokalt, IMAP, webbtjänster ...)</li>
