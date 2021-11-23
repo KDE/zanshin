@@ -92,6 +92,7 @@ find_package(KF5 "5.18.40" REQUIRED COMPONENTS
 
 add_subdirectory(3rdparty)
 add_subdirectory(src)
+ki18n_install(po)
 
 if(BUILD_TESTING)
     add_subdirectory(tests)
