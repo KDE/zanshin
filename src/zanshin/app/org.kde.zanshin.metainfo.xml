@@ -83,6 +83,7 @@
     <p xml:lang="fr">Zanshin est une application puissante mais simple pour la gestion de vos actions quotidiennes. Elle vous aide à organiser et à réduire la pression cognitive de ce que l'on doit faire dans son travail et dans sa vie personnelle. Vous n'oublierez plus rien, votre esprit devenant aussi limpide que l'eau.</p>
     <p xml:lang="gl">Zanshin é unha aplicación potente pero sinxela para xestionar as accións do día a día. Axuda a organizar o que ten que facer no seu traballo e na vida persoal para quitarlle ese peso de encima. Non volverá esquecer nada nunca máis, convertendo así a súa mente en auga.</p>
     <p xml:lang="hu">A Zanshin egy hatékony, ugyanakkor egyszerű alkalmazás napi tennivalóinak kezeléséhez. Segít a rendszerezésben és csökkenti a kognitív nyomást a munkájában és magánéletében. Soha többé nem fog elfelejteni semmit!</p>
+    <p xml:lang="ia">Zanshin es un application potente e etiam simple per gerer tu actiones quotidian. Il adjuta te a organisar e reducer le pression cognitive del qul un debe facer in su carga e vita personal. Tu jammais plus te oblidera alique, obtenente tu mente como aqua.</p>
     <p xml:lang="id">Zanshin adalah aplikasi yang kuat namun sederhana untuk mengelola aksi keseharianmu. Ini membantu kamu mengatur dan mengurangi tekanan kognitif dari apa yang harus dilakukan seseorang dalam pekerjaan dan kehidupan pribadinya. Kamu tidak akan pernah melupakan apa pun lagi, membuat pikiranmu seperti air.</p>
     <p xml:lang="it">Zanshin è un'applicazione semplice ma potente per la gestione delle tue attività giornaliere. Ti aiuta a organizzarti e riduce lo stress mentale che ciascuno di noi sperimenta durante la propria vita privata e lavorativa. Non dimenticherai più nulla, e la tua mente sarà fresca e leggera come l'acqua.</p>
     <p xml:lang="ko">Zanshin은 매일 할 일을 관리하는 강력하고 간단한 프로그램입니다. 공적 및 사적으로 할 일을 정리하고 인지 압박을 줄입니다. 더 이상 무언가를 잊어버리지 않아도 됩니다.</p>
@@ -207,6 +208,7 @@
       <li xml:lang="fr">Application compatible avec Akonadi vous permettant d'obtenir des données de pratiquement n'importe quelle source (locale, imap, service Internet, etc.)</li>
       <li xml:lang="gl">A aplicación é compatíbel con Akonadi, e permítelle obter datos de practicamente calquera lugar (local, IMAP, servizos web).</li>
       <li xml:lang="hu">Akonadi támogatással rendelkező alkalmazás, amely lényegében bárhonnan tud adatot gyűjteni (helyi, IMAP, webes szolgáltatás…)</li>
+      <li xml:lang="ia">Application habilitate per Akonadi permittente obtener datos ex virtualmente ubique (local,imap, servicios web...)</li>
       <li xml:lang="id">Memungkinkan aplikasi akonadi difungsikan untuk mendapatkan data dari (layanan web, imap, local...) mana pun secara visual</li>
       <li xml:lang="it">Applicazione abilitata da Akonadi, che permette di recuperare i dati virtualmente da qualsiasi posizione (locale, imap, servizi web...)</li>
       <li xml:lang="ko">Akonadi를 사용하여 어디서든지 데이터 수집(로컬, IMAP, 웹 서비스 등)</li>
