@@ -62,6 +62,7 @@
   <summary xml:lang="pt">Aplicação de Gestão de Tarefas</summary>
   <summary xml:lang="pt-BR">Aplicativo de gerenciamento de tarefas</summary>
   <summary xml:lang="ru">Приложение для управления задачами</summary>
+  <summary xml:lang="sk">Aplikácia na správu úloh</summary>
   <summary xml:lang="sl">Upravljanje nalog</summary>
   <summary xml:lang="sv">Hanteringsprogram av uppgifter</summary>
   <summary xml:lang="uk">Програма для керування завданнями</summary>
@@ -262,6 +263,7 @@
       <caption xml:lang="pt">Janela principal do Zanshin</caption>
       <caption xml:lang="pt-BR">Janela principal do Zanshin</caption>
       <caption xml:lang="ru">Главное окно Zanshin</caption>
+      <caption xml:lang="sk">Hlavné okno Zanshin</caption>
       <caption xml:lang="sl">Glavno okno Zanshin</caption>
       <caption xml:lang="sv">Huvudfönstret i Zanshin</caption>
       <caption xml:lang="uk">Головне вікно Zanshin</caption>
