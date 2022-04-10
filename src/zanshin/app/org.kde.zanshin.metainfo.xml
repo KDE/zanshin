@@ -65,6 +65,7 @@
   <summary xml:lang="sk">Aplikácia na správu úloh</summary>
   <summary xml:lang="sl">Upravljanje nalog</summary>
   <summary xml:lang="sv">Hanteringsprogram av uppgifter</summary>
+  <summary xml:lang="tr">Yapılacaklar Yönetimi Uygulaması</summary>
   <summary xml:lang="uk">Програма для керування завданнями</summary>
   <summary xml:lang="x-test">xxTo Do Management Applicationxx</summary>
   <description>
@@ -165,7 +166,7 @@
       <li xml:lang="sk">Zbiera úlohy a poznámky odvšadiaľ</li>
       <li xml:lang="sl">Nabira naloge od vsepovsod</li>
       <li xml:lang="sv">Samla in uppgifter från alla möjliga ställen</li>
-      <li xml:lang="tr">Heryerden işleri toplar</li>
+      <li xml:lang="tr">Her yerden işleri toplar</li>
       <li xml:lang="uk">Збирання різноманітних записів завдань</li>
       <li xml:lang="x-test">xxCollects tasks from everywherexx</li>
       <li>Organize tasks in projects and contexts</li>
@@ -228,7 +229,7 @@
       <li xml:lang="sk">Aplikácia používajúca Akonadi umožňujúca získanie údajov zdanlivo odvšadiaľ (miestne, imap, webové služby...)</li>
       <li xml:lang="sl">Akonadi aplikacija omogoča pridobivanje podatkov iz skoraj kjer koli (lokalno, imap, spletne storitve...)</li>
       <li xml:lang="sv">Program med Akonadi-stöd som gör det möjligt att hämta data från i stort sett var som helst (lokalt, IMAP, webbtjänster ...)</li>
-      <li xml:lang="tr">Akonadi-etkin uygulama, sanal bir yerden (yerel, imap, web servisi...) veriyi almanıza imkan sağlar</li>
+      <li xml:lang="tr">Akonadi etkinleştirilmiş bu uygulama, sanal bir yerden (yerel, imap, web servisi...) veriyi almanıza imkan sağlar</li>
       <li xml:lang="uk">Інтеграція з Akonadi, що надає програмі змогу отримувати дані практично з будь-яких джерел (локальна мережа, imap, інтернет-служба...)</li>
       <li xml:lang="x-test">xxAkonadi-enabled application allowing to get the data from virtually anywhere (local, imap, web service...)xx</li>
     </ul>
@@ -266,6 +267,7 @@
       <caption xml:lang="sk">Hlavné okno Zanshin</caption>
       <caption xml:lang="sl">Glavno okno Zanshin</caption>
       <caption xml:lang="sv">Huvudfönstret i Zanshin</caption>
+      <caption xml:lang="tr">Zanshin ana penceresi</caption>
       <caption xml:lang="uk">Головне вікно Zanshin</caption>
       <caption xml:lang="x-test">xxZanshin main windowxx</caption>
       <image>https://cdn.kde.org/screenshots/zanshin/zanshin.png</image>
