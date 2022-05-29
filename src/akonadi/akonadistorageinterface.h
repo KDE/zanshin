@@ -8,7 +8,7 @@
 #define AKONADI_STORAGEINTERFACE_H
 
 #include <QFlags>
-#include <AkonadiCore/Akonadi/Item>
+#include <Akonadi/Item>
 
 class KJob;
 class QObject;

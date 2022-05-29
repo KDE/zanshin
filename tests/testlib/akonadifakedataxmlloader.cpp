@@ -8,7 +8,7 @@
 #include "akonadifakedata.h"
 
 #include <QDateTime>
-#include <AkonadiXml/Akonadi/XmlDocument>
+#include <Akonadi/XmlDocument>
 
 #include <KCalCore/Todo>
 

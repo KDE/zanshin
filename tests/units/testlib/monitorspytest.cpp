@@ -8,7 +8,7 @@
 
 #include "testlib/monitorspy.h"
 #include "testlib/akonadifakemonitor.h"
-#include <AkonadiCore/Akonadi/Item>
+#include <Akonadi/Item>
 
 using namespace Testlib;
 

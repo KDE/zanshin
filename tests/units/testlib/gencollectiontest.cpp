@@ -7,7 +7,7 @@
 #include "testlib/gencollection.h"
 
 #include "akonadi/akonadiapplicationselectedattribute.h"
-#include <AkonadiCore/Akonadi/EntityDisplayAttribute>
+#include <Akonadi/EntityDisplayAttribute>
 
 #include <testlib/qtest_zanshin.h>
 

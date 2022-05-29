@@ -15,15 +15,15 @@
 #include <KCalCore/Todo>
 #include <KCalCore/ICalFormat>
 
-#include <AkonadiCore/Akonadi/Collection>
-#include <AkonadiCore/Akonadi/TransactionSequence>
+#include <Akonadi/Collection>
+#include <Akonadi/TransactionSequence>
 #include "akonadi/akonadicollectionfetchjobinterface.h"
 #include "akonadi/akonadiitemfetchjobinterface.h"
 #include "akonadi/akonadistorage.h"
 
-#include <AkonadiCore/Akonadi/CollectionFetchJob>
-#include <AkonadiCore/Akonadi/ItemFetchJob>
-#include <AkonadiCore/Akonadi/ItemFetchScope>
+#include <Akonadi/CollectionFetchJob>
+#include <Akonadi/ItemFetchJob>
+#include <Akonadi/ItemFetchScope>
 
 #include <QProcess>
 

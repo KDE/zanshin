@@ -12,7 +12,7 @@
 #include "domain/project.h"
 #include "domain/context.h"
 
-#include <AkonadiCore/Akonadi/Item>
+#include <Akonadi/Item>
 
 namespace Akonadi {
 

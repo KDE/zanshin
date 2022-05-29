@@ -6,7 +6,7 @@
 
 #include "gencollection.h"
 
-#include <AkonadiCore/Akonadi/EntityDisplayAttribute>
+#include <Akonadi/EntityDisplayAttribute>
 
 #include <KCalCore/Todo>
 

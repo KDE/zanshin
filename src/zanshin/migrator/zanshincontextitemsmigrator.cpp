@@ -7,10 +7,10 @@
 #include <akonadi/akonadicollectionfetchjobinterface.h>
 #include <akonadi/akonadiitemfetchjobinterface.h>
 
-#include <AkonadiCore/Akonadi/ItemCreateJob>
-#include <AkonadiCore/Akonadi/ItemModifyJob>
-#include <AkonadiCore/Akonadi/TagFetchJob>
-#include <AkonadiCore/Akonadi/ItemDeleteJob>
+#include <Akonadi/ItemCreateJob>
+#include <Akonadi/ItemModifyJob>
+#include <Akonadi/TagFetchJob>
+#include <Akonadi/ItemDeleteJob>
 
 #include <QStringList>
 #include <KCalCore/Todo>

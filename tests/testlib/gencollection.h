@@ -9,7 +9,7 @@
 
 #include <QObject>
 
-#include <AkonadiCore/Akonadi/Collection>
+#include <Akonadi/Collection>
 
 namespace Testlib {
 

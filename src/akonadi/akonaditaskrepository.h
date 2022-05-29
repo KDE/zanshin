@@ -9,8 +9,8 @@
 
 #include "domain/taskrepository.h"
 
-#include <AkonadiCore/Akonadi/Collection>
-#include <AkonadiCore/Akonadi/Item>
+#include <Akonadi/Collection>
+#include <Akonadi/Item>
 
 #include "akonadi/akonadiserializerinterface.h"
 #include "akonadi/akonadistorageinterface.h"

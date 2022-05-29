@@ -16,13 +16,13 @@
 
 #include <KLocalizedString>
 
-#include <AkonadiCore/Akonadi/AgentFilterProxyModel>
-#include <AkonadiCore/Akonadi/AgentInstance>
-#include <AkonadiWidgets/Akonadi/AgentConfigurationDialog>
-#include <AkonadiWidgets/Akonadi/AgentInstanceWidget>
-#include <AkonadiCore/Akonadi/AgentInstanceCreateJob>
-#include <AkonadiCore/Akonadi/AgentManager>
-#include <AkonadiWidgets/Akonadi/AgentTypeDialog>
+#include <Akonadi/AgentFilterProxyModel>
+#include <Akonadi/AgentInstance>
+#include <Akonadi/AgentConfigurationDialog>
+#include <Akonadi/AgentInstanceWidget>
+#include <Akonadi/AgentInstanceCreateJob>
+#include <Akonadi/AgentManager>
+#include <Akonadi/AgentTypeDialog>
 
 #include <KCalCore/Todo>
 

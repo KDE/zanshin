@@ -15,11 +15,10 @@
 #include "domain/taskrepository.h"
 
 #include "presentation/metatypes.h"
+#include "presentation/errorhandler.h"
 #include "presentation/runningtaskmodelinterface.h"
 
 namespace Presentation {
-
-class ErrorHandler;
 
 class ApplicationModel : public QObject
 {

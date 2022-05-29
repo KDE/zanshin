@@ -8,7 +8,7 @@
 
 #include <KLocalizedString>
 
-#include <AkonadiCore/Akonadi/Item>
+#include <Akonadi/Item>
 
 #include "akonadicollectionfetchjobinterface.h"
 #include "akonadiitemfetchjobinterface.h"

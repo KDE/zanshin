@@ -7,8 +7,8 @@
 #ifndef AKONADI_CACHE_H
 #define AKONADI_CACHE_H
 
-#include <AkonadiCore/Akonadi/Collection>
-#include <AkonadiCore/Akonadi/Item>
+#include <Akonadi/Collection>
+#include <Akonadi/Item>
 
 #include "akonadi/akonadimonitorinterface.h"
 #include "akonadi/akonadiserializerinterface.h"

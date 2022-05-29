@@ -5,7 +5,7 @@
 
 
 #include <testlib/qtest_zanshin.h>
-#include <AkonadiCore/Akonadi/Item>
+#include <Akonadi/Item>
 #include <KCalCore/Todo>
 #include "domain/task.h"
 #include "akonadi/akonadiserializer.h"

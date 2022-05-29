@@ -8,7 +8,7 @@
 #define AKONADI_MONITORIMPL_H
 
 #include "akonadimonitorinterface.h"
-#include <AkonadiCore/Akonadi/Item>
+#include <Akonadi/Item>
 
 namespace Akonadi {
 

@@ -9,8 +9,8 @@
 
 #include <QObject>
 
-#include <AkonadiCore/Akonadi/Collection>
-#include <AkonadiCore/Akonadi/Item>
+#include <Akonadi/Collection>
+#include <Akonadi/Item>
 
 #include "testlib/akonadifakestoragebehavior.h"
 

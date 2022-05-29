@@ -8,7 +8,7 @@
 #ifndef AKONADI_STORAGESETTINGS_H
 #define AKONADI_STORAGESETTINGS_H
 
-#include <AkonadiCore/Akonadi/Collection>
+#include <Akonadi/Collection>
 
 namespace Akonadi
 {

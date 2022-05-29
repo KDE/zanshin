@@ -8,7 +8,7 @@
 
 #include <QApplication>
 
-#include <AkonadiWidgets/Akonadi/ControlGui>
+#include <Akonadi/ControlGui>
 
 #include "akonadiconfigdialog.h"
 

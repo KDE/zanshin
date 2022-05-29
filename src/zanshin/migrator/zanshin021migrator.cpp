@@ -8,8 +8,8 @@
 #include <akonadi/akonadiitemfetchjobinterface.h>
 #include <akonadi/akonadiserializer.h>
 
-#include <AkonadiCore/Akonadi/TransactionSequence>
-#include <AkonadiCore/Akonadi/ItemModifyJob>
+#include <Akonadi/TransactionSequence>
+#include <Akonadi/ItemModifyJob>
 
 #include <QStringList>
 #include <KCalCore/Todo>

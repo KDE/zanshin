@@ -17,9 +17,9 @@
 
 #include "utils/mem_fn.h"
 
-#include "AkonadiCore/akonadi/qtest_akonadi.h"
+#include "akonadi/qtest_akonadi.h"
 
-#include <AkonadiCore/Akonadi/EntityDisplayAttribute>
+#include <Akonadi/EntityDisplayAttribute>
 
 #include "akonadi/akonadiapplicationselectedattribute.h"
 #include "akonadi/akonadicollectionfetchjobinterface.h"

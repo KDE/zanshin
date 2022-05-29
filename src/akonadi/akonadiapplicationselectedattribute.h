@@ -9,7 +9,7 @@
 
 #include <QByteArray>
 
-#include <AkonadiCore/Akonadi/Attribute>
+#include <Akonadi/Attribute>
 
 namespace Akonadi {
 

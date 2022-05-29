@@ -6,6 +6,7 @@ SPDX-License-Identifier: GPL-2.0-only OR GPL-3.0-only OR LicenseRef-KDE-Accepted
 
 #include "modeltest.h"
 
+#include <QFont>
 #include <QTest>
 #undef Q_ASSERT
 #define Q_ASSERT  QVERIFY
