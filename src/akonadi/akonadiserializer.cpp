@@ -169,7 +169,7 @@ void Serializer::updateTaskFromItem(Domain::Task::Ptr task, Item item)
     task->setProperty("relatedUid", todo->relatedTo());
     task->setRunning(todo->customProperty(Serializer::customPropertyAppName(), Serializer::customPropertyIsRunning()) == QLatin1String("1"));
     const auto contextUids = todo->customProperty(Serializer::customPropertyAppName(),
-                                                  Serializer::customPropertyContextList()).split(',', QString::SkipEmptyParts);
+                                                  Serializer::customPropertyContextList()).split(',', Qt::SkipEmptyParts);
     task->setProperty("contextUids", contextUids);
 
     switch (todo->recurrence()->recurrenceType()) {
@@ -484,7 +484,7 @@ bool Serializer::isProjectChild(Domain::Project::Ptr project, Item item)
 static QStringList extractContexts(KCalCore::Todo::Ptr todo)
 {
     const QString contexts = todo->customProperty(Serializer::customPropertyAppName(), Serializer::customPropertyContextList());
-    return contexts.split(',', QString::SkipEmptyParts);
+    return contexts.split(',', Qt::SkipEmptyParts);
 }
 
 bool Serializer::isContextChild(Domain::Context::Ptr context, Item item) const

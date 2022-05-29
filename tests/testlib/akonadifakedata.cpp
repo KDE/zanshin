@@ -37,7 +37,7 @@ static QStringList extractContextUids(const Akonadi::Item &taskItem)
         return {};
     auto todo = taskItem.payload<KCalCore::Todo::Ptr>();
     const QString contexts = todo->customProperty(Serializer::customPropertyAppName(), Serializer::customPropertyContextList());
-    return contexts.split(',', QString::SkipEmptyParts);
+    return contexts.split(',', Qt::SkipEmptyParts);
 }
 
 // Duplicated from the serializer
@@ -52,7 +52,7 @@ static void removeContextFromTask(const QString &contextUid, Akonadi::Item &item
 {
     auto todo = item.payload<KCalCore::Todo::Ptr>();
     const QString contexts = todo->customProperty(Serializer::customPropertyAppName(), Serializer::customPropertyContextList());
-    QStringList contextList = contexts.split(',', QString::SkipEmptyParts);
+    QStringList contextList = contexts.split(',', Qt::SkipEmptyParts);
     contextList.removeAll(contextUid);
     if (contextList.isEmpty())
         todo->removeCustomProperty(Serializer::customPropertyAppName(), Serializer::customPropertyContextList());

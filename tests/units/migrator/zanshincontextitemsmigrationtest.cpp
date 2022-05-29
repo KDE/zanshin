@@ -179,7 +179,7 @@ private:
             //qDebug() << item.id() << it.key();
             auto todo = item.payload<KCalCore::Todo::Ptr>();
             QVERIFY(todo);
-            const auto contextUids = todo->customProperty(Serializer::customPropertyAppName(), Serializer::customPropertyContextList()).split(',', QString::SkipEmptyParts);
+            const auto contextUids = todo->customProperty(Serializer::customPropertyAppName(), Serializer::customPropertyContextList()).split(',', Qt::SkipEmptyParts);
             QStringList contextNames;
             std::transform(contextUids.cbegin(), contextUids.cend(), std::back_inserter(contextNames), [this](const QString &uid) { return m_contextTodos.value(uid); });
             contextNames.sort();

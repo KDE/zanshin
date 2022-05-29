@@ -9,7 +9,6 @@
 #include "presentation/availablepagesmodel.h"
 #include "presentation/availablesourcesmodel.h"
 #include "presentation/editormodel.h"
-#include "presentation/errorhandler.h"
 #include "presentation/pagemodel.h"
 #include "presentation/runningtaskmodel.h"
 
