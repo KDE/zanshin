@@ -12,7 +12,7 @@ MACRO(ZANSHIN_AKONADI_AUTO_TESTS)
     set(_prefixed_testname "${prefix}-${_testname}")
     add_executable(${_prefixed_testname} ${_testname}.cpp)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${KDE4_ENABLE_EXCEPTIONS}")
-    target_link_libraries(${_prefixed_testname} Qt5::Test akonadi domain utils)
+    target_link_libraries(${_prefixed_testname} Qt::Test akonadi domain utils)
 
     set(_location "${CMAKE_CURRENT_BINARY_DIR}/${_prefixed_testname}")
     if (WIN32)

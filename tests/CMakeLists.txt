@@ -17,7 +17,7 @@ MACRO(ZANSHIN_MANUAL_TESTS)
     add_executable(${_prefixed_testname} ${_testname}.cpp)
     kde_enable_exceptions()
     target_link_libraries(${_prefixed_testname}
-      Qt5::Test
+      Qt::Test
 
       integration
       widgets
@@ -39,7 +39,7 @@ MACRO(ZANSHIN_AUTO_TESTS)
     add_test(NAME ${_prefixed_testname} COMMAND ${_prefixed_testname})
     kde_enable_exceptions()
     target_link_libraries(${_prefixed_testname}
-      Qt5::Test
+      Qt::Test
 
       testlib
       integration
@@ -63,7 +63,7 @@ MACRO(ZANSHIN_FEATURE_TESTS)
     add_test(NAME ${_prefixed_testname} COMMAND ${_prefixed_testname})
     kde_enable_exceptions()
     target_link_libraries(${_prefixed_testname}
-      Qt5::Test
+      Qt::Test
 
       featurelib
       testlib

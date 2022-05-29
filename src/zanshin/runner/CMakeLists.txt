@@ -12,5 +12,5 @@ target_link_libraries(krunner_zanshin
 )
 
 install(TARGETS krunner_zanshin DESTINATION ${KDE_INSTALL_PLUGINDIR})
-install(FILES plasma-runner-zanshin.desktop DESTINATION ${KDE_INSTALL_KSERVICES5DIR})
+install(FILES plasma-runner-zanshin.desktop DESTINATION ${KDE_INSTALL_KSERVICESDIR})
 

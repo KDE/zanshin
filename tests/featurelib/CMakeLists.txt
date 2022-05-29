@@ -7,7 +7,7 @@ add_definitions(-DZANSHIN_USER_XMLDATA="${CMAKE_SOURCE_DIR}/tests/features/teste
 include_directories(${CMAKE_SOURCE_DIR}/tests ${CMAKE_SOURCE_DIR}/src)
 add_library(featurelib STATIC ${featurelib_SRCS})
 target_link_libraries(featurelib
-    Qt5::Test
+    Qt::Test
     KF5::ConfigCore
     integration
 )

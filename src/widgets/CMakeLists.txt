@@ -25,7 +25,7 @@ ki18n_wrap_ui(widgets_SRCS
 
 add_library(widgets STATIC ${widgets_SRCS})
 target_link_libraries(widgets
-    Qt5::Widgets
+    Qt::Widgets
     presentation
     zanshinkdepimstatic
     KF5::ConfigCore

@@ -7,7 +7,7 @@ set(RELEASE_SERVICE_VERSION "${RELEASE_SERVICE_VERSION_MAJOR}.${RELEASE_SERVICE_
 
 project(zanshin VERSION ${RELEASE_SERVICE_VERSION})
 
-set(KF5_MIN_VERSION "5.87.0")
+set(KF5_MIN_VERSION "5.90.0")
 find_package(ECM ${KF5_MIN_VERSION} REQUIRED CONFIG)
 set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/ ${CMAKE_MODULE_PATH} ${ECM_MODULE_PATH})
 set(KDE_COMPILERSETTINGS_LEVEL "5.84")
@@ -23,7 +23,7 @@ include(ECMPoQmTools)
 include(ECMSetupVersion)
 
 set(REQUIRED_QT_VERSION "5.15.2")
-find_package(Qt5 ${QT_REQUIRED_VERSION} CONFIG REQUIRED Core Gui Widgets Test)
+find_package(Qt${QT_MAJOR_VERSION} ${QT_REQUIRED_VERSION} CONFIG REQUIRED Core Gui Widgets Test)
 find_package(Boost REQUIRED)
 find_package(Threads REQUIRED)
 macro(assert_min_ver version)

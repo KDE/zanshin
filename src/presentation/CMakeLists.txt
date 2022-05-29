@@ -20,4 +20,4 @@ set(presentation_SRCS
 )
 
 add_library(presentation STATIC ${presentation_SRCS})
-target_link_libraries(presentation Qt5::Core Qt5::Gui KF5::I18n domain utils)
+target_link_libraries(presentation Qt::Core Qt::Gui KF5::I18n domain utils)

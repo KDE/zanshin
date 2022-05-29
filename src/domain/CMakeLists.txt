@@ -17,4 +17,4 @@ set(domain_SRCS
 )
 
 add_library(domain STATIC ${domain_SRCS})
-target_link_libraries(domain Qt5::Core)
+target_link_libraries(domain Qt::Core)
