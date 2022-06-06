@@ -53,11 +53,7 @@ namespace
     template<typename T>
     QSet<T> listToSet(const QVector<T> &list)
     {
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-        return list.toList().toSet();
-#else
         return {list.cbegin(), list.cend()};
-#endif
     }
 }
 
