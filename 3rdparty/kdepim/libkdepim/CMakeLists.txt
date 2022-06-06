@@ -4,7 +4,6 @@ add_definitions(-DTRANSLATION_DOMAIN=\"libkdepim\")
 
 set(kdepim_LIB_SRCS
    kdateedit.cpp
-   kdatepickerpopup.cpp
 )
 
 add_library(zanshinkdepimstatic STATIC ${kdepim_LIB_SRCS})
