@@ -9,8 +9,8 @@
 
 EXPORT_KONTACT_PLUGIN_WITH_JSON(Plugin, "zanshin_plugin.json")
 
-Plugin::Plugin(KontactInterface::Core *core, const QVariantList&)
-    : KontactInterface::Plugin(core, core, "zanshin")
+Plugin::Plugin(KontactInterface::Core *core, const KPluginMetaData &data, const QVariantList&)
+    : KontactInterface::Plugin(core, core, data, "zanshin")
 {
     setComponentName(QStringLiteral("zanshin"), QStringLiteral("zanshin"));
 }

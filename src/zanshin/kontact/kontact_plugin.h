@@ -15,7 +15,7 @@ class Plugin : public KontactInterface::Plugin
     Q_OBJECT
 
 public:
-    Plugin(KontactInterface::Core *core, const QVariantList &);
+    Plugin(KontactInterface::Core *core, const KPluginMetaData &data, const QVariantList &);
 
     int weight() const override { return 449; }
 
