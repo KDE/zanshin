@@ -26,7 +26,7 @@ DependencyManager::DependencyManager(const DependencyManager &other)
 
 DependencyManager::~DependencyManager()
 {
-    for (const auto &cleanupFunction : qAsConst(m_cleanupFunctions)) {
+    for (const auto &cleanupFunction : std::as_const(m_cleanupFunctions)) {
         cleanupFunction(this);
     }
 }
