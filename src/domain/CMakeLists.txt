@@ -14,6 +14,22 @@ set(domain_SRCS
     task.cpp
     taskqueries.cpp
     taskrepository.cpp
+
+    context.h
+    contextqueries.h
+    contextrepository.h
+    datasource.h
+    datasourcequeries.h
+    datasourcerepository.h
+    project.h
+    projectqueries.h
+    projectrepository.h
+    queryresult.h
+    queryresultinterface.h
+    queryresultprovider.h
+    task.h
+    taskqueries.h
+    taskrepository.h
 )
 
 add_library(domain STATIC ${domain_SRCS})

@@ -3,6 +3,11 @@ set(utils_SRCS
     datetime.cpp
     dependencymanager.cpp
     jobhandler.cpp
+
+    compositejob.h
+    datetime.h
+    dependencymanager.h
+    jobhandler.h
 )
 
 add_library(utils STATIC ${utils_SRCS})

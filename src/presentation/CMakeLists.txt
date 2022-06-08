@@ -17,6 +17,25 @@ set(presentation_SRCS
     runningtaskmodel.cpp
     taskfilterproxymodel.cpp
     workdaypagemodel.cpp
+
+    applicationmodel.h
+    editormodel.h
+    availablepagesmodel.h
+    availablepagessortfilterproxymodel.h
+    availablesourcesmodel.h
+    contextpagemodel.h
+    errorhandler.h
+    errorhandlingmodelbase.h
+    inboxpagemodel.h
+    metatypes.h
+    pagemodel.h
+    projectpagemodel.h
+    alltaskspagemodel.h
+    querytreemodelbase.h
+    runningtaskmodelinterface.h
+    runningtaskmodel.h
+    taskfilterproxymodel.h
+    workdaypagemodel.h
 )
 
 add_library(presentation STATIC ${presentation_SRCS})

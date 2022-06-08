@@ -1,5 +1,6 @@
 set(app_SRCS
     aboutdata.cpp
+    aboutdata.h
     main.cpp
 )
 ecm_create_qm_loader(app_SRCS zanshin_qt)

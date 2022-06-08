@@ -1,5 +1,6 @@
 set(krunner_zanshin_SRCS
     zanshinrunner.cpp
+    zanshinrunner.h
 )
 
 add_library(krunner_zanshin MODULE ${krunner_zanshin_SRCS})

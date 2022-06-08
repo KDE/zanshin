@@ -1,6 +1,8 @@
 set(migrator_SRCS
     zanshin021migrator.cpp
     zanshincontextitemsmigrator.cpp
+    zanshin021migrator.h
+    zanshincontextitemsmigrator.h
 )
 
 add_library(migrator STATIC ${migrator_SRCS})

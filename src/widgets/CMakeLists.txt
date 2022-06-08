@@ -15,6 +15,23 @@ set(widgets_SRCS
     runningtaskwidget.cpp
     quickselectdialog.cpp
     quickselectdialoginterface.cpp
+
+    applicationcomponents.h
+    availablepagesview.h
+    availablesourcesview.h
+    datasourcedelegate.h
+    editorview.h
+    filterwidget.h
+    itemdelegate.h
+    messagebox.h
+    messageboxinterface.h
+    nameanddatasourcedialog.h
+    nameanddatasourcedialoginterface.h
+    pageview.h
+    pageviewerrorhandler.h
+    runningtaskwidget.h
+    quickselectdialog.h
+    quickselectdialoginterface.h
 )
 
 ki18n_wrap_ui(widgets_SRCS

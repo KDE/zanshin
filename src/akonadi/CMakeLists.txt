@@ -23,6 +23,31 @@ set(akonadi_SRCS
     akonaditaskqueries.cpp
     akonaditaskrepository.cpp
     akonaditimestampattribute.cpp
+
+    akonadiapplicationselectedattribute.h
+    akonadicache.h
+    akonadicachingstorage.h
+    akonadicollectionfetchjobinterface.h
+    akonadiconfigdialog.h
+    akonadicontextqueries.h
+    akonadicontextrepository.h
+    akonadidatasourcequeries.h
+    akonadidatasourcerepository.h
+    akonadiitemfetchjobinterface.h
+    akonadilivequeryhelpers.h
+    akonadilivequeryintegrator.h
+    akonadimonitorimpl.h
+    akonadimonitorinterface.h
+    akonadiprojectqueries.h
+    akonadiprojectrepository.h
+    akonadiserializer.h
+    akonadiserializerinterface.h
+    akonadistorage.h
+    akonadistorageinterface.h
+    akonadistoragesettings.h
+    akonaditaskqueries.h
+    akonaditaskrepository.h
+    akonaditimestampattribute.h
 )
 
 add_library(akonadi STATIC ${akonadi_SRCS})
