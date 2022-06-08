@@ -51,6 +51,8 @@ set(akonadi_SRCS
 )
 
 add_library(akonadi STATIC ${akonadi_SRCS})
+set_property(TARGET akonadi PROPERTY POSITION_INDEPENDENT_CODE ON)
+
 target_link_libraries(akonadi
     KF5::AkonadiCalendar
     KF5::AkonadiCore

@@ -41,6 +41,8 @@ ki18n_wrap_ui(widgets_SRCS
 )
 
 add_library(widgets STATIC ${widgets_SRCS})
+set_property(TARGET widgets PROPERTY POSITION_INDEPENDENT_CODE ON)
+
 target_link_libraries(widgets
     Qt::Widgets
     presentation

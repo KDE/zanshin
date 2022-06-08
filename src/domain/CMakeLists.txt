@@ -33,4 +33,6 @@ set(domain_SRCS
 )
 
 add_library(domain STATIC ${domain_SRCS})
+set_property(TARGET domain PROPERTY POSITION_INDEPENDENT_CODE ON)
+
 target_link_libraries(domain Qt::Core)

@@ -7,6 +7,8 @@ set(kdepim_LIB_SRCS
 )
 
 add_library(zanshinkdepimstatic STATIC ${kdepim_LIB_SRCS})
+set_property(TARGET zanshinkdepimstatic PROPERTY POSITION_INDEPENDENT_CODE ON)
+
 generate_export_header(zanshinkdepimstatic BASE_NAME kdepim)
 
 target_link_libraries(zanshinkdepimstatic

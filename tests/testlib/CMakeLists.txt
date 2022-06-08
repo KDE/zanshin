@@ -17,6 +17,8 @@ set(testlib_SRCS
 
 include_directories(${CMAKE_SOURCE_DIR}/tests ${CMAKE_SOURCE_DIR}/src)
 add_library(testlib STATIC ${testlib_SRCS})
+set_property(TARGET testlib PROPERTY POSITION_INDEPENDENT_CODE ON)
+
 target_link_libraries(testlib
     KF5::AkonadiCore
     KF5::AkonadiXml
