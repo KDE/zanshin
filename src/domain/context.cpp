@@ -28,5 +28,5 @@ void Context::setName(const QString &name)
         return;
 
     m_name = name;
-    emit nameChanged(name);
+    Q_EMIT nameChanged(name);
 }

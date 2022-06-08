@@ -18,7 +18,7 @@ public:
     void setRunningTask(const Domain::Task::Ptr &runningTask) override
     {
         m_runningTask = runningTask;
-        emit runningTaskChanged(m_runningTask);
+        Q_EMIT runningTaskChanged(m_runningTask);
     }
 
     void stopTask() override
@@ -43,7 +43,7 @@ public:
 
     void currentTaskRenamed()
     {
-        emit runningTaskChanged(m_runningTask);
+        Q_EMIT runningTaskChanged(m_runningTask);
     }
 
 private:

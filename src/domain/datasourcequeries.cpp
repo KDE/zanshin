@@ -29,5 +29,5 @@ void DataSourceQueries::setDefaultSource(DataSource::Ptr source)
         return;
 
     changeDefaultSource(source);
-    emit notifier()->defaultSourceChanged();
+    Q_EMIT notifier()->defaultSourceChanged();
 }

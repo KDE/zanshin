@@ -79,11 +79,11 @@ void MonitorImpl::onCollectionChanged(const Collection &collection, const QSet<Q
     QSet<QByteArray> partsIntersection = parts;
     partsIntersection.intersect(allowedParts);
     if (!partsIntersection.isEmpty())
-        emit collectionChanged(collection);
+        Q_EMIT collectionChanged(collection);
 
     if (parts.contains("ZanshinSelected")
      && hasSupportedMimeTypes(collection)) {
-        emit collectionSelectionChanged(collection);
+        Q_EMIT collectionSelectionChanged(collection);
     }
 }
 

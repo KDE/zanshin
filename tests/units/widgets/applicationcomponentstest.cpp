@@ -97,7 +97,7 @@ public:
             return;
 
         m_currentPage = page;
-        emit currentPageChanged(m_currentPage);
+        Q_EMIT currentPageChanged(m_currentPage);
     }
 
 signals:
@@ -202,15 +202,15 @@ public:
 
         setProperty(name, value);
         if (name == "text")
-            emit textChanged(value.toString());
+            Q_EMIT textChanged(value.toString());
         else if (name == "title")
-            emit titleChanged(value.toString());
+            Q_EMIT titleChanged(value.toString());
         else if (name == "done")
-            emit doneChanged(value.toBool());
+            Q_EMIT doneChanged(value.toBool());
         else if (name == "startDate")
-            emit startDateChanged(value.toDate());
+            Q_EMIT startDateChanged(value.toDate());
         else if (name == "dueDate")
-            emit dueDateChanged(value.toDate());
+            Q_EMIT dueDateChanged(value.toDate());
         else
             qFatal("Unsupported property %s", name.constData());
     }

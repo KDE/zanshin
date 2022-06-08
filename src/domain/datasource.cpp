@@ -45,7 +45,7 @@ void DataSource::setName(const QString &name)
         return;
 
     m_name = name;
-    emit nameChanged(name);
+    Q_EMIT nameChanged(name);
 }
 
 void DataSource::setIconName(const QString &iconName)
@@ -54,7 +54,7 @@ void DataSource::setIconName(const QString &iconName)
         return;
 
     m_iconName = iconName;
-    emit iconNameChanged(iconName);
+    Q_EMIT iconNameChanged(iconName);
 }
 
 void DataSource::setContentTypes(ContentTypes types)
@@ -63,7 +63,7 @@ void DataSource::setContentTypes(ContentTypes types)
         return;
 
     m_contentTypes = types;
-    emit contentTypesChanged(types);
+    Q_EMIT contentTypesChanged(types);
 }
 
 void DataSource::setSelected(bool selected)
@@ -72,5 +72,5 @@ void DataSource::setSelected(bool selected)
         return;
 
     m_selected = selected;
-    emit selectedChanged(selected);
+    Q_EMIT selectedChanged(selected);
 }

@@ -55,7 +55,7 @@ void RunningTaskModel::setRunningTask(const Domain::Task::Ptr &runningTask)
         connect(runningTask.data(), &Domain::Task::titleChanged,
                 this, &RunningTaskModel::taskTitleChanged);
     }
-    emit runningTaskChanged(m_runningTask);
+    Q_EMIT runningTaskChanged(m_runningTask);
 }
 
 void RunningTaskModel::taskDeleted(const Domain::Task::Ptr &task)
@@ -67,7 +67,7 @@ void RunningTaskModel::taskDeleted(const Domain::Task::Ptr &task)
 void RunningTaskModel::taskTitleChanged(const QString &title)
 {
     Q_UNUSED(title)
-    emit runningTaskChanged(m_runningTask);
+    Q_EMIT runningTaskChanged(m_runningTask);
 }
 
 void RunningTaskModel::stopTask()

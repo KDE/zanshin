@@ -214,7 +214,7 @@ void AvailablePagesView::onCurrentChanged(const QModelIndex &current)
     QMetaObject::invokeMethod(m_model, "createPageForIndex",
                               Q_RETURN_ARG(QObject*, page),
                               Q_ARG(QModelIndex, current));
-    emit currentPageChanged(page);
+    Q_EMIT currentPageChanged(page);
 
     const auto object = current.data(QueryTreeModelBase::ObjectRole).value<QObjectPtr>();
     m_removeAction->setEnabled(object.objectCast<Domain::Project>()

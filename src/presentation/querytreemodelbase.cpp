@@ -95,7 +95,7 @@ void QueryTreeNodeBase::endRemoveRows()
 
 void QueryTreeNodeBase::emitDataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight)
 {
-    emit m_model->dataChanged(topLeft, bottomRight);
+    Q_EMIT m_model->dataChanged(topLeft, bottomRight);
 }
 
 QueryTreeModelBase::QueryTreeModelBase(QueryTreeNodeBase *rootNode, QObject *parent)
