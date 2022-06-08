@@ -18,12 +18,12 @@ class SeenItem
 {
 public:
     explicit SeenItem(const Akonadi::Item &theItem)
-        : m_item(theItem), m_dirty(false)
+        : m_item(theItem)
     {
     }
     // invalid item, for QHash::value
     SeenItem()
-        : m_item(Akonadi::Item()), m_dirty(false)
+        : m_item(Akonadi::Item())
     {
     }
     bool isDirty() const { return m_dirty; }
@@ -34,7 +34,7 @@ public:
 
 private:
     Akonadi::Item m_item;
-    bool m_dirty;
+    bool m_dirty = false;
 };
 
 class Zanshin021Migrator
