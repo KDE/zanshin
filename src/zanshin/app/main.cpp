@@ -53,7 +53,7 @@ int main(int argc, char **argv)
     if (!group.readEntry("MigratedTags", false)) {
         std::cerr << "Migrating tags, please wait..." << std::endl;
         QProcess proc;
-        proc.start(QStringLiteral("zanshin-migrator"));
+        proc.start(QStringLiteral("zanshin-migrator"), QStringList());
         proc.waitForFinished(-1);
         if (proc.exitStatus() == QProcess::CrashExit) {
             std::cerr << "Migrator crashed!" << std::endl;
