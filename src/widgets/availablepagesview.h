@@ -46,7 +46,7 @@ public:
     ProjectDialogFactory projectDialogFactory() const;
     QuickSelectDialogFactory quickSelectDialogFactory() const;
 
-public slots:
+public Q_SLOTS:
     void setModel(QObject *model);
     void setProjectSourcesModel(QAbstractItemModel *sources);
     void setDefaultProjectSource(const Domain::DataSource::Ptr &source);
@@ -57,7 +57,7 @@ public slots:
 signals:
     void currentPageChanged(QObject *page);
 
-private slots:
+private Q_SLOTS:
     void onCurrentChanged(const QModelIndex &current);
     void onAddProjectTriggered();
     void onAddContextTriggered();

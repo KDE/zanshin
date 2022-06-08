@@ -15,7 +15,7 @@ class SerializerBenchmark : public QObject
     Q_OBJECT
 
     Akonadi::Item createTestItem();
-private slots:
+private Q_SLOTS:
     void deserialize();
     void checkPayloadAndDeserialize();
     void deserializeAndDestroy();

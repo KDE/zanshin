@@ -23,7 +23,7 @@ class ConfigDialog : public QDialog
 public:
     explicit ConfigDialog(QWidget *parent = 0);
 
-private slots:
+private Q_SLOTS:
     void onAddTriggered();
     void onRemoveTriggered();
     void onConfigureTriggered();

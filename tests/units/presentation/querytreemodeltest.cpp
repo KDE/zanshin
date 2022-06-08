@@ -85,7 +85,7 @@ private:
             return task->isDone() ? Qt::Checked : Qt::Unchecked;
     }
 
-private slots:
+private Q_SLOTS:
     void shouldHaveRoleNames()
     {
         // GIVEN

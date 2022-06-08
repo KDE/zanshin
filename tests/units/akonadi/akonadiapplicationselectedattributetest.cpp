@@ -13,7 +13,7 @@
 class AkonadiApplicationSelectedAttributeTest : public QObject
 {
     Q_OBJECT
-private slots:
+private Q_SLOTS:
     void shouldHaveDefaultState()
     {
         // GIVEN

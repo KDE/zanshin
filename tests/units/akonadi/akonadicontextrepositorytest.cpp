@@ -24,7 +24,7 @@ Q_DECLARE_METATYPE(Testlib::AkonadiFakeItemFetchJob*)
 class AkonadiContextRepositoryTest : public QObject
 {
     Q_OBJECT
-private slots:
+private Q_SLOTS:
     void shouldCreateContext()
     {
         // GIVEN

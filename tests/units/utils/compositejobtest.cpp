@@ -34,7 +34,7 @@ public:
 private:
     int m_callCount;
 
-private slots:
+private Q_SLOTS:
     void shouldCallHandlers()
     {
         // GIVEN

@@ -38,7 +38,7 @@ public:
     QString name() const override;
     Domain::DataSource::Ptr dataSource() const override;
 
-private slots:
+private Q_SLOTS:
     void onUserInputChanged();
 
 private:

@@ -17,7 +17,7 @@ using namespace Testlib;
 class DatasourceDefaultSettingsFeature : public QObject
 {
     Q_OBJECT
-private slots:
+private Q_SLOTS:
     void Have_a_default_data_source_for_tasks_in_the_inbox()
     {
         ZanshinContext c;

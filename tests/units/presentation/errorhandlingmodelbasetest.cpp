@@ -34,7 +34,7 @@ public:
 class ErrorHandlingModelBaseTest : public QObject
 {
     Q_OBJECT
-private slots:
+private Q_SLOTS:
     void shouldDisplayMessageOnError()
     {
         // GIVEN

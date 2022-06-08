@@ -17,7 +17,7 @@ using namespace Testlib;
 class WorkdayDropFeature : public QObject
 {
     Q_OBJECT
-private slots:
+private Q_SLOTS:
     void Dropping_a_task_on_Workday_page()
     {
         ZanshinContext c;

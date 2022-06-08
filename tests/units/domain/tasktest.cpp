@@ -23,7 +23,7 @@ public:
         qRegisterMetaType<Task::Attachments>();
     }
 
-private slots:
+private Q_SLOTS:
     void shouldHaveEmptyPropertiesByDefault()
     {
         Task t;

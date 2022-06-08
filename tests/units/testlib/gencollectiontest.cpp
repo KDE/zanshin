@@ -16,7 +16,7 @@ using namespace Testlib;
 class GenCollectionTest : public QObject
 {
     Q_OBJECT
-private slots:
+private Q_SLOTS:
     void shouldImplicitlyConvertBackToCollection()
     {
         // GIVEN

@@ -20,7 +20,7 @@ public:
     JobHandlerInstance()
         : QObject() {}
 
-public slots:
+public Q_SLOTS:
     void handleJobResult(KJob *job)
     {
         Q_ASSERT(m_handlers.contains(job) || m_handlersWithJob.contains(job));

@@ -85,7 +85,7 @@ private:
         return model;
     }
 
-private slots:
+private Q_SLOTS:
     void shouldHaveDefaultState()
     {
         Widgets::QuickSelectDialog dlg;

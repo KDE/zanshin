@@ -83,7 +83,7 @@ public:
         }
     }
 
-public slots:
+public Q_SLOTS:
     void addItem(const QString &name, const QModelIndex &parentIndex)
     {
         taskNames << name;
@@ -132,7 +132,7 @@ private:
         return KConfigGroup(KSharedConfig::openConfig(), "General");
     }
 
-private slots:
+private Q_SLOTS:
     void shouldHaveDefaultState()
     {
         Widgets::PageView page;

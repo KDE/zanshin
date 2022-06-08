@@ -46,7 +46,7 @@ static QString extractChildRowsTexts( QAbstractItemModel *model, int row, const 
 class AvailablePagesSortFilterProxyModelTest : public QObject
 {
     Q_OBJECT
-private slots:
+private Q_SLOTS:
 
     void shouldSortSecondLevel()
     {

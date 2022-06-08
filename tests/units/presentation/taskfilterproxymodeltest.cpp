@@ -39,7 +39,7 @@ private:
         return item;
     }
 
-private slots:
+private Q_SLOTS:
     void initTestCase()
     {
         qputenv("ZANSHIN_OVERRIDE_DATE", "2015-03-11");

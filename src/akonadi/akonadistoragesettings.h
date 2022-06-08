@@ -24,7 +24,7 @@ public:
     
     Akonadi::Collection defaultCollection();
 
-public slots:
+public Q_SLOTS:
     void setDefaultCollection(const Akonadi::Collection &collection);
 
 signals:

@@ -17,7 +17,7 @@ using namespace Testlib;
 class WorkdayStartdateEditFeature : public QObject
 {
     Q_OBJECT
-private slots:
+private Q_SLOTS:
     void Setting_a_date_s_start_date_to_today_makes_it_appear_in_the_workday_view()
     {
         ZanshinContext c;

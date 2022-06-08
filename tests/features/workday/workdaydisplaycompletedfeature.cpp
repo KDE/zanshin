@@ -17,7 +17,7 @@ using namespace Testlib;
 class WorkdayDisplayCompletedFeature : public QObject
 {
     Q_OBJECT
-private slots:
+private Q_SLOTS:
     void The_tasks_that_have_been_done_today_appear_in_the_Workday_list()
     {
         ZanshinContext c;

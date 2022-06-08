@@ -32,7 +32,7 @@ public:
 
     QString currentText() const; // for the unittest
 
-private slots:
+private Q_SLOTS:
     // connected to the model
     void onRunningTaskChanged(const Domain::Task::Ptr &task);
     // connected to the push buttons

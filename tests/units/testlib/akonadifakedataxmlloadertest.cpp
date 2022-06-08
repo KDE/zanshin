@@ -17,7 +17,7 @@ using Akonadi::Serializer;
 class AkonadiFakeDataXmlLoaderTest : public QObject
 {
     Q_OBJECT
-private slots:
+private Q_SLOTS:
     void shouldLoadFromXmlFile()
     {
         // GIVEN

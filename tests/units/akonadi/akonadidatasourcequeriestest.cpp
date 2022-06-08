@@ -37,7 +37,7 @@ public:
         qRegisterMetaType<QueryFunction>();
     }
 
-private slots:
+private Q_SLOTS:
     void shouldCheckIfASourceIsDefaultFromSettings()
     {
         // GIVEN

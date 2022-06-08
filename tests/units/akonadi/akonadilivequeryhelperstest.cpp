@@ -53,7 +53,7 @@ private:
         return Akonadi::SerializerInterface::Ptr(new Akonadi::Serializer);
     }
 
-private slots:
+private Q_SLOTS:
     void shouldFetchAllCollections()
     {
         // GIVEN

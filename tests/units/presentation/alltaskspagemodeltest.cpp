@@ -33,7 +33,7 @@ using namespace Testlib;
 class AllTasksPageModelTest : public QObject
 {
     Q_OBJECT
-private slots:
+private Q_SLOTS:
     void cleanup()
     {
         // The first call to QueryTreeModelBase::data triggers fetchTaskExtraData which creates jobs.

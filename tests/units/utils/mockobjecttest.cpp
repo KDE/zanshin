@@ -24,7 +24,7 @@ public:
 class MockObjectTest : public QObject
 {
     Q_OBJECT
-private slots:
+private Q_SLOTS:
     void testBasics()
     {
         MockObject<FakeInterface> mock;

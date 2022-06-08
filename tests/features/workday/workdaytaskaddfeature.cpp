@@ -17,7 +17,7 @@ using namespace Testlib;
 class WorkdayTaskAddFeature : public QObject
 {
     Q_OBJECT
-private slots:
+private Q_SLOTS:
     void Tasks_added_from_the_workday_view_start_today()
     {
         ZanshinContext c;

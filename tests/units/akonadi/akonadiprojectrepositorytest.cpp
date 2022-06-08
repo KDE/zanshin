@@ -22,7 +22,7 @@ Q_DECLARE_METATYPE(Testlib::AkonadiFakeItemFetchJob*)
 class AkonadiProjectRepositoryTest : public QObject
 {
     Q_OBJECT
-private slots:
+private Q_SLOTS:
     void shouldCreateProjectInDataSource()
     {
         // GIVEN

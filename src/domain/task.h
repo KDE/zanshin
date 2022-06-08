@@ -93,7 +93,7 @@ public:
     Recurrence recurrence() const;
     Attachments attachments() const;
 
-public slots:
+public Q_SLOTS:
     void setText(const QString &text);
     void setTitle(const QString &title);
     void setRunning(bool running);

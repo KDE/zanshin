@@ -17,7 +17,7 @@ using namespace Testlib;
 class WorkdayDragAndDropFeature : public QObject
 {
     Q_OBJECT
-private slots:
+private Q_SLOTS:
     void Parenting_a_task_in_the_Workday_page()
     {
         ZanshinContext c;

@@ -17,7 +17,7 @@ using namespace Testlib;
 class DatasourceSelectionFeature : public QObject
 {
     Q_OBJECT
-private slots:
+private Q_SLOTS:
     void Unchecking_impacts_the_inbox()
     {
         ZanshinContext c;

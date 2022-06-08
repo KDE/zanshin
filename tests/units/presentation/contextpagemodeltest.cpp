@@ -44,7 +44,7 @@ class ContextPageModelTest : public QObject
 {
     Q_OBJECT
 
-private slots:
+private Q_SLOTS:
     void shouldListAssociatedTaskInContextCentralListView() {
         // GIVEN
 

@@ -47,7 +47,7 @@ static const int s_allTasksRow = 4;
 class AvailablePagesModelTest : public QObject
 {
     Q_OBJECT
-private slots:
+private Q_SLOTS:
     void shouldListAvailablePages()
     {
         // GIVEN

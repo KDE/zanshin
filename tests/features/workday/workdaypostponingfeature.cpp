@@ -17,7 +17,7 @@ using namespace Testlib;
 class WorkdayPostponingFeature : public QObject
 {
     Q_OBJECT
-private slots:
+private Q_SLOTS:
     void Setting_a_date_s_start_date_to_a_date_in_the_future_makes_it_disappear_in_the_Workday_page()
     {
         ZanshinContext c;

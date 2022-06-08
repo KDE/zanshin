@@ -17,7 +17,7 @@ using namespace Testlib;
 class ContextDragAndDropFeature : public QObject
 {
     Q_OBJECT
-private slots:
+private Q_SLOTS:
     void Dropping_a_task_on_a_context_from_the_inbox()
     {
         ZanshinContext c;

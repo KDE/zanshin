@@ -55,7 +55,7 @@ public:
     DataSourceResult::Ptr findDataSource(Domain::Task::Ptr task) const override;
 
 
-private slots:
+private Q_SLOTS:
     void onWorkdayPollTimeout();
 
 private:

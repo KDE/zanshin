@@ -17,7 +17,7 @@ using namespace Testlib;
 class CompletingTaskFeature : public QObject
 {
     Q_OBJECT
-private slots:
+private Q_SLOTS:
     void Checking_task_in_the_list()
     {
         ZanshinContext c;

@@ -17,7 +17,7 @@ using namespace Testlib;
 class ProjectDisplayFeature : public QObject
 {
     Q_OBJECT
-private slots:
+private Q_SLOTS:
     void Project_tasks_appear_in_the_corresponding_page()
     {
         ZanshinContext c;

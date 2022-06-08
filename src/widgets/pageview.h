@@ -47,7 +47,7 @@ public:
     MessageBoxInterface::Ptr messageBoxInterface() const;
     QModelIndexList selectedIndexes() const;
 
-public slots:
+public Q_SLOTS:
     void setModel(QObject *model);
     void setRunningTaskModel(Presentation::RunningTaskModelInterface *model);
     void setMessageBoxInterface(const MessageBoxInterface::Ptr &interface);
@@ -56,7 +56,7 @@ public slots:
 signals:
     void currentTaskChanged(const Domain::Task::Ptr &task);
 
-private slots:
+private Q_SLOTS:
     void onReturnPressed();
     void onAddItemRequested();
     void onRemoveItemRequested();

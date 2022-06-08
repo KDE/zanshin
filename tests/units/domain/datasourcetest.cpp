@@ -20,7 +20,7 @@ public:
         qRegisterMetaType<DataSource::ContentTypes>();
     }
 
-private slots:
+private Q_SLOTS:
     void shouldHaveEmptyPropertiesByDefault()
     {
         DataSource ds;

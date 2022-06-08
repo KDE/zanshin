@@ -26,7 +26,7 @@ public:
     {
     }
 
-private slots:
+private Q_SLOTS:
     void onTimeout() override
     {
         auto jobs = childJobs();

@@ -17,7 +17,7 @@ using namespace Testlib;
 class ProjectRemoveFeature : public QObject
 {
     Q_OBJECT
-private slots:
+private Q_SLOTS:
     void Removing_a_simple_project_from_the_list()
     {
         ZanshinContext c;

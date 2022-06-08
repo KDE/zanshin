@@ -52,7 +52,7 @@ public:
         return res;
     }
 
-private slots:
+private Q_SLOTS:
     void shouldCacheAllCollectionsPerFetchType_data()
     {
         QTest::addColumn<Akonadi::Collection>("rootCollection");

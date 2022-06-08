@@ -21,7 +21,7 @@ public:
     MonitorImpl();
     virtual ~MonitorImpl();
 
-private slots:
+private Q_SLOTS:
     void onCollectionChanged(const Akonadi::Collection &collection, const QSet<QByteArray> &parts);
 
 private:

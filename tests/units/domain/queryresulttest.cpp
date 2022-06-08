@@ -30,7 +30,7 @@ public:
 class QueryResultTest : public QObject
 {
     Q_OBJECT
-private slots:
+private Q_SLOTS:
     void shouldBeCreatedEmpty()
     {
         QueryResultProvider<QString>::Ptr provider(new QueryResultProvider<QString>);

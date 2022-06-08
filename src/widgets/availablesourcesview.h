@@ -30,10 +30,10 @@ public:
     QObject *model() const;
 
     void setSourceModel(const QByteArray &propertyName);
-public slots:
+public Q_SLOTS:
     void setModel(QObject *model);
 
-private slots:
+private Q_SLOTS:
     void onSelectionChanged();
     void onSettingsTriggered();
     void onDefaultTriggered();

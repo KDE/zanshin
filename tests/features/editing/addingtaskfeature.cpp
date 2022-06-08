@@ -17,7 +17,7 @@ using namespace Testlib;
 class AddingTaskFeature : public QObject
 {
     Q_OBJECT
-private slots:
+private Q_SLOTS:
     void Adding_a_task_in_a_page_data()
     {
         QTest::addColumn<QString>("page");
