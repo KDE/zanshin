@@ -20,11 +20,7 @@ public:
     int weight() const override { return 449; }
 
 protected:
-#if KONTACTINTERFACE_VERSION >= QT_VERSION_CHECK(5, 14, 42)
     KParts::Part *createPart() override;
-#else
-    KParts::ReadOnlyPart *createPart() override;
-#endif
 };
 
 #endif
