@@ -38,7 +38,7 @@ RunningTaskWidget::RunningTaskWidget(QWidget *parent)
     // Current idea for a good background color:
     // the selection color, i.e. usually blue. Arguable ;)
     QPalette pal;
-    pal.setBrush(QPalette::Background, pal.brush(QPalette::Highlight));
+    pal.setBrush(QPalette::Window, pal.brush(QPalette::Highlight));
     setPalette(pal);
     setAutoFillBackground(true);
 

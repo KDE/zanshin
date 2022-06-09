@@ -120,7 +120,7 @@ void ItemDelegate::paint(QPainter *painter,
         checkOption.rect = checkRect;
         checkOption.state = option.state & ~QStyle::State_HasFocus;
         checkOption.state |= isDone ? QStyle::State_On : QStyle::State_Off;
-        style->drawPrimitive(QStyle::PE_IndicatorViewItemCheck, &checkOption, painter, widget);
+        style->drawPrimitive(QStyle::PE_IndicatorItemViewItemCheck, &checkOption, painter, widget);
     }
 
     // Draw the summary
