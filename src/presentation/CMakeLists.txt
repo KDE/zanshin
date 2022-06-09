@@ -1,4 +1,6 @@
-set(presentation_SRCS
+add_library(presentation STATIC)
+
+target_sources(presentation PRIVATE
     applicationmodel.cpp
     editormodel.cpp
     availablepagesmodel.cpp
@@ -38,7 +40,6 @@ set(presentation_SRCS
     workdaypagemodel.h
 )
 
-add_library(presentation STATIC ${presentation_SRCS})
 set_property(TARGET presentation PROPERTY POSITION_INDEPENDENT_CODE ON)
 
 target_link_libraries(presentation Qt::Core Qt::Gui KF5::I18n domain utils)

@@ -1,4 +1,6 @@
-set(widgets_SRCS
+add_library(widgets STATIC)
+
+target_sources(widgets PRIVATE
     applicationcomponents.cpp
     availablepagesview.cpp
     availablesourcesview.cpp
@@ -40,7 +42,6 @@ ki18n_wrap_ui(widgets_SRCS
     nameanddatasourcedialog.ui
 )
 
-add_library(widgets STATIC ${widgets_SRCS})
 set_property(TARGET widgets PROPERTY POSITION_INDEPENDENT_CODE ON)
 
 target_link_libraries(widgets

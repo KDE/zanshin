@@ -1,4 +1,5 @@
-set(utils_SRCS
+add_library(utils STATIC)
+target_sources(utils PRIVATE
     compositejob.cpp
     datetime.cpp
     dependencymanager.cpp
@@ -10,7 +11,6 @@ set(utils_SRCS
     jobhandler.h
 )
 
-add_library(utils STATIC ${utils_SRCS})
 set_property(TARGET utils PROPERTY POSITION_INDEPENDENT_CODE ON)
 
 target_link_libraries(utils
