@@ -40,7 +40,7 @@ public:
 
     QAbstractItemModel *centralListModel();
 
-public Q_SLOTS:
+public slots:
     virtual Domain::Task::Ptr addItem(const QString &title, const QModelIndex &parentIndex = QModelIndex()) = 0;
     virtual void removeItem(const QModelIndex &index) = 0;
     virtual void promoteItem(const QModelIndex &index) = 0;

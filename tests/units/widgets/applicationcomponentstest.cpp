@@ -215,7 +215,7 @@ public:
             qFatal("Unsupported property %s", name.constData());
     }
 
-public Q_SLOTS:
+public slots:
     void setTitle(const QString &title) { setPropertyAndSignal("title", title); }
     void setText(const QString &text) { setPropertyAndSignal("text", text); }
     void setDone(bool done) { setPropertyAndSignal("done", done); }
@@ -290,7 +290,7 @@ public:
         qputenv("ZANSHIN_UNIT_TEST_RUN", "1");
     }
 
-private Q_SLOTS:
+private slots:
     void shouldHaveApplicationModelAndSetErrorHandler()
     {
         // GIVEN

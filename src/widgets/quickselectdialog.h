@@ -35,7 +35,7 @@ public:
     QPersistentModelIndex selectedIndex() const override;
     void setModel(QAbstractItemModel *model) override;
 
-private Q_SLOTS:
+private slots:
     void applyFilterChanged(const QString &textFilter);
     bool eventFilter(QObject *object, QEvent *ev) override;
 

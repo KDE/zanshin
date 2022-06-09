@@ -25,7 +25,7 @@ namespace
 class JobHandlerTest : public QObject
 {
     Q_OBJECT
-private Q_SLOTS:
+private slots:
     void shouldCallHandlers()
     {
         int callCount = 0;

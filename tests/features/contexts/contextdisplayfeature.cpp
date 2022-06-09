@@ -17,7 +17,7 @@ using namespace Testlib;
 class ContextDisplayFeature : public QObject
 {
     Q_OBJECT
-private Q_SLOTS:
+private slots:
     void Context_tasks_appear_in_the_corresponding_page()
     {
         ZanshinContext c;

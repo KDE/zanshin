@@ -42,7 +42,7 @@ public:
     ContentTypes contentTypes() const;
     bool isSelected() const;
 
-public Q_SLOTS:
+public slots:
     void setName(const QString &name);
     void setIconName(const QString &iconName);
     void setContentTypes(Domain::DataSource::ContentTypes types);

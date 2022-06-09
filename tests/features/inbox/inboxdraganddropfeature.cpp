@@ -16,7 +16,7 @@ using namespace Testlib;
 class InboxDragAndDropFeature : public QObject
 {
     Q_OBJECT
-private Q_SLOTS:
+private slots:
     void Dropping_a_task_on_another_one_makes_it_a_child()
     {
         ZanshinContext c;

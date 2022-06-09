@@ -17,7 +17,7 @@ using namespace Testlib;
 class ProjectDragAndDropFeature : public QObject
 {
     Q_OBJECT
-private Q_SLOTS:
+private slots:
     void Dropping_a_task_on_a_project()
     {
         ZanshinContext c;

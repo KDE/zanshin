@@ -32,7 +32,7 @@ public:
         dialog->exec();
     }
 
-private Q_SLOTS:
+private slots:
     void onTimeout()
     {
         if (!nameInput.isEmpty()) {
@@ -106,7 +106,7 @@ private:
         return model;
     }
 
-private Q_SLOTS:
+private slots:
     void shouldHaveDefaultState()
     {
         Widgets::NameAndDataSourceDialog dialog;

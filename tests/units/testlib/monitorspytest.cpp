@@ -22,7 +22,7 @@ public:
         QTimer::singleShot(duration, Qt::PreciseTimer, this, &TimerTest::addItem);
     }
 
-private Q_SLOTS:
+private slots:
     void addItem()
     {
         Akonadi::Item item;
@@ -42,7 +42,7 @@ public:
     {
     }
 
-private Q_SLOTS:
+private slots:
     void shouldWaitOneSecondWithoutSignal()
     {
         // GIVEN

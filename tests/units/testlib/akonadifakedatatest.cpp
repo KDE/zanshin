@@ -68,7 +68,7 @@ public:
         qRegisterMetaType<Akonadi::Item>();
     }
 
-private Q_SLOTS:
+private slots:
     void shouldBeInitiallyEmpty()
     {
         // GIVEN

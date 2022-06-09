@@ -17,7 +17,7 @@ using namespace Testlib;
 class DatasourceListingFeature : public QObject
 {
     Q_OBJECT
-private Q_SLOTS:
+private slots:
     void All_task_sources_appear_in_the_list()
     {
         ZanshinContext c;

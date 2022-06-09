@@ -172,7 +172,7 @@ private:
         return new FirstImplementation0;
     }
 
-private Q_SLOTS:
+private slots:
     void shouldMemorizeDependency()
     {
         DependencyManager deps;

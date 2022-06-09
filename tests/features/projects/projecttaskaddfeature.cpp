@@ -17,7 +17,7 @@ using namespace Testlib;
 class ProjectTaskAddFeature : public QObject
 {
     Q_OBJECT
-private Q_SLOTS:
+private slots:
     void Task_added_from_a_project_appear_in_its_list()
     {
         ZanshinContext c;

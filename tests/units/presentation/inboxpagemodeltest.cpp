@@ -45,7 +45,7 @@ public:
 class InboxPageModelTest : public QObject
 {
     Q_OBJECT
-private Q_SLOTS:
+private slots:
     void cleanup()
     {
         // The first call to QueryTreeModelBase::data triggers fetchTaskExtraData which creates jobs.

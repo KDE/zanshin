@@ -33,7 +33,7 @@ public:
 signals:
     void runningTaskChanged(const Domain::Task::Ptr &task);
 
-public Q_SLOTS:
+public slots:
     virtual void stopTask() = 0;
     virtual void doneTask() = 0;
 };

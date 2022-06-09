@@ -27,7 +27,7 @@ private:
         return Akonadi::StorageInterface::Ptr(new Akonadi::CachingStorage(cache, storage));
     }
 
-private Q_SLOTS:
+private slots:
     void shouldDealWithEmptyContextList()
     {
         // GIVEN

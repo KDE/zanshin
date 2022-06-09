@@ -42,7 +42,7 @@ public:
         Presentation::EditorModel::setAutoSaveDelay(50);
     }
 
-private Q_SLOTS:
+private slots:
     void shouldHaveEmptyDefaultState()
     {
         // GIVEN

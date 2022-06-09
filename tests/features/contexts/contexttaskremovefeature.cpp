@@ -17,7 +17,7 @@ using namespace Testlib;
 class ContextTaskRemoveFeature : public QObject
 {
     Q_OBJECT
-private Q_SLOTS:
+private slots:
     void Removing_a_task_from_a_context_keeps_it_in_the_project_page_it_s_linked_to()
     {
         ZanshinContext c;

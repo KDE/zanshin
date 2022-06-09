@@ -73,7 +73,7 @@ public:
         }
     }
 
-private Q_SLOTS:
+private slots:
     void triggerReset()
     {
         beginResetModel();

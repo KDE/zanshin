@@ -57,7 +57,7 @@ public:
             qFatal("Unsupported property %s", name.constData());
     }
 
-public Q_SLOTS:
+public slots:
     void setTask(const Domain::Task::Ptr &task) { setPropertyAndSignal("task", QVariant::fromValue(task)); }
     void setTitle(const QString &title) { setPropertyAndSignal("title", title); }
     void setText(const QString &text) { setPropertyAndSignal("text", text); }
@@ -102,7 +102,7 @@ public:
         qputenv("ZANSHIN_UNIT_TEST_RUN", "1");
     }
 
-private Q_SLOTS:
+private slots:
     void shouldHaveDefaultState()
     {
         Widgets::EditorView editor;

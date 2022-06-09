@@ -17,7 +17,7 @@ using namespace Testlib;
 class ContextAddFeature : public QObject
 {
     Q_OBJECT
-private Q_SLOTS:
+private slots:
     void New_contexts_appear_in_the_list()
     {
         ZanshinContext c;

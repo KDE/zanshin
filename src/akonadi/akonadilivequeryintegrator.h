@@ -166,7 +166,7 @@ public:
     void addRemoveHandler(const CollectionRemoveHandler &handler);
     void addRemoveHandler(const ItemRemoveHandler &handler);
 
-private Q_SLOTS:
+private slots:
     void onCollectionSelectionChanged();
 
     void onCollectionAdded(const Akonadi::Collection &collection);

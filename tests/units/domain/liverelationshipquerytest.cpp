@@ -50,7 +50,7 @@ private:
         return object->property(objectIdPropName).toInt() == output.first;
     };
 
-private Q_SLOTS:
+private slots:
     void shouldHaveInitialFetchFunctionAndPredicate()
     {
         // GIVEN

@@ -39,7 +39,7 @@ public:
 
     Item item(Item::Id id) const;
 
-private Q_SLOTS:
+private slots:
     void onCollectionAdded(const Collection &collection);
     void onCollectionChanged(const Collection &collection);
     void onCollectionRemoved(const Collection &collection);

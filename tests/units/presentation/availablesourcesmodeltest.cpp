@@ -45,7 +45,7 @@ public:
         qRegisterMetaType<QModelIndex>();
     }
 
-private Q_SLOTS:
+private slots:
     void shouldListAvailableSources()
     {
         // GIVEN

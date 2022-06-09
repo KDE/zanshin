@@ -28,7 +28,7 @@ public:
 
     QString name() const;
 
-public Q_SLOTS:
+public slots:
     void setName(const QString &name);
 
 signals:

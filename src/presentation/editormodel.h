@@ -62,7 +62,7 @@ public:
 
     bool editingInProgress() const;
 
-public Q_SLOTS:
+public slots:
     void setText(const QString &text);
     void setTitle(const QString &title);
     void setDone(bool done);
@@ -85,7 +85,7 @@ signals:
     void dueDateChanged(const QDate &due);
     void recurrenceChanged(Domain::Task::Recurrence recurrence);
 
-private Q_SLOTS:
+private slots:
     void onTextChanged(const QString &text);
     void onTitleChanged(const QString &title);
     void onDoneChanged(bool done);

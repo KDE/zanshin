@@ -37,7 +37,7 @@ public:
     {
     }
 
-private Q_SLOTS:
+private slots:
     void shouldCreateNewItems()
     {
         // GIVEN

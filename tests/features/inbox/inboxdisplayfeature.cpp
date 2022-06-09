@@ -16,7 +16,7 @@ using namespace Testlib;
 class InboxDisplayFeature : public QObject
 {
     Q_OBJECT
-private Q_SLOTS:
+private slots:
     void Unorganized_tasks_appear_in_the_inbox()
     {
         ZanshinContext c;

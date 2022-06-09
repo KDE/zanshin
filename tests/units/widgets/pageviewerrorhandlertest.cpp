@@ -16,7 +16,7 @@
 class PageViewErrorHandlerTest : public QObject
 {
     Q_OBJECT
-private Q_SLOTS:
+private slots:
     void shouldHaveDefaultState()
     {
         Widgets::PageViewErrorHandler errorHandler;

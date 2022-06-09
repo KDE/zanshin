@@ -19,7 +19,7 @@ using namespace Testlib;
 class AkonadiProjectQueriesTest : public QObject
 {
     Q_OBJECT
-private Q_SLOTS:
+private slots:
     void shouldLookInAllReportedForAllProjects()
     {
         // GIVEN

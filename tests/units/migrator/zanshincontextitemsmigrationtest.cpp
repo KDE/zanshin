@@ -41,7 +41,7 @@ public:
         qRegisterMetaType<Akonadi::Item>();
     }
 
-private Q_SLOTS:
+private slots:
     void initTestCase()
     {
         QVERIFY(TestLib::TestSafety::checkTestIsIsolated());

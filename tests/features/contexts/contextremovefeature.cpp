@@ -17,7 +17,7 @@ using namespace Testlib;
 class ContextRemoveFeature : public QObject
 {
     Q_OBJECT
-private Q_SLOTS:
+private slots:
     void Removed_context_disappear_from_the_list()
     {
         ZanshinContext c;

@@ -17,7 +17,7 @@ using namespace Testlib;
 class ContextEditFeature : public QObject
 {
     Q_OBJECT
-private Q_SLOTS:
+private slots:
     void Renamed_context_appear_in_the_list()
     {
         ZanshinContext c;

@@ -29,7 +29,7 @@ public:
                               QObject *parent = nullptr);
 
     Domain::Context::Ptr context() const;
-public Q_SLOTS:
+public slots:
     Domain::Task::Ptr addItem(const QString &title, const QModelIndex &parentIndex = QModelIndex()) override;
     void removeItem(const QModelIndex &index) override;
     void promoteItem(const QModelIndex &index) override;

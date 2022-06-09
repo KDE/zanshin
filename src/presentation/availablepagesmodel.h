@@ -43,7 +43,7 @@ public:
 
     Q_SCRIPTABLE QObject *createPageForIndex(const QModelIndex &index);
 
-public Q_SLOTS:
+public slots:
     void addProject(const QString &name, const Domain::DataSource::Ptr &source);
     void addContext(const QString &name, const Domain::DataSource::Ptr &source);
     void removeItem(const QModelIndex &index);

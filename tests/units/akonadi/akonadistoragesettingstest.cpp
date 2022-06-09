@@ -54,7 +54,7 @@ private:
         return list;
     }
 
-private Q_SLOTS:
+private slots:
     void shouldReadFromConfigurationFile()
     {
         // GIVEN

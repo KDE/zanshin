@@ -13,7 +13,7 @@ using namespace Domain;
 class ProjectTest : public QObject
 {
     Q_OBJECT
-private Q_SLOTS:
+private slots:
     void shouldHaveEmptyPropertiesByDefault()
     {
         Project p;

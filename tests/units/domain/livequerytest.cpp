@@ -28,7 +28,7 @@ private:
         return obj;
     }
 
-private Q_SLOTS:
+private slots:
     void shouldHaveInitialFetchFunctionAndPredicate()
     {
         // GIVEN

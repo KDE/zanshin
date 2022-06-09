@@ -17,7 +17,7 @@ using Akonadi::Serializer;
 class GenTodoTest : public QObject
 {
     Q_OBJECT
-private Q_SLOTS:
+private slots:
     void shouldImplicitlyConvertBackToItem()
     {
         // GIVEN

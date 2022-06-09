@@ -17,7 +17,7 @@ using namespace Testlib;
 class ProjectEditFeature : public QObject
 {
     Q_OBJECT
-private Q_SLOTS:
+private slots:
     void Renamed_projects_appear_in_the_list()
     {
         ZanshinContext c;

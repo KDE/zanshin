@@ -22,7 +22,7 @@ using mockitopp::matcher::any;
 class MockitoTest : public QObject
 {
     Q_OBJECT
-private Q_SLOTS:
+private slots:
     void testBasics()
     {
         mock_object<FakeInterface> mock;

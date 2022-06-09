@@ -44,7 +44,7 @@ public:
     QObject *model() const;
     RequestFileNameFunction requestFileNameFunction() const;
 
-public Q_SLOTS:
+public slots:
     void setModel(QObject *model);
     void setRequestFileNameFunction(const RequestFileNameFunction &function);
 
@@ -59,7 +59,7 @@ signals:
 protected:
     bool eventFilter(QObject *watched, QEvent *event) override;
 
-private Q_SLOTS:
+private slots:
     void onTaskChanged();
     void onTextOrTitleChanged();
     void onStartDateChanged();

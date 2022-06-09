@@ -24,7 +24,7 @@ public:
 class ErrorHandlerTest : public QObject
 {
     Q_OBJECT
-private Q_SLOTS:
+private slots:
     void shouldDisplayErrorMessage()
     {
         // GIVEN

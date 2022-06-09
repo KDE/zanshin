@@ -33,12 +33,12 @@ public:
 
     Presentation::TaskFilterProxyModel *proxyModel() const;
 
-public Q_SLOTS:
+public slots:
     void clear();
     void setShowDoneTasks(bool show);
     void setShowFutureTasks(bool show);
 
-private Q_SLOTS:
+private slots:
     void onTextChanged(const QString &text);
     void onSortTypeChanged(int index);
     void onAscendingClicked();

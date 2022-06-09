@@ -26,7 +26,7 @@ using namespace mockitopp::matcher;
 class WorkdayPageModelTest : public QObject
 {
     Q_OBJECT
-private Q_SLOTS:
+private slots:
     void shouldListWorkdayInCentralListModel()
     {
         // GIVEN

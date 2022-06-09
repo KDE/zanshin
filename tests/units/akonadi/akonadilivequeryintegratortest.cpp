@@ -103,7 +103,7 @@ private:
         };
     }
 
-private Q_SLOTS:
+private slots:
     void shouldBindContextQueries()
     {
         // GIVEN

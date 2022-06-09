@@ -14,7 +14,7 @@
 class MetaTypesTest : public QObject
 {
     Q_OBJECT
-private Q_SLOTS:
+private slots:
     void shouldRegisterMetaTypes()
     {
         // GIVEN

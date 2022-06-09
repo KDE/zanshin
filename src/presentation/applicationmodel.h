@@ -43,7 +43,7 @@ public:
 
     ErrorHandler *errorHandler() const;
 
-public Q_SLOTS:
+public slots:
     void setCurrentPage(QObject *page);
     void setErrorHandler(ErrorHandler *errorHandler);
 

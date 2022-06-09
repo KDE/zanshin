@@ -42,7 +42,7 @@ public:
 class RunningTaskModelTest : public QObject
 {
     Q_OBJECT
-private Q_SLOTS:
+private slots:
     void shouldDoInitialListing()
     {
         // GIVEN

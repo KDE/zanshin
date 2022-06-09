@@ -16,7 +16,7 @@ using namespace Testlib;
 class PagesDisplayFeature : public QObject
 {
     Q_OBJECT
-private Q_SLOTS:
+private slots:
     void Inbox_projects_and_contexts_appear_in_the_list()
     {
         ZanshinContext c;

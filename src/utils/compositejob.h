@@ -26,7 +26,7 @@ public:
 
     void emitError(const QString &errorText);
 
-private Q_SLOTS:
+private slots:
     virtual void slotResult(KJob *job) override;
 };
 

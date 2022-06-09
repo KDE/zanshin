@@ -31,12 +31,12 @@ public:
 
     QAbstractItemModel *sourceListModel();
 
-public Q_SLOTS:
+public slots:
     void setDefaultItem(const QModelIndex &index);
 
     void showConfigDialog();
 
-private Q_SLOTS:
+private slots:
     void onDefaultSourceChanged();
 
 private:

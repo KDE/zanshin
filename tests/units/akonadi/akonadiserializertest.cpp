@@ -33,7 +33,7 @@ static void setTodoDates(KCalCore::Todo::Ptr todo, const QDate &start, const QDa
 class AkonadiSerializerTest : public QObject
 {
     Q_OBJECT
-private Q_SLOTS:
+private slots:
     void shouldKnowWhenAnObjectRepresentsACollection()
     {
         // GIVEN

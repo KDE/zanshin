@@ -13,7 +13,7 @@ using namespace Domain;
 class ContextTest : public QObject
 {
     Q_OBJECT
-private Q_SLOTS:
+private slots:
     void shouldHaveEmptyPropertiesByDefault()
     {
         Context c;

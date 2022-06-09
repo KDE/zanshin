@@ -17,7 +17,7 @@ using namespace Testlib;
 class WorkdayDisplayFeature : public QObject
 {
     Q_OBJECT
-private Q_SLOTS:
+private slots:
     void The_tasks_that_need_to_be_done_today_appear_in_the_Workday_list()
     {
         ZanshinContext c;

@@ -30,7 +30,7 @@ public:
     {
     }
 
-public Q_SLOTS:
+public slots:
     void showConfigDialog()
     {
         settingsCalled = true;
@@ -50,7 +50,7 @@ public:
 class AvailableSourcesViewTest : public QObject
 {
     Q_OBJECT
-private Q_SLOTS:
+private slots:
     void shouldHaveDefaultState()
     {
         Widgets::AvailableSourcesView available;

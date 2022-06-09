@@ -17,7 +17,7 @@ using namespace Testlib;
 class WorkdayTaskRemoveFeature : public QObject
 {
     Q_OBJECT
-private Q_SLOTS:
+private slots:
     void Removing_a_task_that_appear_in_the_Workday_list()
     {
         ZanshinContext c;

@@ -33,7 +33,7 @@ public:
         return ptr;
     }
 
-private Q_SLOTS:
+private slots:
     void initTestCase()
     {
         QVERIFY(TestLib::TestSafety::checkTestIsIsolated());

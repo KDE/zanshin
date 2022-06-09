@@ -36,7 +36,7 @@ public:
         return Akonadi::MonitorInterface::Ptr(new Akonadi::MonitorImpl);
     }
 
-private Q_SLOTS:
+private slots:
     void initTestCase()
     {
         QVERIFY(TestLib::TestSafety::checkTestIsIsolated());

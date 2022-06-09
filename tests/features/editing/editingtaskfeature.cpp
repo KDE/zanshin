@@ -17,7 +17,7 @@ using namespace Testlib;
 class EditingTaskFeature : public QObject
 {
     Q_OBJECT
-private Q_SLOTS:
+private slots:
     void Editing_a_task_text()
     {
         ZanshinContext c;

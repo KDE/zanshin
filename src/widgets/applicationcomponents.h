@@ -59,11 +59,11 @@ public:
 
     QuickSelectDialogFactory quickSelectDialogFactory() const;
 
-public Q_SLOTS:
+public slots:
     virtual void setModel(const QObjectPtr &model);
     void setQuickSelectDialogFactory(const QuickSelectDialogFactory &factory);
 
-private Q_SLOTS:
+private slots:
     void onCurrentPageChanged(QObject *page);
     void onCurrentTaskChanged(const Domain::Task::Ptr &task);
     void onMoveItemsRequested();

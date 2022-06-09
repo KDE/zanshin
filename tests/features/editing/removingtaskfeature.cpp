@@ -17,7 +17,7 @@ using namespace Testlib;
 class RemovingTaskFeature : public QObject
 {
     Q_OBJECT
-private Q_SLOTS:
+private slots:
     void Removing_a_simple_task_from_a_page_data()
     {
         QTest::addColumn<QString>("page");

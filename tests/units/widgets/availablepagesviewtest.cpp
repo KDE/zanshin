@@ -115,7 +115,7 @@ public:
         : QObject(parent)
     {
     }
-public Q_SLOTS:
+public slots:
     void addProject(const QString &name, const Domain::DataSource::Ptr &source)
     {
         projectNames << name;
@@ -146,7 +146,7 @@ public:
 class AvailablePagesViewTest : public QObject
 {
     Q_OBJECT
-private Q_SLOTS:
+private slots:
     void shouldHaveDefaultState()
     {
         Widgets::AvailablePagesView available;

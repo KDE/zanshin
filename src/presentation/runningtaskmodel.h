@@ -30,7 +30,7 @@ public:
 
     void taskDeleted(const Domain::Task::Ptr &task) override;
 
-public Q_SLOTS:
+public slots:
     void stopTask() override;
     void doneTask() override;
 

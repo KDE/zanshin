@@ -13,7 +13,7 @@ using namespace Utils;
 class DateTimeTest : public QObject
 {
     Q_OBJECT
-private Q_SLOTS:
+private slots:
     void shouldNotOverrideCurrentDate()
     {
         // GIVEN
