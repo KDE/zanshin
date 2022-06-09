@@ -26,7 +26,7 @@ target_sources(kontact_zanshinplugin PRIVATE
 target_link_libraries(kontact_zanshinplugin KF5::Parts KF5::KontactInterface)
 kcoreaddons_desktop_to_json(kontact_zanshinplugin zanshin_plugin.desktop)
 
-install(TARGETS kontact_zanshinplugin DESTINATION ${KDE_INSTALL_PLUGINDIR}/kontact5)
+install(TARGETS kontact_zanshinplugin DESTINATION ${KDE_INSTALL_PLUGINDIR}/pim${QT_MAJOR_VERSION}/kontact)
 install(FILES zanshin_plugin.desktop DESTINATION ${KDE_INSTALL_KSERVICESDIR}/kontact)
 install(FILES zanshin_part.rc DESTINATION ${KDE_INSTALL_KXMLGUI5DIR}/zanshin)
 
