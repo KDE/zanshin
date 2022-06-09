@@ -205,8 +205,8 @@ void KDateEdit::dateSelected( const QDate &date )
 {
   if ( assignDate( date ) ) {
     updateView();
-    Q_EMIT dateChanged( date );
-    Q_EMIT dateEntered( date );
+    emit dateChanged( date );
+    emit dateEntered( date );
 
     if ( date.isValid() ) {
       mPopup->hide();
@@ -225,8 +225,8 @@ void KDateEdit::lineEnterPressed()
       updateView();
     }
 
-    Q_EMIT dateChanged( date );
-    Q_EMIT dateEntered( date );
+    emit dateChanged( date );
+    emit dateEntered( date );
   }
 }
 
@@ -302,8 +302,8 @@ void KDateEdit::wheelEvent( QWheelEvent *e )
   if ( assignDate( date ) ) {
     e->accept();
     updateView();
-    Q_EMIT dateChanged( date );
-    Q_EMIT dateEntered( date );
+    emit dateChanged( date );
+    emit dateEntered( date );
     return;
   }
   QComboBox::wheelEvent( e );
@@ -349,8 +349,8 @@ void KDateEdit::keyPressEvent(QKeyEvent* e)
     if ( date.isValid() && assignDate( date ) ) {
       e->accept();
       updateView();
-      Q_EMIT dateChanged( date );
-      Q_EMIT dateEntered( date );
+      emit dateChanged( date );
+      emit dateEntered( date );
       return;
     }
   }
@@ -416,7 +416,7 @@ void KDateEdit::slotTextChanged( const QString & )
   QDate date = parseDate();
 
   if ( assignDate( date ) ) {
-    Q_EMIT dateChanged( date );
+    emit dateChanged( date );
   }
 
   mTextChanged = true;

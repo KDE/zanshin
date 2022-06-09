@@ -28,5 +28,5 @@ void Project::setName(const QString &name)
         return;
 
     m_name = name;
-    Q_EMIT nameChanged(name);
+    emit nameChanged(name);
 }

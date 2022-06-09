@@ -52,8 +52,8 @@ void Task::setDone(bool done)
     m_done = done;
     m_doneDate = doneDate;
 
-    Q_EMIT doneChanged(done);
-    Q_EMIT doneDateChanged(doneDate);
+    emit doneChanged(done);
+    emit doneDateChanged(doneDate);
 }
 
 void Task::setDoneDate(const QDate &doneDate)
@@ -62,7 +62,7 @@ void Task::setDoneDate(const QDate &doneDate)
         return;
 
     m_doneDate = doneDate;
-    Q_EMIT doneDateChanged(doneDate);
+    emit doneDateChanged(doneDate);
 }
 
 QDate Task::startDate() const
@@ -76,7 +76,7 @@ void Task::setStartDate(const QDate &startDate)
         return;
 
     m_startDate = startDate;
-    Q_EMIT startDateChanged(startDate);
+    emit startDateChanged(startDate);
 }
 
 QDate Task::dueDate() const
@@ -105,7 +105,7 @@ void Task::setText(const QString &text)
         return;
 
     m_text = text;
-    Q_EMIT textChanged(text);
+    emit textChanged(text);
 }
 
 void Task::setTitle(const QString &title)
@@ -114,7 +114,7 @@ void Task::setTitle(const QString &title)
         return;
 
     m_title = title;
-    Q_EMIT titleChanged(title);
+    emit titleChanged(title);
 }
 
 void Task::setRunning(bool running)
@@ -122,7 +122,7 @@ void Task::setRunning(bool running)
     if (m_running == running)
         return;
     m_running = running;
-    Q_EMIT runningChanged(running);
+    emit runningChanged(running);
 }
 
 void Task::setDueDate(const QDate &dueDate)
@@ -131,7 +131,7 @@ void Task::setDueDate(const QDate &dueDate)
         return;
 
     m_dueDate = dueDate;
-    Q_EMIT dueDateChanged(dueDate);
+    emit dueDateChanged(dueDate);
 }
 
 void Task::setRecurrence(Task::Recurrence recurrence)
@@ -140,7 +140,7 @@ void Task::setRecurrence(Task::Recurrence recurrence)
         return;
 
     m_recurrence = recurrence;
-    Q_EMIT recurrenceChanged(recurrence);
+    emit recurrenceChanged(recurrence);
 }
 
 void Task::setAttachments(const Task::Attachments &attachments)
@@ -149,7 +149,7 @@ void Task::setAttachments(const Task::Attachments &attachments)
         return;
 
     m_attachments = attachments;
-    Q_EMIT attachmentsChanged(attachments);
+    emit attachmentsChanged(attachments);
 }
 
 

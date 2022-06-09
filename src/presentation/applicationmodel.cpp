@@ -95,7 +95,7 @@ void ApplicationModel::setCurrentPage(QObject *page)
         pageModel->setErrorHandler(errorHandler());
     }
 
-    Q_EMIT currentPageChanged(page);
+    emit currentPageChanged(page);
 }
 
 void ApplicationModel::setErrorHandler(ErrorHandler *errorHandler)

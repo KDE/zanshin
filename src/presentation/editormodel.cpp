@@ -150,13 +150,13 @@ void EditorModel::setTask(const Domain::Task::Ptr &task)
     }
 
 
-    Q_EMIT textChanged(m_text);
-    Q_EMIT titleChanged(m_title);
-    Q_EMIT doneChanged(m_done);
-    Q_EMIT startDateChanged(m_start);
-    Q_EMIT dueDateChanged(m_due);
-    Q_EMIT recurrenceChanged(m_recurrence);
-    Q_EMIT taskChanged(m_task);
+    emit textChanged(m_text);
+    emit titleChanged(m_title);
+    emit doneChanged(m_done);
+    emit startDateChanged(m_start);
+    emit dueDateChanged(m_due);
+    emit recurrenceChanged(m_recurrence);
+    emit taskChanged(m_task);
 }
 
 bool EditorModel::hasSaveFunction() const
@@ -409,37 +409,37 @@ bool EditorModel::isSaveNeeded() const
 void EditorModel::applyNewText(const QString &text)
 {
     m_text = text;
-    Q_EMIT textChanged(m_text);
+    emit textChanged(m_text);
 }
 
 void EditorModel::applyNewTitle(const QString &title)
 {
     m_title = title;
-    Q_EMIT titleChanged(m_title);
+    emit titleChanged(m_title);
 }
 
 void EditorModel::applyNewDone(bool done)
 {
     m_done = done;
-    Q_EMIT doneChanged(m_done);
+    emit doneChanged(m_done);
 }
 
 void EditorModel::applyNewStartDate(const QDate &start)
 {
     m_start = start;
-    Q_EMIT startDateChanged(m_start);
+    emit startDateChanged(m_start);
 }
 
 void EditorModel::applyNewDueDate(const QDate &due)
 {
     m_due = due;
-    Q_EMIT dueDateChanged(m_due);
+    emit dueDateChanged(m_due);
 }
 
 void EditorModel::applyNewRecurrence(Domain::Task::Recurrence recurrence)
 {
     m_recurrence = recurrence;
-    Q_EMIT recurrenceChanged(m_recurrence);
+    emit recurrenceChanged(m_recurrence);
 }
 
 #include "editormodel.moc"

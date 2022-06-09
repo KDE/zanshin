@@ -40,19 +40,19 @@ public:
 
         setProperty(name, value);
         if (name == "task")
-            Q_EMIT taskChanged(value.value<Domain::Task::Ptr>());
+            emit taskChanged(value.value<Domain::Task::Ptr>());
         else if (name == "text")
-            Q_EMIT textChanged(value.toString());
+            emit textChanged(value.toString());
         else if (name == "title")
-            Q_EMIT titleChanged(value.toString());
+            emit titleChanged(value.toString());
         else if (name == "done")
-            Q_EMIT doneChanged(value.toBool());
+            emit doneChanged(value.toBool());
         else if (name == "startDate")
-            Q_EMIT startDateChanged(value.toDate());
+            emit startDateChanged(value.toDate());
         else if (name == "dueDate")
-            Q_EMIT dueDateChanged(value.toDate());
+            emit dueDateChanged(value.toDate());
         else if (name == "recurrence")
-            Q_EMIT recurrenceChanged(value.value<Domain::Task::Recurrence>());
+            emit recurrenceChanged(value.value<Domain::Task::Recurrence>());
         else
             qFatal("Unsupported property %s", name.constData());
     }

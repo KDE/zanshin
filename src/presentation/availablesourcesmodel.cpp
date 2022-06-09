@@ -132,7 +132,7 @@ void AvailableSourcesModel::emitDefaultSourceChanged(const QModelIndex &root)
     const auto rowCount = m_sourceListModel->rowCount(root);
     for (int row = 0; row < rowCount; row++) {
         const auto index = m_sourceListModel->index(row, 0, root);
-        Q_EMIT m_sourceListModel->dataChanged(index, index);
+        emit m_sourceListModel->dataChanged(index, index);
         emitDefaultSourceChanged(index);
     }
 }

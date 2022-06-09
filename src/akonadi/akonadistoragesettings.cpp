@@ -37,5 +37,5 @@ void StorageSettings::setDefaultCollection(const Collection &collection)
     KConfigGroup config(KSharedConfig::openConfig(), "General");
     config.writeEntry("defaultCollection", QString::number(collection.id()));
     config.sync();
-    Q_EMIT defaultCollectionChanged(collection);
+    emit defaultCollectionChanged(collection);
 }

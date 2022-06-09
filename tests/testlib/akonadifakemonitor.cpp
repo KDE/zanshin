@@ -15,42 +15,42 @@ AkonadiFakeMonitor::AkonadiFakeMonitor(QObject *parent)
 
 void AkonadiFakeMonitor::addCollection(const Akonadi::Collection &collection)
 {
-    Q_EMIT collectionAdded(collection);
+    emit collectionAdded(collection);
 }
 
 void AkonadiFakeMonitor::removeCollection(const Akonadi::Collection &collection)
 {
-    Q_EMIT collectionRemoved(collection);
+    emit collectionRemoved(collection);
 }
 
 void AkonadiFakeMonitor::changeCollection(const Akonadi::Collection &collection)
 {
-    Q_EMIT collectionChanged(collection);
+    emit collectionChanged(collection);
 }
 
 void AkonadiFakeMonitor::changeCollectionSelection(const Akonadi::Collection &collection)
 {
-    Q_EMIT collectionSelectionChanged(collection);
+    emit collectionSelectionChanged(collection);
 }
 
 void AkonadiFakeMonitor::addItem(const Akonadi::Item &item)
 {
-    Q_EMIT itemAdded(item);
+    emit itemAdded(item);
 }
 
 void AkonadiFakeMonitor::removeItem(const Akonadi::Item &item)
 {
-    Q_EMIT itemRemoved(item);
+    emit itemRemoved(item);
 }
 
 void AkonadiFakeMonitor::changeItem(const Akonadi::Item &item)
 {
-    Q_EMIT itemChanged(item);
+    emit itemChanged(item);
 }
 
 void AkonadiFakeMonitor::moveItem(const Akonadi::Item &item)
 {
-    Q_EMIT itemMoved(item);
+    emit itemMoved(item);
 }
 
 

@@ -203,42 +203,42 @@ void EditorView::onTextEditChanged()
     const QString plainText = ui->textEdit->toPlainText();
     const int index = plainText.indexOf('\n');
     if (index < 0) {
-        Q_EMIT titleChanged(plainText);
-        Q_EMIT textChanged(QString());
+        emit titleChanged(plainText);
+        emit textChanged(QString());
     } else {
         const QString title = plainText.left(index);
         const QString text = plainText.mid(index + 1);
-        Q_EMIT titleChanged(title);
-        Q_EMIT textChanged(text);
+        emit titleChanged(title);
+        emit textChanged(text);
     }
 }
 
 void EditorView::onStartEditEntered(const QDate &start)
 {
-    Q_EMIT startDateChanged(start);
+    emit startDateChanged(start);
 }
 
 void EditorView::onDueEditEntered(const QDate &due)
 {
-    Q_EMIT dueDateChanged(due);
+    emit dueDateChanged(due);
 }
 
 void EditorView::onDoneButtonChanged(bool checked)
 {
-    Q_EMIT doneChanged(checked);
+    emit doneChanged(checked);
 }
 
 void EditorView::onStartTodayClicked()
 {
     QDate today(QDate::currentDate());
     ui->startDateEdit->setDate(today);
-    Q_EMIT startDateChanged(today);
+    emit startDateChanged(today);
 }
 
 void EditorView::onRecurrenceComboChanged(int index)
 {
     const auto recurrence = ui->recurrenceCombo->itemData(index).value<Domain::Task::Recurrence>();
-    Q_EMIT recurrenceChanged(recurrence);
+    emit recurrenceChanged(recurrence);
 }
 
 void EditorView::onAttachmentSelectionChanged()
