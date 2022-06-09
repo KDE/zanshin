@@ -1,6 +1,14 @@
 add_library(widgets STATIC)
 
+ki18n_wrap_ui(widgets_SRCS
+    editorview.ui
+    filterwidget.ui
+    nameanddatasourcedialog.ui
+)
+
+
 target_sources(widgets PRIVATE
+    ${widgets_SRCS}
     applicationcomponents.cpp
     availablepagesview.cpp
     availablesourcesview.cpp
@@ -34,12 +42,6 @@ target_sources(widgets PRIVATE
     runningtaskwidget.h
     quickselectdialog.h
     quickselectdialoginterface.h
-)
-
-ki18n_wrap_ui(widgets_SRCS
-    editorview.ui
-    filterwidget.ui
-    nameanddatasourcedialog.ui
 )
 
 set_property(TARGET widgets PROPERTY POSITION_INDEPENDENT_CODE ON)
