@@ -26,12 +26,6 @@ set(REQUIRED_QT_VERSION "5.15.2")
 find_package(Qt${QT_MAJOR_VERSION} ${QT_REQUIRED_VERSION} CONFIG REQUIRED Core Gui Widgets Test)
 find_package(Boost REQUIRED)
 find_package(Threads REQUIRED)
-macro(assert_min_ver version)
-    set(error_msg "${CMAKE_CXX_COMPILER} ${CMAKE_CXX_COMPILER_VERSION} not supported")
-    if("${CMAKE_CXX_COMPILER_VERSION}" VERSION_LESS "${version}")
-        message(FATAL_ERROR "${msg}")
-    endif()
-endmacro()
 
 if(APPLE)
     if((NOT "${CMAKE_CXX_COMPILER_VERSION}" VERSION_LESS "6.0.0.0") AND
