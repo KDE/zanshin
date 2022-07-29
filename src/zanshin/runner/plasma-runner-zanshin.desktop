@@ -1,5 +1,6 @@
 [Desktop Entry]
 Name=Zanshin Tasks
+Name[bg]=Управление на задачи Zanshin
 Name[ca]=Tasques del Zanshin
 Name[ca@valencia]=Tasques de Zanshin
 Name[cs]=Úkoly Zanshin
@@ -32,6 +33,7 @@ Name[uk]=Завдання Zanshin
 Name[x-test]=xxZanshin Tasksxx
 Name[zh_TW]=Zanshin Tasks
 Comment=Add tasks to your todo list
+Comment[bg]=Добавяне на задачи във вашия списък със задачи
 Comment[bs]=Dodaj zadatke u listu za uraditi
 Comment[ca]=Afegeix tasques a la vostra llista de tasques pendents
 Comment[ca@valencia]=Afig tasques a la vostra llista de tasques pendents
