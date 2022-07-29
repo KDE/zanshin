@@ -17,6 +17,7 @@ X-KDE-PluginInfo-EnabledByDefault=true
 X-KDE-PluginInfo-AllowEmptySettings=true
 
 Comment=Kontact Zanshin Plugin
+Comment[bg]=Приставка Zanshin за Kontact
 Comment[bs]=Kontact Zanshin priključaka
 Comment[ca]=Connector del Zanshin per al Kontact
 Comment[ca@valencia]=Connector de Zanshin per a Kontact
@@ -53,6 +54,7 @@ Comment[x-test]=xxKontact Zanshin Pluginxx
 Comment[zh_CN]=Kontact Zanshin 插件
 Comment[zh_TW]=Kontact Zanshin 外掛程式
 Name=Task Lists
+Name[bg]=Списъци със задачи
 Name[ca]=Llistes de tasques
 Name[ca@valencia]=Llistes de tasques
 Name[cs]=Seznamy úkolů
