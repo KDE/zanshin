@@ -4,6 +4,7 @@
   <metadata_license>CC0-1.0</metadata_license>
   <project_license>GPL-3.0+</project_license>
   <name>Zanshin</name>
+  <name xml:lang="bg">Zanshin</name>
   <name xml:lang="bs">Zanshin</name>
   <name xml:lang="ca">Zanshin</name>
   <name xml:lang="ca-valencia">Zanshin</name>
@@ -37,6 +38,7 @@
   <name xml:lang="uk">Zanshin</name>
   <name xml:lang="x-test">xxZanshinxx</name>
   <summary>To Do Management Application</summary>
+  <summary xml:lang="bg">Приложение за управление на задачи</summary>
   <summary xml:lang="ca">Aplicació de gestió de tasques pendents</summary>
   <summary xml:lang="ca-valencia">Aplicació de gestió de tasques pendents</summary>
   <summary xml:lang="cs">Aplikace pro správu úloh</summary>
@@ -74,6 +76,7 @@
       It helps you organize and reduce the cognitive pressure of what one has to do in his job and personal life.
       You'll never forget anything anymore, getting your mind like water.
     </p>
+    <p xml:lang="bg">Zanshin е мощно, но просто приложение за управление на ежедневните ви действия. То ви помага да организирате и да намалите умственото напрежение от задачите, които трябва да направите в работата и личния си живот. Вече никога няма да забравяте нищо, запазвайки мисълта си ясна.</p>
     <p xml:lang="ca">El Zanshin és una aplicació potent i senzilla per a la gestió de les accions del vostre dia a dia. Us ajudarà a organitzar i reduir la pressió cognitiva del que un ha de fer en el seu treball i vida personal. Mai oblidareu res més, fareu que la vostra ment sigui com l'aigua.</p>
     <p xml:lang="ca-valencia">Zanshin és una aplicació potent i senzilla per a la gestió de les accions del vostre dia a dia. Vos ajudarà a organitzar i reduir la pressió cognitiva del que un ha de fer en el seu treball i vida personal. Mai oblidareu res més, fareu que la vostra ment siga com l'aigua.</p>
     <p xml:lang="da">Zanshin er et kraftfuldt men alligevel simpelt program til at håndtere dine daglige handlinger. Den hjælper dig med at organisere og reducere det kongnitive pres i forbindelse med job og det personlige liv. Du vil aldrig glemme noget længere, med tanker som var de vand.</p>
@@ -105,6 +108,7 @@
     <p xml:lang="uk">Zanshin — потужна і водночас проста програма для керування записами ваших щоденних завдань. За її допомогою ви зможете впорядкувати ваше життя і уникнути постійного тиску обставин та нестачі часу. Користуючись Zanshin, ви не забуватимете про події і почуватимете себе спокійнішими.</p>
     <p xml:lang="x-test">xxZanshin is a powerful yet simple application for managing your day to day actions. It helps you organize and reduce the cognitive pressure of what one has to do in his job and personal life. You'll never forget anything anymore, getting your mind like water.xx</p>
     <p>Features:</p>
+    <p xml:lang="bg">Функции:</p>
     <p xml:lang="bs">Svojstva:</p>
     <p xml:lang="ca">Característiques:</p>
     <p xml:lang="ca-valencia">Característiques:</p>
@@ -139,6 +143,7 @@
     <p xml:lang="x-test">xxFeatures:xx</p>
     <ul>
       <li>Collects tasks from everywhere</li>
+      <li xml:lang="bg">Обединява задачи от всички източници</li>
       <li xml:lang="ca">Recull les tasques de tot arreu</li>
       <li xml:lang="ca-valencia">Arreplega les tasques de tot arreu</li>
       <li xml:lang="da">Indsamler opgaver fra alle steder</li>
@@ -170,6 +175,7 @@
       <li xml:lang="uk">Збирання різноманітних записів завдань</li>
       <li xml:lang="x-test">xxCollects tasks from everywherexx</li>
       <li>Organize tasks in projects and contexts</li>
+      <li xml:lang="bg">Организиране на задачи в проекти и колекции</li>
       <li xml:lang="ca">Organitza les tasques en projectes i contextos</li>
       <li xml:lang="ca-valencia">Organitza les tasques en projectes i contextos</li>
       <li xml:lang="da">Organiser opgaver i projekter og sammenhænge</li>
@@ -201,6 +207,7 @@
       <li xml:lang="uk">Упорядковування завдань за проєктами та контекстами</li>
       <li xml:lang="x-test">xxOrganize tasks in projects and contextsxx</li>
       <li>Akonadi-enabled application allowing to get the data from virtually anywhere (local, imap, web service...)</li>
+      <li xml:lang="bg">Приложение с поддръжка на Akonadi, позволяващо получаване на данни от почти всяко място (локално, imap, уеб услуга...)</li>
       <li xml:lang="bs">Akonadi omogućena aplikacija koja vam dopušta da dobavite podatke od u suštini bilo gdje (lokalno, imap, web servis...)</li>
       <li xml:lang="ca">Habilitant les capacitats de l'Akonadi es permet obtenir les dades des de pràcticament qualsevol lloc (local, IMAP, servei web...)</li>
       <li xml:lang="ca-valencia">Habilitant les capacitats d'Akonadi es permet obtindre les dades des de pràcticament qualsevol lloc (local, IMAP, servei web...)</li>
@@ -239,6 +246,7 @@
   <screenshots>
     <screenshot type="default">
       <caption>Zanshin main window</caption>
+      <caption xml:lang="bg">Главния прозорец на Zanshin</caption>
       <caption xml:lang="ca">Finestra principal del Zanshin</caption>
       <caption xml:lang="ca-valencia">Finestra principal de Zanshin</caption>
       <caption xml:lang="cs">Hlavní okno Zanshin</caption>
