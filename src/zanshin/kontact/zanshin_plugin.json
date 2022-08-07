@@ -1,6 +1,7 @@
 {
     "KPlugin": {
         "Description": "Kontact Zanshin Plugin",
+        "Description[ca@valencia]": "Connector Zanshin de Kontact",
         "Description[ca]": "Connector Zanshin del Kontact",
         "Description[es]": "Complemento Zanshin para Kontact",
         "Description[eu]": "Kontact-en Zanshin plugina",
@@ -17,6 +18,7 @@
         "Id": "kontact_zanshinplugin",
         "License": "GPL",
         "Name": "Task Lists",
+        "Name[ca@valencia]": "Llistes de tasques",
         "Name[ca]": "Llistes de tasques",
         "Name[es]": "Lista de tareas",
         "Name[eu]": "Ataza-zerrendak",
