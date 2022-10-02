@@ -1,0 +1,914 @@
+# Copyright (C) YEAR This_file_is_part_of_KDE
+# This file is distributed under the same license as the PACKAGE package.
+#
+# Matija Šuklje <matija@suklje.name>, 2014.
+# Matjaž Jeran <matjaz.jeran@amis.net>, 2020, 2021.
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: https://bugs.kde.org\n"
+"POT-Creation-Date: 2022-06-07 00:57+0000\n"
+"PO-Revision-Date: 2021-05-12 08:46+0200\n"
+"Last-Translator: Matjaž Jeran <matjaz.jeran@amis.net>\n"
+"Language-Team: Slovenian <lugos-slo@lugos.si>\n"
+"Language: sl\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=4; plural=(n%100==1 ? 1 : n%100==2 ? 2 : n%100==3 || n"
+"%100==4 ? 3 : 0);\n"
+"X-Generator: Lokalize 20.12.2\n"
+"X-Qt-Contexts: true\n"
+
+#, kde-format
+msgctxt "NAME OF TRANSLATORS"
+msgid "Your names"
+msgstr "Matija Šuklje,Matjaž Jeran"
+
+#, kde-format
+msgctxt "EMAIL OF TRANSLATORS"
+msgid "Your emails"
+msgstr "matija@suklje.name,matjaz.jeran@amis.net"
+
+#: 3rdparty/kdepim/libkdepim/kdateedit.cpp:429
+#, kde-format
+msgctxt "the day after today"
+msgid "tomorrow"
+msgstr "jutri"
+
+#: 3rdparty/kdepim/libkdepim/kdateedit.cpp:430
+#, kde-format
+msgctxt "this day"
+msgid "today"
+msgstr "danes"
+
+#: 3rdparty/kdepim/libkdepim/kdateedit.cpp:431
+#, kde-format
+msgctxt "the day before today"
+msgid "yesterday"
+msgstr "včeraj"
+
+#: 3rdparty/kdepim/libkdepim/kdateedit.cpp:432
+#, kde-format
+msgctxt "the week after this week"
+msgid "next week"
+msgstr "naslednji teden"
+
+#: 3rdparty/kdepim/libkdepim/kdateedit.cpp:433
+#, kde-format
+msgctxt "the month after this month"
+msgid "next month"
+msgstr "naslednji mesec"
+
+#: src/akonadi/akonadiconfigdialog.cpp:35
+#, kde-format
+msgid "Configure"
+msgstr "Nastavi"
+
+#: src/akonadi/akonadiconfigdialog.cpp:39
+#, kde-format
+msgid ""
+"Please select or create a resource which will be used by the application to "
+"store and query its TODOs."
+msgstr ""
+"Izberite ali ustvarite vir, ki ga bo aplikacija uporabila za shranjevanje in "
+"poizvedbe zadolžitev."
+
+#: src/akonadi/akonadiconfigdialog.cpp:49
+#, kde-format
+msgid "Add resource"
+msgstr "Dodaj vir"
+
+#: src/akonadi/akonadiconfigdialog.cpp:56
+#, kde-format
+msgid "Remove resource"
+msgstr "Odstrani vir"
+
+#: src/akonadi/akonadiconfigdialog.cpp:63
+#, kde-format
+msgid "Configure resource..."
+msgstr "Nastavi vir..."
+
+#: src/akonadi/akonadiconfigdialog.cpp:111
+#, kde-format
+msgid "Multiple Agent Deletion"
+msgstr "Brisanje večkratnega agenta"
+
+#: src/akonadi/akonadiconfigdialog.cpp:112
+#, kde-format
+msgid "Do you really want to delete the selected agent instances?"
+msgstr "Ali res želite izbrisati izbrane pojavke agenta?"
+
+#: src/akonadi/akonaditaskrepository.cpp:51
+#, kde-format
+msgid "Could not find a collection to store the task into!"
+msgstr "Ni bilo mogoče najti zbirke, kamor bi shranili nalogo!"
+
+#: src/akonadi/akonaditaskrepository.cpp:198
+#, kde-format
+msgid "Could not associate '%1', it is an ancestor of '%2'"
+msgstr "'%1' ni mogoče povezati, je prednik '%2'"
+
+#: src/presentation/alltaskspagemodel.cpp:35
+#, kde-format
+msgid "Cannot add task %1"
+msgstr "Ni mogoče dodati naloge %1"
+
+#: src/presentation/alltaskspagemodel.cpp:46
+#, kde-format
+msgid "Cannot remove task %1"
+msgstr "Ni mogoče odstraniti naloge %1"
+
+#: src/presentation/alltaskspagemodel.cpp:56
+#: src/presentation/contextpagemodel.cpp:74
+#: src/presentation/inboxpagemodel.cpp:55
+#: src/presentation/projectpagemodel.cpp:67
+#: src/presentation/workdaypagemodel.cpp:63
+#, kde-format
+msgid "Cannot promote task %1 to be a project"
+msgstr "Naloge %1 ni mogoče promovirati kot projekt"
+
+#: src/presentation/alltaskspagemodel.cpp:97
+#: src/presentation/editormodel.cpp:390
+#, kde-format
+msgid "Cannot modify task %1"
+msgstr "Ni mogoče spremeniti naloge %1"
+
+#: src/presentation/alltaskspagemodel.cpp:122
+#: src/presentation/contextpagemodel.cpp:144
+#: src/presentation/inboxpagemodel.cpp:111
+#: src/presentation/workdaypagemodel.cpp:119
+#, kde-format
+msgid "Cannot move task %1 as sub-task of %2"
+msgstr "Naloge %1 ni mogoče premakniti kot podnalogo %2"
+
+#: src/presentation/alltaskspagemodel.cpp:125
+#: src/presentation/inboxpagemodel.cpp:114
+#: src/presentation/workdaypagemodel.cpp:127
+#, kde-format
+msgid "Cannot deparent task %1 from its parent"
+msgstr "Ni mogoče odstraniti naloge %1 od njene glavne naloge"
+
+#: src/presentation/availablepagesmodel.cpp:117
+#, kde-format
+msgid "Cannot add project %1 in dataSource %2"
+msgstr "Projekta %1 ni mogoče dodati v podatkovni vir %2"
+
+#: src/presentation/availablepagesmodel.cpp:125
+#, kde-format
+msgid "Cannot add context %1"
+msgstr "Ni mogoče dodati konteksta %1"
+
+#: src/presentation/availablepagesmodel.cpp:133
+#, kde-format
+msgid "Cannot remove project %1"
+msgstr "Ni mogoče odstraniti projekta %1"
+
+#: src/presentation/availablepagesmodel.cpp:136
+#, kde-format
+msgid "Cannot remove context %1"
+msgstr "Ni mogoče odstraniti konteksta %1"
+
+#: src/presentation/availablepagesmodel.cpp:145
+#: src/widgets/itemdelegate.cpp:143
+#, kde-format
+msgid "Inbox"
+msgstr "Prejeto"
+
+#: src/presentation/availablepagesmodel.cpp:147
+#, kde-format
+msgid "Workday"
+msgstr "Delovni dan"
+
+#: src/presentation/availablepagesmodel.cpp:149
+#, kde-format
+msgid "Projects"
+msgstr "Projekti"
+
+#: src/presentation/availablepagesmodel.cpp:151
+#, kde-format
+msgid "Contexts"
+msgstr "Konteksti"
+
+#: src/presentation/availablepagesmodel.cpp:153
+#, kde-format
+msgid "All Tasks"
+msgstr "Vse naloge"
+
+#: src/presentation/availablepagesmodel.cpp:252
+#, kde-format
+msgid "Cannot modify project %1"
+msgstr "Ni mogoče spremeniti projekta %1"
+
+#: src/presentation/availablepagesmodel.cpp:257
+#, kde-format
+msgid "Cannot modify context %1"
+msgstr "Ni mogoče spremeniti konteksta %1"
+
+#: src/presentation/availablepagesmodel.cpp:276
+#, kde-format
+msgid "Cannot add %1 to project %2"
+msgstr "Ni mogoče dodati %1 v projekt %2"
+
+#: src/presentation/availablepagesmodel.cpp:282
+#, kde-format
+msgid "Cannot add %1 to context %2"
+msgstr "Ni mogoče dodati %1 v kontekst %2"
+
+#: src/presentation/availablepagesmodel.cpp:288
+#, kde-format
+msgid "Cannot move %1 to Inbox"
+msgstr "Ni mogoče prenesti %1 v prejeto pošto"
+
+#: src/presentation/availablepagesmodel.cpp:292
+#, kde-format
+msgid "Cannot move task %1 to Inbox"
+msgstr "Ni mogoče prenesti naloge %1 v prejeto pošto"
+
+#: src/presentation/availablepagesmodel.cpp:301
+#, kde-format
+msgid "Cannot update task %1 to Workday"
+msgstr "Ni mogoče posodobiti naloge %1 na delovni dan"
+
+#: src/presentation/availablesourcesmodel.cpp:99
+#, kde-format
+msgid "Cannot modify source %1"
+msgstr "Ni mogoče spremeniti vira %1"
+
+#: src/presentation/contextpagemodel.cpp:54
+#, kde-format
+msgid "Cannot add task %1 in context %2"
+msgstr "Ni mogoče dodati naloge %1 v kontekst %2"
+
+#: src/presentation/contextpagemodel.cpp:65
+#, kde-format
+msgid "Cannot remove task %1 from context %2"
+msgstr "Ni mogoče odstraniti naloge %1 iz konteksta %2"
+
+#: src/presentation/contextpagemodel.cpp:115
+#, kde-format
+msgid "Cannot modify task %1 in context %2"
+msgstr "Ni mogoče spremeniti naloge %1 v kontekstu %2"
+
+#: src/presentation/contextpagemodel.cpp:147
+#, kde-format
+msgid "Cannot dissociate task %1 from its parent"
+msgstr "Ni mogoče odstraniti povezave naloge %1 od njene glavne naloge"
+
+#: src/presentation/inboxpagemodel.cpp:35
+#, kde-format
+msgid "Cannot add task %1 in Inbox"
+msgstr "Ni mogoče dodati naloge %1 v vhodno pošto"
+
+#: src/presentation/inboxpagemodel.cpp:46
+#, kde-format
+msgid "Cannot remove task %1 from Inbox"
+msgstr "Ni mogoče odstraniti naloge %1 iz vhodne pošte"
+
+#: src/presentation/inboxpagemodel.cpp:96
+#, kde-format
+msgid "Cannot modify task %1 in Inbox"
+msgstr "Ni mogoče spremeniti naloge %1 v vhodni pošti"
+
+#: src/presentation/projectpagemodel.cpp:47
+#, kde-format
+msgid "Cannot add task %1 in project %2"
+msgstr "Ni mogoče dodati naloge %1 v projekt %2"
+
+#: src/presentation/projectpagemodel.cpp:58
+#, kde-format
+msgid "Cannot remove task %1 from project %2"
+msgstr "Ni mogoče odstraniti naloge %1 iz projekta %2"
+
+#: src/presentation/projectpagemodel.cpp:104
+#, kde-format
+msgid "Cannot modify task %1 in project %2"
+msgstr "Ni mogoče spremeniti naloge %1 v projektu %2"
+
+#: src/presentation/projectpagemodel.cpp:130
+#, kde-format
+msgid "Cannot move task %1 as a sub-task of %2"
+msgstr "Ni mogoče prenesti naloge %1 kot podnalogo %2"
+
+#: src/presentation/runningtaskmodel.cpp:46
+#, kde-format
+msgid "Cannot update task %1 to 'not running'"
+msgstr "Ni mogoče posodobiti naloge %1 v 'ne poteka'"
+
+#: src/presentation/runningtaskmodel.cpp:54
+#, kde-format
+msgid "Cannot update task %1 to 'running'"
+msgstr "Ni mogoče posodobiti naloge %1 v 'poteka'"
+
+#: src/presentation/workdaypagemodel.cpp:42
+#, kde-format
+msgid "Cannot add task %1 in Workday"
+msgstr "Ni mogoče dodati naloge %1 na delovni dan"
+
+#: src/presentation/workdaypagemodel.cpp:53
+#, kde-format
+msgid "Cannot remove task %1 from Workday"
+msgstr "Ni mogoče odstraniti naloge %1 z delovnega dne"
+
+#: src/presentation/workdaypagemodel.cpp:104
+#, kde-format
+msgid "Cannot modify task %1 in Workday"
+msgstr "Ni mogoče spremeniti naloge %1 na delovni dan"
+
+#: src/widgets/applicationcomponents.cpp:47
+#, kde-format
+msgid "Move Task"
+msgstr "Prenesi nalogo"
+
+#: src/widgets/availablepagesview.cpp:50
+#, kde-format
+msgid "New Project"
+msgstr "Nov projekt"
+
+#: src/widgets/availablepagesview.cpp:56
+#, kde-format
+msgid "New Context"
+msgstr "Nov kontekst"
+
+#: src/widgets/availablepagesview.cpp:62
+#, kde-format
+msgid "Remove Page"
+msgstr "Odstrani stran"
+
+#: src/widgets/availablepagesview.cpp:91
+#, kde-format
+msgid "Previous Page"
+msgstr "Prejšnja stran"
+
+#: src/widgets/availablepagesview.cpp:98
+#, kde-format
+msgid "Next Page"
+msgstr "Naslednja stran"
+
+#: src/widgets/availablepagesview.cpp:105
+#, kde-format
+msgid "Go to Page..."
+msgstr "Pojdi na stran..."
+
+#: src/widgets/availablepagesview.cpp:240
+#, kde-format
+msgid "Add a context"
+msgstr "Dodaj kontekst"
+
+#: src/widgets/availablepagesview.cpp:265
+#, kde-format
+msgid "Delete Project"
+msgstr "Izbriši projekt"
+
+#: src/widgets/availablepagesview.cpp:266
+#, kde-format
+msgid "Do you really want to delete the project '%1', with all its actions?"
+msgstr "Ali res želite zbrisati projekt '%1', z vsemi opravili v njem?"
+
+#: src/widgets/availablepagesview.cpp:268
+#, kde-format
+msgid "Delete Context"
+msgstr "Izbriši kontekst"
+
+#: src/widgets/availablepagesview.cpp:269
+#, kde-format
+msgid "Do you really want to delete the context '%1'?"
+msgstr "Ali res želite zbrisati kontekst '%1'?"
+
+#: src/widgets/availablesourcesview.cpp:55
+#, kde-format
+msgid "Use as Default Source"
+msgstr "Uporabi kot privzeti vir"
+
+#: src/widgets/availablesourcesview.cpp:76
+#, kde-format
+msgid "Configure %1..."
+msgstr "Nastavi %1..."
+
+#: src/widgets/editorview.cpp:32
+#, kde-format
+msgid "Add Attachment"
+msgstr "Dodaj prilogo"
+
+#: src/widgets/editorview.cpp:40
+#, kde-format
+msgid "Never"
+msgstr "Nikoli"
+
+#: src/widgets/editorview.cpp:41
+#, kde-format
+msgid "Daily"
+msgstr "Dnevno"
+
+#: src/widgets/editorview.cpp:42
+#, kde-format
+msgid "Weekly"
+msgstr "Tedensko"
+
+#: src/widgets/editorview.cpp:43
+#, kde-format
+msgid "Monthly"
+msgstr "Mesečno"
+
+#: src/widgets/editorview.cpp:44
+#, kde-format
+msgid "Yearly"
+msgstr "Letno"
+
+#. i18n: ectx: property (windowTitle), widget (QWidget, EditorView)
+#. i18n: ectx: property (text), widget (QListView, attachmentList)
+#: src/widgets/editorview.ui:14 src/widgets/editorview.ui:184
+#: src/zanshin/app/main.cpp:84
+#, kde-format
+msgid "Editor"
+msgstr "Urejevalnik"
+
+#. i18n: ectx: property (text), widget (QLabel, dueDateLabel)
+#: src/widgets/editorview.ui:41
+#, kde-format
+msgid "D&ue Date "
+msgstr "Rok "
+
+#. i18n: ectx: property (text), widget (QCheckBox, doneButton)
+#: src/widgets/editorview.ui:62 src/widgets/runningtaskwidget.cpp:50
+#, kde-format
+msgid "Done"
+msgstr "Narejeno"
+
+#. i18n: ectx: property (toolTip), widget (QToolButton, addAttachmentButton)
+#: src/widgets/editorview.ui:86
+#, kde-format
+msgid "Add Attachment..."
+msgstr "Dodaj prilogo..."
+
+#. i18n: ectx: property (toolTip), widget (QToolButton, removeAttachmentButton)
+#: src/widgets/editorview.ui:100
+#, kde-format
+msgid "Remove Attachment"
+msgstr "Odstrani prilogo"
+
+#. i18n: ectx: property (text), widget (QPushButton, startTodayButton)
+#: src/widgets/editorview.ui:121
+#, kde-format
+msgid "Select for &Today"
+msgstr "Izberi za danes"
+
+#. i18n: ectx: property (text), widget (QLabel, recurrenceLabel)
+#: src/widgets/editorview.ui:130
+#, kde-format
+msgid "&Recurrence"
+msgstr "Ponavljanje"
+
+#. i18n: ectx: property (text), widget (QLabel, startDateLabel)
+#: src/widgets/editorview.ui:146
+#, kde-format
+msgid "St&art Date"
+msgstr "Začetni datum"
+
+#: src/widgets/filterwidget.cpp:29
+#, kde-format
+msgid "Sort by title"
+msgstr "Razvrsti po naslovu"
+
+#: src/widgets/filterwidget.cpp:30
+#, kde-format
+msgid "Sort by date"
+msgstr "Razvrsti po datumu"
+
+#. i18n: ectx: property (placeholderText), widget (QLineEdit, filterEdit)
+#: src/widgets/filterwidget.ui:31 src/widgets/pageview.cpp:197
+#, kde-format
+msgid "Filter..."
+msgstr "Filter..."
+
+#. i18n: ectx: property (toolTip), widget (QToolButton, descendingButton)
+#: src/widgets/filterwidget.ui:65
+#, kde-format
+msgid "Sort in descending order"
+msgstr "Razvrsti v padajočem redu"
+
+#. i18n: ectx: property (toolTip), widget (QToolButton, ascendingButton)
+#: src/widgets/filterwidget.ui:88
+#, kde-format
+msgid "Sort in ascending order"
+msgstr "Razvrsti v naraščajočem redu"
+
+#: src/widgets/itemdelegate.cpp:141
+#, kde-format
+msgid "Project: %1"
+msgstr "Projekt: %1"
+
+#. i18n: ectx: property (windowTitle), widget (QDialog, NameAndDataSourceDialog)
+#: src/widgets/nameanddatasourcedialog.ui:14
+#, kde-format
+msgid "Add a project"
+msgstr "Dodaj projekt"
+
+#. i18n: ectx: property (text), widget (QLabel, nameLabel)
+#: src/widgets/nameanddatasourcedialog.ui:25
+#, kde-format
+msgid "Name"
+msgstr "Ime"
+
+#. i18n: ectx: property (text), widget (QLabel, sourceLabel)
+#: src/widgets/nameanddatasourcedialog.ui:42
+#, kde-format
+msgid "Source"
+msgstr "Vir"
+
+#: src/widgets/pageview.cpp:155
+#, kde-format
+msgid "Type and press enter to add a task"
+msgstr "Vtipkajte in pritisnite enter za vnos naloge"
+
+#: src/widgets/pageview.cpp:170
+#, kde-format
+msgid "New Task"
+msgstr "Nova naloga"
+
+#: src/widgets/pageview.cpp:183
+#, kde-format
+msgid "Remove Task"
+msgstr "Odstrani nalogo"
+
+#: src/widgets/pageview.cpp:191
+#, kde-format
+msgid "Promote Task as Project"
+msgstr "Promoviraj nalogo v projekt"
+
+#: src/widgets/pageview.cpp:205
+#, kde-format
+msgid "Show done tasks"
+msgstr "Prikaži opravljene naloge"
+
+#: src/widgets/pageview.cpp:213
+#, kde-format
+msgid "Show future tasks"
+msgstr "Prikaži prihodnje naloge"
+
+#: src/widgets/pageview.cpp:239
+#, kde-format
+msgid "Start Now"
+msgstr "Začni zdaj"
+
+#: src/widgets/pageview.cpp:357
+#, kde-format
+msgid "Type and press enter to add an item"
+msgstr "Vnesite in pritisnite Enter, da dodate predmet"
+
+#: src/widgets/pageview.cpp:383
+#, kde-format
+msgid "Do you really want to delete the selected items and their children?"
+msgstr "Ali res želite izbrisati izbrane predmete in njihove naslednike?"
+
+#: src/widgets/pageview.cpp:385
+#, kde-format
+msgid "Do you really want to delete the selected items?"
+msgstr "Ali res želite izbrisati izbrane predmete?"
+
+#: src/widgets/pageview.cpp:393
+#, kde-format
+msgid "Do you really want to delete the selected task and all its children?"
+msgstr "Ali res želite izbrisati izbrano nalogo in njene naslednike?"
+
+#: src/widgets/pageview.cpp:397
+#, kde-format
+msgid "Delete Tasks"
+msgstr "Izbriši naloge"
+
+#: src/widgets/quickselectdialog.cpp:30
+#, kde-format
+msgid "Quick Select Dialog"
+msgstr "Hitri izbirni dialog"
+
+#: src/widgets/quickselectdialog.cpp:32 src/widgets/quickselectdialog.cpp:70
+#, kde-format
+msgid "You can start typing to filter the list of available pages"
+msgstr "Lahko začnete tipkati za filtriranje seznama strani, ki so na voljo"
+
+#: src/widgets/quickselectdialog.cpp:72
+#, kde-format
+msgid "Path: %1"
+msgstr "Pot: %1"
+
+#: src/widgets/runningtaskwidget.cpp:36
+#, kde-format
+msgid "Zanshin Running Task Banner"
+msgstr "Zanshin tekoča pasica nalog"
+
+#: src/widgets/runningtaskwidget.cpp:46
+#, kde-format
+msgid "Stop"
+msgstr "Ustavi"
+
+#: src/zanshin/app/aboutdata.cpp:14
+#, kde-format
+msgid "Zanshin Tasks"
+msgstr "Zanshin naloge"
+
+#: src/zanshin/app/aboutdata.cpp:15
+#, kde-format
+msgid ""
+"A Getting Things Done application which aims at getting your mind like water"
+msgstr ""
+"Program za urejanje opravil po sistemu Gremo tole dokončat, katerega cilj "
+"je, da vaš um postane kot voda"
+
+#: src/zanshin/app/aboutdata.cpp:17
+#, kde-format
+msgid "Copyright 2008-2016, Kevin Ottens <ervin@kde.org>"
+msgstr "Copyright 2008-2016, Kevin Ottens <ervin@kde.org>"
+
+#: src/zanshin/app/aboutdata.cpp:19
+#, kde-format
+msgid "Kevin Ottens"
+msgstr "Kevin Ottens"
+
+#: src/zanshin/app/aboutdata.cpp:20
+#, kde-format
+msgid "Lead Developer"
+msgstr "Glavni razvijalec"
+
+#: src/zanshin/app/aboutdata.cpp:23
+#, kde-format
+msgid "Mario Bensi"
+msgstr "Mario Bensi"
+
+#: src/zanshin/app/aboutdata.cpp:24 src/zanshin/app/aboutdata.cpp:28
+#, kde-format
+msgid "Developer"
+msgstr "Razvijalec"
+
+#: src/zanshin/app/aboutdata.cpp:27
+#, kde-format
+msgid "Franck Arrecot"
+msgstr "Franck Arrecot"
+
+#: src/zanshin/app/main.cpp:76
+#, kde-format
+msgid "Sources"
+msgstr "Viri"
+
+#: src/zanshin/app/main.cpp:80
+#, kde-format
+msgid "Pages"
+msgstr "Strani"
+
+#. i18n: ectx: Menu (go)
+#: src/zanshin/app/zanshinui.rc:15 src/zanshin/kontact/zanshin_part.rc:15
+#, kde-format
+msgid "&Go"
+msgstr "Pojdi"
+
+#. i18n: ectx: Menu
+#: src/zanshin/app/zanshinui.rc:27
+#, kde-format
+msgid "&Panels"
+msgstr "Paneli"
+
+#. i18n: ectx: ToolBar (mainToolBar)
+#: src/zanshin/app/zanshinui.rc:35 src/zanshin/kontact/zanshin_part.rc:27
+#, kde-format
+msgctxt "@title:menu"
+msgid "Main Toolbar"
+msgstr "Glavna orodna vrstica"
+
+#: src/zanshin/runner/zanshinrunner.cpp:61
+#, kde-format
+msgid "Add \"%1\" to your todo list"
+msgstr "Dodaj \"%1\" na vaš seznam nalog"
+
+#~ msgctxt "@option today"
+#~ msgid "&Today"
+#~ msgstr "Danes"
+
+#~ msgctxt "@option tomorrow"
+#~ msgid "To&morrow"
+#~ msgstr "&Jutri"
+
+#~ msgctxt "@option next week"
+#~ msgid "Next &Week"
+#~ msgstr "Naslednji teden"
+
+#~ msgctxt "@option next month"
+#~ msgid "Next M&onth"
+#~ msgstr "Naslednji mesec"
+
+#~ msgctxt "@option do not specify a date"
+#~ msgid "No Date"
+#~ msgstr "Brez datuma"
+
+#, fuzzy
+#~| msgid "Context View"
+#~ msgid "Context name"
+#~ msgstr "Kontekstni pogled"
+
+#, fuzzy
+#~| msgid "Configure Zanshin"
+#~ msgid "Configure Completion..."
+#~ msgstr "Nastavi Zanshin"
+
+#, fuzzy
+#~| msgid "Configure Zanshin"
+#~ msgid "Configure completion"
+#~ msgstr "Nastavi Zanshin"
+
+#, fuzzy
+#~| msgid "&Editor"
+#~ msgid "Add Host"
+#~ msgstr "&Urejevalnik"
+
+#, fuzzy
+#~| msgid "&Editor"
+#~ msgid "Edit Host"
+#~ msgstr "&Urejevalnik"
+
+#, fuzzy
+#~| msgid "&Editor"
+#~ msgid "&Add Host..."
+#~ msgstr "&Urejevalnik"
+
+#, fuzzy
+#~| msgid "&Editor"
+#~ msgid "&Edit Host..."
+#~ msgstr "&Urejevalnik"
+
+#, fuzzy
+#~ msgid "&Remove Host"
+#~ msgstr "Odstrani dejanje"
+
+#, fuzzy
+#~| msgid "Title..."
+#~ msgctxt "@item LDAP search key"
+#~ msgid "Title"
+#~ msgstr "Naslov …"
+
+#, fuzzy
+#~| msgid "Title..."
+#~ msgctxt "@title:column Column containing title of the person"
+#~ msgid "Title"
+#~ msgstr "Naslov …"
+
+#, fuzzy
+#~| msgid "Contexts"
+#~ msgid "Contains"
+#~ msgstr "Konteksti"
+
+#, fuzzy
+#~| msgid "Configure Zanshin"
+#~ msgid "Configure LDAP Servers..."
+#~ msgstr "Nastavi Zanshin"
+
+#, fuzzy
+#~ msgid "&Remove"
+#~ msgstr "Odstrani dejanje"
+
+#, fuzzy
+#~| msgid ""
+#~| "Do you really want to delete the project '%1', with all its actions?"
+#~ msgid "Do you want to remove this email address?"
+#~ msgid_plural "Do you want to remove %1 email addresses?"
+#~ msgstr[0] "Ali res želite zbrisati projekt »%1«, z vsemi opravili v njem?"
+#~ msgstr[1] "Ali res želite zbrisati projekt »%1«, z vsemi opravili v njem?"
+#~ msgstr[2] "Ali res želite zbrisati projekt »%1«, z vsemi opravili v njem?"
+#~ msgstr[3] "Ali res želite zbrisati projekt »%1«, z vsemi opravili v njem?"
+
+#, fuzzy
+#~ msgid "Remove"
+#~ msgstr "Odstrani dejanje"
+
+#, fuzzy
+#~ msgid "A note taking application which aims at getting your mind like water"
+#~ msgstr ""
+#~ "Program za urejanje opravil po sistemu Getting Things Done, katerega cilj "
+#~ "je, da vaš um postane kot voda."
+
+#, fuzzy
+#~| msgid "Copyright 2008-2014, Kevin Ottens <ervin@kde.org>"
+#~ msgid "Copyright 2008-2015, Kevin Ottens <ervin@kde.org>"
+#~ msgstr "Avtorske pravice 2008-2014, Kevin Ottens <ervin@kde.org>"
+
+#, fuzzy
+#~ msgid "Move Item"
+#~ msgstr "Odstrani dejanje"
+
+#, fuzzy
+#~| msgid ""
+#~| "Do you really want to delete the project '%1', with all its actions?"
+#~ msgid "Do you really want to delete the tag '%1'?"
+#~ msgstr "Ali res želite zbrisati projekt »%1«, z vsemi opravili v njem?"
+
+#, fuzzy
+#~| msgid "No Context"
+#~ msgid "New Item"
+#~ msgstr "Brez konteksta"
+
+#, fuzzy
+#~ msgid "Remove Item"
+#~ msgstr "Odstrani dejanje"
+
+#, fuzzy
+#~| msgid "Inbox"
+#~ msgctxt "Presentation::AvailableTaskPagesModel|"
+#~ msgid "Inbox"
+#~ msgstr "Prejeto"
+
+#, fuzzy
+#~| msgid "&Editor"
+#~ msgctxt "EditorView|"
+#~ msgid "Editor"
+#~ msgstr "&Urejevalnik"
+
+#~ msgid "Settings..."
+#~ msgstr "Nastavitve …"
+
+#~ msgid "Show the debug window"
+#~ msgstr "Pokaži okno za razhroščevanje"
+
+#~ msgid "Knowledge View"
+#~ msgstr "Pogled znanja"
+
+#~ msgid "Synchronize All"
+#~ msgstr "Uskladi vse"
+
+#~ msgid "Summary"
+#~ msgstr "Povzetek"
+
+#~ msgid "Date"
+#~ msgstr "Datum"
+
+#~ msgid "No Topic"
+#~ msgstr "Brez teme"
+
+#~ msgid "Topics"
+#~ msgstr "Teme"
+
+#~ msgid "Cannot open the attachment."
+#~ msgstr "Priloge ni moč odpreti"
+
+#~ msgid "&Enable"
+#~ msgstr "O&mogoči"
+
+#~ msgid "F&ormat"
+#~ msgstr "&Oblika"
+
+#~ msgid "V&iew"
+#~ msgstr "&Pogled"
+
+#~ msgid "Text Toolbar"
+#~ msgstr "Orodna vrstica besedila"
+
+#~ msgid "Format Toolbar"
+#~ msgstr "Orodna vrstica oblikovanja"
+
+#~ msgid "Hide &Toolbar"
+#~ msgstr "&Skrij orodjarno"
+
+#~ msgid "Title..."
+#~ msgstr "Naslov …"
+
+#~ msgid "Fullscreen &Editor"
+#~ msgstr "&Celozaslonski urejevalnik"
+
+#~ msgid "Properties"
+#~ msgstr "Lastnosti"
+
+#, fuzzy
+#~ msgid "New Action"
+#~ msgstr "Novo dejanje"
+
+#, fuzzy
+#~ msgid "Cancel New Action"
+#~ msgstr "Prekini novo dejanje"
+
+#, fuzzy
+#~ msgid "Remove Action"
+#~ msgstr "Odstrani dejanje"
+
+#, fuzzy
+#~ msgid "Move Action..."
+#~ msgstr "Premakni dejanje …"
+
+#~ msgid "Tomorrow"
+#~ msgstr "Jutri"
+
+#~ msgid "Yesterday"
+#~ msgstr "Včeraj"
+
+#~ msgid "Last Week"
+#~ msgstr "Prejšnji teden"
+
+#~ msgctxt "today"
+#~ msgid "Today"
+#~ msgstr "Danes "
+
+#~ msgctxt "tomorrow"
+#~ msgid "Tomorrow"
+#~ msgstr "Jutri"
+
+#~ msgctxt "yesterday"
+#~ msgid "Yesterday"
+#~ msgstr "Včeraj"
+
+#~ msgid "Copyright 2008-2014, Kevin Ottens <ervin@kde.org>"
+#~ msgstr "Avtorske pravice 2008-2014, Kevin Ottens <ervin@kde.org>"

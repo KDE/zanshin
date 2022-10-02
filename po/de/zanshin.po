@@ -1,0 +1,1443 @@
+# Panagiotis Papadopoulos <pano_90@gmx.net>, 2010.
+# Burkhard Lück <lueck@hube-lueck.de>, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2021.
+# Torbjörn Klatt <torbjoern.k@googlemail.com>, 2011.
+# Frederik Schwarzer <schwarzer@kde.org>, 2016.
+msgid ""
+msgstr ""
+"Project-Id-Version: zanshin\n"
+"Report-Msgid-Bugs-To: https://bugs.kde.org\n"
+"POT-Creation-Date: 2022-06-07 00:57+0000\n"
+"PO-Revision-Date: 2021-05-08 05:24+0200\n"
+"Last-Translator: Burkhard Lück <lueck@hube-lueck.de>\n"
+"Language-Team: German <kde-i18n-de@kde.org>\n"
+"Language: de\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+
+#, kde-format
+msgctxt "NAME OF TRANSLATORS"
+msgid "Your names"
+msgstr "Torbjörn Klatt"
+
+#, kde-format
+msgctxt "EMAIL OF TRANSLATORS"
+msgid "Your emails"
+msgstr "torbjoern.k@googlemail.com"
+
+#: 3rdparty/kdepim/libkdepim/kdateedit.cpp:429
+#, kde-format
+msgctxt "the day after today"
+msgid "tomorrow"
+msgstr "Morgen"
+
+#: 3rdparty/kdepim/libkdepim/kdateedit.cpp:430
+#, kde-format
+msgctxt "this day"
+msgid "today"
+msgstr "Heute"
+
+#: 3rdparty/kdepim/libkdepim/kdateedit.cpp:431
+#, kde-format
+msgctxt "the day before today"
+msgid "yesterday"
+msgstr "Gestern"
+
+#: 3rdparty/kdepim/libkdepim/kdateedit.cpp:432
+#, kde-format
+msgctxt "the week after this week"
+msgid "next week"
+msgstr "Nächste Woche"
+
+#: 3rdparty/kdepim/libkdepim/kdateedit.cpp:433
+#, kde-format
+msgctxt "the month after this month"
+msgid "next month"
+msgstr "Nächster Monat"
+
+#: src/akonadi/akonadiconfigdialog.cpp:35
+#, kde-format
+msgid "Configure"
+msgstr "Einrichten"
+
+#: src/akonadi/akonadiconfigdialog.cpp:39
+#, kde-format
+msgid ""
+"Please select or create a resource which will be used by the application to "
+"store and query its TODOs."
+msgstr ""
+"Bitte wählen oder erstellen Sie eine Ressource zum Speichern und Abfragen "
+"der Aufgaben für diese Anwendung."
+
+#: src/akonadi/akonadiconfigdialog.cpp:49
+#, kde-format
+msgid "Add resource"
+msgstr "Ressource hinzufügen"
+
+#: src/akonadi/akonadiconfigdialog.cpp:56
+#, kde-format
+msgid "Remove resource"
+msgstr "Ressource entfernen"
+
+#: src/akonadi/akonadiconfigdialog.cpp:63
+#, kde-format
+msgid "Configure resource..."
+msgstr "Ressource einrichten ..."
+
+#: src/akonadi/akonadiconfigdialog.cpp:111
+#, kde-format
+msgid "Multiple Agent Deletion"
+msgstr "Löschen mehrerer Agenten"
+
+#: src/akonadi/akonadiconfigdialog.cpp:112
+#, kde-format
+msgid "Do you really want to delete the selected agent instances?"
+msgstr "Möchten Sie die ausgewählten Instanzen wirklich löschen?"
+
+#: src/akonadi/akonaditaskrepository.cpp:51
+#, kde-format
+msgid "Could not find a collection to store the task into!"
+msgstr "Es kann keine Sammlung zum Speichern der Aufgabe gefunden werden."
+
+#: src/akonadi/akonaditaskrepository.cpp:198
+#, kde-format
+msgid "Could not associate '%1', it is an ancestor of '%2'"
+msgstr "„%1“ kann nicht zugeordnet werden, es enthält eine Unteraufgabe „%2“"
+
+#: src/presentation/alltaskspagemodel.cpp:35
+#, kde-format
+msgid "Cannot add task %1"
+msgstr "Die Aufgabe „%1“ kann nicht hinzugefügt werden"
+
+#: src/presentation/alltaskspagemodel.cpp:46
+#, kde-format
+msgid "Cannot remove task %1"
+msgstr "Die Aufgabe „%1“ kann nicht entfernt werden"
+
+#: src/presentation/alltaskspagemodel.cpp:56
+#: src/presentation/contextpagemodel.cpp:74
+#: src/presentation/inboxpagemodel.cpp:55
+#: src/presentation/projectpagemodel.cpp:67
+#: src/presentation/workdaypagemodel.cpp:63
+#, kde-format
+msgid "Cannot promote task %1 to be a project"
+msgstr "Die Aufgabe %1 kann nicht als Projekt eingesetzt werden"
+
+#: src/presentation/alltaskspagemodel.cpp:97
+#: src/presentation/editormodel.cpp:390
+#, kde-format
+msgid "Cannot modify task %1"
+msgstr "Die Aufgabe „%1“ kann nicht geändert werden"
+
+#: src/presentation/alltaskspagemodel.cpp:122
+#: src/presentation/contextpagemodel.cpp:144
+#: src/presentation/inboxpagemodel.cpp:111
+#: src/presentation/workdaypagemodel.cpp:119
+#, kde-format
+msgid "Cannot move task %1 as sub-task of %2"
+msgstr "Aufgabe %1 kann nicht zu Unteraufgabe von %2 verschoben werden"
+
+#: src/presentation/alltaskspagemodel.cpp:125
+#: src/presentation/inboxpagemodel.cpp:114
+#: src/presentation/workdaypagemodel.cpp:127
+#, kde-format
+msgid "Cannot deparent task %1 from its parent"
+msgstr "Die Aufgabe %1 kann von dem übergeordneten Eintrag entfernt werden"
+
+#: src/presentation/availablepagesmodel.cpp:117
+#, kde-format
+msgid "Cannot add project %1 in dataSource %2"
+msgstr "Projekt %1 kann nicht zur Datenquelle %2 hinzugefügt werden"
+
+#: src/presentation/availablepagesmodel.cpp:125
+#, kde-format
+msgid "Cannot add context %1"
+msgstr "Der Kontext „%1“ kann nicht hinzugefügt werden"
+
+#: src/presentation/availablepagesmodel.cpp:133
+#, kde-format
+msgid "Cannot remove project %1"
+msgstr "Das Projekt %1 kann nicht entfernt werden"
+
+#: src/presentation/availablepagesmodel.cpp:136
+#, kde-format
+msgid "Cannot remove context %1"
+msgstr "Der Kontext „%1“ kann nicht entfernt werden"
+
+#: src/presentation/availablepagesmodel.cpp:145
+#: src/widgets/itemdelegate.cpp:143
+#, kde-format
+msgid "Inbox"
+msgstr "Posteingang"
+
+#: src/presentation/availablepagesmodel.cpp:147
+#, kde-format
+msgid "Workday"
+msgstr "Arbeitstag"
+
+#: src/presentation/availablepagesmodel.cpp:149
+#, kde-format
+msgid "Projects"
+msgstr "Projekte"
+
+#: src/presentation/availablepagesmodel.cpp:151
+#, kde-format
+msgid "Contexts"
+msgstr "Kontexte"
+
+#: src/presentation/availablepagesmodel.cpp:153
+#, kde-format
+msgid "All Tasks"
+msgstr "Alle Aufgaben"
+
+#: src/presentation/availablepagesmodel.cpp:252
+#, kde-format
+msgid "Cannot modify project %1"
+msgstr "Projekt %1 kann nicht geändert werden"
+
+#: src/presentation/availablepagesmodel.cpp:257
+#, kde-format
+msgid "Cannot modify context %1"
+msgstr "Der Kontext „%1“ kann nicht geändert werden"
+
+#: src/presentation/availablepagesmodel.cpp:276
+#, kde-format
+msgid "Cannot add %1 to project %2"
+msgstr "%1 kann nicht zum Projekt %2 hinzugefügt werden"
+
+#: src/presentation/availablepagesmodel.cpp:282
+#, kde-format
+msgid "Cannot add %1 to context %2"
+msgstr "%1 kann nicht zum Kontext %2 hinzugefügt werden"
+
+#: src/presentation/availablepagesmodel.cpp:288
+#, kde-format
+msgid "Cannot move %1 to Inbox"
+msgstr "%1 kann nicht in den Posteingang verschoben werden"
+
+#: src/presentation/availablepagesmodel.cpp:292
+#, kde-format
+msgid "Cannot move task %1 to Inbox"
+msgstr "Aufgabe %1 kann nicht in den Posteingang verschoben werden"
+
+#: src/presentation/availablepagesmodel.cpp:301
+#, kde-format
+msgid "Cannot update task %1 to Workday"
+msgstr "Aufgabe %1 kann nicht zum Wochentag aktualisiert werden"
+
+#: src/presentation/availablesourcesmodel.cpp:99
+#, kde-format
+msgid "Cannot modify source %1"
+msgstr "Die Quelle „%1“ kann nicht geändert werden"
+
+#: src/presentation/contextpagemodel.cpp:54
+#, kde-format
+msgid "Cannot add task %1 in context %2"
+msgstr "Die Aufgabe %1 kann nicht zum Kontext %2 hinzugefügt werden"
+
+#: src/presentation/contextpagemodel.cpp:65
+#, kde-format
+msgid "Cannot remove task %1 from context %2"
+msgstr "Die Aufgabe %1 kann nicht vom Kontext %2 entfernt werden"
+
+#: src/presentation/contextpagemodel.cpp:115
+#, kde-format
+msgid "Cannot modify task %1 in context %2"
+msgstr "Die Aufgabe %1 in Kontext %2 kann nicht geändert werden"
+
+#: src/presentation/contextpagemodel.cpp:147
+#, kde-format
+msgid "Cannot dissociate task %1 from its parent"
+msgstr "Die Aufgabe %1 kann nicht übergeordneten Eintrag gelöst werden"
+
+#: src/presentation/inboxpagemodel.cpp:35
+#, kde-format
+msgid "Cannot add task %1 in Inbox"
+msgstr "Aufgabe %1 kann nicht zum Posteingang hinzugefügt werden"
+
+#: src/presentation/inboxpagemodel.cpp:46
+#, kde-format
+msgid "Cannot remove task %1 from Inbox"
+msgstr "Aufgabe %1 kann nicht vom Posteingang entfernt werden"
+
+#: src/presentation/inboxpagemodel.cpp:96
+#, kde-format
+msgid "Cannot modify task %1 in Inbox"
+msgstr "Aufgabe %1 kann im Posteingang nicht geändert werden"
+
+#: src/presentation/projectpagemodel.cpp:47
+#, kde-format
+msgid "Cannot add task %1 in project %2"
+msgstr "Die Aufgabe %1 kann nicht zum Projekt %2 hinzugefügt werden"
+
+#: src/presentation/projectpagemodel.cpp:58
+#, kde-format
+msgid "Cannot remove task %1 from project %2"
+msgstr "Die Aufgabe %1 kann nicht aus dem Projekt %2 entfernt werden"
+
+#: src/presentation/projectpagemodel.cpp:104
+#, kde-format
+msgid "Cannot modify task %1 in project %2"
+msgstr "Die Aufgabe %1 in Projekt %2 kann nicht geändert werden"
+
+#: src/presentation/projectpagemodel.cpp:130
+#, kde-format
+msgid "Cannot move task %1 as a sub-task of %2"
+msgstr "Aufgabe %1 kann nicht zu Unteraufgabe von %2 verschoben werden"
+
+#: src/presentation/runningtaskmodel.cpp:46
+#, kde-format
+msgid "Cannot update task %1 to 'not running'"
+msgstr "Aufgabe %1 kann nicht zu „nicht ausgeführt“ aktualisiert werden"
+
+#: src/presentation/runningtaskmodel.cpp:54
+#, kde-format
+msgid "Cannot update task %1 to 'running'"
+msgstr "Aufgabe %1 kann nicht zu „ausgeführt“ aktualisiert werden"
+
+#: src/presentation/workdaypagemodel.cpp:42
+#, kde-format
+msgid "Cannot add task %1 in Workday"
+msgstr "Aufgabe %1 kann nicht zum Wochentag hinzugefügt werden"
+
+#: src/presentation/workdaypagemodel.cpp:53
+#, kde-format
+msgid "Cannot remove task %1 from Workday"
+msgstr "Aufgabe %1 kann nicht vom Wochentag entfernt werden"
+
+#: src/presentation/workdaypagemodel.cpp:104
+#, kde-format
+msgid "Cannot modify task %1 in Workday"
+msgstr "Aufgabe %1 im Wochentag kann nicht geändert werden"
+
+#: src/widgets/applicationcomponents.cpp:47
+#, kde-format
+msgid "Move Task"
+msgstr "Aufgabe verschieben"
+
+#: src/widgets/availablepagesview.cpp:50
+#, kde-format
+msgid "New Project"
+msgstr "Neues Projekt"
+
+#: src/widgets/availablepagesview.cpp:56
+#, kde-format
+msgid "New Context"
+msgstr "Neuer Kontext"
+
+#: src/widgets/availablepagesview.cpp:62
+#, kde-format
+msgid "Remove Page"
+msgstr "Seite entfernen"
+
+#: src/widgets/availablepagesview.cpp:91
+#, kde-format
+msgid "Previous Page"
+msgstr "Vorherige Seite"
+
+#: src/widgets/availablepagesview.cpp:98
+#, kde-format
+msgid "Next Page"
+msgstr "Nächste Seite"
+
+#: src/widgets/availablepagesview.cpp:105
+#, kde-format
+msgid "Go to Page..."
+msgstr "Gehe zu Seite..."
+
+#: src/widgets/availablepagesview.cpp:240
+#, kde-format
+msgid "Add a context"
+msgstr "Einen Kontext hinzufügen"
+
+#: src/widgets/availablepagesview.cpp:265
+#, kde-format
+msgid "Delete Project"
+msgstr "Projekt löschen"
+
+#: src/widgets/availablepagesview.cpp:266
+#, kde-format
+msgid "Do you really want to delete the project '%1', with all its actions?"
+msgstr ""
+"Möchten Sie das Projekt „%1“ mit allen enthaltenen Aktionen wirklich löschen?"
+
+#: src/widgets/availablepagesview.cpp:268
+#, kde-format
+msgid "Delete Context"
+msgstr "Kontext löschen"
+
+#: src/widgets/availablepagesview.cpp:269
+#, kde-format
+msgid "Do you really want to delete the context '%1'?"
+msgstr "Möchten Sie den ausgewählten Kontext „%1“ wirklich löschen?"
+
+#: src/widgets/availablesourcesview.cpp:55
+#, kde-format
+msgid "Use as Default Source"
+msgstr "Als Standardquelle verwenden"
+
+#: src/widgets/availablesourcesview.cpp:76
+#, kde-format
+msgid "Configure %1..."
+msgstr "%1 einrichten ..."
+
+#: src/widgets/editorview.cpp:32
+#, kde-format
+msgid "Add Attachment"
+msgstr "Anhang hinzufügen "
+
+#: src/widgets/editorview.cpp:40
+#, kde-format
+msgid "Never"
+msgstr "Niemals"
+
+#: src/widgets/editorview.cpp:41
+#, kde-format
+msgid "Daily"
+msgstr "Täglich"
+
+#: src/widgets/editorview.cpp:42
+#, kde-format
+msgid "Weekly"
+msgstr "Wöchentlich"
+
+#: src/widgets/editorview.cpp:43
+#, kde-format
+msgid "Monthly"
+msgstr "Monatlich"
+
+#: src/widgets/editorview.cpp:44
+#, kde-format
+msgid "Yearly"
+msgstr "Jährlich"
+
+#. i18n: ectx: property (windowTitle), widget (QWidget, EditorView)
+#. i18n: ectx: property (text), widget (QListView, attachmentList)
+#: src/widgets/editorview.ui:14 src/widgets/editorview.ui:184
+#: src/zanshin/app/main.cpp:84
+#, kde-format
+msgid "Editor"
+msgstr "Editor"
+
+#. i18n: ectx: property (text), widget (QLabel, dueDateLabel)
+#: src/widgets/editorview.ui:41
+#, kde-format
+msgid "D&ue Date "
+msgstr "&Fälligkeitsdatum"
+
+#. i18n: ectx: property (text), widget (QCheckBox, doneButton)
+#: src/widgets/editorview.ui:62 src/widgets/runningtaskwidget.cpp:50
+#, kde-format
+msgid "Done"
+msgstr "Abgeschlossen"
+
+#. i18n: ectx: property (toolTip), widget (QToolButton, addAttachmentButton)
+#: src/widgets/editorview.ui:86
+#, kde-format
+msgid "Add Attachment..."
+msgstr "Anhang hinzufügen ..."
+
+#. i18n: ectx: property (toolTip), widget (QToolButton, removeAttachmentButton)
+#: src/widgets/editorview.ui:100
+#, kde-format
+msgid "Remove Attachment"
+msgstr "Anhang entfernen"
+
+#. i18n: ectx: property (text), widget (QPushButton, startTodayButton)
+#: src/widgets/editorview.ui:121
+#, kde-format
+msgid "Select for &Today"
+msgstr "Für Heu&te auswählen"
+
+#. i18n: ectx: property (text), widget (QLabel, recurrenceLabel)
+#: src/widgets/editorview.ui:130
+#, kde-format
+msgid "&Recurrence"
+msgstr "&Wiederholung"
+
+#. i18n: ectx: property (text), widget (QLabel, startDateLabel)
+#: src/widgets/editorview.ui:146
+#, kde-format
+msgid "St&art Date"
+msgstr "&Anfangsdatum"
+
+#: src/widgets/filterwidget.cpp:29
+#, kde-format
+msgid "Sort by title"
+msgstr "Nach Titel sortieren"
+
+#: src/widgets/filterwidget.cpp:30
+#, kde-format
+msgid "Sort by date"
+msgstr "Nach Datum sortieren"
+
+#. i18n: ectx: property (placeholderText), widget (QLineEdit, filterEdit)
+#: src/widgets/filterwidget.ui:31 src/widgets/pageview.cpp:197
+#, kde-format
+msgid "Filter..."
+msgstr "Filter ..."
+
+#. i18n: ectx: property (toolTip), widget (QToolButton, descendingButton)
+#: src/widgets/filterwidget.ui:65
+#, kde-format
+msgid "Sort in descending order"
+msgstr "Absteigend sortieren"
+
+#. i18n: ectx: property (toolTip), widget (QToolButton, ascendingButton)
+#: src/widgets/filterwidget.ui:88
+#, kde-format
+msgid "Sort in ascending order"
+msgstr "Aufsteigend sortieren"
+
+#: src/widgets/itemdelegate.cpp:141
+#, kde-format
+msgid "Project: %1"
+msgstr "Projekt: %1"
+
+#. i18n: ectx: property (windowTitle), widget (QDialog, NameAndDataSourceDialog)
+#: src/widgets/nameanddatasourcedialog.ui:14
+#, kde-format
+msgid "Add a project"
+msgstr "Ein Projekt hinzufügen"
+
+#. i18n: ectx: property (text), widget (QLabel, nameLabel)
+#: src/widgets/nameanddatasourcedialog.ui:25
+#, kde-format
+msgid "Name"
+msgstr "Name"
+
+#. i18n: ectx: property (text), widget (QLabel, sourceLabel)
+#: src/widgets/nameanddatasourcedialog.ui:42
+#, kde-format
+msgid "Source"
+msgstr "Quelle"
+
+#: src/widgets/pageview.cpp:155
+#, kde-format
+msgid "Type and press enter to add a task"
+msgstr ""
+"Zum Hinzufügen einer Aufgabe, geben Sie diese ein und drücken Sie die "
+"Eingabetaste"
+
+#: src/widgets/pageview.cpp:170
+#, kde-format
+msgid "New Task"
+msgstr "Neue Aufgabe"
+
+#: src/widgets/pageview.cpp:183
+#, kde-format
+msgid "Remove Task"
+msgstr "Aufgabe entfernen"
+
+#: src/widgets/pageview.cpp:191
+#, kde-format
+msgid "Promote Task as Project"
+msgstr "Aufgabe als Projekt einsetzen"
+
+#: src/widgets/pageview.cpp:205
+#, kde-format
+msgid "Show done tasks"
+msgstr "Abgeschlossene Aufgaben anzeigen"
+
+#: src/widgets/pageview.cpp:213
+#, kde-format
+msgid "Show future tasks"
+msgstr "Zukünftige Aufgaben anzeigen"
+
+#: src/widgets/pageview.cpp:239
+#, kde-format
+msgid "Start Now"
+msgstr "Jetzt starten"
+
+#: src/widgets/pageview.cpp:357
+#, kde-format
+msgid "Type and press enter to add an item"
+msgstr ""
+"Zum Hinzufügen eines Elements, geben Sie dieses ein und drücken Sie die "
+"Eingabetaste"
+
+#: src/widgets/pageview.cpp:383
+#, kde-format
+msgid "Do you really want to delete the selected items and their children?"
+msgstr ""
+"Möchten Sie die ausgewählten Elemente und deren Kindobjekte wirklich löschen?"
+
+#: src/widgets/pageview.cpp:385
+#, kde-format
+msgid "Do you really want to delete the selected items?"
+msgstr "Möchten Sie die ausgewählten Elemente wirklich löschen?"
+
+#: src/widgets/pageview.cpp:393
+#, kde-format
+msgid "Do you really want to delete the selected task and all its children?"
+msgstr ""
+"Möchten Sie die ausgewählten Aufgaben und deren Kindobjekte wirklich löschen?"
+
+#: src/widgets/pageview.cpp:397
+#, kde-format
+msgid "Delete Tasks"
+msgstr "Aufgaben löschen"
+
+#: src/widgets/quickselectdialog.cpp:30
+#, kde-format
+msgid "Quick Select Dialog"
+msgstr "Schnellauswahldialog"
+
+#: src/widgets/quickselectdialog.cpp:32 src/widgets/quickselectdialog.cpp:70
+#, kde-format
+msgid "You can start typing to filter the list of available pages"
+msgstr "Geben Sie hier Text ein, um die Liste verfügbarer Seiten zu filtern"
+
+#: src/widgets/quickselectdialog.cpp:72
+#, kde-format
+msgid "Path: %1"
+msgstr "Pfad: %1"
+
+#: src/widgets/runningtaskwidget.cpp:36
+#, kde-format
+msgid "Zanshin Running Task Banner"
+msgstr "Zanshin-Anzeige ausgeführter Aufgaben"
+
+#: src/widgets/runningtaskwidget.cpp:46
+#, kde-format
+msgid "Stop"
+msgstr "Anhalten"
+
+#: src/zanshin/app/aboutdata.cpp:14
+#, kde-format
+msgid "Zanshin Tasks"
+msgstr "Zanshin-Aufgaben"
+
+#: src/zanshin/app/aboutdata.cpp:15
+#, kde-format
+msgid ""
+"A Getting Things Done application which aims at getting your mind like water"
+msgstr ""
+"Eine Anwendung um Dinge erledigt zu bekommen und Ihren Geist fließen zu "
+"lassen"
+
+#: src/zanshin/app/aboutdata.cpp:17
+#, kde-format
+msgid "Copyright 2008-2016, Kevin Ottens <ervin@kde.org>"
+msgstr "Copyright 2008-2016, Kevin Ottens <ervin@kde.org>"
+
+#: src/zanshin/app/aboutdata.cpp:19
+#, kde-format
+msgid "Kevin Ottens"
+msgstr "Kevin Ottens"
+
+#: src/zanshin/app/aboutdata.cpp:20
+#, kde-format
+msgid "Lead Developer"
+msgstr "Hauptentwickler"
+
+#: src/zanshin/app/aboutdata.cpp:23
+#, kde-format
+msgid "Mario Bensi"
+msgstr "Mario Bensi"
+
+#: src/zanshin/app/aboutdata.cpp:24 src/zanshin/app/aboutdata.cpp:28
+#, kde-format
+msgid "Developer"
+msgstr "Entwickler"
+
+#: src/zanshin/app/aboutdata.cpp:27
+#, kde-format
+msgid "Franck Arrecot"
+msgstr "Franck Arrecot"
+
+#: src/zanshin/app/main.cpp:76
+#, kde-format
+msgid "Sources"
+msgstr "Quellen"
+
+#: src/zanshin/app/main.cpp:80
+#, kde-format
+msgid "Pages"
+msgstr "Seiten"
+
+#. i18n: ectx: Menu (go)
+#: src/zanshin/app/zanshinui.rc:15 src/zanshin/kontact/zanshin_part.rc:15
+#, kde-format
+msgid "&Go"
+msgstr "&Gehe zu"
+
+#. i18n: ectx: Menu
+#: src/zanshin/app/zanshinui.rc:27
+#, kde-format
+msgid "&Panels"
+msgstr "&Seitenleisten"
+
+#. i18n: ectx: ToolBar (mainToolBar)
+#: src/zanshin/app/zanshinui.rc:35 src/zanshin/kontact/zanshin_part.rc:27
+#, kde-format
+msgctxt "@title:menu"
+msgid "Main Toolbar"
+msgstr "Haupt-Werkzeugleiste"
+
+#: src/zanshin/runner/zanshinrunner.cpp:61
+#, kde-format
+msgid "Add \"%1\" to your todo list"
+msgstr "„%1“ zu Ihrer Aufgabenliste hinzufügen"
+
+#~ msgctxt "@option today"
+#~ msgid "&Today"
+#~ msgstr "&Heute"
+
+#~ msgctxt "@option tomorrow"
+#~ msgid "To&morrow"
+#~ msgstr "&Morgen"
+
+#~ msgctxt "@option next week"
+#~ msgid "Next &Week"
+#~ msgstr "Nächste &Woche"
+
+#~ msgctxt "@option next month"
+#~ msgid "Next M&onth"
+#~ msgstr "Nächster M&onat"
+
+#~ msgctxt "@option do not specify a date"
+#~ msgid "No Date"
+#~ msgstr "Kein Datum"
+
+#~ msgid "Context name"
+#~ msgstr "Kontextname"
+
+#~ msgid "Script Editor - Zanshin"
+#~ msgstr "Skripteditor - Zanshin"
+
+#~ msgid "vCard Import Failed"
+#~ msgstr "vCard-Import fehlgeschlagen"
+
+#~ msgid "<qt>Unable to access <b>%1</b>.</qt>"
+#~ msgstr "<qt>Auf <b>%1</b> kann nicht zugegriffen werden.</qt>"
+
+#~ msgid "Select email from contact"
+#~ msgstr "E-Mail vom Kontakt auswählen"
+
+#~ msgid "Show Organization Unit for LDAP results"
+#~ msgstr "Organisation für LDAP-Ergebnisse anzeigen"
+
+#~ msgid "Configure Completion..."
+#~ msgstr "Vervollständigung einrichten ..."
+
+#~ msgid "Automatically expand groups"
+#~ msgstr "Gruppen automatisch aufklappen"
+
+#~ msgid "Expand Groups..."
+#~ msgstr "Gruppen aufklappen ..."
+
+#~ msgid "Recent Addresses"
+#~ msgstr "Zuletzt verwendete Adressen"
+
+#~ msgctxt "@title:group"
+#~ msgid "Contacts found in your data"
+#~ msgstr "In Ihren Daten gefundene Kontakte"
+
+#~ msgid "LDAP server: %1"
+#~ msgstr "LDAP-Server: %1"
+
+#~ msgid "Blacklist Email Completion"
+#~ msgstr "Vervollständigung für E-Mail-Negativliste"
+
+#~ msgid "Search email:"
+#~ msgstr "E-Mail suchen:"
+
+#~ msgid "Research is done from 3 characters"
+#~ msgstr "Die Suche beginnt mit drei Zeichen"
+
+#~ msgid "Search"
+#~ msgstr "Suchen"
+
+#~ msgid "Show Blacklisted Emails"
+#~ msgstr "Gesperrte E-Mail-Adressen anzeigen"
+
+#~ msgid "Search in result..."
+#~ msgstr "In Ergebnis suchen ..."
+
+#~ msgid "&Select"
+#~ msgstr "&Auswählen"
+
+#~ msgid "&Unselect"
+#~ msgstr "A&uswahl aufheben"
+
+#~ msgid "<qt><a href=\"more_result\">More result...</a></qt>"
+#~ msgstr "<qt><a href=\"more_result\">Weitere Ergebnisse ...</a></qt>"
+
+#~ msgid "Exclude domain names:"
+#~ msgstr "Domain-Namen ausschließen:"
+
+#~ msgid "Separate domain with '%1'"
+#~ msgstr "Domain mit „%1“ trennen"
+
+#~ msgid "No email found."
+#~ msgstr "Kein E-Mail gefunden."
+
+#~ msgid "1 email found"
+#~ msgid_plural "%1 emails found"
+#~ msgstr[0] "Eine E-Mail gefunden"
+#~ msgstr[1] "%1 E-Mails gefunden"
+
+#~ msgid "No result found"
+#~ msgstr "Kein Ergebnis gefunden"
+
+#~ msgid ""
+#~ "The list was changed. Do you want to save before to make another search ?"
+#~ msgstr ""
+#~ "Die Liste wurde geändert. Möchten Sie sie speichern, bevor eine andere "
+#~ "Suche ausgeführt wird?"
+
+#~ msgid "Save"
+#~ msgstr "Speichern"
+
+#~ msgid "Configure completion"
+#~ msgstr "Vervollständigung einrichten"
+
+#~ msgid "Completion Order"
+#~ msgstr "Reihenfolge für das Vervollständigen"
+
+#~ msgid "Recent Address"
+#~ msgstr "Zuletzt verwendete Adresse"
+
+#~ msgid "Blacklist Email Address"
+#~ msgstr "E-Mail-Adresse in Sperrliste aufnehmen"
+
+#~ msgid "Edit Completion Order"
+#~ msgstr "Reihenfolge für das Vervollständigen bearbeiten"
+
+#~ msgid "LDAP server %1"
+#~ msgstr "LDAP-Server %1"
+
+#~ msgid "Add Host"
+#~ msgstr "Rechner hinzufügen"
+
+#~ msgid "kcmldap"
+#~ msgstr "kcmldap"
+
+#~ msgid "LDAP Server Settings"
+#~ msgstr "LDAP-Server-Einstellungen"
+
+#~ msgid "(c) 2009 - 2010 Tobias Koenig"
+#~ msgstr "©, 2009–2010 Tobias König"
+
+#~ msgid "Tobias Koenig"
+#~ msgstr "Tobias Koenig"
+
+#~ msgid "Edit Host"
+#~ msgstr "Rechner bearbeiten"
+
+#~ msgid "Do you want to remove setting for host \"%1\"?"
+#~ msgstr "Möchten Sie die Einstellung für den Rechner „%1“ entfernen?"
+
+#~ msgid "LDAP Servers"
+#~ msgstr "LDAP-Server"
+
+#~ msgid "Check all servers that should be used:"
+#~ msgstr "Markieren Sie alle zu verwendenden Server:"
+
+#~ msgid "&Add Host..."
+#~ msgstr "Rechner &hinzufügen ..."
+
+#~ msgid "&Edit Host..."
+#~ msgstr "R&echner bearbeiten ..."
+
+#~ msgid "&Remove Host"
+#~ msgstr "&Rechner entfernen"
+
+#~ msgid ""
+#~ "LDAP password is stored as clear text, do you want to store it in kwallet?"
+#~ msgstr ""
+#~ "Das LDAP-Passwort wird als Klartext gespeichert, möchten Sie es im "
+#~ "Passwortspeicher speichern?"
+
+#~ msgid "Store clear text password in KWallet"
+#~ msgstr "Klartext-Passwort im Passwortspeicher speichern"
+
+#~ msgctxt "@item LDAP search key"
+#~ msgid "Title"
+#~ msgstr "Titel"
+
+#~ msgid "Full Name"
+#~ msgstr "Vollständiger Name"
+
+#~ msgctxt "@item LDAP search key"
+#~ msgid "Email"
+#~ msgstr "E-Mail"
+
+#~ msgid "Home Number"
+#~ msgstr "Privatanschluss"
+
+#~ msgid "Work Number"
+#~ msgstr "Telefonnummer (dienstlich)"
+
+#~ msgid "Mobile Number"
+#~ msgstr "Telefon (mobil)"
+
+#~ msgid "Fax Number"
+#~ msgstr "Faxnummer"
+
+#, fuzzy
+#~| msgctxt "QObject|"
+#~| msgid "Pages"
+#~ msgid "Pager"
+#~ msgstr "Seiten"
+
+#~ msgid "Street"
+#~ msgstr "Straße"
+
+#~ msgctxt "@item LDAP search key"
+#~ msgid "State"
+#~ msgstr "Bundesland"
+
+#~ msgid "Country"
+#~ msgstr "Land"
+
+#~ msgid "City"
+#~ msgstr "Stadt"
+
+#~ msgid "Organization"
+#~ msgstr "Organisation/Firma"
+
+#~ msgid "Company"
+#~ msgstr "Firma"
+
+#~ msgid "Department"
+#~ msgstr "Abteilung"
+
+#~ msgid "Zip Code"
+#~ msgstr "Postleitzahl"
+
+#~ msgid "Postal Address"
+#~ msgstr "Postanschrift"
+
+#~ msgid "Description"
+#~ msgstr "Beschreibung"
+
+#~ msgid "User ID"
+#~ msgstr "Benutzerkennung"
+
+#~ msgctxt "@title:column Column containing email addresses"
+#~ msgid "Email"
+#~ msgstr "E-Mail"
+
+#~ msgctxt ""
+#~ "@title:column Column containing the residential state of the address"
+#~ msgid "State"
+#~ msgstr "Bundesland"
+
+#~ msgctxt "@title:column Column containing title of the person"
+#~ msgid "Title"
+#~ msgstr "Titel"
+
+#~ msgid "Import Contacts from LDAP"
+#~ msgstr "Kontakte von einem LDAP-Server importieren"
+
+#~ msgid "Search for Addresses in Directory"
+#~ msgstr "Nach Adressen im Verzeichnis suchen"
+
+#~ msgid "Search for:"
+#~ msgstr "Suche nach:"
+
+#~ msgctxt "In LDAP attribute"
+#~ msgid "in"
+#~ msgstr "in"
+
+#~ msgctxt "@item:inlistbox Name of the contact"
+#~ msgid "Name"
+#~ msgstr "Name"
+
+#~ msgctxt "@item:inlistbox email address of the contact"
+#~ msgid "Email"
+#~ msgstr "E-Mail"
+
+#~ msgctxt "@item:inlistbox"
+#~ msgid "Home Number"
+#~ msgstr "Telefonnummer (privat)"
+
+#~ msgctxt "@item:inlistbox"
+#~ msgid "Work Number"
+#~ msgstr "Telefonnummer (dienstlich)"
+
+#~ msgctxt "@action:button Start searching"
+#~ msgid "&Search"
+#~ msgstr "&Suchen"
+
+#~ msgid "Recursive search"
+#~ msgstr "Rekursive Suche"
+
+#~ msgid "Contains"
+#~ msgstr "Enthält"
+
+#~ msgid "Starts With"
+#~ msgstr "Beginnt mit"
+
+#~ msgid "Search in result"
+#~ msgstr "Suche in Ergebnis"
+
+#~ msgid "Searching..."
+#~ msgstr "Suchen ..."
+
+#~ msgid "Select All"
+#~ msgstr "Alle auswählen"
+
+#~ msgid "Unselect All"
+#~ msgstr "Auswahl aufheben"
+
+#~ msgid "Add Selected"
+#~ msgstr "Ausgewählte hinzufügen"
+
+#~ msgid "Configure LDAP Servers..."
+#~ msgstr "LDAP-Server einrichten ..."
+
+#~ msgid "Copy"
+#~ msgstr "Kopieren"
+
+#~ msgid "You must select an LDAP server before searching."
+#~ msgstr "Vor der Suche müssen Sie einen LDAP-Server auswählen."
+
+#~ msgctxt "arguments are host name, datetime"
+#~ msgid "Imported from LDAP directory %1 on %2"
+#~ msgstr "Importiert vom LDAP-Verzeichnis %1 auf %2"
+
+#~ msgid "Configure the Address Book LDAP Settings"
+#~ msgstr "Einstellungen zum LDAP-Adressbuch einrichten"
+
+#~ msgid "Edit Recent Addresses"
+#~ msgstr "Zuletzt verwendete Adressen bearbeiten"
+
+#~ msgid "&Add"
+#~ msgstr "&Hinzufügen"
+
+#~ msgid "&Remove"
+#~ msgstr "&Entfernen"
+
+#~ msgid "Do you want to remove this email address?"
+#~ msgid_plural "Do you want to remove %1 email addresses?"
+#~ msgstr[0] "Möchten Sie diese E-Mail-Adresse entfernen?"
+#~ msgstr[1] "Möchten Sie diese %1 E-Mail-Adressen entfernen?"
+
+#~ msgid "Remove"
+#~ msgstr "Entfernen"
+
+#~ msgid "Choose an identity"
+#~ msgstr "Wählen Sie eine Identität"
+
+#~ msgid "Choose the identity to use for the groupware message"
+#~ msgstr "Wählen Sie die Identität für diese Groupware-Nachricht"
+
+#~ msgid "Could not find a collection to store the note into!"
+#~ msgstr "Es kann keine Sammlung zum Speichern der Notiz gefunden werden."
+
+#~ msgid "Tags"
+#~ msgstr "Stichwörter"
+
+#~ msgid "Cannot tag %1 with %2"
+#~ msgstr "Das Stichwort „%2“ kann %1 nicht hinzugefügt werden"
+
+#~ msgid "Cannot add note %1 in Inbox"
+#~ msgstr "Notiz %1 kann nicht zum Posteingang hinzugefügt werden"
+
+#~ msgid "Cannot remove note %1 from Inbox"
+#~ msgstr "Notiz %1 kann nicht vom Posteingang entfernt werden"
+
+#~ msgid "Cannot modify note %1 in Inbox"
+#~ msgstr "Notiz %1 kann im Posteingang nicht geändert werden"
+
+#~ msgid "Cannot add note %1 in tag %2"
+#~ msgstr "Notiz %1 kann nicht zum Stichwort %2 hinzugefügt werden"
+
+#~ msgid "Cannot remove note %1 from tag %2"
+#~ msgstr "Notiz %1 kann nicht vom Stichwort %2 entfernt werden"
+
+#~ msgid "Cannot modify note %1 in tag %2"
+#~ msgstr "Notiz %1 kann im Stichwort %2 nicht geändert werden"
+
+#~ msgid "Renku Notes"
+#~ msgstr "Renku-Notizen"
+
+#~ msgid "A note taking application which aims at getting your mind like water"
+#~ msgstr "Eine Notizen-Anwendung die Ihren Geist fließen lässt"
+
+#~ msgid "Copyright 2008-2015, Kevin Ottens <ervin@kde.org>"
+#~ msgstr "Copyright 2008-2015, Kevin Ottens <ervin@kde.org>"
+
+#~ msgid "Move Item"
+#~ msgstr "Element verschieben"
+
+#~ msgid "Add Tag"
+#~ msgstr "Stichwort hinzufügen"
+
+#~ msgid "Tag name"
+#~ msgstr "Stichwortname"
+
+#~ msgid "Delete Tag"
+#~ msgstr "Stichwort löschen"
+
+#~ msgid "Do you really want to delete the tag '%1'?"
+#~ msgstr "Möchten Sie das ausgewählte Stichwort „%1“ wirklich löschen?"
+
+#~ msgid "Delegated to: <b>%1</b>"
+#~ msgstr "Delegiert an: <b>%1</b>"
+
+#~ msgid "Delegate To: "
+#~ msgstr "Delegieren an:"
+
+#~ msgid "De&legate to"
+#~ msgstr "De&legieren an"
+
+#~ msgid "(%1) %2"
+#~ msgstr "(%1) %2"
+
+#~ msgid "New Item"
+#~ msgstr "Neues Element"
+
+#~ msgid "Remove Item"
+#~ msgstr "Element entfernen"
+
+#~ msgid "Cannot update task %1"
+#~ msgstr "Aufgabe %1 kann nicht aktualisiert werden"
+
+#~ msgctxt "Presentation::AvailableTaskPagesModel|"
+#~ msgid "Inbox"
+#~ msgstr "Posteingang"
+
+#~ msgctxt "Presentation::AvailableTaskPagesModel|"
+#~ msgid "Cannot move %1 to Inbox"
+#~ msgstr "%1 kann nicht in den Posteingang verschoben werden"
+
+#~ msgctxt "ErrorHandler|"
+#~ msgid "%1: %2"
+#~ msgstr "%1: %2"
+
+#~ msgctxt "Presentation::TaskInboxPageModel|"
+#~ msgid "Cannot move task %1 as sub-task of %2"
+#~ msgstr "Aufgabe %1 kann nicht zu Unteraufgabe von %2 verschoben werden"
+
+#~ msgctxt "Presentation::WorkdayPageModel|"
+#~ msgid "Cannot move task %1 as sub-task of %2"
+#~ msgstr "Aufgabe %1 kann nicht zu Unteraufgabe von %2 verschoben werden"
+
+#~ msgctxt "EditorView|"
+#~ msgid "Editor"
+#~ msgstr "Editor"
+
+#~ msgctxt "Widgets::PageView|"
+#~ msgid "Filter..."
+#~ msgstr "Filter ..."
+
+#~ msgctxt "Widgets::RunningTaskWidget|"
+#~ msgid "Done"
+#~ msgstr "Fertig"
+
+#~ msgctxt "Search attribute: Name of contact"
+#~ msgid "Name"
+#~ msgstr "Name"
+
+#~ msgctxt "Search attribute: Email of the contact"
+#~ msgid "Email"
+#~ msgstr "E-Mail"
+
+#~ msgid "Please select the collections you would like to have displayed."
+#~ msgstr ""
+#~ "Bitte wählen Sie die Sammlungen aus, die Sie angezeigt haben möchten."
+
+#~ msgid "Settings..."
+#~ msgstr "Einstellungen ..."
+
+#~ msgid "Used Folders"
+#~ msgstr "Benutzte Ordner"
+
+#~ msgid "Show the debug window"
+#~ msgstr "Debug-Fenster anzeigen"
+
+#~ msgid "Project View"
+#~ msgstr "Projektansicht"
+
+#~ msgid "Knowledge View"
+#~ msgstr "Wissens-Ansicht"
+
+#~ msgid "Synchronize All"
+#~ msgstr "Alle abgleichen"
+
+#~ msgid "Summary"
+#~ msgstr "Übersicht"
+
+#~ msgid "Date"
+#~ msgstr "Datum"
+
+#~ msgid "No Context"
+#~ msgstr "Kein Kontext"
+
+#~ msgid "No Topic"
+#~ msgstr "Kein Thema"
+
+#~ msgid "Topics"
+#~ msgstr "Themen"
+
+#~ msgid "Cannot open the attachment."
+#~ msgstr "Der Anhang kann nicht geöffnet werden."
+
+#~ msgid "&Enable"
+#~ msgstr "&Aktivieren"
+
+#~ msgid "F&ormat"
+#~ msgstr "F&ormat"
+
+#~ msgid "V&iew"
+#~ msgstr "&Ansicht"
+
+#~ msgid "Text Toolbar"
+#~ msgstr "Text-Werkzeugleiste"
+
+#~ msgid "Format Toolbar"
+#~ msgstr "Format-Werkzeugleiste"
+
+#~ msgid "Hide &Toolbar"
+#~ msgstr "Werkzeugleiste &ausblenden"
+
+#~ msgid "Title..."
+#~ msgstr "Titel ..."
+
+#~ msgid "Fullscreen &Editor"
+#~ msgstr "Vollbild-&Editor"
+
+#~ msgid "Properties"
+#~ msgstr "Eigenschaften"
+
+#~ msgid "New Action"
+#~ msgstr "Neue Aktion"
+
+#~ msgid "Cancel New Action"
+#~ msgstr "Neue Aktion abbrechen"
+
+#~ msgid "Remove Action"
+#~ msgstr "Aktion entfernen"
+
+#~ msgid "Move Action..."
+#~ msgstr "Aktion verschieben ..."
+
+#~ msgid "Dissociate Action from Context"
+#~ msgstr "Aktion von Kontext trennen"
+
+#~ msgid "Type and press enter to add an action"
+#~ msgstr ""
+#~ "Zum Hinzufügen einer Aktion, geben Sie diese ein und drücken Sie die "
+#~ "Eingabetaste"
+
+#~ msgid "Move Actions to Context"
+#~ msgstr "Aktionen zum Kontext verschieben"
+
+#~ msgid "Copy Actions to Context"
+#~ msgstr "Aktionen zum Kontext kopieren"
+
+#~ msgid "Jump to Context"
+#~ msgstr "Gehe zum Kontext"
+
+#~ msgid "Move Actions to Project"
+#~ msgstr "Aktionen in Projekt verschieben"
+
+#~ msgid "Copy Actions to Project"
+#~ msgstr "Aktionen in Projekt kopieren"
+
+#~ msgid "Jump to Project"
+#~ msgstr "Gehe zum Projekt"
+
+#~ msgid "You can start typing to filter the list of contexts."
+#~ msgstr "Geben Sie hier Text ein, um die Liste der Kontexte zu filtern."
+
+#~ msgid "New"
+#~ msgstr "Neu"
+
+#~ msgid "Rename"
+#~ msgstr "Umbenennen"
+
+#~ msgid "Next"
+#~ msgstr "Weiter"
+
+#~ msgid "Synchronize"
+#~ msgstr "Abgleichen"
+
+#~ msgid "Rename Project"
+#~ msgstr "Projekt umbenennen"
+
+#~ msgid "Previous Project"
+#~ msgstr "Vorheriges Projekt"
+
+#~ msgid "Next Project"
+#~ msgstr "Nächstes Projekt"
+
+#~ msgid "Rename Context"
+#~ msgstr "Kontext umbenennen"
+
+#~ msgid "Previous Context"
+#~ msgstr "Vorheriger Kontext"
+
+#~ msgid "Next Context"
+#~ msgstr "Nächster Kontext"
+
+#~ msgid "New Topic"
+#~ msgstr "Neues Thema"
+
+#~ msgid "Remove Topic"
+#~ msgstr "Thema entfernen"
+
+#~ msgid "Rename Topic"
+#~ msgstr "Thema umbenennen"
+
+#~ msgid "Previous Topic"
+#~ msgstr "Vorheriges Thema"
+
+#~ msgid "Next Topic"
+#~ msgstr "Nächstes Thema"
+
+#~ msgid "Synchronize \"%1\""
+#~ msgstr "„%1“ Abgleichen"
+
+#~ msgid "Enter project name:"
+#~ msgstr "Projektnamen eingeben:"
+
+#~ msgid "Enter context name:"
+#~ msgstr "Kontextnamen eingeben:"
+
+#~ msgid "Enter topic name:"
+#~ msgstr "Themennamen eingeben:"
+
+#~ msgid "Tomorrow"
+#~ msgstr "Morgen"
+
+#~ msgid "Yesterday"
+#~ msgstr "Gestern"
+
+#~ msgid "Last Week"
+#~ msgstr "Letzte Woche"
+
+#~ msgctxt "today"
+#~ msgid "Today"
+#~ msgstr "Heute"
+
+#~ msgctxt "tomorrow"
+#~ msgid "Tomorrow"
+#~ msgstr "Morgen"
+
+#~ msgctxt "yesterday"
+#~ msgid "Yesterday"
+#~ msgstr "Gestern"
+
+#~ msgid "Copyright 2008-2014, Kevin Ottens <ervin@kde.org>"
+#~ msgstr "Copyright 2008-2014, Kevin Ottens <ervin@kde.org>"
+
+#~ msgid "Configure Zanshin"
+#~ msgstr "Zanshin einrichten"
+
+#~ msgid "contexts"
+#~ msgstr "Kontexte"
+
+#~ msgid "Lists all the tasks"
+#~ msgstr "Zeigt eine Liste aller Aufgaben"
+
+#~ msgid "Collection"
+#~ msgstr "Sammlung"
+
+#~ msgid "&Open File"
+#~ msgstr "Datei öff&nen"
+
+#~ msgid "&Remove from Context"
+#~ msgstr "Vom Kontext entfe&rnen"
+
+#~ msgid ""
+#~ "Do you really want to delete the context '%1'? All actions won't be "
+#~ "associated to this context anymore."
+#~ msgstr ""
+#~ "Möchten Sie den Kontext „%1“ wirklich löschen? Keine Aktion wird danach "
+#~ "mit diesem Kontext verbunden sein."
+
+#~ msgid ""
+#~ "Do you really want to delete the contexts '%1'? All actions won't be "
+#~ "associated to those contexts anymore."
+#~ msgstr ""
+#~ "Möchten Sie die Kontexte „%1“ wirklich löschen? Keine Aktion wird danach "
+#~ "mit diesen Kontexten verbunden sein."
+
+#~ msgid "Delete Contexts"
+#~ msgstr "Kontexte löschen"
+
+#~ msgid "No Relation"
+#~ msgstr "Keine Beziehung"
+
+#~ msgid "Relation"
+#~ msgstr "Beziehung"
+
+#~ msgid "Delete Projects"
+#~ msgstr "Projekte löschen"
+
+#~ msgid ""
+#~ "Do you really want to delete the projects '%1', with all its actions?"
+#~ msgstr ""
+#~ "Möchten Sie die Projekte „%1“ mit allen enthaltenen Aktionen wirklich "
+#~ "löschen?"
+
+#~ msgid "Now"
+#~ msgstr "Jetzt"
+
+#~ msgid "Later"
+#~ msgstr "Später"
+
+#~ msgid "Overdue"
+#~ msgstr "Überfällig"
+
+#~ msgid ""
+#~ "Do you really want to delete the folder '%1', with all its projects and "
+#~ "actions?"
+#~ msgstr ""
+#~ "Möchten Sie den Ordner „%1“ mit allen enthaltenen Projekten und Aktionen "
+#~ "wirklich löschen?"
+
+#~ msgid ""
+#~ "Do you really want to delete the context '%1', with all its sub-contexts? "
+#~ "All actions won't be associated to those contexts anymore."
+#~ msgstr ""
+#~ "Möchten Sie den Kontext „%1“ mit allen enthaltenen Unterkontexten "
+#~ "wirklich löschen? Keine Aktion wird danach mit diesen Kontexten verbunden "
+#~ "sein."
+
+#~ msgid "Enter category name:"
+#~ msgstr "Kategorienname eingeben:"
+
+#~ msgid "Categories"
+#~ msgstr "Kategorien"
+
+#~ msgid "No Category"
+#~ msgstr "Keine Kategorie"
+
+#, fuzzy
+#~| msgid "No Category"
+#~ msgid "Remove Category"
+#~ msgstr "Keine Kategorie"
+
+#, fuzzy
+#~| msgid "New Category"
+#~ msgid "Rename Category"
+#~ msgstr "Neue Kategorie"
+
+#, fuzzy
+#~| msgid "No Category"
+#~ msgid "Previous Category"
+#~ msgstr "Keine Kategorie"
+
+#~ msgid "Move Actions to Category"
+#~ msgstr "Aktionen in Kategorie verschieben"
+
+#~ msgid "Copy Actions to Category"
+#~ msgstr "Aktionen in Kategorie kopieren"
+
+#~ msgid "Jump to Category"
+#~ msgstr "Gehe zur Kategorie"
+
+#, fuzzy
+#~| msgid "Categories"
+#~ msgid "categories"
+#~ msgstr "Kategorien"
+
+#~ msgid "Categories View"
+#~ msgstr "Kategorienansicht"

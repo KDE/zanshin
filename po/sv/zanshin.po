@@ -1,0 +1,1450 @@
+# Copyright (C) YEAR This_file_is_part_of_KDE
+# This file is distributed under the same license as the PACKAGE package.
+#
+# Stefan Asserhall <stefan.asserhall@bredband.net>, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2021.
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: https://bugs.kde.org\n"
+"POT-Creation-Date: 2022-06-07 00:57+0000\n"
+"PO-Revision-Date: 2021-05-10 20:14+0200\n"
+"Last-Translator: Stefan Asserhäll <stefan.asserhall@bredband.net>\n"
+"Language-Team: Swedish <kde-i18n-doc@kde.org>\n"
+"Language: sv\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Lokalize 20.08.1\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Qt-Contexts: true\n"
+
+#, kde-format
+msgctxt "NAME OF TRANSLATORS"
+msgid "Your names"
+msgstr "Stefan Asserhäll"
+
+#, kde-format
+msgctxt "EMAIL OF TRANSLATORS"
+msgid "Your emails"
+msgstr "stefan.asserhall@bredband.net"
+
+#: 3rdparty/kdepim/libkdepim/kdateedit.cpp:429
+#, kde-format
+msgctxt "the day after today"
+msgid "tomorrow"
+msgstr "i morgon"
+
+#: 3rdparty/kdepim/libkdepim/kdateedit.cpp:430
+#, kde-format
+msgctxt "this day"
+msgid "today"
+msgstr "i dag"
+
+#: 3rdparty/kdepim/libkdepim/kdateedit.cpp:431
+#, kde-format
+msgctxt "the day before today"
+msgid "yesterday"
+msgstr "i går"
+
+#: 3rdparty/kdepim/libkdepim/kdateedit.cpp:432
+#, kde-format
+msgctxt "the week after this week"
+msgid "next week"
+msgstr "nästa vecka"
+
+#: 3rdparty/kdepim/libkdepim/kdateedit.cpp:433
+#, kde-format
+msgctxt "the month after this month"
+msgid "next month"
+msgstr "nästa månad"
+
+#: src/akonadi/akonadiconfigdialog.cpp:35
+#, kde-format
+msgid "Configure"
+msgstr "Anpassa"
+
+#: src/akonadi/akonadiconfigdialog.cpp:39
+#, kde-format
+msgid ""
+"Please select or create a resource which will be used by the application to "
+"store and query its TODOs."
+msgstr ""
+"Välj eller skapa en resurs som ska användas av programmet för att lagra och "
+"kontrollera dess uppgifter."
+
+#: src/akonadi/akonadiconfigdialog.cpp:49
+#, kde-format
+msgid "Add resource"
+msgstr "Lägg till resurs"
+
+#: src/akonadi/akonadiconfigdialog.cpp:56
+#, kde-format
+msgid "Remove resource"
+msgstr "Ta bort resurs"
+
+#: src/akonadi/akonadiconfigdialog.cpp:63
+#, kde-format
+msgid "Configure resource..."
+msgstr "Anpassa resurs..."
+
+#: src/akonadi/akonadiconfigdialog.cpp:111
+#, kde-format
+msgid "Multiple Agent Deletion"
+msgstr "Borttagning av flera moduler"
+
+#: src/akonadi/akonadiconfigdialog.cpp:112
+#, kde-format
+msgid "Do you really want to delete the selected agent instances?"
+msgstr "Vill du verkligen ta bort de markerade instanserna av moduler?"
+
+#: src/akonadi/akonaditaskrepository.cpp:51
+#, kde-format
+msgid "Could not find a collection to store the task into!"
+msgstr "Kunde inte hitta en samling att lagra uppgiften i."
+
+#: src/akonadi/akonaditaskrepository.cpp:198
+#, kde-format
+msgid "Could not associate '%1', it is an ancestor of '%2'"
+msgstr "Kunde inte associera '%1', det är ett överliggande objekt till '%2'"
+
+#: src/presentation/alltaskspagemodel.cpp:35
+#, kde-format
+msgid "Cannot add task %1"
+msgstr "Kan inte lägga till uppgiften %1"
+
+#: src/presentation/alltaskspagemodel.cpp:46
+#, kde-format
+msgid "Cannot remove task %1"
+msgstr "Kan inte ta bort uppgiften %1"
+
+#: src/presentation/alltaskspagemodel.cpp:56
+#: src/presentation/contextpagemodel.cpp:74
+#: src/presentation/inboxpagemodel.cpp:55
+#: src/presentation/projectpagemodel.cpp:67
+#: src/presentation/workdaypagemodel.cpp:63
+#, kde-format
+msgid "Cannot promote task %1 to be a project"
+msgstr "Kan inte befordra uppgiften %1 till att vara ett projekt"
+
+#: src/presentation/alltaskspagemodel.cpp:97
+#: src/presentation/editormodel.cpp:390
+#, kde-format
+msgid "Cannot modify task %1"
+msgstr "Kan inte ändra uppgiften %1"
+
+#: src/presentation/alltaskspagemodel.cpp:122
+#: src/presentation/contextpagemodel.cpp:144
+#: src/presentation/inboxpagemodel.cpp:111
+#: src/presentation/workdaypagemodel.cpp:119
+#, kde-format
+msgid "Cannot move task %1 as sub-task of %2"
+msgstr "Kan inte flytta uppgiften %1 som en deluppgift av %2"
+
+#: src/presentation/alltaskspagemodel.cpp:125
+#: src/presentation/inboxpagemodel.cpp:114
+#: src/presentation/workdaypagemodel.cpp:127
+#, kde-format
+msgid "Cannot deparent task %1 from its parent"
+msgstr "Kan inte koppla loss uppgiften %1 från dess överliggande uppgift"
+
+#: src/presentation/availablepagesmodel.cpp:117
+#, kde-format
+msgid "Cannot add project %1 in dataSource %2"
+msgstr "Kan inte lägga till projektet %1 i datakällan %2"
+
+#: src/presentation/availablepagesmodel.cpp:125
+#, kde-format
+msgid "Cannot add context %1"
+msgstr "Kan inte lägga till sammanhanget %1"
+
+#: src/presentation/availablepagesmodel.cpp:133
+#, kde-format
+msgid "Cannot remove project %1"
+msgstr "Kan inte ta bort projektet %1"
+
+#: src/presentation/availablepagesmodel.cpp:136
+#, kde-format
+msgid "Cannot remove context %1"
+msgstr "Kan inte ta bort sammanhanget %1"
+
+#: src/presentation/availablepagesmodel.cpp:145
+#: src/widgets/itemdelegate.cpp:143
+#, kde-format
+msgid "Inbox"
+msgstr "Inkorg"
+
+#: src/presentation/availablepagesmodel.cpp:147
+#, kde-format
+msgid "Workday"
+msgstr "Arbetsdag"
+
+#: src/presentation/availablepagesmodel.cpp:149
+#, kde-format
+msgid "Projects"
+msgstr "Projekt"
+
+#: src/presentation/availablepagesmodel.cpp:151
+#, kde-format
+msgid "Contexts"
+msgstr "Sammanhang"
+
+#: src/presentation/availablepagesmodel.cpp:153
+#, kde-format
+msgid "All Tasks"
+msgstr "Alla uppgifter"
+
+#: src/presentation/availablepagesmodel.cpp:252
+#, kde-format
+msgid "Cannot modify project %1"
+msgstr "Kan inte ändra projektet %1"
+
+#: src/presentation/availablepagesmodel.cpp:257
+#, kde-format
+msgid "Cannot modify context %1"
+msgstr "Kan inte ändra sammanhanget %1"
+
+#: src/presentation/availablepagesmodel.cpp:276
+#, kde-format
+msgid "Cannot add %1 to project %2"
+msgstr "Kan inte lägga till %1 i projektet %2"
+
+#: src/presentation/availablepagesmodel.cpp:282
+#, kde-format
+msgid "Cannot add %1 to context %2"
+msgstr "Kan inte lägga till %1 i sammanhanget %2"
+
+#: src/presentation/availablepagesmodel.cpp:288
+#, kde-format
+msgid "Cannot move %1 to Inbox"
+msgstr "Kan inte flytta %1 till inkorgen"
+
+#: src/presentation/availablepagesmodel.cpp:292
+#, kde-format
+msgid "Cannot move task %1 to Inbox"
+msgstr "Kan inte flytta uppgiften %1 till inkorgen"
+
+#: src/presentation/availablepagesmodel.cpp:301
+#, kde-format
+msgid "Cannot update task %1 to Workday"
+msgstr "Kan inte uppdatera uppgiften %1 till arbetsdag"
+
+#: src/presentation/availablesourcesmodel.cpp:99
+#, kde-format
+msgid "Cannot modify source %1"
+msgstr "Kan inte ändra källan %1"
+
+#: src/presentation/contextpagemodel.cpp:54
+#, kde-format
+msgid "Cannot add task %1 in context %2"
+msgstr "Kan inte lägga till uppgiften %1 i sammanhanget %2"
+
+#: src/presentation/contextpagemodel.cpp:65
+#, kde-format
+msgid "Cannot remove task %1 from context %2"
+msgstr "Kan inte ta bort uppgiften %1 från sammanhanget %2"
+
+#: src/presentation/contextpagemodel.cpp:115
+#, kde-format
+msgid "Cannot modify task %1 in context %2"
+msgstr "Kan inte ändra uppgiften %1 i sammanhanget %2"
+
+#: src/presentation/contextpagemodel.cpp:147
+#, kde-format
+msgid "Cannot dissociate task %1 from its parent"
+msgstr "Kan inte koppla loss uppgiften %1 från dess överliggande uppgift"
+
+#: src/presentation/inboxpagemodel.cpp:35
+#, kde-format
+msgid "Cannot add task %1 in Inbox"
+msgstr "Kan inte lägga till uppgiften %1 i inkorgen"
+
+#: src/presentation/inboxpagemodel.cpp:46
+#, kde-format
+msgid "Cannot remove task %1 from Inbox"
+msgstr "Kan inte ta bort uppgiften %1 från inkorgen"
+
+#: src/presentation/inboxpagemodel.cpp:96
+#, kde-format
+msgid "Cannot modify task %1 in Inbox"
+msgstr "Kan inte ändra uppgiften %1 i inkorgen"
+
+#: src/presentation/projectpagemodel.cpp:47
+#, kde-format
+msgid "Cannot add task %1 in project %2"
+msgstr "Kan inte lägga till uppgiften %1 i projektet %2"
+
+#: src/presentation/projectpagemodel.cpp:58
+#, kde-format
+msgid "Cannot remove task %1 from project %2"
+msgstr "Kan inte ta bort uppgiften %1 från projekt %2"
+
+#: src/presentation/projectpagemodel.cpp:104
+#, kde-format
+msgid "Cannot modify task %1 in project %2"
+msgstr "Kan inte ändra uppgiften %1 i projektet %2"
+
+#: src/presentation/projectpagemodel.cpp:130
+#, kde-format
+msgid "Cannot move task %1 as a sub-task of %2"
+msgstr "Kan inte flytta uppgiften %1 som en deluppgift av %2"
+
+#: src/presentation/runningtaskmodel.cpp:46
+#, kde-format
+msgid "Cannot update task %1 to 'not running'"
+msgstr "Kan inte uppdatera uppgiften %1 till 'pågår inte'"
+
+#: src/presentation/runningtaskmodel.cpp:54
+#, kde-format
+msgid "Cannot update task %1 to 'running'"
+msgstr "Kan inte uppdatera uppgiften %1 till 'pågår inte'"
+
+#: src/presentation/workdaypagemodel.cpp:42
+#, kde-format
+msgid "Cannot add task %1 in Workday"
+msgstr "Kan inte lägga till uppgiften %1 i arbetsdag"
+
+#: src/presentation/workdaypagemodel.cpp:53
+#, kde-format
+msgid "Cannot remove task %1 from Workday"
+msgstr "Kan inte ta bort uppgiften %1 från arbetsdag"
+
+#: src/presentation/workdaypagemodel.cpp:104
+#, kde-format
+msgid "Cannot modify task %1 in Workday"
+msgstr "Kan inte ändra uppgiften %1 i arbetsdag"
+
+#: src/widgets/applicationcomponents.cpp:47
+#, kde-format
+msgid "Move Task"
+msgstr "Flytta uppgift"
+
+#: src/widgets/availablepagesview.cpp:50
+#, kde-format
+msgid "New Project"
+msgstr "Nytt projekt"
+
+#: src/widgets/availablepagesview.cpp:56
+#, kde-format
+msgid "New Context"
+msgstr "Nytt sammanhang"
+
+#: src/widgets/availablepagesview.cpp:62
+#, kde-format
+msgid "Remove Page"
+msgstr "Ta bort sida"
+
+#: src/widgets/availablepagesview.cpp:91
+#, kde-format
+msgid "Previous Page"
+msgstr "Föregående sida"
+
+#: src/widgets/availablepagesview.cpp:98
+#, kde-format
+msgid "Next Page"
+msgstr "Nästa sida"
+
+#: src/widgets/availablepagesview.cpp:105
+#, kde-format
+msgid "Go to Page..."
+msgstr "Gå till sida..."
+
+#: src/widgets/availablepagesview.cpp:240
+#, kde-format
+msgid "Add a context"
+msgstr "Lägg till ett sammanhang"
+
+#: src/widgets/availablepagesview.cpp:265
+#, kde-format
+msgid "Delete Project"
+msgstr "Ta bort projekt"
+
+#: src/widgets/availablepagesview.cpp:266
+#, kde-format
+msgid "Do you really want to delete the project '%1', with all its actions?"
+msgstr "Vill du verkligen ta bort projektet '%1' med alla dess åtgärder?"
+
+#: src/widgets/availablepagesview.cpp:268
+#, kde-format
+msgid "Delete Context"
+msgstr "Ta bort sammanhang"
+
+#: src/widgets/availablepagesview.cpp:269
+#, kde-format
+msgid "Do you really want to delete the context '%1'?"
+msgstr "Vill du verkligen ta bort sammanhanget '%1'?"
+
+#: src/widgets/availablesourcesview.cpp:55
+#, kde-format
+msgid "Use as Default Source"
+msgstr "Använd som standardkälla"
+
+#: src/widgets/availablesourcesview.cpp:76
+#, kde-format
+msgid "Configure %1..."
+msgstr "Anpassa %1..."
+
+#: src/widgets/editorview.cpp:32
+#, kde-format
+msgid "Add Attachment"
+msgstr "Lägg till bilaga"
+
+#: src/widgets/editorview.cpp:40
+#, kde-format
+msgid "Never"
+msgstr "Aldrig"
+
+#: src/widgets/editorview.cpp:41
+#, kde-format
+msgid "Daily"
+msgstr "Dagligen"
+
+#: src/widgets/editorview.cpp:42
+#, kde-format
+msgid "Weekly"
+msgstr "Veckovis"
+
+#: src/widgets/editorview.cpp:43
+#, kde-format
+msgid "Monthly"
+msgstr "Månadsvis"
+
+#: src/widgets/editorview.cpp:44
+#, kde-format
+msgid "Yearly"
+msgstr "Årligen"
+
+#. i18n: ectx: property (windowTitle), widget (QWidget, EditorView)
+#. i18n: ectx: property (text), widget (QListView, attachmentList)
+#: src/widgets/editorview.ui:14 src/widgets/editorview.ui:184
+#: src/zanshin/app/main.cpp:84
+#, kde-format
+msgid "Editor"
+msgstr "Editor"
+
+#. i18n: ectx: property (text), widget (QLabel, dueDateLabel)
+#: src/widgets/editorview.ui:41
+#, kde-format
+msgid "D&ue Date "
+msgstr "Färdigdat&um "
+
+#. i18n: ectx: property (text), widget (QCheckBox, doneButton)
+#: src/widgets/editorview.ui:62 src/widgets/runningtaskwidget.cpp:50
+#, kde-format
+msgid "Done"
+msgstr "Klar"
+
+#. i18n: ectx: property (toolTip), widget (QToolButton, addAttachmentButton)
+#: src/widgets/editorview.ui:86
+#, kde-format
+msgid "Add Attachment..."
+msgstr "Lägg till bilaga..."
+
+#. i18n: ectx: property (toolTip), widget (QToolButton, removeAttachmentButton)
+#: src/widgets/editorview.ui:100
+#, kde-format
+msgid "Remove Attachment"
+msgstr "Ta bort bilaga"
+
+#. i18n: ectx: property (text), widget (QPushButton, startTodayButton)
+#: src/widgets/editorview.ui:121
+#, kde-format
+msgid "Select for &Today"
+msgstr "Välj för i&dag"
+
+#. i18n: ectx: property (text), widget (QLabel, recurrenceLabel)
+#: src/widgets/editorview.ui:130
+#, kde-format
+msgid "&Recurrence"
+msgstr "Upp&repning"
+
+#. i18n: ectx: property (text), widget (QLabel, startDateLabel)
+#: src/widgets/editorview.ui:146
+#, kde-format
+msgid "St&art Date"
+msgstr "St&artdatum"
+
+#: src/widgets/filterwidget.cpp:29
+#, kde-format
+msgid "Sort by title"
+msgstr "Sortera enligt titel"
+
+#: src/widgets/filterwidget.cpp:30
+#, kde-format
+msgid "Sort by date"
+msgstr "Sortera enligt datum"
+
+#. i18n: ectx: property (placeholderText), widget (QLineEdit, filterEdit)
+#: src/widgets/filterwidget.ui:31 src/widgets/pageview.cpp:197
+#, kde-format
+msgid "Filter..."
+msgstr "Filter..."
+
+#. i18n: ectx: property (toolTip), widget (QToolButton, descendingButton)
+#: src/widgets/filterwidget.ui:65
+#, kde-format
+msgid "Sort in descending order"
+msgstr "Sortera i fallande ordning"
+
+#. i18n: ectx: property (toolTip), widget (QToolButton, ascendingButton)
+#: src/widgets/filterwidget.ui:88
+#, kde-format
+msgid "Sort in ascending order"
+msgstr "Sortera i stigande ordning"
+
+#: src/widgets/itemdelegate.cpp:141
+#, kde-format
+msgid "Project: %1"
+msgstr "Projekt: %1"
+
+#. i18n: ectx: property (windowTitle), widget (QDialog, NameAndDataSourceDialog)
+#: src/widgets/nameanddatasourcedialog.ui:14
+#, kde-format
+msgid "Add a project"
+msgstr "Lägg till ett projekt"
+
+#. i18n: ectx: property (text), widget (QLabel, nameLabel)
+#: src/widgets/nameanddatasourcedialog.ui:25
+#, kde-format
+msgid "Name"
+msgstr "Namn"
+
+#. i18n: ectx: property (text), widget (QLabel, sourceLabel)
+#: src/widgets/nameanddatasourcedialog.ui:42
+#, kde-format
+msgid "Source"
+msgstr "Källa"
+
+#: src/widgets/pageview.cpp:155
+#, kde-format
+msgid "Type and press enter to add a task"
+msgstr "Skriv in och tryck på returtangenten för att lägga till en uppgift"
+
+#: src/widgets/pageview.cpp:170
+#, kde-format
+msgid "New Task"
+msgstr "Ny uppgift"
+
+#: src/widgets/pageview.cpp:183
+#, kde-format
+msgid "Remove Task"
+msgstr "Ta bort uppgift"
+
+#: src/widgets/pageview.cpp:191
+#, kde-format
+msgid "Promote Task as Project"
+msgstr "Befordra uppgift till projekt"
+
+#: src/widgets/pageview.cpp:205
+#, kde-format
+msgid "Show done tasks"
+msgstr "Visa klara uppgifter"
+
+#: src/widgets/pageview.cpp:213
+#, kde-format
+msgid "Show future tasks"
+msgstr "Visa framtida uppgifter"
+
+#: src/widgets/pageview.cpp:239
+#, kde-format
+msgid "Start Now"
+msgstr "Börja nu"
+
+#: src/widgets/pageview.cpp:357
+#, kde-format
+msgid "Type and press enter to add an item"
+msgstr "Skriv in och tryck på returtangenten för att lägga till ett objekt"
+
+#: src/widgets/pageview.cpp:383
+#, kde-format
+msgid "Do you really want to delete the selected items and their children?"
+msgstr ""
+"Vill du verkligen ta bort de markerade objekten och deras underliggande "
+"objekt?"
+
+#: src/widgets/pageview.cpp:385
+#, kde-format
+msgid "Do you really want to delete the selected items?"
+msgstr "Vill du verkligen ta bort de markerade objekten?"
+
+#: src/widgets/pageview.cpp:393
+#, kde-format
+msgid "Do you really want to delete the selected task and all its children?"
+msgstr ""
+"Vill du verkligen ta bort den markerade uppgiften och alla underliggande "
+"uppgifter?"
+
+#: src/widgets/pageview.cpp:397
+#, kde-format
+msgid "Delete Tasks"
+msgstr "Ta bort uppgifter"
+
+#: src/widgets/quickselectdialog.cpp:30
+#, kde-format
+msgid "Quick Select Dialog"
+msgstr "Snabbvalsdialogruta"
+
+#: src/widgets/quickselectdialog.cpp:32 src/widgets/quickselectdialog.cpp:70
+#, kde-format
+msgid "You can start typing to filter the list of available pages"
+msgstr "Du kan börja skriva för att filtrera listan med tillgängliga sidor"
+
+#: src/widgets/quickselectdialog.cpp:72
+#, kde-format
+msgid "Path: %1"
+msgstr "Sökväg: %1"
+
+#: src/widgets/runningtaskwidget.cpp:36
+#, kde-format
+msgid "Zanshin Running Task Banner"
+msgstr "Zanshin banderoll för pågående uppgift"
+
+#: src/widgets/runningtaskwidget.cpp:46
+#, kde-format
+msgid "Stop"
+msgstr "Stoppa"
+
+#: src/zanshin/app/aboutdata.cpp:14
+#, kde-format
+msgid "Zanshin Tasks"
+msgstr "Zanshin-uppgift"
+
+#: src/zanshin/app/aboutdata.cpp:15
+#, kde-format
+msgid ""
+"A Getting Things Done application which aims at getting your mind like water"
+msgstr ""
+"Ett program för att få saker gjorda med avsikt att få ditt sinne likt vatten"
+
+#: src/zanshin/app/aboutdata.cpp:17
+#, kde-format
+msgid "Copyright 2008-2016, Kevin Ottens <ervin@kde.org>"
+msgstr "Copyright 2008-2016, Kevin Ottens <ervin@kde.org>"
+
+#: src/zanshin/app/aboutdata.cpp:19
+#, kde-format
+msgid "Kevin Ottens"
+msgstr "Kevin Ottens"
+
+#: src/zanshin/app/aboutdata.cpp:20
+#, kde-format
+msgid "Lead Developer"
+msgstr "Huvudutvecklare"
+
+#: src/zanshin/app/aboutdata.cpp:23
+#, kde-format
+msgid "Mario Bensi"
+msgstr "Mario Bensi"
+
+#: src/zanshin/app/aboutdata.cpp:24 src/zanshin/app/aboutdata.cpp:28
+#, kde-format
+msgid "Developer"
+msgstr "Utvecklare"
+
+#: src/zanshin/app/aboutdata.cpp:27
+#, kde-format
+msgid "Franck Arrecot"
+msgstr "Franck Arrecot"
+
+#: src/zanshin/app/main.cpp:76
+#, kde-format
+msgid "Sources"
+msgstr "Källor"
+
+#: src/zanshin/app/main.cpp:80
+#, kde-format
+msgid "Pages"
+msgstr "Sidor"
+
+#. i18n: ectx: Menu (go)
+#: src/zanshin/app/zanshinui.rc:15 src/zanshin/kontact/zanshin_part.rc:15
+#, kde-format
+msgid "&Go"
+msgstr "&Gå"
+
+#. i18n: ectx: Menu
+#: src/zanshin/app/zanshinui.rc:27
+#, kde-format
+msgid "&Panels"
+msgstr "&Paneler"
+
+#. i18n: ectx: ToolBar (mainToolBar)
+#: src/zanshin/app/zanshinui.rc:35 src/zanshin/kontact/zanshin_part.rc:27
+#, kde-format
+msgctxt "@title:menu"
+msgid "Main Toolbar"
+msgstr "Huvudverktygsrad"
+
+#: src/zanshin/runner/zanshinrunner.cpp:61
+#, kde-format
+msgid "Add \"%1\" to your todo list"
+msgstr "Lägg till \"%1\" i uppgiftslistan"
+
+#~ msgctxt "@option today"
+#~ msgid "&Today"
+#~ msgstr "&I dag"
+
+#~ msgctxt "@option tomorrow"
+#~ msgid "To&morrow"
+#~ msgstr "I morgon"
+
+#~ msgctxt "@option next week"
+#~ msgid "Next &Week"
+#~ msgstr "Nästa &vecka"
+
+#~ msgctxt "@option next month"
+#~ msgid "Next M&onth"
+#~ msgstr "Nästa må&nad"
+
+#~ msgctxt "@option do not specify a date"
+#~ msgid "No Date"
+#~ msgstr "Inget datum"
+
+#~ msgid "Context name"
+#~ msgstr "Sammanhangsnamn"
+
+#~ msgid "Script Editor - Zanshin"
+#~ msgstr "Skripteditor - Zanshin"
+
+#~ msgid "vCard Import Failed"
+#~ msgstr "Import av visitkort misslyckades"
+
+#~ msgid "<qt>Unable to access <b>%1</b>.</qt>"
+#~ msgstr "<qt>Kan inte komma åt <b>%1</b>.</qt>"
+
+#~ msgid "Select email from contact"
+#~ msgstr "Välj brev från kontakt"
+
+#~ msgid "Show Organization Unit for LDAP results"
+#~ msgstr "Visa organisationsenhet för LDAP-resultat"
+
+#~ msgid "Configure Completion..."
+#~ msgstr "Anpassa komplettering..."
+
+#~ msgid "Automatically expand groups"
+#~ msgstr "Expandera automatiskt grupper"
+
+#~ msgid "Expand Groups..."
+#~ msgstr "Expandera grupper..."
+
+#~ msgid "Recent Addresses"
+#~ msgstr "Senaste adresser"
+
+#~ msgctxt "@title:group"
+#~ msgid "Contacts found in your data"
+#~ msgstr "Kontakter hittades i data"
+
+#~ msgid "LDAP server: %1"
+#~ msgstr "LDAP-server: %1"
+
+#~ msgid "Blacklist Email Completion"
+#~ msgstr "Komplettering för svartlistning av e-post"
+
+#~ msgid "Search email:"
+#~ msgstr "Sök brev:"
+
+#~ msgid "Research is done from 3 characters"
+#~ msgstr "Efterforskning görs från tre tecken"
+
+#~ msgid "Search"
+#~ msgstr "Sök"
+
+#~ msgid "Show Blacklisted Emails"
+#~ msgstr "Visa svartlistade e-postadresser"
+
+#~ msgid "Search in result..."
+#~ msgstr "Sök i resultat..."
+
+#~ msgid "&Select"
+#~ msgstr "&Markera"
+
+#~ msgid "&Unselect"
+#~ msgstr "&Avmarkera"
+
+#~ msgid "<qt><a href=\"more_result\">More result...</a></qt>"
+#~ msgstr "<qt><a href=\"more_result\">Fler resultat...</a></qt>"
+
+#~ msgid "Exclude domain names:"
+#~ msgstr "Undanta domännamn:"
+
+#~ msgid "Separate domain with '%1'"
+#~ msgstr "Separera domän med '%1'"
+
+#~ msgid "No email found."
+#~ msgstr "Inga brev hittades"
+
+#~ msgid "1 email found"
+#~ msgid_plural "%1 emails found"
+#~ msgstr[0] "1 brev hittades"
+#~ msgstr[1] "%1 brev hittades"
+
+#~ msgid "No result found"
+#~ msgstr "Inga resultat hittades"
+
+#~ msgid ""
+#~ "The list was changed. Do you want to save before to make another search ?"
+#~ msgstr "Listan har ändrats. Vill du spara innan du gör en annan sökning?"
+
+#~ msgid "Save"
+#~ msgstr "Spara"
+
+#~ msgid "Configure completion"
+#~ msgstr "Anpassa komplettering"
+
+#~ msgid "Completion Order"
+#~ msgstr "Kompletteringsordning"
+
+#~ msgid "Recent Address"
+#~ msgstr "Senaste adresser"
+
+#~ msgid "Blacklist Email Address"
+#~ msgstr "Svartlista e-postadress"
+
+#~ msgid "Edit Completion Order"
+#~ msgstr "Redigera kompletteringsordning"
+
+#~ msgid "LDAP server %1"
+#~ msgstr "LDAP-server %1"
+
+#~ msgid "Add Host"
+#~ msgstr "Lägg till värddator"
+
+#~ msgid "kcmldap"
+#~ msgstr "kcmldap"
+
+#~ msgid "LDAP Server Settings"
+#~ msgstr "LDAP-serverinställningar"
+
+#~ msgid "(c) 2009 - 2010 Tobias Koenig"
+#~ msgstr "© 2009 - 2010 Tobias Koenig"
+
+#~ msgid "Tobias Koenig"
+#~ msgstr "Tobias Koenig"
+
+#~ msgid "Edit Host"
+#~ msgstr "Redigera värddator"
+
+#~ msgid "Do you want to remove setting for host \"%1\"?"
+#~ msgstr "Vill du ta bort inställningen för värddatorn \"%1\"?"
+
+#~ msgid "LDAP Servers"
+#~ msgstr "LDAP-servrar"
+
+#~ msgid "Check all servers that should be used:"
+#~ msgstr "Markera alla servrar som ska användas:"
+
+#~ msgid "&Add Host..."
+#~ msgstr "&Lägg till värddator..."
+
+#~ msgid "&Edit Host..."
+#~ msgstr "&Redigera värddator..."
+
+#~ msgid "&Remove Host"
+#~ msgstr "Ta bo&rt värddator"
+
+#~ msgid ""
+#~ "LDAP password is stored as clear text, do you want to store it in kwallet?"
+#~ msgstr ""
+#~ "LDAP-lösenordet lagras som vanlig text. Vill du lagra det i plånboken?"
+
+#~ msgid "Store clear text password in KWallet"
+#~ msgstr "Lagra klartextlösenord i plånboken"
+
+#~ msgctxt "@item LDAP search key"
+#~ msgid "Title"
+#~ msgstr "Titel"
+
+#~ msgid "Full Name"
+#~ msgstr "Fullständigt namn"
+
+#~ msgctxt "@item LDAP search key"
+#~ msgid "Email"
+#~ msgstr "E-post"
+
+#~ msgid "Home Number"
+#~ msgstr "Hemnummer"
+
+#~ msgid "Work Number"
+#~ msgstr "Arbetsnummer"
+
+#~ msgid "Mobile Number"
+#~ msgstr "Mobilnummer"
+
+#~ msgid "Fax Number"
+#~ msgstr "Telefaxnummer"
+
+#~ msgid "Pager"
+#~ msgstr "Personsökare"
+
+#~ msgid "Street"
+#~ msgstr "Gata"
+
+#~ msgctxt "@item LDAP search key"
+#~ msgid "State"
+#~ msgstr "Tillstånd"
+
+#~ msgid "Country"
+#~ msgstr "Land"
+
+#~ msgid "City"
+#~ msgstr "Stad"
+
+#~ msgid "Organization"
+#~ msgstr "Organisation"
+
+#~ msgid "Company"
+#~ msgstr "Företag"
+
+#~ msgid "Department"
+#~ msgstr "Avdelning"
+
+#~ msgid "Zip Code"
+#~ msgstr "Postnummer"
+
+#~ msgid "Postal Address"
+#~ msgstr "Postadress"
+
+#~ msgid "Description"
+#~ msgstr "Beskrivning"
+
+#~ msgid "User ID"
+#~ msgstr "Användar-id"
+
+#~ msgctxt "@title:column Column containing email addresses"
+#~ msgid "Email"
+#~ msgstr "E-post"
+
+#~ msgctxt ""
+#~ "@title:column Column containing the residential state of the address"
+#~ msgid "State"
+#~ msgstr "Stat"
+
+#~ msgctxt "@title:column Column containing title of the person"
+#~ msgid "Title"
+#~ msgstr "Titel"
+
+#~ msgid "Import Contacts from LDAP"
+#~ msgstr "Importerar kontakter från LDAP"
+
+#~ msgid "Search for Addresses in Directory"
+#~ msgstr "Sök efter adresser i katalog"
+
+#~ msgid "Search for:"
+#~ msgstr "Sök efter:"
+
+#~ msgctxt "In LDAP attribute"
+#~ msgid "in"
+#~ msgstr "i"
+
+#~ msgctxt "@item:inlistbox Name of the contact"
+#~ msgid "Name"
+#~ msgstr "Namn"
+
+#~ msgctxt "@item:inlistbox email address of the contact"
+#~ msgid "Email"
+#~ msgstr "E-post"
+
+#~ msgctxt "@item:inlistbox"
+#~ msgid "Home Number"
+#~ msgstr "Hemnummer"
+
+#~ msgctxt "@item:inlistbox"
+#~ msgid "Work Number"
+#~ msgstr "Arbetsnummer"
+
+#~ msgctxt "@action:button Start searching"
+#~ msgid "&Search"
+#~ msgstr "&Sök"
+
+#~ msgid "Recursive search"
+#~ msgstr "Rekursiv sökning"
+
+#~ msgid "Contains"
+#~ msgstr "Innehåller"
+
+#~ msgid "Starts With"
+#~ msgstr "Börjar med"
+
+#~ msgid "Search in result"
+#~ msgstr "Sök i resultat"
+
+#~ msgid "Searching..."
+#~ msgstr "Söker..."
+
+#~ msgid "Select All"
+#~ msgstr "Markera alla"
+
+#~ msgid "Unselect All"
+#~ msgstr "Avmarkera alla"
+
+#~ msgid "Add Selected"
+#~ msgstr "Lägg till markerad"
+
+#~ msgid "Configure LDAP Servers..."
+#~ msgstr "Anpassa LDAP-servrar..."
+
+#~ msgid "Copy"
+#~ msgstr "Kopiera"
+
+#~ msgid "You must select an LDAP server before searching."
+#~ msgstr "Du måste välja en LDAP-server innan sökning."
+
+#~ msgctxt "arguments are host name, datetime"
+#~ msgid "Imported from LDAP directory %1 on %2"
+#~ msgstr "Importerat från LDAP-katalogen %1 %2"
+
+#~ msgid "Configure the Address Book LDAP Settings"
+#~ msgstr "Anpassa adressbokens LDAP-inställningar"
+
+#~ msgid "Edit Recent Addresses"
+#~ msgstr "Redigera senaste adresser"
+
+#~ msgid "&Add"
+#~ msgstr "&Lägg till"
+
+#~ msgid "&Remove"
+#~ msgstr "&Ta bort"
+
+#~ msgid "Do you want to remove this email address?"
+#~ msgid_plural "Do you want to remove %1 email addresses?"
+#~ msgstr[0] "Vill du ta bort e-postadressen?"
+#~ msgstr[1] "Vill du ta bort %1 e-postadresser?"
+
+#~ msgid "Remove"
+#~ msgstr "Ta bort"
+
+#~ msgid "Choose an identity"
+#~ msgstr "Välj en identitet"
+
+#~ msgid "Choose the identity to use for the groupware message"
+#~ msgstr "Välj identitet att använda för grupprogrambrev"
+
+#~ msgid "Could not find a collection to store the note into!"
+#~ msgstr "Kunde inte hitta en samling att lagra anteckningen i."
+
+#~ msgid "Tags"
+#~ msgstr "Etiketter"
+
+#~ msgid "Cannot tag %1 with %2"
+#~ msgstr "Kan inte lägga till etiketten %2 i %1"
+
+#~ msgid "Cannot add note %1 in Inbox"
+#~ msgstr "Kan inte lägga till anteckningen %1 i inkorgen"
+
+#~ msgid "Cannot remove note %1 from Inbox"
+#~ msgstr "Kan inte ta bort anteckningen %1 från inkorgen"
+
+#~ msgid "Cannot modify note %1 in Inbox"
+#~ msgstr "Kan inte ändra anteckningen %1 i inkorgen"
+
+#~ msgid "Cannot add note %1 in tag %2"
+#~ msgstr "Kan inte lägga till anteckningen %1 i etiketten %2"
+
+#~ msgid "Cannot remove note %1 from tag %2"
+#~ msgstr "Kan inte ta bort anteckningen %1 från etiketten %2"
+
+#~ msgid "Cannot modify note %1 in tag %2"
+#~ msgstr "Kan inte ändra anteckningen %1 i etiketten %2"
+
+#~ msgid "Renku Notes"
+#~ msgstr "Renku anteckningar"
+
+#~ msgid "A note taking application which aims at getting your mind like water"
+#~ msgstr "Ett anteckningsprogram med avsikt att få ditt sinne likt vatten"
+
+#~ msgid "Copyright 2008-2015, Kevin Ottens <ervin@kde.org>"
+#~ msgstr "Copyright 2008-2015, Kevin Ottens <ervin@kde.org>"
+
+#~ msgid "Move Item"
+#~ msgstr "Flytta objekt"
+
+#~ msgid "Add Tag"
+#~ msgstr "Lägg till etikett"
+
+#~ msgid "Tag name"
+#~ msgstr "Etikettnamn"
+
+#~ msgid "Delete Tag"
+#~ msgstr "Ta bort etikett"
+
+#~ msgid "Do you really want to delete the tag '%1'?"
+#~ msgstr "Vill du verkligen ta bort sammanhanget '%1'?"
+
+#~ msgid "Delegated to: <b>%1</b>"
+#~ msgstr "Delegerad till: <b>%1</b>"
+
+#~ msgid "Delegate To: "
+#~ msgstr "Delegera till:"
+
+#~ msgid "De&legate to"
+#~ msgstr "De&legera till"
+
+#~ msgid "(%1) %2"
+#~ msgstr "(%1) %2"
+
+#~ msgid "New Item"
+#~ msgstr "Nytt objekt"
+
+#~ msgid "Remove Item"
+#~ msgstr "Ta bort objekt"
+
+#~ msgid "Cannot update task %1"
+#~ msgstr "Kan inte uppdatera uppgiften %1"
+
+#~ msgctxt "Presentation::AvailableTaskPagesModel|"
+#~ msgid "Inbox"
+#~ msgstr "Inkorg"
+
+#~ msgctxt "Presentation::AvailableTaskPagesModel|"
+#~ msgid "Cannot move %1 to Inbox"
+#~ msgstr "Kan inte flytta %1 till inkorgen"
+
+#~ msgctxt "ErrorHandler|"
+#~ msgid "%1: %2"
+#~ msgstr "%1: %2"
+
+#~ msgctxt "Presentation::ProjectPageModel|"
+#~ msgid "Cannot promote task %1 to be a project"
+#~ msgstr "Kan inte befordra uppgiften %1 till att vara ett projekt"
+
+#~ msgctxt "Presentation::TaskInboxPageModel|"
+#~ msgid "Cannot promote task %1 to be a project"
+#~ msgstr "Kan inte befordra uppgiften %1 till att vara ett projekt"
+
+#~ msgctxt "Presentation::TaskInboxPageModel|"
+#~ msgid "Cannot move task %1 as sub-task of %2"
+#~ msgstr "Kan inte flytta uppgiften %1 som en deluppgift av %2"
+
+#~ msgctxt "Presentation::WorkdayPageModel|"
+#~ msgid "Cannot promote task %1 to be a project"
+#~ msgstr "Kan inte befordra uppgiften %1 till att vara ett projekt"
+
+#~ msgctxt "Presentation::WorkdayPageModel|"
+#~ msgid "Cannot move task %1 as sub-task of %2"
+#~ msgstr "Kan inte flytta uppgiften %1 som en deluppgift av %2"
+
+#~ msgctxt "Presentation::WorkdayPageModel|"
+#~ msgid "Cannot deparent task %1 from its parent"
+#~ msgstr "Kan inte koppla loss uppgiften %1 från dess överliggande uppgift"
+
+#~ msgctxt "EditorView|"
+#~ msgid "Editor"
+#~ msgstr "Editor"
+
+#~ msgctxt "Widgets::PageView|"
+#~ msgid "Filter..."
+#~ msgstr "Filter..."
+
+#~ msgctxt "Widgets::RunningTaskWidget|"
+#~ msgid "Done"
+#~ msgstr "Klar"
+
+#~ msgctxt "FilterWidget|"
+#~ msgid "Form"
+#~ msgstr "Formulär"
+
+#~ msgctxt "Search attribute: Name of contact"
+#~ msgid "Name"
+#~ msgstr "Namn"
+
+#~ msgctxt "Search attribute: Email of the contact"
+#~ msgid "Email"
+#~ msgstr "E-post"
+
+#~ msgid "Please select the collections you would like to have displayed."
+#~ msgstr "Välj samlingarna som du vill ska visas."
+
+#~ msgid "Settings..."
+#~ msgstr "Inställningar..."
+
+#~ msgid "Used Folders"
+#~ msgstr "Använda kataloger"
+
+#~ msgid "Show the debug window"
+#~ msgstr "Visa felsökningsfönstret"
+
+#~ msgid "Project View"
+#~ msgstr "Projektvy"
+
+#~ msgid "Knowledge View"
+#~ msgstr "Kunskapsvy"
+
+#~ msgid "Synchronize All"
+#~ msgstr "Synkronisera alla"
+
+#~ msgid "Summary"
+#~ msgstr "Sammanfattning"
+
+#~ msgid "Date"
+#~ msgstr "Datum"
+
+#~ msgid "No Context"
+#~ msgstr "Inget sammanhang"
+
+#~ msgid "No Topic"
+#~ msgstr "Inget ämne"
+
+#~ msgid "Topics"
+#~ msgstr "Ämnen"
+
+#~ msgid "Cannot open the attachment."
+#~ msgstr "Kan inte öppna bilagan."
+
+#~ msgid "&Enable"
+#~ msgstr "Aktiv&era"
+
+#~ msgid "F&ormat"
+#~ msgstr "F&ormat"
+
+#~ msgid "V&iew"
+#~ msgstr "V&isa"
+
+#~ msgid "Text Toolbar"
+#~ msgstr "Textverktygsrad"
+
+#~ msgid "Format Toolbar"
+#~ msgstr "Formatverktygsrad"
+
+#~ msgid "Hide &Toolbar"
+#~ msgstr "Dölj verk&tygsrad"
+
+#~ msgid "Title..."
+#~ msgstr "Titel..."
+
+#~ msgid "Fullscreen &Editor"
+#~ msgstr "Fullskärms&editor"
+
+#~ msgid "Properties"
+#~ msgstr "Egenskaper"
+
+#~ msgid "New Action"
+#~ msgstr "Ny åtgärd"
+
+#~ msgid "Cancel New Action"
+#~ msgstr "Avbryt ny åtgärd"
+
+#~ msgid "Remove Action"
+#~ msgstr "Ta bort åtgärd"
+
+#~ msgid "Move Action..."
+#~ msgstr "Flytta åtgärd..."
+
+#~ msgid "Dissociate Action from Context"
+#~ msgstr "Koppla bort åtgärd från sammanhang"
+
+#~ msgid "Type and press enter to add an action"
+#~ msgstr "Skriv in och tryck på returtangenten för att lägga till en åtgärd"
+
+#~ msgid "Move Actions to Context"
+#~ msgstr "Flytta åtgärder till sammanhang"
+
+#~ msgid "Copy Actions to Context"
+#~ msgstr "Kopiera åtgärder till sammanhang"
+
+#~ msgid "Jump to Context"
+#~ msgstr "Gå till sammanhang"
+
+#~ msgid "Move Actions to Project"
+#~ msgstr "Flytta åtgärder till projekt"
+
+#~ msgid "Copy Actions to Project"
+#~ msgstr "Kopiera åtgärder till projekt"
+
+#~ msgid "Jump to Project"
+#~ msgstr "Gå till projekt"
+
+#~ msgid "You can start typing to filter the list of contexts."
+#~ msgstr "Du kan börja skriva för att filtrera listan med sammanhang."
+
+#~ msgid "New"
+#~ msgstr "Ny"
+
+#~ msgid "Rename"
+#~ msgstr "Byt namn"
+
+#~ msgid "Next"
+#~ msgstr "Nästa"
+
+#~ msgid "Synchronize"
+#~ msgstr "Synkronisera"
+
+#~ msgid "Rename Project"
+#~ msgstr "Byt namn på projekt"
+
+#~ msgid "Previous Project"
+#~ msgstr "Föregående projekt"
+
+#~ msgid "Next Project"
+#~ msgstr "Nästa projekt"
+
+#~ msgid "Rename Context"
+#~ msgstr "Byt namn på sammanhang"
+
+#~ msgid "Previous Context"
+#~ msgstr "Föregående sammanhang"
+
+#~ msgid "Next Context"
+#~ msgstr "Nästa sammanhang"
+
+#~ msgid "New Topic"
+#~ msgstr "Nytt ämne"
+
+#~ msgid "Remove Topic"
+#~ msgstr "Ta bort ämne"
+
+#~ msgid "Rename Topic"
+#~ msgstr "Byt namn på ämne"
+
+#~ msgid "Previous Topic"
+#~ msgstr "Föregående ämne"
+
+#~ msgid "Next Topic"
+#~ msgstr "Nästa ämne"
+
+#~ msgid "Synchronize \"%1\""
+#~ msgstr "Synkronisera \"%1\""
+
+#~ msgid "Enter project name:"
+#~ msgstr "Ange projektnamn:"
+
+#~ msgid "Enter context name:"
+#~ msgstr "Ange sammanhangsnamn:"
+
+#~ msgid "Enter topic name:"
+#~ msgstr "Ange ämnesnamn:"
+
+#~ msgid "Tomorrow"
+#~ msgstr "I morgon"
+
+#~ msgid "Yesterday"
+#~ msgstr "I går"
+
+#~ msgid "Last Week"
+#~ msgstr "Förra veckan"
+
+#~ msgctxt "today"
+#~ msgid "Today"
+#~ msgstr "I dag"
+
+#~ msgctxt "tomorrow"
+#~ msgid "Tomorrow"
+#~ msgstr "I morgon"
+
+#~ msgctxt "yesterday"
+#~ msgid "Yesterday"
+#~ msgstr "I går"
+
+#~ msgid "Copyright 2008-2014, Kevin Ottens <ervin@kde.org>"
+#~ msgstr "Copyright 2008-2014, Kevin Ottens <ervin@kde.org>"
+
+#~ msgid "Configure Zanshin"
+#~ msgstr "Anpassa Zanshin"
+
+#~ msgid "contexts"
+#~ msgstr "sammanhang"
+
+#~ msgid "Lists all the tasks"
+#~ msgstr "Listar alla uppgifterna"
+
+#~ msgid "Collection"
+#~ msgstr "Samling"
+
+#~ msgid "&Open File"
+#~ msgstr "Ö&ppna fil"
+
+#~ msgid "&Remove from Context"
+#~ msgstr "Ta bo&rt från sammanhang"
+
+#~ msgid ""
+#~ "Do you really want to delete the context '%1'? All actions won't be "
+#~ "associated to this context anymore."
+#~ msgstr ""
+#~ "Vill du verkligen ta bort sammanhanget '%1'? Alla åtgärder kommer inte "
+#~ "längre att höra ihop med detta sammanhang"
+
+#~ msgid ""
+#~ "Do you really want to delete the contexts '%1'? All actions won't be "
+#~ "associated to those contexts anymore."
+#~ msgstr ""
+#~ "Vill du verkligen ta bort sammanhangen '%1'? Alla åtgärder kommer inte "
+#~ "längre att höra ihop med dessa sammanhang."
+
+#~ msgid "Delete Contexts"
+#~ msgstr "Ta bort sammanhang"
+
+#~ msgid "No Relation"
+#~ msgstr "Inget förhållande"
+
+#~ msgid "Relation"
+#~ msgstr "Förhållande"
+
+#~ msgid "Delete Projects"
+#~ msgstr "Ta bort projekt"
+
+#~ msgid ""
+#~ "Do you really want to delete the projects '%1', with all its actions?"
+#~ msgstr "Vill du verkligen ta bort projektet '%1' med alla dess åtgärder?"
+
+#~ msgid "Now"
+#~ msgstr "Nu"
+
+#~ msgid "Later"
+#~ msgstr "Senare"
+
+#~ msgid "Overdue"
+#~ msgstr "Försenad"
+
+#~ msgid ""
+#~ "Do you really want to delete the folder '%1', with all its projects and "
+#~ "actions?"
+#~ msgstr ""
+#~ "Vill du verkligen ta bort katalogen '%1' med alla dess projekt och "
+#~ "åtgärder?"
+
+#~ msgid ""
+#~ "Do you really want to delete the context '%1', with all its sub-contexts? "
+#~ "All actions won't be associated to those contexts anymore."
+#~ msgstr ""
+#~ "Vill du verkligen ta bort sammanhanget ''%1\" med alla dess "
+#~ "delsammanhang? Inga åtgärder kommer längre att höra ihop med dessa "
+#~ "sammanhang."
+
+#~ msgid "Enter category name:"
+#~ msgstr "Ange kategorinamn:"
+
+#~ msgid "Categories"
+#~ msgstr "Kategorier"
+
+#~ msgid "No Category"
+#~ msgstr "Ingen kategori"
+
+#~ msgid "Remove Category"
+#~ msgstr "Ta bort kategori"
+
+#~ msgid "Rename Category"
+#~ msgstr "Byt namn på kategori"
+
+#~ msgid "Previous Category"
+#~ msgstr "Föregående kategori"
+
+#~ msgid "Move Actions to Category"
+#~ msgstr "Flytta åtgärder till kategori"
+
+#~ msgid "Copy Actions to Category"
+#~ msgstr "Kopiera åtgärder till kategori"
+
+#~ msgid "Jump to Category"
+#~ msgstr "Gå till kategori"
+
+#, fuzzy
+#~| msgid "Categories"
+#~ msgid "categories"
+#~ msgstr "Kategorier"
+
+#~ msgid "Categories View"
+#~ msgstr "Kategorivy"
+
+#~ msgid "Move Actions to Project or Folder"
+#~ msgstr "Flytta åtgärder till projekt eller katalog"
+
+#~ msgid "Copy Actions to Project or Folder"
+#~ msgstr "Kopiera åtgärder till projekt eller katalog"

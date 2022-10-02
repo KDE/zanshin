@@ -1,0 +1,1149 @@
+# Copyright (C) YEAR This_file_is_part_of_KDE
+# This file is distributed under the same license as the PACKAGE package.
+#
+# Marek Laane <bald@smail.ee>, 2011, 2012, 2013, 2019, 2020.
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: https://bugs.kde.org\n"
+"POT-Creation-Date: 2022-06-07 00:57+0000\n"
+"PO-Revision-Date: 2020-02-13 15:08+0200\n"
+"Last-Translator: Marek Laane <qiilaq69@gmail.com>\n"
+"Language-Team: Estonian <kde-et@lists.linux.ee>\n"
+"Language: et\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Lokalize 19.08.1\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Qt-Contexts: true\n"
+
+#, kde-format
+msgctxt "NAME OF TRANSLATORS"
+msgid "Your names"
+msgstr "Marek Laane"
+
+#, kde-format
+msgctxt "EMAIL OF TRANSLATORS"
+msgid "Your emails"
+msgstr "qiilaq69@gmail.com"
+
+#: 3rdparty/kdepim/libkdepim/kdateedit.cpp:429
+#, kde-format
+msgctxt "the day after today"
+msgid "tomorrow"
+msgstr "homme"
+
+#: 3rdparty/kdepim/libkdepim/kdateedit.cpp:430
+#, kde-format
+msgctxt "this day"
+msgid "today"
+msgstr "täna"
+
+#: 3rdparty/kdepim/libkdepim/kdateedit.cpp:431
+#, kde-format
+msgctxt "the day before today"
+msgid "yesterday"
+msgstr "eile"
+
+#: 3rdparty/kdepim/libkdepim/kdateedit.cpp:432
+#, kde-format
+msgctxt "the week after this week"
+msgid "next week"
+msgstr "järgmine nädal"
+
+#: 3rdparty/kdepim/libkdepim/kdateedit.cpp:433
+#, kde-format
+msgctxt "the month after this month"
+msgid "next month"
+msgstr "järgmine kuu"
+
+#: src/akonadi/akonadiconfigdialog.cpp:35
+#, kde-format
+msgid "Configure"
+msgstr "Seadistamine"
+
+#: src/akonadi/akonadiconfigdialog.cpp:39
+#, kde-format
+msgid ""
+"Please select or create a resource which will be used by the application to "
+"store and query its TODOs."
+msgstr ""
+"Palun vali või loo ressurss, mida rakendus hakkab kasutama oma ülesannete "
+"salvestamiseks ja uurimiseks."
+
+#: src/akonadi/akonadiconfigdialog.cpp:49
+#, kde-format
+msgid "Add resource"
+msgstr "Lisa ressurss"
+
+#: src/akonadi/akonadiconfigdialog.cpp:56
+#, kde-format
+msgid "Remove resource"
+msgstr "Eemalda ressurss"
+
+#: src/akonadi/akonadiconfigdialog.cpp:63
+#, kde-format
+msgid "Configure resource..."
+msgstr "Seadista ressurssi ..."
+
+#: src/akonadi/akonadiconfigdialog.cpp:111
+#, kde-format
+msgid "Multiple Agent Deletion"
+msgstr "Mitme agendi kustutamine"
+
+#: src/akonadi/akonadiconfigdialog.cpp:112
+#, kde-format
+msgid "Do you really want to delete the selected agent instances?"
+msgstr "Kas tõesti kustutada valitud agentide isendid?"
+
+#: src/akonadi/akonaditaskrepository.cpp:51
+#, kde-format
+msgid "Could not find a collection to store the task into!"
+msgstr "Kogu ülesandeteabe salvestamiseks ei leitud!"
+
+#: src/akonadi/akonaditaskrepository.cpp:198
+#, kde-format
+msgid "Could not associate '%1', it is an ancestor of '%2'"
+msgstr "'%1' seostamine nurjus, see on '%2' eellane"
+
+#: src/presentation/alltaskspagemodel.cpp:35
+#, kde-format
+msgid "Cannot add task %1"
+msgstr "Ülesande %1 lisamine nurjus"
+
+#: src/presentation/alltaskspagemodel.cpp:46
+#, kde-format
+msgid "Cannot remove task %1"
+msgstr "Ülesande %1 eemaldamine nurjus"
+
+#: src/presentation/alltaskspagemodel.cpp:56
+#: src/presentation/contextpagemodel.cpp:74
+#: src/presentation/inboxpagemodel.cpp:55
+#: src/presentation/projectpagemodel.cpp:67
+#: src/presentation/workdaypagemodel.cpp:63
+#, kde-format
+msgid "Cannot promote task %1 to be a project"
+msgstr "Ülesande %1 muutmine projektiks nurjus"
+
+#: src/presentation/alltaskspagemodel.cpp:97
+#: src/presentation/editormodel.cpp:390
+#, kde-format
+msgid "Cannot modify task %1"
+msgstr "Ülesande %1 muutmine nurjus"
+
+#: src/presentation/alltaskspagemodel.cpp:122
+#: src/presentation/contextpagemodel.cpp:144
+#: src/presentation/inboxpagemodel.cpp:111
+#: src/presentation/workdaypagemodel.cpp:119
+#, kde-format
+msgid "Cannot move task %1 as sub-task of %2"
+msgstr "Ülesande %1 liigutamine %2 alamülesandeks nurjus"
+
+#: src/presentation/alltaskspagemodel.cpp:125
+#: src/presentation/inboxpagemodel.cpp:114
+#: src/presentation/workdaypagemodel.cpp:127
+#, kde-format
+msgid "Cannot deparent task %1 from its parent"
+msgstr "Ülesande %1 lahutamine oma eellasest nurjus"
+
+#: src/presentation/availablepagesmodel.cpp:117
+#, kde-format
+msgid "Cannot add project %1 in dataSource %2"
+msgstr "Projekti %1 lisamine andmeallikasse %2 nurjus"
+
+#: src/presentation/availablepagesmodel.cpp:125
+#, kde-format
+msgid "Cannot add context %1"
+msgstr "Konteksti %1 lisamine nurjus"
+
+#: src/presentation/availablepagesmodel.cpp:133
+#, kde-format
+msgid "Cannot remove project %1"
+msgstr "Projekti %1 eemaldamine nurjus"
+
+#: src/presentation/availablepagesmodel.cpp:136
+#, kde-format
+msgid "Cannot remove context %1"
+msgstr "Konteksti %1 eemaldamine nurjus"
+
+#: src/presentation/availablepagesmodel.cpp:145
+#: src/widgets/itemdelegate.cpp:143
+#, kde-format
+msgid "Inbox"
+msgstr "Sissetulevad"
+
+#: src/presentation/availablepagesmodel.cpp:147
+#, kde-format
+msgid "Workday"
+msgstr "Tööpäev"
+
+#: src/presentation/availablepagesmodel.cpp:149
+#, kde-format
+msgid "Projects"
+msgstr "Projektid"
+
+#: src/presentation/availablepagesmodel.cpp:151
+#, kde-format
+msgid "Contexts"
+msgstr "Kontekstid"
+
+#: src/presentation/availablepagesmodel.cpp:153
+#, kde-format
+msgid "All Tasks"
+msgstr "Kõik ülesanded"
+
+#: src/presentation/availablepagesmodel.cpp:252
+#, kde-format
+msgid "Cannot modify project %1"
+msgstr "Projekti %1 muutmine nurjus"
+
+#: src/presentation/availablepagesmodel.cpp:257
+#, kde-format
+msgid "Cannot modify context %1"
+msgstr "Konteksti %1 muutmine nurjus"
+
+#: src/presentation/availablepagesmodel.cpp:276
+#, kde-format
+msgid "Cannot add %1 to project %2"
+msgstr "%1 lisamine projekti %2 nurjus"
+
+#: src/presentation/availablepagesmodel.cpp:282
+#, kde-format
+msgid "Cannot add %1 to context %2"
+msgstr "%1 lisamine konteksti %2 nurjus"
+
+#: src/presentation/availablepagesmodel.cpp:288
+#, kde-format
+msgid "Cannot move %1 to Inbox"
+msgstr "%1 liigutamine Sissetulevatesse nurjus"
+
+#: src/presentation/availablepagesmodel.cpp:292
+#, kde-format
+msgid "Cannot move task %1 to Inbox"
+msgstr "Ülesande %1 liigutamine Sissetulevatesse nurjus"
+
+#: src/presentation/availablepagesmodel.cpp:301
+#, kde-format
+msgid "Cannot update task %1 to Workday"
+msgstr "Ülesande %1 uuendamine Tööpäeva nurjus"
+
+#: src/presentation/availablesourcesmodel.cpp:99
+#, kde-format
+msgid "Cannot modify source %1"
+msgstr "Allika %1 muutmine nurjus"
+
+#: src/presentation/contextpagemodel.cpp:54
+#, kde-format
+msgid "Cannot add task %1 in context %2"
+msgstr "Ülesande %1 lisamine konteksti %2 nurjus"
+
+#: src/presentation/contextpagemodel.cpp:65
+#, kde-format
+msgid "Cannot remove task %1 from context %2"
+msgstr "Ülesande %1 eemaldamine kontekstist %2 nurjus"
+
+#: src/presentation/contextpagemodel.cpp:115
+#, kde-format
+msgid "Cannot modify task %1 in context %2"
+msgstr "Ülesande %1 muutmine kontekstis %2 nurjus"
+
+#: src/presentation/contextpagemodel.cpp:147
+#, kde-format
+msgid "Cannot dissociate task %1 from its parent"
+msgstr "Ülesande %1 seose lõhkumine oma eellasega nurjus"
+
+#: src/presentation/inboxpagemodel.cpp:35
+#, kde-format
+msgid "Cannot add task %1 in Inbox"
+msgstr "Ülesande %1 lisamine Sissetulevatesse nurjus"
+
+#: src/presentation/inboxpagemodel.cpp:46
+#, kde-format
+msgid "Cannot remove task %1 from Inbox"
+msgstr "Ülesande %1 eemaldamine Sissetulevastest nurjus"
+
+#: src/presentation/inboxpagemodel.cpp:96
+#, kde-format
+msgid "Cannot modify task %1 in Inbox"
+msgstr "Ülesande %1 muutmine Sisssetulevates nurjus"
+
+#: src/presentation/projectpagemodel.cpp:47
+#, kde-format
+msgid "Cannot add task %1 in project %2"
+msgstr "Ülesande %1 lisamine projekti %2 nurjus"
+
+#: src/presentation/projectpagemodel.cpp:58
+#, kde-format
+msgid "Cannot remove task %1 from project %2"
+msgstr "Ülesande %1 eemaldamine projektist %2 nurjus"
+
+#: src/presentation/projectpagemodel.cpp:104
+#, kde-format
+msgid "Cannot modify task %1 in project %2"
+msgstr "Ülesande %1 muutmine projektis %2 nurjus"
+
+#: src/presentation/projectpagemodel.cpp:130
+#, kde-format
+msgid "Cannot move task %1 as a sub-task of %2"
+msgstr "Ülesande %1 liigutamine %2 alamülesandeks nurjus"
+
+#: src/presentation/runningtaskmodel.cpp:46
+#, kde-format
+msgid "Cannot update task %1 to 'not running'"
+msgstr "Ülesande %1 uuendamine 'mittetöötavaks' nurjus"
+
+#: src/presentation/runningtaskmodel.cpp:54
+#, kde-format
+msgid "Cannot update task %1 to 'running'"
+msgstr "Ülesande %1 uuendamine 'töötavaks' nurjus"
+
+#: src/presentation/workdaypagemodel.cpp:42
+#, kde-format
+msgid "Cannot add task %1 in Workday"
+msgstr "Ülesande %1 lisamine Tööpäeva nurjus"
+
+#: src/presentation/workdaypagemodel.cpp:53
+#, kde-format
+msgid "Cannot remove task %1 from Workday"
+msgstr "Ülesande %1 eemaldamine Tööpäevast nurjus"
+
+#: src/presentation/workdaypagemodel.cpp:104
+#, kde-format
+msgid "Cannot modify task %1 in Workday"
+msgstr "Ülesande %1 muutmine Tööpäevas nurjus"
+
+#: src/widgets/applicationcomponents.cpp:47
+#, kde-format
+msgid "Move Task"
+msgstr "Liiguta ülesannet"
+
+#: src/widgets/availablepagesview.cpp:50
+#, kde-format
+msgid "New Project"
+msgstr "Uus projekt"
+
+#: src/widgets/availablepagesview.cpp:56
+#, kde-format
+msgid "New Context"
+msgstr "Uus kontekst"
+
+#: src/widgets/availablepagesview.cpp:62
+#, kde-format
+msgid "Remove Page"
+msgstr "Eemalda lehekülg"
+
+#: src/widgets/availablepagesview.cpp:91
+#, kde-format
+msgid "Previous Page"
+msgstr "Eelmine lehekülg"
+
+#: src/widgets/availablepagesview.cpp:98
+#, kde-format
+msgid "Next Page"
+msgstr "Järgmine lehekülg"
+
+#: src/widgets/availablepagesview.cpp:105
+#, kde-format
+msgid "Go to Page..."
+msgstr "Liigu leheküljele ..."
+
+#: src/widgets/availablepagesview.cpp:240
+#, kde-format
+msgid "Add a context"
+msgstr "Konteksti lisamine"
+
+#: src/widgets/availablepagesview.cpp:265
+#, kde-format
+msgid "Delete Project"
+msgstr "Projekti kustutamine"
+
+#: src/widgets/availablepagesview.cpp:266
+#, kde-format
+msgid "Do you really want to delete the project '%1', with all its actions?"
+msgstr "Kas tõesti kustutada projekt \"%1\" koos kõigi oma toimingutega?"
+
+#: src/widgets/availablepagesview.cpp:268
+#, kde-format
+msgid "Delete Context"
+msgstr "Konteksti kustutamine"
+
+#: src/widgets/availablepagesview.cpp:269
+#, kde-format
+msgid "Do you really want to delete the context '%1'?"
+msgstr "Kas tõesti kustutada kontekst '%1'?"
+
+#: src/widgets/availablesourcesview.cpp:55
+#, kde-format
+msgid "Use as Default Source"
+msgstr "Kasuta vaikeallikana"
+
+#: src/widgets/availablesourcesview.cpp:76
+#, kde-format
+msgid "Configure %1..."
+msgstr "%1 seadistamine ..."
+
+#: src/widgets/editorview.cpp:32
+#, kde-format
+msgid "Add Attachment"
+msgstr "Manuse lisamine"
+
+#: src/widgets/editorview.cpp:40
+#, kde-format
+msgid "Never"
+msgstr "Mitte kunagi"
+
+#: src/widgets/editorview.cpp:41
+#, kde-format
+msgid "Daily"
+msgstr "Iga päev"
+
+#: src/widgets/editorview.cpp:42
+#, kde-format
+msgid "Weekly"
+msgstr "Iga nädal"
+
+#: src/widgets/editorview.cpp:43
+#, kde-format
+msgid "Monthly"
+msgstr "Iga kuu"
+
+#: src/widgets/editorview.cpp:44
+#, kde-format
+msgid "Yearly"
+msgstr "Iga aasta"
+
+#. i18n: ectx: property (windowTitle), widget (QWidget, EditorView)
+#. i18n: ectx: property (text), widget (QListView, attachmentList)
+#: src/widgets/editorview.ui:14 src/widgets/editorview.ui:184
+#: src/zanshin/app/main.cpp:84
+#, kde-format
+msgid "Editor"
+msgstr "Redaktor"
+
+#. i18n: ectx: property (text), widget (QLabel, dueDateLabel)
+#: src/widgets/editorview.ui:41
+#, kde-format
+msgid "D&ue Date "
+msgstr "Tähtae&g"
+
+#. i18n: ectx: property (text), widget (QCheckBox, doneButton)
+#: src/widgets/editorview.ui:62 src/widgets/runningtaskwidget.cpp:50
+#, kde-format
+msgid "Done"
+msgstr "Tehtud"
+
+#. i18n: ectx: property (toolTip), widget (QToolButton, addAttachmentButton)
+#: src/widgets/editorview.ui:86
+#, kde-format
+msgid "Add Attachment..."
+msgstr "Manuse lisamine ..."
+
+#. i18n: ectx: property (toolTip), widget (QToolButton, removeAttachmentButton)
+#: src/widgets/editorview.ui:100
+#, kde-format
+msgid "Remove Attachment"
+msgstr "Manuse eemaldamine"
+
+#. i18n: ectx: property (text), widget (QPushButton, startTodayButton)
+#: src/widgets/editorview.ui:121
+#, kde-format
+msgid "Select for &Today"
+msgstr "Vali &tänaseks"
+
+#. i18n: ectx: property (text), widget (QLabel, recurrenceLabel)
+#: src/widgets/editorview.ui:130
+#, kde-format
+msgid "&Recurrence"
+msgstr "Kor&duv"
+
+#. i18n: ectx: property (text), widget (QLabel, startDateLabel)
+#: src/widgets/editorview.ui:146
+#, kde-format
+msgid "St&art Date"
+msgstr "Alg&usaeg"
+
+#: src/widgets/filterwidget.cpp:29
+#, kde-format
+msgid "Sort by title"
+msgstr "Sortimine nime järgi"
+
+#: src/widgets/filterwidget.cpp:30
+#, kde-format
+msgid "Sort by date"
+msgstr "Sortimine kuupäeva järgi"
+
+#. i18n: ectx: property (placeholderText), widget (QLineEdit, filterEdit)
+#: src/widgets/filterwidget.ui:31 src/widgets/pageview.cpp:197
+#, kde-format
+msgid "Filter..."
+msgstr "Filtreerimine ..."
+
+#. i18n: ectx: property (toolTip), widget (QToolButton, descendingButton)
+#: src/widgets/filterwidget.ui:65
+#, kde-format
+msgid "Sort in descending order"
+msgstr "Sortimine kahanevas järjekorras"
+
+#. i18n: ectx: property (toolTip), widget (QToolButton, ascendingButton)
+#: src/widgets/filterwidget.ui:88
+#, kde-format
+msgid "Sort in ascending order"
+msgstr "Sortimine kasvavas järjekorras"
+
+#: src/widgets/itemdelegate.cpp:141
+#, kde-format
+msgid "Project: %1"
+msgstr "Projekt: %1"
+
+#. i18n: ectx: property (windowTitle), widget (QDialog, NameAndDataSourceDialog)
+#: src/widgets/nameanddatasourcedialog.ui:14
+#, kde-format
+msgid "Add a project"
+msgstr "Projekti lisamine"
+
+#. i18n: ectx: property (text), widget (QLabel, nameLabel)
+#: src/widgets/nameanddatasourcedialog.ui:25
+#, kde-format
+msgid "Name"
+msgstr "Nimi"
+
+#. i18n: ectx: property (text), widget (QLabel, sourceLabel)
+#: src/widgets/nameanddatasourcedialog.ui:42
+#, kde-format
+msgid "Source"
+msgstr "Allikas"
+
+#: src/widgets/pageview.cpp:155
+#, kde-format
+msgid "Type and press enter to add a task"
+msgstr "Ülesande lisamiseks kirjuta see ja vajuta Enter"
+
+#: src/widgets/pageview.cpp:170
+#, kde-format
+msgid "New Task"
+msgstr "Uus ülesanne"
+
+#: src/widgets/pageview.cpp:183
+#, kde-format
+msgid "Remove Task"
+msgstr "Eemalda ülesanne"
+
+#: src/widgets/pageview.cpp:191
+#, kde-format
+msgid "Promote Task as Project"
+msgstr "Muuda ülesanne projektiks"
+
+#: src/widgets/pageview.cpp:205
+#, fuzzy, kde-format
+#| msgid "Show future tasks"
+msgid "Show done tasks"
+msgstr "Näita eesootavaid ülesandeid"
+
+#: src/widgets/pageview.cpp:213
+#, kde-format
+msgid "Show future tasks"
+msgstr "Näita eesootavaid ülesandeid"
+
+#: src/widgets/pageview.cpp:239
+#, kde-format
+msgid "Start Now"
+msgstr "Alusta kohe"
+
+#: src/widgets/pageview.cpp:357
+#, kde-format
+msgid "Type and press enter to add an item"
+msgstr "Kirje lisamiseks kirjuta see ja vajuta Enter"
+
+#: src/widgets/pageview.cpp:383
+#, kde-format
+msgid "Do you really want to delete the selected items and their children?"
+msgstr "Kas tõesti kustutada valitud elemendid ja nende alamelemendid?"
+
+#: src/widgets/pageview.cpp:385
+#, kde-format
+msgid "Do you really want to delete the selected items?"
+msgstr "Kas tõesti kustutada valitud elemendid?"
+
+#: src/widgets/pageview.cpp:393
+#, kde-format
+msgid "Do you really want to delete the selected task and all its children?"
+msgstr "Kas tõesti kustutada valitud ülesanne ja kõik selle alamülesanded?"
+
+#: src/widgets/pageview.cpp:397
+#, kde-format
+msgid "Delete Tasks"
+msgstr "Kustuta ülesanded"
+
+#: src/widgets/quickselectdialog.cpp:30
+#, kde-format
+msgid "Quick Select Dialog"
+msgstr "Kiirvaliku dialoog"
+
+#: src/widgets/quickselectdialog.cpp:32 src/widgets/quickselectdialog.cpp:70
+#, kde-format
+msgid "You can start typing to filter the list of available pages"
+msgstr ""
+"Saadaolevate lehekülgede nimekirja filtreerimiseks hakka lihtsalt kirjutama"
+
+#: src/widgets/quickselectdialog.cpp:72
+#, kde-format
+msgid "Path: %1"
+msgstr "Asukoht: %1"
+
+#: src/widgets/runningtaskwidget.cpp:36
+#, kde-format
+msgid "Zanshin Running Task Banner"
+msgstr "Zanshini ülesande täitmise tähistaja"
+
+#: src/widgets/runningtaskwidget.cpp:46
+#, kde-format
+msgid "Stop"
+msgstr "Peata"
+
+#: src/zanshin/app/aboutdata.cpp:14
+#, kde-format
+msgid "Zanshin Tasks"
+msgstr "Zanshini ülesanded"
+
+#: src/zanshin/app/aboutdata.cpp:15
+#, kde-format
+msgid ""
+"A Getting Things Done application which aims at getting your mind like water"
+msgstr ""
+"Kõige eduka ärategemise rakendus, mis püüab panna su mõistuse lõikama "
+"vahedalt nagu Šveitsi nuga"
+
+#: src/zanshin/app/aboutdata.cpp:17
+#, kde-format
+msgid "Copyright 2008-2016, Kevin Ottens <ervin@kde.org>"
+msgstr "Autoriõigus 2008-2016: Kevin Ottens <ervin@kde.org>"
+
+#: src/zanshin/app/aboutdata.cpp:19
+#, kde-format
+msgid "Kevin Ottens"
+msgstr "Kevin Ottens"
+
+#: src/zanshin/app/aboutdata.cpp:20
+#, kde-format
+msgid "Lead Developer"
+msgstr "Juhtiv arendaja"
+
+#: src/zanshin/app/aboutdata.cpp:23
+#, kde-format
+msgid "Mario Bensi"
+msgstr "Mario Bensi"
+
+#: src/zanshin/app/aboutdata.cpp:24 src/zanshin/app/aboutdata.cpp:28
+#, kde-format
+msgid "Developer"
+msgstr "Arendaja"
+
+#: src/zanshin/app/aboutdata.cpp:27
+#, kde-format
+msgid "Franck Arrecot"
+msgstr "Franck Arrecot"
+
+#: src/zanshin/app/main.cpp:76
+#, kde-format
+msgid "Sources"
+msgstr "Allikad"
+
+#: src/zanshin/app/main.cpp:80
+#, kde-format
+msgid "Pages"
+msgstr "Leheküljed"
+
+#. i18n: ectx: Menu (go)
+#: src/zanshin/app/zanshinui.rc:15 src/zanshin/kontact/zanshin_part.rc:15
+#, kde-format
+msgid "&Go"
+msgstr "&Liikumine"
+
+#. i18n: ectx: Menu
+#: src/zanshin/app/zanshinui.rc:27
+#, kde-format
+msgid "&Panels"
+msgstr "&Paneelid"
+
+#. i18n: ectx: ToolBar (mainToolBar)
+#: src/zanshin/app/zanshinui.rc:35 src/zanshin/kontact/zanshin_part.rc:27
+#, kde-format
+msgctxt "@title:menu"
+msgid "Main Toolbar"
+msgstr "Peamine tööriistariba"
+
+#: src/zanshin/runner/zanshinrunner.cpp:61
+#, kde-format
+msgid "Add \"%1\" to your todo list"
+msgstr "Lisa \"%1\" oma ülesannete nimekirja"
+
+#~ msgctxt "@option today"
+#~ msgid "&Today"
+#~ msgstr "&Täna"
+
+#~ msgctxt "@option tomorrow"
+#~ msgid "To&morrow"
+#~ msgstr "&Homme"
+
+#~ msgctxt "@option next week"
+#~ msgid "Next &Week"
+#~ msgstr "Järgmine &nädal"
+
+#~ msgctxt "@option next month"
+#~ msgid "Next M&onth"
+#~ msgstr "Järgmine &kuu"
+
+#~ msgctxt "@option do not specify a date"
+#~ msgid "No Date"
+#~ msgstr "Kuupäev puudub"
+
+#, fuzzy
+#~| msgid "Context View"
+#~ msgid "Context name"
+#~ msgstr "Kontekstivaade"
+
+#, fuzzy
+#~| msgid "Collection"
+#~ msgid "Completion Order"
+#~ msgstr "Kogu"
+
+#, fuzzy
+#~| msgid "Collection"
+#~ msgid "Edit Completion Order"
+#~ msgstr "Kogu"
+
+#, fuzzy
+#~| msgid "&Editor"
+#~ msgid "Add Host"
+#~ msgstr "R&edaktor"
+
+#, fuzzy
+#~| msgid "&Editor"
+#~ msgid "Edit Host"
+#~ msgstr "R&edaktor"
+
+#, fuzzy
+#~| msgid "&Editor"
+#~ msgid "&Add Host..."
+#~ msgstr "R&edaktor"
+
+#, fuzzy
+#~| msgid "&Editor"
+#~ msgid "&Edit Host..."
+#~ msgstr "R&edaktor"
+
+#, fuzzy
+#~| msgid "Remove Project"
+#~ msgid "&Remove Host"
+#~ msgstr "Eemalda projekt"
+
+#, fuzzy
+#~| msgid "Title..."
+#~ msgctxt "@item LDAP search key"
+#~ msgid "Title"
+#~ msgstr "Pealkiri..."
+
+#, fuzzy
+#~| msgid "Title..."
+#~ msgctxt "@title:column Column containing title of the person"
+#~ msgid "Title"
+#~ msgstr "Pealkiri..."
+
+#, fuzzy
+#~| msgid "Contexts"
+#~ msgid "Contains"
+#~ msgstr "Kontekstid"
+
+#, fuzzy
+#~| msgid "Remove"
+#~ msgid "&Remove"
+#~ msgstr "Eemalda"
+
+#, fuzzy
+#~| msgid "Do you really want to delete the selected agent instance?"
+#~| msgid_plural "Do you really want to delete these %1 agent instances?"
+#~ msgid "Do you want to remove this email address?"
+#~ msgid_plural "Do you want to remove %1 email addresses?"
+#~ msgstr[0] "Kas tõesti kustutada valitud agendi isend?"
+#~ msgstr[1] "Kas tõesti kustutada valitud agendi isend?"
+
+#, fuzzy
+#~| msgid "Remove"
+#~ msgid "Remove"
+#~ msgstr "Eemalda"
+
+#, fuzzy
+#~| msgid "Tags"
+#~ msgid "Tags"
+#~ msgstr "Sildid"
+
+#, fuzzy
+#~| msgid "Remove Context"
+#~ msgid "Cannot remove note %1 from Inbox"
+#~ msgstr "Eemalda kontekst"
+
+#, fuzzy
+#~| msgid "Remove Context"
+#~ msgid "Cannot remove note %1 from tag %2"
+#~ msgstr "Eemalda kontekst"
+
+#, fuzzy
+#~| msgid ""
+#~| "A Getting Things Done application which aims at getting your mind like "
+#~| "water"
+#~ msgid "A note taking application which aims at getting your mind like water"
+#~ msgstr ""
+#~ "Kõige eduka ärategemise rakendus, mis püüab panna su mõistuse lõikama "
+#~ "vahedalt nagu Šveitsi nuga"
+
+#, fuzzy
+#~| msgid "Copyright 2008-2010, Kevin Ottens <ervin@kde.org>"
+#~ msgid "Copyright 2008-2015, Kevin Ottens <ervin@kde.org>"
+#~ msgstr "Autoriõigus 2008-2010: Kevin Ottens <ervin@kde.org>"
+
+#, fuzzy
+#~| msgid "Remove Project"
+#~ msgid "Move Item"
+#~ msgstr "Eemalda projekt"
+
+#, fuzzy
+#~| msgid "Delete Category"
+#~ msgid "Delete Tag"
+#~ msgstr "Kategooria kustutamine"
+
+#, fuzzy
+#~| msgid "Do you really want to delete the selected agent instance?"
+#~| msgid_plural "Do you really want to delete these %1 agent instances?"
+#~ msgid "Do you really want to delete the tag '%1'?"
+#~ msgstr "Kas tõesti kustutada valitud agendi isend?"
+
+#, fuzzy
+#~| msgid "Delete Category"
+#~ msgid "Delegate To: "
+#~ msgstr "Kategooria kustutamine"
+
+#, fuzzy
+#~| msgid "Due Date"
+#~ msgid "De&legate to"
+#~ msgstr "Tähtaeg"
+
+#, fuzzy
+#~| msgid "New Context"
+#~ msgid "New Item"
+#~ msgstr "Uus kontekst"
+
+#, fuzzy
+#~| msgid "Remove Project"
+#~ msgid "Remove Item"
+#~ msgstr "Eemalda projekt"
+
+#, fuzzy
+#~| msgid "Inbox"
+#~ msgctxt "Presentation::AvailableTaskPagesModel|"
+#~ msgid "Inbox"
+#~ msgstr "Sisenevad"
+
+#, fuzzy
+#~| msgid "&Editor"
+#~ msgctxt "EditorView|"
+#~ msgid "Editor"
+#~ msgstr "R&edaktor"
+
+#, fuzzy
+#~| msgid "Done"
+#~ msgctxt "Widgets::RunningTaskWidget|"
+#~ msgid "Done"
+#~ msgstr "Valmis"
+
+#~ msgid "Settings..."
+#~ msgstr "Seadistused..."
+
+#, fuzzy
+#~| msgid "Delete Folder"
+#~ msgid "Used Folders"
+#~ msgstr "Kausta kustutamine"
+
+#~ msgid "Show the debug window"
+#~ msgstr "Silumisakna näitamine"
+
+#~ msgid "Project View"
+#~ msgstr "Projektivaade"
+
+#~ msgid "Knowledge View"
+#~ msgstr "Teadmusvaade"
+
+#~ msgid "Synchronize All"
+#~ msgstr "Sünkrooni kõik"
+
+#~ msgid "Summary"
+#~ msgstr "Kokkuvõte"
+
+#~ msgid "Date"
+#~ msgstr "Kuupäev"
+
+#~ msgid "No Context"
+#~ msgstr "Kontekst puudub"
+
+#~ msgid "No Topic"
+#~ msgstr "Teema puudub"
+
+#~ msgid "Topics"
+#~ msgstr "Teemad"
+
+#~ msgid "Cannot open the attachment."
+#~ msgstr "Manuse avamine nurjus."
+
+#~ msgid "&Enable"
+#~ msgstr "&Lubatud"
+
+#~ msgid "F&ormat"
+#~ msgstr "V&ormindus"
+
+#~ msgid "V&iew"
+#~ msgstr "&Vaade"
+
+#~ msgid "Text Toolbar"
+#~ msgstr "Tekstiriba"
+
+#~ msgid "Format Toolbar"
+#~ msgstr "Vormindusriba"
+
+#~ msgid "Hide &Toolbar"
+#~ msgstr "Peida &tööriistariba"
+
+#~ msgid "Title..."
+#~ msgstr "Pealkiri..."
+
+#~ msgid "Fullscreen &Editor"
+#~ msgstr "Täis&ekraaniredaktor"
+
+#~ msgid "Properties"
+#~ msgstr "Omadused"
+
+#~ msgid "New Action"
+#~ msgstr "Uus toiming"
+
+#~ msgid "Cancel New Action"
+#~ msgstr "Loobu uuest toimingust"
+
+#~ msgid "Remove Action"
+#~ msgstr "Eemalda toiming"
+
+#~ msgid "Move Action..."
+#~ msgstr "Liiguta toiming..."
+
+#~ msgid "Dissociate Action from Context"
+#~ msgstr "Lahuta toiming kontekstist"
+
+#~ msgid "Type and press enter to add an action"
+#~ msgstr "Toimingu lisamiseks kirjuta see ja vajuta Enter"
+
+#~ msgid "Move Actions to Context"
+#~ msgstr "Liiguta toimingud konteksti"
+
+#~ msgid "Copy Actions to Context"
+#~ msgstr "Kopeeri toimingud konteksti"
+
+#~ msgid "Jump to Context"
+#~ msgstr "Hüppa kontekstile"
+
+#~ msgid "Move Actions to Project"
+#~ msgstr "Toimingute liigutamine projekti"
+
+#~ msgid "Copy Actions to Project"
+#~ msgstr "Kopeeri toimingud projekti"
+
+#~ msgid "Jump to Project"
+#~ msgstr "Hüppa projekti"
+
+#, fuzzy
+#~| msgid "You can start typing to filter the list of %1."
+#~ msgid "You can start typing to filter the list of contexts."
+#~ msgstr "%1 nimekirja filtreerimiseks hakka lihtsalt kirjutama."
+
+#~ msgid "New"
+#~ msgstr "Uus"
+
+#~ msgid "Rename"
+#~ msgstr "Muuda nime"
+
+#~ msgid "Next"
+#~ msgstr "Järgmine"
+
+#~ msgid "Synchronize"
+#~ msgstr "Sünkrooni"
+
+#~ msgid "Rename Project"
+#~ msgstr "Muuda projekti nime"
+
+#~ msgid "Previous Project"
+#~ msgstr "Eelmine projekt"
+
+#~ msgid "Next Project"
+#~ msgstr "Järgmine projekt"
+
+#~ msgid "Rename Context"
+#~ msgstr "Muuda konteksti nime"
+
+#~ msgid "Previous Context"
+#~ msgstr "Eelmine kontekst"
+
+#~ msgid "Next Context"
+#~ msgstr "Järgmine kontekst"
+
+#~ msgid "New Topic"
+#~ msgstr "Uus teema"
+
+#~ msgid "Remove Topic"
+#~ msgstr "Eemalda teema"
+
+#~ msgid "Rename Topic"
+#~ msgstr "Muuda teema nime"
+
+#~ msgid "Previous Topic"
+#~ msgstr "Eelmine teema"
+
+#~ msgid "Next Topic"
+#~ msgstr "Järgmine teema"
+
+#~ msgid "Synchronize \"%1\""
+#~ msgstr "Sünkrooni \"%1\""
+
+#~ msgid "Enter project name:"
+#~ msgstr "Projekti nimi:"
+
+#~ msgid "Enter context name:"
+#~ msgstr "Konteksti nimi:"
+
+#~ msgid "Enter topic name:"
+#~ msgstr "Teema nimi:"
+
+#~ msgid "Tomorrow"
+#~ msgstr "Homme"
+
+#~ msgid "Yesterday"
+#~ msgstr "Eile"
+
+#~ msgid "Last Week"
+#~ msgstr "Eelmine nädal"
+
+#~ msgctxt "today"
+#~ msgid "Today"
+#~ msgstr "Täna"
+
+#~ msgctxt "tomorrow"
+#~ msgid "Tomorrow"
+#~ msgstr "Homme"
+
+#~ msgctxt "yesterday"
+#~ msgid "Yesterday"
+#~ msgstr "Eile"
+
+#, fuzzy
+#~| msgid "Copyright 2008-2010, Kevin Ottens <ervin@kde.org>"
+#~ msgid "Copyright 2008-2014, Kevin Ottens <ervin@kde.org>"
+#~ msgstr "Autoriõigus 2008-2010: Kevin Ottens <ervin@kde.org>"
+
+#~ msgid "contexts"
+#~ msgstr "kontekstid"
+
+#~ msgid "&Open File"
+#~ msgstr "&Ava fail"
+
+#~ msgid "&Remove from Context"
+#~ msgstr "&Eemalda kontekstist"
+
+#~ msgid ""
+#~ "Do you really want to delete the context '%1'? All actions won't be "
+#~ "associated to this context anymore."
+#~ msgstr ""
+#~ "Kas tõesti kustutada kontekst \"%1\"? Selle kontekstiga ei seondu siis "
+#~ "enam ühtegi toimingut."
+
+#~ msgid ""
+#~ "Do you really want to delete the contexts '%1'? All actions won't be "
+#~ "associated to those contexts anymore."
+#~ msgstr ""
+#~ "Kas tõesti kustutada kontekstid \"%1\"? Nende kontekstidega ei seondu "
+#~ "siis enam ühtegi toimingut."
+
+#~ msgid "Delete Contexts"
+#~ msgstr "Kontekstide kustutamine"
+
+#~ msgid "No Relation"
+#~ msgstr "Seost pole"
+
+#~ msgid "Relation"
+#~ msgstr "Seos"
+
+#~ msgid "Delete Projects"
+#~ msgstr "Projektide kustutamine"
+
+#~ msgid ""
+#~ "Do you really want to delete the projects '%1', with all its actions?"
+#~ msgstr "Kas tõesti kustutada projektid \"%1\" koos kõigi oma toimingutega?"
+
+#~ msgid "Now"
+#~ msgstr "Praegu"
+
+#~ msgid "Later"
+#~ msgstr "Hiljem"
+
+#~ msgid "Overdue"
+#~ msgstr "Hilinenud"
+
+#~ msgid ""
+#~ "Do you really want to delete the folder '%1', with all its projects and "
+#~ "actions?"
+#~ msgstr ""
+#~ "Kas tõesti kustutada kaust \"%1\" koos kõigi selle projektide ja "
+#~ "toimingutega?"
+
+#~ msgid ""
+#~ "Do you really want to delete the context '%1', with all its sub-contexts? "
+#~ "All actions won't be associated to those contexts anymore."
+#~ msgstr ""
+#~ "Kas tõesti kustutada kontekst \"%1\" koos kõigi alamkontekstidega? Nende "
+#~ "kontekstidega ei seondu siis enam ühtegi toimingut."
+
+#~ msgid "Enter category name:"
+#~ msgstr "Kategooria nimi:"
+
+#~ msgid "Categories"
+#~ msgstr "Kategooriad"
+
+#~ msgid "No Category"
+#~ msgstr "Kategooria puudub"
+
+#, fuzzy
+#~| msgid "No Category"
+#~ msgid "Remove Category"
+#~ msgstr "Kategooria puudub"
+
+#, fuzzy
+#~| msgid "New Category"
+#~ msgid "Rename Category"
+#~ msgstr "Uus kategooria"
+
+#, fuzzy
+#~| msgid "No Category"
+#~ msgid "Previous Category"
+#~ msgstr "Kategooria puudub"
+
+#~ msgid "Move Actions to Category"
+#~ msgstr "Liiguta toimingud kategooriasse"
+
+#~ msgid "Copy Actions to Category"
+#~ msgstr "Kopeeri toimingud kategooriasse"
+
+#~ msgid "Jump to Category"
+#~ msgstr "Hüppa kategooriasse"
+
+#, fuzzy
+#~| msgid "Categories"
+#~ msgid "categories"
+#~ msgstr "Kategooriad"
+
+#~ msgid "Categories View"
+#~ msgstr "Kategooriavaade"

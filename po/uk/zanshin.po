@@ -1,0 +1,1464 @@
+# Translation of zanshin.po to Ukrainian
+# Copyright (C) 2010-2019 This_file_is_part_of_KDE
+# This file is distributed under the license LGPL version 2.1 or
+# version 3 or later versions approved by the membership of KDE e.V.
+#
+# Yuri Chornoivan <yurchor@ukr.net>, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2021.
+msgid ""
+msgstr ""
+"Project-Id-Version: zanshin\n"
+"Report-Msgid-Bugs-To: https://bugs.kde.org\n"
+"POT-Creation-Date: 2022-06-07 00:57+0000\n"
+"PO-Revision-Date: 2021-05-08 08:15+0300\n"
+"Last-Translator: Yuri Chornoivan <yurchor@ukr.net>\n"
+"Language-Team: Ukrainian <kde-i18n-uk@kde.org>\n"
+"Language: uk\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Lokalize 20.12.0\n"
+"Plural-Forms: nplurals=4; plural=n==1 ? 3 : n%10==1 && n%100!=11 ? 0 : n"
+"%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
+"X-Qt-Contexts: true\n"
+
+#, kde-format
+msgctxt "NAME OF TRANSLATORS"
+msgid "Your names"
+msgstr "Юрій Чорноіван"
+
+#, kde-format
+msgctxt "EMAIL OF TRANSLATORS"
+msgid "Your emails"
+msgstr "yurchor@ukr.net"
+
+#: 3rdparty/kdepim/libkdepim/kdateedit.cpp:429
+#, kde-format
+msgctxt "the day after today"
+msgid "tomorrow"
+msgstr "завтра"
+
+#: 3rdparty/kdepim/libkdepim/kdateedit.cpp:430
+#, kde-format
+msgctxt "this day"
+msgid "today"
+msgstr "сьогодні"
+
+#: 3rdparty/kdepim/libkdepim/kdateedit.cpp:431
+#, kde-format
+msgctxt "the day before today"
+msgid "yesterday"
+msgstr "вчора"
+
+#: 3rdparty/kdepim/libkdepim/kdateedit.cpp:432
+#, kde-format
+msgctxt "the week after this week"
+msgid "next week"
+msgstr "наступний тиждень"
+
+#: 3rdparty/kdepim/libkdepim/kdateedit.cpp:433
+#, kde-format
+msgctxt "the month after this month"
+msgid "next month"
+msgstr "наступний місяць"
+
+#: src/akonadi/akonadiconfigdialog.cpp:35
+#, kde-format
+msgid "Configure"
+msgstr "Налаштувати"
+
+#: src/akonadi/akonadiconfigdialog.cpp:39
+#, kde-format
+msgid ""
+"Please select or create a resource which will be used by the application to "
+"store and query its TODOs."
+msgstr ""
+"Будь ласка, виберіть або створіть ресурс, який буде використано програмою "
+"для зберігання та отримання даних записів завдань."
+
+#: src/akonadi/akonadiconfigdialog.cpp:49
+#, kde-format
+msgid "Add resource"
+msgstr "Додати ресурс"
+
+#: src/akonadi/akonadiconfigdialog.cpp:56
+#, kde-format
+msgid "Remove resource"
+msgstr "Вилучити ресурс"
+
+#: src/akonadi/akonadiconfigdialog.cpp:63
+#, kde-format
+msgid "Configure resource..."
+msgstr "Налаштувати ресурс…"
+
+#: src/akonadi/akonadiconfigdialog.cpp:111
+#, kde-format
+msgid "Multiple Agent Deletion"
+msgstr "Вилучення декількох агентів"
+
+#: src/akonadi/akonadiconfigdialog.cpp:112
+#, kde-format
+msgid "Do you really want to delete the selected agent instances?"
+msgstr "Ви справді бажаєте вилучити позначені екземпляри агента?"
+
+#: src/akonadi/akonaditaskrepository.cpp:51
+#, kde-format
+msgid "Could not find a collection to store the task into!"
+msgstr "Не вдалося знайти збірку для зберігання завдання!"
+
+#: src/akonadi/akonaditaskrepository.cpp:198
+#, kde-format
+msgid "Could not associate '%1', it is an ancestor of '%2'"
+msgstr "Не вдалося пов’язати «%1», запис не є батьківським щодо «%2»"
+
+#: src/presentation/alltaskspagemodel.cpp:35
+#, kde-format
+msgid "Cannot add task %1"
+msgstr "Не вдалося додати завдання %1"
+
+#: src/presentation/alltaskspagemodel.cpp:46
+#, kde-format
+msgid "Cannot remove task %1"
+msgstr "Не вдалося вилучити завдання %1"
+
+#: src/presentation/alltaskspagemodel.cpp:56
+#: src/presentation/contextpagemodel.cpp:74
+#: src/presentation/inboxpagemodel.cpp:55
+#: src/presentation/projectpagemodel.cpp:67
+#: src/presentation/workdaypagemodel.cpp:63
+#, kde-format
+msgid "Cannot promote task %1 to be a project"
+msgstr "Не вдалося перевести запис завдання %1 у категорію проєктів"
+
+#: src/presentation/alltaskspagemodel.cpp:97
+#: src/presentation/editormodel.cpp:390
+#, kde-format
+msgid "Cannot modify task %1"
+msgstr "Не вдалося змінити запис завдання %1"
+
+#: src/presentation/alltaskspagemodel.cpp:122
+#: src/presentation/contextpagemodel.cpp:144
+#: src/presentation/inboxpagemodel.cpp:111
+#: src/presentation/workdaypagemodel.cpp:119
+#, kde-format
+msgid "Cannot move task %1 as sub-task of %2"
+msgstr "Не вдалося пересунути завдання %1 як підзавдання %2"
+
+#: src/presentation/alltaskspagemodel.cpp:125
+#: src/presentation/inboxpagemodel.cpp:114
+#: src/presentation/workdaypagemodel.cpp:127
+#, kde-format
+msgid "Cannot deparent task %1 from its parent"
+msgstr ""
+"Не вдалося скасувати прив’язування запису завдання %1 до батьківського запису"
+
+#: src/presentation/availablepagesmodel.cpp:117
+#, kde-format
+msgid "Cannot add project %1 in dataSource %2"
+msgstr "Не вдалося додати проєкт %1 до джерела даних %2"
+
+#: src/presentation/availablepagesmodel.cpp:125
+#, kde-format
+msgid "Cannot add context %1"
+msgstr "Не вдалося додати контекст %1"
+
+#: src/presentation/availablepagesmodel.cpp:133
+#, kde-format
+msgid "Cannot remove project %1"
+msgstr "Не вдалося вилучити проєкт %1"
+
+#: src/presentation/availablepagesmodel.cpp:136
+#, kde-format
+msgid "Cannot remove context %1"
+msgstr "Не вдалося вилучити контекст %1"
+
+#: src/presentation/availablepagesmodel.cpp:145
+#: src/widgets/itemdelegate.cpp:143
+#, kde-format
+msgid "Inbox"
+msgstr "Вхідні"
+
+#: src/presentation/availablepagesmodel.cpp:147
+#, kde-format
+msgid "Workday"
+msgstr "Робочий день"
+
+#: src/presentation/availablepagesmodel.cpp:149
+#, kde-format
+msgid "Projects"
+msgstr "Проєкти"
+
+#: src/presentation/availablepagesmodel.cpp:151
+#, kde-format
+msgid "Contexts"
+msgstr "Контексти"
+
+#: src/presentation/availablepagesmodel.cpp:153
+#, kde-format
+msgid "All Tasks"
+msgstr "Усі завдання"
+
+#: src/presentation/availablepagesmodel.cpp:252
+#, kde-format
+msgid "Cannot modify project %1"
+msgstr "Не вдалося змінити проєкт %1"
+
+#: src/presentation/availablepagesmodel.cpp:257
+#, kde-format
+msgid "Cannot modify context %1"
+msgstr "Не вдалося змінити контекст %1"
+
+#: src/presentation/availablepagesmodel.cpp:276
+#, kde-format
+msgid "Cannot add %1 to project %2"
+msgstr "Не вдалося додати %1 до проєкту %2"
+
+#: src/presentation/availablepagesmodel.cpp:282
+#, kde-format
+msgid "Cannot add %1 to context %2"
+msgstr "Не вдалося додати %1 до контексту %2"
+
+#: src/presentation/availablepagesmodel.cpp:288
+#, kde-format
+msgid "Cannot move %1 to Inbox"
+msgstr "Не вдалося пересунути %1 до теки «Вхідні»"
+
+#: src/presentation/availablepagesmodel.cpp:292
+#, kde-format
+msgid "Cannot move task %1 to Inbox"
+msgstr "Не вдалося пересунути запис завдання %1 до теки «Вхідні»"
+
+#: src/presentation/availablepagesmodel.cpp:301
+#, kde-format
+msgid "Cannot update task %1 to Workday"
+msgstr "Не вдалося оновити запис завдання %1 на робочий день"
+
+#: src/presentation/availablesourcesmodel.cpp:99
+#, kde-format
+msgid "Cannot modify source %1"
+msgstr "Не вдалося змінити джерело %1"
+
+#: src/presentation/contextpagemodel.cpp:54
+#, kde-format
+msgid "Cannot add task %1 in context %2"
+msgstr "Не вдалося додати запис завдання %1 у контекст %2"
+
+#: src/presentation/contextpagemodel.cpp:65
+#, kde-format
+msgid "Cannot remove task %1 from context %2"
+msgstr "Не вдалося вилучити запис завдання %1 з контексту %2"
+
+#: src/presentation/contextpagemodel.cpp:115
+#, kde-format
+msgid "Cannot modify task %1 in context %2"
+msgstr "Не вдалося змінити завдання %1 у контексті %2"
+
+#: src/presentation/contextpagemodel.cpp:147
+#, kde-format
+msgid "Cannot dissociate task %1 from its parent"
+msgstr ""
+"Не вдалося скасувати прив’язування запису завдання %1 до батьківського запису"
+
+#: src/presentation/inboxpagemodel.cpp:35
+#, kde-format
+msgid "Cannot add task %1 in Inbox"
+msgstr "Не вдалося додати запис завдання %1 до теки «Вхідні»"
+
+#: src/presentation/inboxpagemodel.cpp:46
+#, kde-format
+msgid "Cannot remove task %1 from Inbox"
+msgstr "Не вдалося вилучити запис завдання %1 з теки «Вхідні»"
+
+#: src/presentation/inboxpagemodel.cpp:96
+#, kde-format
+msgid "Cannot modify task %1 in Inbox"
+msgstr "Не вдалося змінити запис завдання %1 у теці «Вхідні»"
+
+#: src/presentation/projectpagemodel.cpp:47
+#, kde-format
+msgid "Cannot add task %1 in project %2"
+msgstr "Не вдалося додати запис завдання %1 до проєкту %2"
+
+#: src/presentation/projectpagemodel.cpp:58
+#, kde-format
+msgid "Cannot remove task %1 from project %2"
+msgstr "Не вдалося вилучити запис завдання %1 з проєкту %2"
+
+#: src/presentation/projectpagemodel.cpp:104
+#, kde-format
+msgid "Cannot modify task %1 in project %2"
+msgstr "Не вдалося змінити запис завдання %1 у проєкті %2"
+
+#: src/presentation/projectpagemodel.cpp:130
+#, kde-format
+msgid "Cannot move task %1 as a sub-task of %2"
+msgstr "Не вдалося пересунути запис завдання %1 до записів підзавдань %2"
+
+#: src/presentation/runningtaskmodel.cpp:46
+#, kde-format
+msgid "Cannot update task %1 to 'not running'"
+msgstr "Не вдалося оновити запис завдання %1 до «не виконується»"
+
+#: src/presentation/runningtaskmodel.cpp:54
+#, kde-format
+msgid "Cannot update task %1 to 'running'"
+msgstr "Не вдалося оновити запис завдання %1 до «виконується»"
+
+#: src/presentation/workdaypagemodel.cpp:42
+#, kde-format
+msgid "Cannot add task %1 in Workday"
+msgstr "Не вдалося додати запис завдання %1 до робочого дня"
+
+#: src/presentation/workdaypagemodel.cpp:53
+#, kde-format
+msgid "Cannot remove task %1 from Workday"
+msgstr "Не вдалося вилучити запис завдання %1 з робочого дня"
+
+#: src/presentation/workdaypagemodel.cpp:104
+#, kde-format
+msgid "Cannot modify task %1 in Workday"
+msgstr "Не вдалося змінити запис завдання %1 у робочому дні"
+
+#: src/widgets/applicationcomponents.cpp:47
+#, kde-format
+msgid "Move Task"
+msgstr "Пересунути завдання"
+
+#: src/widgets/availablepagesview.cpp:50
+#, kde-format
+msgid "New Project"
+msgstr "Новий проєкт"
+
+#: src/widgets/availablepagesview.cpp:56
+#, kde-format
+msgid "New Context"
+msgstr "Новий контекст"
+
+#: src/widgets/availablepagesview.cpp:62
+#, kde-format
+msgid "Remove Page"
+msgstr "Вилучити сторінку"
+
+#: src/widgets/availablepagesview.cpp:91
+#, kde-format
+msgid "Previous Page"
+msgstr "Попередня сторінка"
+
+#: src/widgets/availablepagesview.cpp:98
+#, kde-format
+msgid "Next Page"
+msgstr "Наступна сторінка"
+
+#: src/widgets/availablepagesview.cpp:105
+#, kde-format
+msgid "Go to Page..."
+msgstr "Перейти до сторінки…"
+
+#: src/widgets/availablepagesview.cpp:240
+#, kde-format
+msgid "Add a context"
+msgstr "Додати контекст"
+
+#: src/widgets/availablepagesview.cpp:265
+#, kde-format
+msgid "Delete Project"
+msgstr "Вилучення проєкту"
+
+#: src/widgets/availablepagesview.cpp:266
+#, kde-format
+msgid "Do you really want to delete the project '%1', with all its actions?"
+msgstr ""
+"Ви справді бажаєте вилучити запис проєкту «%1» з усіма записами дій, що у "
+"ньому містяться?"
+
+#: src/widgets/availablepagesview.cpp:268
+#, kde-format
+msgid "Delete Context"
+msgstr "Вилучення контексту"
+
+#: src/widgets/availablepagesview.cpp:269
+#, kde-format
+msgid "Do you really want to delete the context '%1'?"
+msgstr "Ви справді бажаєте вилучити контекст «%1»?"
+
+#: src/widgets/availablesourcesview.cpp:55
+#, kde-format
+msgid "Use as Default Source"
+msgstr "Використовувати як типове джерело"
+
+#: src/widgets/availablesourcesview.cpp:76
+#, kde-format
+msgid "Configure %1..."
+msgstr "Налаштувати %1…"
+
+#: src/widgets/editorview.cpp:32
+#, kde-format
+msgid "Add Attachment"
+msgstr "Додати долучення"
+
+#: src/widgets/editorview.cpp:40
+#, kde-format
+msgid "Never"
+msgstr "Ніколи"
+
+#: src/widgets/editorview.cpp:41
+#, kde-format
+msgid "Daily"
+msgstr "Щодня"
+
+#: src/widgets/editorview.cpp:42
+#, kde-format
+msgid "Weekly"
+msgstr "Щотижня"
+
+#: src/widgets/editorview.cpp:43
+#, kde-format
+msgid "Monthly"
+msgstr "Щомісяця"
+
+#: src/widgets/editorview.cpp:44
+#, kde-format
+msgid "Yearly"
+msgstr "Щорічно"
+
+#. i18n: ectx: property (windowTitle), widget (QWidget, EditorView)
+#. i18n: ectx: property (text), widget (QListView, attachmentList)
+#: src/widgets/editorview.ui:14 src/widgets/editorview.ui:184
+#: src/zanshin/app/main.cpp:84
+#, kde-format
+msgid "Editor"
+msgstr "Редактор"
+
+#. i18n: ectx: property (text), widget (QLabel, dueDateLabel)
+#: src/widgets/editorview.ui:41
+#, kde-format
+msgid "D&ue Date "
+msgstr "Дата заве&ршення "
+
+#. i18n: ectx: property (text), widget (QCheckBox, doneButton)
+#: src/widgets/editorview.ui:62 src/widgets/runningtaskwidget.cpp:50
+#, kde-format
+msgid "Done"
+msgstr "Виконано"
+
+#. i18n: ectx: property (toolTip), widget (QToolButton, addAttachmentButton)
+#: src/widgets/editorview.ui:86
+#, kde-format
+msgid "Add Attachment..."
+msgstr "Додати долучення…"
+
+#. i18n: ectx: property (toolTip), widget (QToolButton, removeAttachmentButton)
+#: src/widgets/editorview.ui:100
+#, kde-format
+msgid "Remove Attachment"
+msgstr "Вилучити долучення"
+
+#. i18n: ectx: property (text), widget (QPushButton, startTodayButton)
+#: src/widgets/editorview.ui:121
+#, kde-format
+msgid "Select for &Today"
+msgstr "Позначити на с&ьогодні"
+
+#. i18n: ectx: property (text), widget (QLabel, recurrenceLabel)
+#: src/widgets/editorview.ui:130
+#, kde-format
+msgid "&Recurrence"
+msgstr "Пов&торення"
+
+#. i18n: ectx: property (text), widget (QLabel, startDateLabel)
+#: src/widgets/editorview.ui:146
+#, kde-format
+msgid "St&art Date"
+msgstr "Дата по&чатку"
+
+#: src/widgets/filterwidget.cpp:29
+#, kde-format
+msgid "Sort by title"
+msgstr "Впорядкувати за заголовком"
+
+#: src/widgets/filterwidget.cpp:30
+#, kde-format
+msgid "Sort by date"
+msgstr "Впорядкувати за датою"
+
+#. i18n: ectx: property (placeholderText), widget (QLineEdit, filterEdit)
+#: src/widgets/filterwidget.ui:31 src/widgets/pageview.cpp:197
+#, kde-format
+msgid "Filter..."
+msgstr "Фільтрувати…"
+
+#. i18n: ectx: property (toolTip), widget (QToolButton, descendingButton)
+#: src/widgets/filterwidget.ui:65
+#, kde-format
+msgid "Sort in descending order"
+msgstr "Впорядкувати за спаданням"
+
+#. i18n: ectx: property (toolTip), widget (QToolButton, ascendingButton)
+#: src/widgets/filterwidget.ui:88
+#, kde-format
+msgid "Sort in ascending order"
+msgstr "Впорядкувати за зростанням"
+
+#: src/widgets/itemdelegate.cpp:141
+#, kde-format
+msgid "Project: %1"
+msgstr "Проєкт: %1"
+
+#. i18n: ectx: property (windowTitle), widget (QDialog, NameAndDataSourceDialog)
+#: src/widgets/nameanddatasourcedialog.ui:14
+#, kde-format
+msgid "Add a project"
+msgstr "Додати проєкт"
+
+#. i18n: ectx: property (text), widget (QLabel, nameLabel)
+#: src/widgets/nameanddatasourcedialog.ui:25
+#, kde-format
+msgid "Name"
+msgstr "Назва"
+
+#. i18n: ectx: property (text), widget (QLabel, sourceLabel)
+#: src/widgets/nameanddatasourcedialog.ui:42
+#, kde-format
+msgid "Source"
+msgstr "Джерело"
+
+#: src/widgets/pageview.cpp:155
+#, kde-format
+msgid "Type and press enter to add a task"
+msgstr "Введіть назву і натисніть Enter, щоб додати завдання"
+
+#: src/widgets/pageview.cpp:170
+#, kde-format
+msgid "New Task"
+msgstr "Нове завдання"
+
+#: src/widgets/pageview.cpp:183
+#, kde-format
+msgid "Remove Task"
+msgstr "Вилучити завдання"
+
+#: src/widgets/pageview.cpp:191
+#, kde-format
+msgid "Promote Task as Project"
+msgstr "Перетворити завдання на проєкт"
+
+#: src/widgets/pageview.cpp:205
+#, kde-format
+msgid "Show done tasks"
+msgstr "Показати виконані завдання"
+
+#: src/widgets/pageview.cpp:213
+#, kde-format
+msgid "Show future tasks"
+msgstr "Показати завдання на майбутнє"
+
+#: src/widgets/pageview.cpp:239
+#, kde-format
+msgid "Start Now"
+msgstr "Почати зараз"
+
+#: src/widgets/pageview.cpp:357
+#, kde-format
+msgid "Type and press enter to add an item"
+msgstr "Введіть назву і натисніть Enter, щоб додати запис"
+
+#: src/widgets/pageview.cpp:383
+#, kde-format
+msgid "Do you really want to delete the selected items and their children?"
+msgstr "Ви справді бажаєте вилучити позначені запис та їхні дочірні записи?"
+
+#: src/widgets/pageview.cpp:385
+#, kde-format
+msgid "Do you really want to delete the selected items?"
+msgstr "Ви справді бажаєте вилучити позначені записи?"
+
+#: src/widgets/pageview.cpp:393
+#, kde-format
+msgid "Do you really want to delete the selected task and all its children?"
+msgstr ""
+"Ви справді бажаєте вилучити позначений запис завдання та його дочірні записи?"
+
+#: src/widgets/pageview.cpp:397
+#, kde-format
+msgid "Delete Tasks"
+msgstr "Вилучення завдань"
+
+#: src/widgets/quickselectdialog.cpp:30
+#, kde-format
+msgid "Quick Select Dialog"
+msgstr "Діалогове вікно швидкого вибору"
+
+#: src/widgets/quickselectdialog.cpp:32 src/widgets/quickselectdialog.cpp:70
+#, kde-format
+msgid "You can start typing to filter the list of available pages"
+msgstr ""
+"Можете починати вводити назву для фільтрування списку доступних сторінок"
+
+#: src/widgets/quickselectdialog.cpp:72
+#, kde-format
+msgid "Path: %1"
+msgstr "Шлях: %1"
+
+#: src/widgets/runningtaskwidget.cpp:36
+#, kde-format
+msgid "Zanshin Running Task Banner"
+msgstr "Заголовок завдання, яке виконується, у Zanshin"
+
+#: src/widgets/runningtaskwidget.cpp:46
+#, kde-format
+msgid "Stop"
+msgstr "Зупинити"
+
+#: src/zanshin/app/aboutdata.cpp:14
+#, kde-format
+msgid "Zanshin Tasks"
+msgstr "Завдання Zanshin"
+
+#: src/zanshin/app/aboutdata.cpp:15
+#, kde-format
+msgid ""
+"A Getting Things Done application which aims at getting your mind like water"
+msgstr ""
+"Програма для планування виконання завдань, яка позбавить вас від зайвих "
+"клопотів"
+
+#: src/zanshin/app/aboutdata.cpp:17
+#, kde-format
+msgid "Copyright 2008-2016, Kevin Ottens <ervin@kde.org>"
+msgstr "© Kevin Ottens <ervin@kde.org>, 2008–2016"
+
+#: src/zanshin/app/aboutdata.cpp:19
+#, kde-format
+msgid "Kevin Ottens"
+msgstr "Kevin Ottens"
+
+#: src/zanshin/app/aboutdata.cpp:20
+#, kde-format
+msgid "Lead Developer"
+msgstr "Провідний розробник"
+
+#: src/zanshin/app/aboutdata.cpp:23
+#, kde-format
+msgid "Mario Bensi"
+msgstr "Mario Bensi"
+
+#: src/zanshin/app/aboutdata.cpp:24 src/zanshin/app/aboutdata.cpp:28
+#, kde-format
+msgid "Developer"
+msgstr "Розробник"
+
+#: src/zanshin/app/aboutdata.cpp:27
+#, kde-format
+msgid "Franck Arrecot"
+msgstr "Franck Arrecot"
+
+#: src/zanshin/app/main.cpp:76
+#, kde-format
+msgid "Sources"
+msgstr "Джерела"
+
+#: src/zanshin/app/main.cpp:80
+#, kde-format
+msgid "Pages"
+msgstr "Сторінки"
+
+#. i18n: ectx: Menu (go)
+#: src/zanshin/app/zanshinui.rc:15 src/zanshin/kontact/zanshin_part.rc:15
+#, kde-format
+msgid "&Go"
+msgstr "Пере&хід"
+
+#. i18n: ectx: Menu
+#: src/zanshin/app/zanshinui.rc:27
+#, kde-format
+msgid "&Panels"
+msgstr "&Панелі"
+
+#. i18n: ectx: ToolBar (mainToolBar)
+#: src/zanshin/app/zanshinui.rc:35 src/zanshin/kontact/zanshin_part.rc:27
+#, kde-format
+msgctxt "@title:menu"
+msgid "Main Toolbar"
+msgstr "Головна панель"
+
+#: src/zanshin/runner/zanshinrunner.cpp:61
+#, kde-format
+msgid "Add \"%1\" to your todo list"
+msgstr "Додати «%1» до вашого списку завдань"
+
+#~ msgctxt "@option today"
+#~ msgid "&Today"
+#~ msgstr "С&ьогодні"
+
+#~ msgctxt "@option tomorrow"
+#~ msgid "To&morrow"
+#~ msgstr "&Завтра"
+
+#~ msgctxt "@option next week"
+#~ msgid "Next &Week"
+#~ msgstr "Наступний &тиждень"
+
+#~ msgctxt "@option next month"
+#~ msgid "Next M&onth"
+#~ msgstr "Наступний м&ісяць"
+
+#~ msgctxt "@option do not specify a date"
+#~ msgid "No Date"
+#~ msgstr "Без дати"
+
+#~ msgid "Context name"
+#~ msgstr "Назва контексту"
+
+#~ msgid "Script Editor - Zanshin"
+#~ msgstr "Редактор скриптів – Zanshin"
+
+#~ msgid "vCard Import Failed"
+#~ msgstr "Не вдалося імпортувати візитівку"
+
+#~ msgid "<qt>Unable to access <b>%1</b>.</qt>"
+#~ msgstr "<qt>Не вдалося отримати доступ до <b>%1</b>.</qt>"
+
+#~ msgid "Select email from contact"
+#~ msgstr "Вибір адреси ел. пошти із запису контакту"
+
+#~ msgid "Show Organization Unit for LDAP results"
+#~ msgstr "Показувати модуль установи для результатів із LDAP"
+
+#~ msgid "Configure Completion..."
+#~ msgstr "Налаштувати автодоповнення…"
+
+#~ msgid "Automatically expand groups"
+#~ msgstr "Автоматично розгортати групи"
+
+#~ msgid "Expand Groups..."
+#~ msgstr "Розгорнути групи…"
+
+#~ msgid "Recent Addresses"
+#~ msgstr "Недавні адреси"
+
+#~ msgctxt "@title:group"
+#~ msgid "Contacts found in your data"
+#~ msgstr "Записи контактів, виявлені у ваших даних"
+
+#~ msgid "LDAP server: %1"
+#~ msgstr "Сервер LDAP: %1"
+
+#~ msgid "Blacklist Email Completion"
+#~ msgstr "Заблокувати доповнення адрес електронної пошти"
+
+#~ msgid "Search email:"
+#~ msgstr "Шукати ел. адресу:"
+
+#~ msgid "Research is done from 3 characters"
+#~ msgstr "Результати отримано за 3 символами"
+
+#~ msgid "Search"
+#~ msgstr "Шукати"
+
+#~ msgid "Show Blacklisted Emails"
+#~ msgstr "Показати поштові повідомлення з «чорного» списку"
+
+#~ msgid "Search in result..."
+#~ msgstr "Шукати у результатах…"
+
+#~ msgid "&Select"
+#~ msgstr "Ви&брати"
+
+#~ msgid "&Unselect"
+#~ msgstr "&Скасувати вибір"
+
+#~ msgid "<qt><a href=\"more_result\">More result...</a></qt>"
+#~ msgstr "<qt><a href=\"more_result\">Інші результати…</a></qt>"
+
+#~ msgid "Exclude domain names:"
+#~ msgstr "Виключити назви доменів:"
+
+#~ msgid "Separate domain with '%1'"
+#~ msgstr "Відокремити домен з «%1»"
+
+#~ msgid "No email found."
+#~ msgstr "Нічого не знайдено."
+
+#~ msgid "1 email found"
+#~ msgid_plural "%1 emails found"
+#~ msgstr[0] "Знайдено %1 повідомлення"
+#~ msgstr[1] "Знайдено %1 повідомлення"
+#~ msgstr[2] "Знайдено %1 повідомлень"
+#~ msgstr[3] "Знайдено одне повідомлення"
+
+#~ msgid "No result found"
+#~ msgstr "Нічого не знайдено"
+
+#~ msgid ""
+#~ "The list was changed. Do you want to save before to make another search ?"
+#~ msgstr ""
+#~ "До списку внесено зміни. Хочете зберегти їх до виконання іншого пошуку?"
+
+#~ msgid "Save"
+#~ msgstr "Зберегти"
+
+#~ msgid "Configure completion"
+#~ msgstr "Налаштування порядку доповнення"
+
+#~ msgid "Completion Order"
+#~ msgstr "Порядок доповнення"
+
+#~ msgid "Recent Address"
+#~ msgstr "Недавня адреса"
+
+#~ msgid "Blacklist Email Address"
+#~ msgstr "Додати адресу до «чорного» списку"
+
+#~ msgid "Edit Completion Order"
+#~ msgstr "Редагування порядку завершення"
+
+#~ msgid "LDAP server %1"
+#~ msgstr "Сервер LDAP %1"
+
+#~ msgid "Add Host"
+#~ msgstr "Додати вузол"
+
+#~ msgid "kcmldap"
+#~ msgstr "kcmldap"
+
+#~ msgid "LDAP Server Settings"
+#~ msgstr "Параметри серверів LDAP"
+
+#~ msgid "(c) 2009 - 2010 Tobias Koenig"
+#~ msgstr "© Tobias Koenig, 2009–2010"
+
+#~ msgid "Tobias Koenig"
+#~ msgstr "Tobias Koenig"
+
+#~ msgid "Edit Host"
+#~ msgstr "Змінити вузол"
+
+#~ msgid "Do you want to remove setting for host \"%1\"?"
+#~ msgstr "Хочете вилучити запис для вузла «%1»?"
+
+#~ msgid "LDAP Servers"
+#~ msgstr "Сервери LDAP"
+
+#~ msgid "Check all servers that should be used:"
+#~ msgstr "Позначте всі сервери, які слід використовувати:"
+
+#~ msgid "&Add Host..."
+#~ msgstr "&Додати вузол..."
+
+#~ msgid "&Edit Host..."
+#~ msgstr "&Змінити вузол..."
+
+#~ msgid "&Remove Host"
+#~ msgstr "&Вилучити вузол"
+
+#~ msgid ""
+#~ "LDAP password is stored as clear text, do you want to store it in kwallet?"
+#~ msgstr ""
+#~ "Пароль до LDAP зберігається у незашифрованому форматі, хочете зберегти "
+#~ "його у kwallet?"
+
+#~ msgid "Store clear text password in KWallet"
+#~ msgstr "Зберегти незашифрований пароль у KWallet"
+
+#~ msgctxt "@item LDAP search key"
+#~ msgid "Title"
+#~ msgstr "Звертання"
+
+#~ msgid "Full Name"
+#~ msgstr "Повне ім'я"
+
+#~ msgctxt "@item LDAP search key"
+#~ msgid "Email"
+#~ msgstr "Ел. пошта"
+
+#~ msgid "Home Number"
+#~ msgstr "Домашній телефон"
+
+#~ msgid "Work Number"
+#~ msgstr "Робочій телефон"
+
+#~ msgid "Mobile Number"
+#~ msgstr "Мобільний телефон"
+
+#~ msgid "Fax Number"
+#~ msgstr "Номер факсу"
+
+#~ msgid "Pager"
+#~ msgstr "Пейджер"
+
+#~ msgid "Street"
+#~ msgstr "Вулиця"
+
+#~ msgctxt "@item LDAP search key"
+#~ msgid "State"
+#~ msgstr "Стан"
+
+#~ msgid "Country"
+#~ msgstr "Країна"
+
+#~ msgid "City"
+#~ msgstr "Місто"
+
+#~ msgid "Organization"
+#~ msgstr "Організація"
+
+#~ msgid "Company"
+#~ msgstr "Компанія"
+
+#~ msgid "Department"
+#~ msgstr "Відділ"
+
+#~ msgid "Zip Code"
+#~ msgstr "Поштовий код"
+
+#~ msgid "Postal Address"
+#~ msgstr "Поштова адреса"
+
+#~ msgid "Description"
+#~ msgstr "Опис"
+
+#~ msgid "User ID"
+#~ msgstr "ІД користувача"
+
+#~ msgctxt "@title:column Column containing email addresses"
+#~ msgid "Email"
+#~ msgstr "Ел. пошта"
+
+#~ msgctxt ""
+#~ "@title:column Column containing the residential state of the address"
+#~ msgid "State"
+#~ msgstr "Стан"
+
+#~ msgctxt "@title:column Column containing title of the person"
+#~ msgid "Title"
+#~ msgstr "Звертання"
+
+#~ msgid "Import Contacts from LDAP"
+#~ msgstr "Імпортувати контакти з LDAP"
+
+#~ msgid "Search for Addresses in Directory"
+#~ msgstr "Шукати на адреси у каталозі"
+
+#~ msgid "Search for:"
+#~ msgstr "Шукати за:"
+
+#~ msgctxt "In LDAP attribute"
+#~ msgid "in"
+#~ msgstr "в"
+
+#~ msgctxt "@item:inlistbox Name of the contact"
+#~ msgid "Name"
+#~ msgstr "Ім’я"
+
+#~ msgctxt "@item:inlistbox email address of the contact"
+#~ msgid "Email"
+#~ msgstr "Ел. пошта"
+
+#~ msgctxt "@item:inlistbox"
+#~ msgid "Home Number"
+#~ msgstr "Домашній телефон"
+
+#~ msgctxt "@item:inlistbox"
+#~ msgid "Work Number"
+#~ msgstr "Робочий телефон"
+
+#~ msgctxt "@action:button Start searching"
+#~ msgid "&Search"
+#~ msgstr "&Шукати"
+
+#~ msgid "Recursive search"
+#~ msgstr "Рекурсивний пошук"
+
+#~ msgid "Contains"
+#~ msgstr "Містить"
+
+#~ msgid "Starts With"
+#~ msgstr "Починається з"
+
+#~ msgid "Search in result"
+#~ msgstr "Шукати у результатах"
+
+#~ msgid "Searching..."
+#~ msgstr "Шукаємо…"
+
+#~ msgid "Select All"
+#~ msgstr "Вибрати все"
+
+#~ msgid "Unselect All"
+#~ msgstr "Скасувати вибір всього"
+
+#~ msgid "Add Selected"
+#~ msgstr "Додати вибрані"
+
+#~ msgid "Configure LDAP Servers..."
+#~ msgstr "Налаштувати сервери LDAP…"
+
+#~ msgid "Copy"
+#~ msgstr "Копіювати"
+
+#~ msgid "You must select an LDAP server before searching."
+#~ msgstr "Перед виконанням пошуку вам слід вибрати сервер LDAP."
+
+#~ msgctxt "arguments are host name, datetime"
+#~ msgid "Imported from LDAP directory %1 on %2"
+#~ msgstr "Імпортовано з каталогу LDAP %1 на %2"
+
+#~ msgid "Configure the Address Book LDAP Settings"
+#~ msgstr "Налаштування параметрів LDAP адресної книги"
+
+#~ msgid "Edit Recent Addresses"
+#~ msgstr "Редагувати недавні адреси"
+
+#~ msgid "&Add"
+#~ msgstr "&Додати"
+
+#~ msgid "&Remove"
+#~ msgstr "&Вилучити"
+
+#~ msgid "Do you want to remove this email address?"
+#~ msgid_plural "Do you want to remove %1 email addresses?"
+#~ msgstr[0] "Хочете вилучити цю %1 адресу електронної пошти?"
+#~ msgstr[1] "Хочете вилучити запис для вузла «%1»?"
+#~ msgstr[2] "Хочете вилучити запис для вузла «%1»?"
+#~ msgstr[3] "Хочете вилучити запис для вузла «%1»?"
+
+#~ msgid "Remove"
+#~ msgstr "Вилучити"
+
+#~ msgid "Choose an identity"
+#~ msgstr "Виберіть профіль"
+
+#~ msgid "Choose the identity to use for the groupware message"
+#~ msgstr "Виберіть профіль для повідомлення групової роботи"
+
+#~ msgid "Could not find a collection to store the note into!"
+#~ msgstr "Не вдалося знайти збірку для зберігання нотатки!"
+
+#~ msgid "Tags"
+#~ msgstr "Мітки"
+
+#~ msgid "Cannot tag %1 with %2"
+#~ msgstr "Не вдалося встановити для %1 мітку %2"
+
+#~ msgid "Cannot add note %1 in Inbox"
+#~ msgstr "Не вдалося додати нотатку %1 до теки «Вхідні»"
+
+#~ msgid "Cannot remove note %1 from Inbox"
+#~ msgstr "Не вдалося вилучити нотатку %1 з теки «Вхідні»"
+
+#~ msgid "Cannot modify note %1 in Inbox"
+#~ msgstr "Не вдалося змінити нотатку %1 у теці «Вхідні»"
+
+#~ msgid "Cannot add note %1 in tag %2"
+#~ msgstr "Не вдалося додати нотатку %1 у мітку %2"
+
+#~ msgid "Cannot remove note %1 from tag %2"
+#~ msgstr "Не вдалося вилучити нотатку %1 з мітки %2"
+
+#~ msgid "Cannot modify note %1 in tag %2"
+#~ msgstr "Не вдалося змінити нотатку %1 у мітці %2"
+
+#~ msgid "Renku Notes"
+#~ msgstr "Нотатки Renku"
+
+#~ msgid "A note taking application which aims at getting your mind like water"
+#~ msgstr "Програма роботи з нотатками, яка позбавить вас від зайвих клопотів"
+
+#~ msgid "Copyright 2008-2015, Kevin Ottens <ervin@kde.org>"
+#~ msgstr "© Kevin Ottens <ervin@kde.org>, 2008–2015"
+
+#~ msgid "Move Item"
+#~ msgstr "Пересунути запис"
+
+#~ msgid "Add Tag"
+#~ msgstr "Додати мітку"
+
+#~ msgid "Tag name"
+#~ msgstr "Назва мітки"
+
+#~ msgid "Delete Tag"
+#~ msgstr "Вилучити мітку"
+
+#~ msgid "Do you really want to delete the tag '%1'?"
+#~ msgstr "Ви справді бажаєте вилучити мітку «%1»?"
+
+#~ msgid "Delegated to: <b>%1</b>"
+#~ msgstr "Спрямовано до: <b>%1</b>"
+
+#~ msgid "Delegate To: "
+#~ msgstr "Спрямувати до: "
+
+#~ msgid "De&legate to"
+#~ msgstr "Спр&ямувати до"
+
+#~ msgid "(%1) %2"
+#~ msgstr "(%1) %2"
+
+#~ msgid "New Item"
+#~ msgstr "Створити запис"
+
+#~ msgid "Remove Item"
+#~ msgstr "Вилучити запис"
+
+#~ msgid "Cannot update task %1"
+#~ msgstr "Не вдалося оновити запис завдання %1"
+
+#~ msgctxt "Presentation::AvailableTaskPagesModel|"
+#~ msgid "Inbox"
+#~ msgstr "Вхідні"
+
+#~ msgctxt "Presentation::AvailableTaskPagesModel|"
+#~ msgid "Cannot move %1 to Inbox"
+#~ msgstr "Не вдалося пересунути %1 до теки «Вхідні»"
+
+#~ msgctxt "ErrorHandler|"
+#~ msgid "%1: %2"
+#~ msgstr "%1: %2"
+
+#~ msgctxt "Presentation::ProjectPageModel|"
+#~ msgid "Cannot promote task %1 to be a project"
+#~ msgstr "Не вдалося перевести запис завдання %1 у категорію проєктів"
+
+#~ msgctxt "Presentation::TaskInboxPageModel|"
+#~ msgid "Cannot promote task %1 to be a project"
+#~ msgstr "Не вдалося перевести запис завдання %1 у категорію проєктів"
+
+#~ msgctxt "Presentation::TaskInboxPageModel|"
+#~ msgid "Cannot move task %1 as sub-task of %2"
+#~ msgstr "Не вдалося пересунути запис завдання %1 до записів підзавдань %2"
+
+#~ msgctxt "Presentation::WorkdayPageModel|"
+#~ msgid "Cannot promote task %1 to be a project"
+#~ msgstr "Не вдалося перевести запис завдання %1 у категорію проєктів"
+
+#~ msgctxt "Presentation::WorkdayPageModel|"
+#~ msgid "Cannot move task %1 as sub-task of %2"
+#~ msgstr "Не вдалося пересунути запис завдання %1 до списку підзавдань %2"
+
+#~ msgctxt "Presentation::WorkdayPageModel|"
+#~ msgid "Cannot deparent task %1 from its parent"
+#~ msgstr ""
+#~ "Не вдалося скасувати прив’язування запису завдання %1 до батьківського "
+#~ "запису"
+
+#~ msgctxt "EditorView|"
+#~ msgid "Editor"
+#~ msgstr "Редактор"
+
+#~ msgctxt "Widgets::PageView|"
+#~ msgid "Filter..."
+#~ msgstr "Фільтрувати…"
+
+#~ msgctxt "Widgets::RunningTaskWidget|"
+#~ msgid "Done"
+#~ msgstr "Виконано"
+
+#~ msgctxt "FilterWidget|"
+#~ msgid "Form"
+#~ msgstr "Форма"
+
+#~ msgctxt "Search attribute: Name of contact"
+#~ msgid "Name"
+#~ msgstr "Ім’я"
+
+#~ msgctxt "Search attribute: Email of the contact"
+#~ msgid "Email"
+#~ msgstr "Ел. пошта"
+
+#~ msgid "Please select the collections you would like to have displayed."
+#~ msgstr "Будь ласка, виберіть збірки, які слід показати."
+
+#~ msgid "Settings..."
+#~ msgstr "Параметри…"
+
+#~ msgid "Used Folders"
+#~ msgstr "Використані теки"
+
+#~ msgid "Show the debug window"
+#~ msgstr "Показати вікно діагностичних даних"
+
+#~ msgid "Project View"
+#~ msgstr "Панель проєкту"
+
+#~ msgid "Knowledge View"
+#~ msgstr "Перегляд знань"
+
+#~ msgid "Synchronize All"
+#~ msgstr "Синхронізувати все"
+
+#~ msgid "Summary"
+#~ msgstr "Резюме"
+
+#~ msgid "Date"
+#~ msgstr "Дата"
+
+#~ msgid "No Context"
+#~ msgstr "Без контексту"
+
+#~ msgid "No Topic"
+#~ msgstr "Немає теми"
+
+#~ msgid "Topics"
+#~ msgstr "Теми"
+
+#~ msgid "Cannot open the attachment."
+#~ msgstr "Не вдалося відкрити долучення."
+
+#~ msgid "&Enable"
+#~ msgstr "&Увімкнути"
+
+#~ msgid "F&ormat"
+#~ msgstr "&Формат"
+
+#~ msgid "V&iew"
+#~ msgstr "П&ерегляд"
+
+#~ msgid "Text Toolbar"
+#~ msgstr "Пенал тексту"
+
+#~ msgid "Format Toolbar"
+#~ msgstr "Пенал форматування"
+
+#~ msgid "Hide &Toolbar"
+#~ msgstr "Сховати &панель інструментів"
+
+#~ msgid "Title..."
+#~ msgstr "Заголовок…"
+
+#~ msgid "Fullscreen &Editor"
+#~ msgstr "&Редактор на весь екран"
+
+#~ msgid "Properties"
+#~ msgstr "Властивості"
+
+#~ msgid "New Action"
+#~ msgstr "Нова дія"
+
+#~ msgid "Cancel New Action"
+#~ msgstr "Скасувати створення дії"
+
+#~ msgid "Remove Action"
+#~ msgstr "Вилучити дію"
+
+#~ msgid "Move Action..."
+#~ msgstr "Пересунути дію…"
+
+#~ msgid "Dissociate Action from Context"
+#~ msgstr "Скасувати прив’язку дії до контексту"
+
+#~ msgid "Type and press enter to add an action"
+#~ msgstr "Введіть назву і натисніть Enter, щоб додати запис дії"
+
+#~ msgid "Move Actions to Context"
+#~ msgstr "Пересунути дії до контексту"
+
+#~ msgid "Copy Actions to Context"
+#~ msgstr "Копіювати дії до контексту"
+
+#~ msgid "Jump to Context"
+#~ msgstr "Перейти до контексту"
+
+#~ msgid "Move Actions to Project"
+#~ msgstr "Пересування дій до проєкту"
+
+#~ msgid "Copy Actions to Project"
+#~ msgstr "Копіювання дій до проєкту"
+
+#~ msgid "Jump to Project"
+#~ msgstr "Перехід до проєкту"
+
+#~ msgid "You can start typing to filter the list of contexts."
+#~ msgstr "Можете починати вводити назву для фільтрування списку контекстів."
+
+#~ msgid "New"
+#~ msgstr "Створити"
+
+#~ msgid "Rename"
+#~ msgstr "Перейменувати"
+
+#~ msgid "Next"
+#~ msgstr "Далі"
+
+#~ msgid "Synchronize"
+#~ msgstr "Синхронізувати"
+
+#~ msgid "Rename Project"
+#~ msgstr "Перейменувати проєкт"
+
+#~ msgid "Previous Project"
+#~ msgstr "Попередній проєкт"
+
+#~ msgid "Next Project"
+#~ msgstr "Наступний проєкт"
+
+#~ msgid "Rename Context"
+#~ msgstr "Перейменувати контекст"
+
+#~ msgid "Previous Context"
+#~ msgstr "Попередній контекст"
+
+#~ msgid "Next Context"
+#~ msgstr "Наступний контекст"
+
+#~ msgid "New Topic"
+#~ msgstr "Створити тему"
+
+#~ msgid "Remove Topic"
+#~ msgstr "Вилучити тему"
+
+#~ msgid "Rename Topic"
+#~ msgstr "Перейменувати тему"
+
+#~ msgid "Previous Topic"
+#~ msgstr "Попередня тема"
+
+#~ msgid "Next Topic"
+#~ msgstr "Наступна тема"
+
+#~ msgid "Synchronize \"%1\""
+#~ msgstr "Синхронізувати «%1»"
+
+#~ msgid "Enter project name:"
+#~ msgstr "Введіть назву проєкту:"
+
+#~ msgid "Enter context name:"
+#~ msgstr "Введіть назву контексту:"
+
+#~ msgid "Enter topic name:"
+#~ msgstr "Введіть назву теми:"
+
+#~ msgid "Tomorrow"
+#~ msgstr "Завтра"
+
+#~ msgid "Yesterday"
+#~ msgstr "Вчора"
+
+#~ msgid "Last Week"
+#~ msgstr "Минулого тижня"
+
+#~ msgctxt "today"
+#~ msgid "Today"
+#~ msgstr "Сьогодні"
+
+#~ msgctxt "tomorrow"
+#~ msgid "Tomorrow"
+#~ msgstr "Завтра"
+
+#~ msgctxt "yesterday"
+#~ msgid "Yesterday"
+#~ msgstr "Вчора"
+
+#~ msgid "Copyright 2008-2014, Kevin Ottens <ervin@kde.org>"
+#~ msgstr "© Kevin Ottens <ervin@kde.org>, 2008–2014"
+
+#~ msgid "Configure Zanshin"
+#~ msgstr "Налаштувати Zanshin"
+
+#~ msgid "contexts"
+#~ msgstr "контексти"
+
+#~ msgid "Lists all the tasks"
+#~ msgstr "Показати список усіх завдань"
+
+#~ msgid "Collection"
+#~ msgstr "Збірка"
+
+#~ msgid "&Open File"
+#~ msgstr "&Відкрити файл"
+
+#~ msgid "&Remove from Context"
+#~ msgstr "В&илучити з контексту"
+
+#~ msgid ""
+#~ "Do you really want to delete the context '%1'? All actions won't be "
+#~ "associated to this context anymore."
+#~ msgstr ""
+#~ "Ви справді бажаєте вилучити контекст «%1»? Після вилучення буде розірвано "
+#~ "зв’язок всіх записів дій з цим контекстом."
+
+#~ msgid ""
+#~ "Do you really want to delete the contexts '%1'? All actions won't be "
+#~ "associated to those contexts anymore."
+#~ msgstr ""
+#~ "Ви справді бажаєте вилучити контексти «%1»? Після вилучення буде "
+#~ "розірвано зв’язок всіх записів дій з цими контекстами."
+
+#~ msgid "Delete Contexts"
+#~ msgstr "Вилучення контекстів"
+
+#~ msgid "No Relation"
+#~ msgstr "Немає зв’язку"
+
+#~ msgid "Relation"
+#~ msgstr "Зв’язок"
+
+#~ msgid "Delete Projects"
+#~ msgstr "Вилучення проєктів"
+
+#~ msgid ""
+#~ "Do you really want to delete the projects '%1', with all its actions?"
+#~ msgstr ""
+#~ "Ви справді бажаєте вилучити запис проєкти «%1» з усіма записами дій, що у "
+#~ "них містяться?"
+
+#~ msgid "Now"
+#~ msgstr "Тепер"
+
+#~ msgid "Later"
+#~ msgstr "Пізніше"
+
+#~ msgid "Overdue"
+#~ msgstr "Мав завершитись"
+
+#~ msgid ""
+#~ "Do you really want to delete the folder '%1', with all its projects and "
+#~ "actions?"
+#~ msgstr ""
+#~ "Ви справді бажаєте вилучити теку «%1» з усіма записами проєктів і дій, що "
+#~ "у ній містяться?"
+
+#~ msgid ""
+#~ "Do you really want to delete the context '%1', with all its sub-contexts? "
+#~ "All actions won't be associated to those contexts anymore."
+#~ msgstr ""
+#~ "Ви справді бажаєте вилучити запис контексту «%1» з усіма його вбудованими "
+#~ "контекстами? Після вилучення буде розірвано зв’язок всіх записів дій з "
+#~ "цими контекстами."
+
+#~ msgid "Enter category name:"
+#~ msgstr "Введіть назву категорії:"
+
+#~ msgid "Categories"
+#~ msgstr "Категорії"
+
+#~ msgid "No Category"
+#~ msgstr "Без категорії"
+
+#~ msgid "Remove Category"
+#~ msgstr "Вилучити категорію"
+
+#~ msgid "Rename Category"
+#~ msgstr "Перейменувати категорію"
+
+#~ msgid "Previous Category"
+#~ msgstr "Попередня категорія"
+
+#~ msgid "Move Actions to Category"
+#~ msgstr "Пересування дій до категорії"
+
+#~ msgid "Copy Actions to Category"
+#~ msgstr "Копіювання дій до категорії"
+
+#~ msgid "Jump to Category"
+#~ msgstr "Перехід до категорії"
+
+#~ msgid "categories"
+#~ msgstr "категорій"
+
+#~ msgid "Categories View"
+#~ msgstr "Панель категорій"
+
+#~ msgid "Move Actions to Project or Folder"
+#~ msgstr "Пересунути дії до проєкту чи теки"
+
+#~ msgid "Copy Actions to Project or Folder"
+#~ msgstr "Копіювати дії до проєкту чи теки"
