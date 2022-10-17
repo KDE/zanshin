@@ -154,7 +154,7 @@ msgstr "No s'ha pogut dissociar la tasca %1 del seu parent"
 #: src/presentation/availablepagesmodel.cpp:117
 #, kde-format
 msgid "Cannot add project %1 in dataSource %2"
-msgstr "No s'ha pogut afegir el projecte %1 a l'origen de dades %2"
+msgstr "No s'ha pogut afegir el projecte %1 en l'origen de dades %2"
 
 #: src/presentation/availablepagesmodel.cpp:125
 #, kde-format
