@@ -22,6 +22,7 @@
   <name xml:lang="ia">Zanshin</name>
   <name xml:lang="id">Zanshin</name>
   <name xml:lang="it">Zanshin</name>
+  <name xml:lang="ka">Zanshin</name>
   <name xml:lang="ko">Zanshin</name>
   <name xml:lang="lt">Zanshin</name>
   <name xml:lang="my">ဇန်ရှင်</name>
@@ -55,6 +56,7 @@
   <summary xml:lang="ia">Application per gerer agenda (actiones de facer)</summary>
   <summary xml:lang="id">Aplikasi Pengelolaan Hal Melakukan</summary>
   <summary xml:lang="it">Applicazione di gestione delle cose da fare</summary>
+  <summary xml:lang="ka">გასაკეთებელი საგნების მართვის აპლიკაცია</summary>
   <summary xml:lang="ko">할 일 관리 프로그램</summary>
   <summary xml:lang="lt">Užduočių valdymo programa</summary>
   <summary xml:lang="my">လုပ်ရန် စီမံမှု အပ္ပလီကေးရှင်း</summary>
@@ -126,6 +128,7 @@
     <p xml:lang="ia">Characteristicas:</p>
     <p xml:lang="id">Fitur:</p>
     <p xml:lang="it">Caratteristiche:</p>
+    <p xml:lang="ka">თვისებები:</p>
     <p xml:lang="ko">기능:</p>
     <p xml:lang="lt">Ypatybės:</p>
     <p xml:lang="my">စွမ်းဆောင်ရည်များ -</p>
@@ -159,6 +162,7 @@
       <li xml:lang="ia">Collige cargas ex ubique</li>
       <li xml:lang="id">Mengumpulkan tugas dari mana pun</li>
       <li xml:lang="it">Raccoglie le attività da qualsiasi posizione</li>
+      <li xml:lang="ka">შეაგროვეთ ამოცანები ყველა ადგლიდან</li>
       <li xml:lang="ko">어디서든지 할 일 수집</li>
       <li xml:lang="lt">Surenka užduotis iš bet kur</li>
       <li xml:lang="my">နေရာတိုင်းမှအလုပ်များ စုစည်းသည်</li>
@@ -191,6 +195,7 @@
       <li xml:lang="ia">Organisa cargas in projectos e contextos</li>
       <li xml:lang="id">Mengatur tugas dalam projek dan konteks</li>
       <li xml:lang="it">Organizza le attività in progetti e contesti</li>
+      <li xml:lang="ka">დაალაგეთ ამოცანები პროექტებში და კონტექსტებში</li>
       <li xml:lang="ko">할 일을 프로젝트와 문맥별로 정리</li>
       <li xml:lang="lt">Sisteminkite užduotis į projektus ir kontekstus</li>
       <li xml:lang="my">ပရောဂျက်များနှင့် သက်ဆိုင်ရာကိစ္စများတွင် အလုပ်များ စီစဥ်သည်</li>
@@ -224,6 +229,7 @@
       <li xml:lang="ia">Application habilitate per Akonadi permittente obtener datos ex virtualmente ubique (local,imap, servicios web...)</li>
       <li xml:lang="id">Memungkinkan aplikasi akonadi difungsikan untuk mendapatkan data dari (layanan web, imap, local...) mana pun secara visual</li>
       <li xml:lang="it">Applicazione abilitata da Akonadi, che permette di recuperare i dati virtualmente da qualsiasi posizione (locale, imap, servizi web...)</li>
+      <li xml:lang="ka">Akonadi-ის მხარდაჭერით ამ აპლიკაციას მონაცემების თითქმის ყველა ადგილიდან (ლოკალური, imap, webservice) მიღება შეუძლია</li>
       <li xml:lang="ko">Akonadi를 사용하여 어디서든지 데이터 수집(로컬, IMAP, 웹 서비스 등)</li>
       <li xml:lang="lt">Akonadi įgalinta programa, leidžianti gauti duomenis virtualiai iš bet kur (vietinio kompiuterio, imap, saityno paslaugos...)</li>
       <li xml:lang="my">မည်သည်နေရာမှမဆို (စက်တွင်း၊ အိုင်မတ်၊ ဝက်ဘ်ဝန်ဆောင်မှု...) ဒေတာရယူနိုင်သည့် အကွန်နဒီဖွင့်ထားသော အပ္ပလီကေးရှင်း</li>
@@ -263,6 +269,7 @@
       <caption xml:lang="ia">Fenestra principal de Zanshin</caption>
       <caption xml:lang="id">Jendela utama Zanshin</caption>
       <caption xml:lang="it">Finestra principale di Zanshin</caption>
+      <caption xml:lang="ka">Zanshin -ის მთავარი ფანჯარა</caption>
       <caption xml:lang="ko">Zanshin 주 창</caption>
       <caption xml:lang="lt">Zanshin pagrindinis langas</caption>
       <caption xml:lang="my">ဇန်ရှင် ပင်မဝင်းဒိုး</caption>
