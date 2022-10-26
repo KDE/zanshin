@@ -10,7 +10,6 @@ set(testlib_SRCS
    fakejob.cpp
    gencollection.cpp
    gentodo.cpp
-   modeltest.cpp
    monitorspy.cpp
    testhelpers.cpp
 )
