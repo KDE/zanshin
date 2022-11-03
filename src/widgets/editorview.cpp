@@ -13,9 +13,8 @@
 #include <QPlainTextEdit>
 #include <QPushButton>
 
+#include <KDateComboBox>
 #include <KLocalizedString>
-
-#include "kdateedit.h"
 
 #include "domain/task.h"
 
@@ -34,9 +33,6 @@ EditorView::EditorView(QWidget *parent)
 
     ui->setupUi(this);
 
-    ui->startDateEdit->setMinimumContentsLength(10);
-    ui->dueDateEdit->setMinimumContentsLength(10);
-
     ui->recurrenceCombo->addItem(i18n("Never"), QVariant::fromValue(Domain::Task::NoRecurrence));
     ui->recurrenceCombo->addItem(i18n("Daily"), QVariant::fromValue(Domain::Task::RecursDaily));
     ui->recurrenceCombo->addItem(i18n("Weekly"), QVariant::fromValue(Domain::Task::RecursWeekly));
@@ -50,8 +46,8 @@ EditorView::EditorView(QWidget *parent)
     ui->recurrenceCombo->installEventFilter(this);
 
     connect(ui->textEdit, &QPlainTextEdit::textChanged, this, &EditorView::onTextEditChanged);
-    connect(ui->startDateEdit, &KPIM::KDateEdit::dateEntered, this, &EditorView::onStartEditEntered);
-    connect(ui->dueDateEdit, &KPIM::KDateEdit::dateEntered, this, &EditorView::onDueEditEntered);
+    connect(ui->startDateEdit, &KDateComboBox::dateEntered, this, &EditorView::onStartEditEntered);
+    connect(ui->dueDateEdit, &KDateComboBox::dateEntered, this, &EditorView::onDueEditEntered);
     connect(ui->doneButton, &QAbstractButton::toggled, this, &EditorView::onDoneButtonChanged);
     connect(ui->startTodayButton, &QAbstractButton::clicked, this, &EditorView::onStartTodayClicked);
     connect(ui->recurrenceCombo, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged),

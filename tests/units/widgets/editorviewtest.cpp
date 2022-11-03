@@ -13,13 +13,12 @@
 #include <QStandardItemModel>
 #include <QToolButton>
 
+#include <KDateComboBox>
 #include <KLocalizedString>
 
 #include "domain/task.h"
 
 #include "widgets/editorview.h"
-
-#include "kdateedit.h"
 
 class EditorModelStub : public QObject
 {
@@ -113,11 +112,11 @@ private slots:
         QVERIFY(textEdit);
         QVERIFY(textEdit->isVisibleTo(&editor));
 
-        auto startDateEdit = editor.findChild<KPIM::KDateEdit*>(QStringLiteral("startDateEdit"));
+        auto startDateEdit = editor.findChild<KDateComboBox*>(QStringLiteral("startDateEdit"));
         QVERIFY(startDateEdit);
         QVERIFY(startDateEdit->isVisibleTo(&editor));
 
-        auto dueDateEdit = editor.findChild<KPIM::KDateEdit*>(QStringLiteral("dueDateEdit"));
+        auto dueDateEdit = editor.findChild<KDateComboBox*>(QStringLiteral("dueDateEdit"));
         QVERIFY(dueDateEdit);
         QVERIFY(dueDateEdit->isVisibleTo(&editor));
 
@@ -154,10 +153,10 @@ private slots:
         auto textEdit = editor.findChild<QPlainTextEdit*>(QStringLiteral("textEdit"));
         QVERIFY(textEdit);
 
-        auto startDateEdit = editor.findChild<KPIM::KDateEdit*>(QStringLiteral("startDateEdit"));
+        auto startDateEdit = editor.findChild<KDateComboBox*>(QStringLiteral("startDateEdit"));
         QVERIFY(startDateEdit);
 
-        auto dueDateEdit = editor.findChild<KPIM::KDateEdit*>(QStringLiteral("dueDateEdit"));
+        auto dueDateEdit = editor.findChild<KDateComboBox*>(QStringLiteral("dueDateEdit"));
         QVERIFY(dueDateEdit);
 
         auto recurrenceCombo = editor.findChild<QComboBox*>(QStringLiteral("recurrenceCombo"));
@@ -245,8 +244,8 @@ private slots:
         model.setProperty("done", true);
 
         auto textEdit = editor.findChild<QPlainTextEdit*>(QStringLiteral("textEdit"));
-        auto startDateEdit = editor.findChild<KPIM::KDateEdit*>(QStringLiteral("startDateEdit"));
-        auto dueDateEdit = editor.findChild<KPIM::KDateEdit*>(QStringLiteral("dueDateEdit"));
+        auto startDateEdit = editor.findChild<KDateComboBox*>(QStringLiteral("startDateEdit"));
+        auto dueDateEdit = editor.findChild<KDateComboBox*>(QStringLiteral("dueDateEdit"));
         auto recurrenceCombo = editor.findChild<QComboBox*>(QStringLiteral("recurrenceCombo"));
         auto doneButton = editor.findChild<QAbstractButton*>(QStringLiteral("doneButton"));
 
@@ -278,8 +277,8 @@ private slots:
         editor.setModel(&model);
 
         auto textEdit = editor.findChild<QPlainTextEdit*>(QStringLiteral("textEdit"));
-        auto startDateEdit = editor.findChild<KPIM::KDateEdit*>(QStringLiteral("startDateEdit"));
-        auto dueDateEdit = editor.findChild<KPIM::KDateEdit*>(QStringLiteral("dueDateEdit"));
+        auto startDateEdit = editor.findChild<KDateComboBox*>(QStringLiteral("startDateEdit"));
+        auto dueDateEdit = editor.findChild<KDateComboBox*>(QStringLiteral("dueDateEdit"));
         auto recurrenceCombo = editor.findChild<QComboBox*>(QStringLiteral("recurrenceCombo"));
         auto doneButton = editor.findChild<QAbstractButton*>(QStringLiteral("doneButton"));
         editor.setModel(&model);
@@ -440,7 +439,7 @@ private slots:
         model.setProperty("done", false);
         editor.setModel(&model);
 
-        auto startDateEdit = editor.findChild<KPIM::KDateEdit*>(QStringLiteral("startDateEdit"));
+        auto startDateEdit = editor.findChild<KDateComboBox*>(QStringLiteral("startDateEdit"));
 
         // WHEN
         model.setPropertyAndSignal("startDate", QDate::currentDate().addDays(-2));
@@ -457,11 +456,11 @@ private slots:
         model.makeTaskAvailable();
         editor.setModel(&model);
 
-        auto startDateEdit = editor.findChild<KPIM::KDateEdit*>(QStringLiteral("startDateEdit"));
+        auto startDateEdit = editor.findChild<KDateComboBox*>(QStringLiteral("startDateEdit"));
         auto today = QDate::currentDate();
 
         // WHEN
-        startDateEdit->setEditText(today.toString(QStringLiteral("dd/MM/yyyy")));
+        startDateEdit->setEditText(today.toString(QStringLiteral("M/d/yyyy")));
         QTest::keyClick(startDateEdit, Qt::Key_Enter);
 
         // THEN
@@ -481,7 +480,7 @@ private slots:
         model.setProperty("done", false);
         editor.setModel(&model);
 
-        auto dueDateEdit = editor.findChild<KPIM::KDateEdit*>(QStringLiteral("dueDateEdit"));
+        auto dueDateEdit = editor.findChild<KDateComboBox*>(QStringLiteral("dueDateEdit"));
 
         // WHEN
         model.setPropertyAndSignal("dueDate", QDate::currentDate().addDays(-2));
@@ -498,12 +497,12 @@ private slots:
         model.makeTaskAvailable();
         editor.setModel(&model);
 
-        auto dueDateEdit = editor.findChild<KPIM::KDateEdit*>(QStringLiteral("dueDateEdit"));
+        auto dueDateEdit = editor.findChild<KDateComboBox*>(QStringLiteral("dueDateEdit"));
         auto today = QDate::currentDate();
 
         // WHEN
         QVERIFY(dueDateEdit->isEnabled());
-        dueDateEdit->setEditText(today.toString(QStringLiteral("dd/MM/yyyy")));
+        dueDateEdit->setEditText(today.toString(QStringLiteral("M/d/yyyy")));
         QTest::keyClick(dueDateEdit, Qt::Key_Enter);
 
         // THEN
@@ -520,7 +519,7 @@ private slots:
 
         QAbstractButton *startTodayButton = editor.findChild<QAbstractButton *>(QStringLiteral("startTodayButton"));
         QVERIFY(startTodayButton);
-        auto startDateEdit = editor.findChild<KPIM::KDateEdit*>(QStringLiteral("startDateEdit"));
+        auto startDateEdit = editor.findChild<KDateComboBox*>(QStringLiteral("startDateEdit"));
         auto today = QDate::currentDate();
 
         // WHEN
@@ -528,7 +527,7 @@ private slots:
         startTodayButton->click();
 
         // THEN
-        QCOMPARE(startDateEdit->currentText(), today.toString(QStringLiteral("dd/MM/yyyy")));
+        QCOMPARE(startDateEdit->currentText(), today.toString(QStringLiteral("M/d/yyyy")));
         QCOMPARE(model.property("startDate").toDate(), today);
     }
 

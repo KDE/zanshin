@@ -69,8 +69,6 @@ include_directories (
     ${CMAKE_SOURCE_DIR}
     ${CMAKE_BINARY_DIR}
     ${Boost_INCLUDE_DIR}
-    3rdparty/kdepim/
-    3rdparty/kdepim/libkdepim/
 )
 
 find_package(KF5 ${KF5_MIN_VERSION} REQUIRED COMPONENTS
@@ -84,7 +82,6 @@ find_package(KF5 "5.20.40" REQUIRED COMPONENTS
     KontactInterface
 )
 
-add_subdirectory(3rdparty)
 add_subdirectory(src)
 ki18n_install(po)
 

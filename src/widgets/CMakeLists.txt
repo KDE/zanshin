@@ -49,8 +49,8 @@ set_property(TARGET widgets PROPERTY POSITION_INDEPENDENT_CODE ON)
 target_link_libraries(widgets
     Qt::Widgets
     presentation
-    zanshinkdepimstatic
     KF5::ConfigCore
     KF5::ItemModels
+    KF5::WidgetsAddons
     KF5::WindowSystem
 )

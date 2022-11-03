@@ -20,11 +20,8 @@ class QAbstractButton;
 class QLabel;
 class QPlainTextEdit;
 
+class KDateComboBox;
 class KLineEdit;
-
-namespace KPIM {
-    class KDateEdit;
-}
 
 namespace Ui {
     class EditorView;
