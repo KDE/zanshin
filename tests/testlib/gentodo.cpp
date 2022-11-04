@@ -100,36 +100,36 @@ GenTodo &GenTodo::done(bool value)
 
 GenTodo &GenTodo::withDoneDate(const QString &date)
 {
-    m_item.payload<KCalCore::Todo::Ptr>()->setCompleted(QDateTime(QDate::fromString(date, Qt::ISODate)));
+    m_item.payload<KCalCore::Todo::Ptr>()->setCompleted(QDate::fromString(date, Qt::ISODate).startOfDay());
     return *this;
 }
 
 GenTodo &GenTodo::withDoneDate(const QDate &date)
 {
-    m_item.payload<KCalCore::Todo::Ptr>()->setCompleted(QDateTime(date));
+    m_item.payload<KCalCore::Todo::Ptr>()->setCompleted(date.startOfDay());
     return *this;
 }
 
 GenTodo &GenTodo::withStartDate(const QString &date)
 {
-    m_item.payload<KCalCore::Todo::Ptr>()->setDtStart(QDateTime(QDate::fromString(date, Qt::ISODate)));
+    m_item.payload<KCalCore::Todo::Ptr>()->setDtStart(QDate::fromString(date, Qt::ISODate).startOfDay());
     return *this;
 }
 
 GenTodo &GenTodo::withStartDate(const QDate &date)
 {
-    m_item.payload<KCalCore::Todo::Ptr>()->setDtStart(QDateTime(date));
+    m_item.payload<KCalCore::Todo::Ptr>()->setDtStart(date.startOfDay());
     return *this;
 }
 
 GenTodo &GenTodo::withDueDate(const QString &date)
 {
-    m_item.payload<KCalCore::Todo::Ptr>()->setDtDue(QDateTime(QDate::fromString(date, Qt::ISODate)));
+    m_item.payload<KCalCore::Todo::Ptr>()->setDtDue(QDate::fromString(date, Qt::ISODate).startOfDay());
     return *this;
 }
 
 GenTodo &GenTodo::withDueDate(const QDate &date)
 {
-    m_item.payload<KCalCore::Todo::Ptr>()->setDtDue(QDateTime(date));
+    m_item.payload<KCalCore::Todo::Ptr>()->setDtDue(date.startOfDay());
     return *this;
 }

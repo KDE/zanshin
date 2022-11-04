@@ -233,8 +233,8 @@ Akonadi::Item Serializer::createItemFromTask(Domain::Task::Ptr task)
     // KCalCore reads "DUE;VALUE=DATE:20171130" as QDateTime(QDate(2017, 11, 30), QTime(), Qt::LocalTime), for lack of timezone information
     // so we should never call toUtc() on that, it would mess up the date.
     // If one day we want to support time information, we need to add a task->isAllDay()/setAllDay().
-    todo->setDtStart(QDateTime(task->startDate()));
-    todo->setDtDue(QDateTime(task->dueDate()));
+    todo->setDtStart(task->startDate().startOfDay());
+    todo->setDtDue(task->dueDate().startOfDay());
     todo->setAllDay(true);
 
     if (task->property("todoUid").isValid()) {

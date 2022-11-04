@@ -26,8 +26,8 @@ Q_DECLARE_METATYPE(Akonadi::Item*)
 using Akonadi::Serializer;
 
 static void setTodoDates(KCalCore::Todo::Ptr todo, const QDate &start, const QDate &due) {
-    todo->setDtStart(QDateTime(start));
-    todo->setDtDue(QDateTime(due));
+    todo->setDtStart(start.startOfDay());
+    todo->setDtDue(due.startOfDay());
 }
 
 class AkonadiSerializerTest : public QObject
@@ -469,7 +469,7 @@ private slots:
         todo->setDescription(content);
 
         if (isDone)
-            todo->setCompleted(QDateTime(doneDate));
+            todo->setCompleted(doneDate.startOfDay());
         else
             todo->setCompleted(isDone);
 
@@ -624,7 +624,7 @@ private slots:
         updatedTodo->setDescription(updatedContent);
 
         if (updatedDone)
-            updatedTodo->setCompleted(QDateTime(updatedDoneDate));
+            updatedTodo->setCompleted(updatedDoneDate.startOfDay());
         else
             updatedTodo->setCompleted(updatedDone);
 
@@ -769,7 +769,7 @@ private slots:
         // ... stored in a todo...
         KCalCore::Todo::Ptr todo(new KCalCore::Todo);
         todo->setSummary(QStringLiteral("summary"));
-        todo->setDtStart(QDateTime(startDate));
+        todo->setDtStart(startDate.startOfDay());
         todo->recurrence()->setMonthly(1);
 
         // ... as payload of an item...
@@ -818,7 +818,7 @@ private slots:
         originalTodo->setDescription(content);
 
         if (originalTodo)
-            originalTodo->setCompleted(QDateTime(doneDate));
+            originalTodo->setCompleted(doneDate.startOfDay());
         else
             originalTodo->setCompleted(isDone);
         setTodoDates(originalTodo, startDate, dueDate);
@@ -864,7 +864,7 @@ private slots:
         originalTodo->setDescription(content);
 
         if (originalTodo)
-            originalTodo->setCompleted(QDateTime(doneDate));
+            originalTodo->setCompleted(doneDate.startOfDay());
         else
             originalTodo->setCompleted(isDone);
         setTodoDates(originalTodo, startDate, dueDate);
@@ -1158,7 +1158,7 @@ private slots:
         childTodo->setDescription(content);
 
         if (isDone)
-            childTodo->setCompleted(QDateTime(doneDate));
+            childTodo->setCompleted(doneDate.startOfDay());
         else
             childTodo->setCompleted(isDone);
 
@@ -1176,7 +1176,7 @@ private slots:
         childTodo2->setDescription(content);
 
         if (isDone)
-            childTodo2->setCompleted(QDateTime(doneDate));
+            childTodo2->setCompleted(doneDate.startOfDay());
         else
             childTodo2->setCompleted(isDone);
         setTodoDates(childTodo2, startDate, dueDate);

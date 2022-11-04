@@ -275,8 +275,8 @@ void AkonadiStorageTestBase::shouldNotifyItemAdded()
     todo->setSummary(QStringLiteral("summary"));
     todo->setDescription(QStringLiteral("content"));
     todo->setCompleted(false);
-    todo->setDtStart(QDateTime(QDate(2013, 11, 24)));
-    todo->setDtDue(QDateTime(QDate(2014, 03, 01)));
+    todo->setDtStart(QDate(2013, 11, 24).startOfDay());
+    todo->setDtDue(QDate(2014, 03, 01).startOfDay());
 
     // ... as payload of an item...
     Akonadi::Item item;
@@ -349,8 +349,8 @@ void AkonadiStorageTestBase::shouldNotifyItemChanged()
     todo->setSummary(QStringLiteral("summary"));
     todo->setDescription(QStringLiteral("content"));
     todo->setCompleted(false);
-    todo->setDtStart(QDateTime(QDate(2013, 11, 24)));
-    todo->setDtDue(QDateTime(QDate(2014, 03, 01)));
+    todo->setDtStart(QDate(2013, 11, 24).startOfDay());
+    todo->setDtDue(QDate(2014, 03, 01).startOfDay());
 
     // ... as payload of an existing item (if we trust the test data)...
     Akonadi::Item item = fetchItemByRID(QStringLiteral("{1d33862f-f274-4c67-ab6c-362d56521ff6}"), calendar2());
@@ -495,8 +495,8 @@ void AkonadiStorageTestBase::shouldCreateItem()
     todo->setSummary(QStringLiteral("summary"));
     todo->setDescription(QStringLiteral("content"));
     todo->setCompleted(false);
-    todo->setDtStart(QDateTime(QDate(2013, 11, 24)));
-    todo->setDtDue(QDateTime(QDate(2014, 03, 01)));
+    todo->setDtStart(QDate(2013, 11, 24).startOfDay());
+    todo->setDtDue(QDate(2014, 03, 01).startOfDay());
 
     // ... as payload of a new item
     Akonadi::Item item;

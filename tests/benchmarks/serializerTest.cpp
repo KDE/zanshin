@@ -28,8 +28,8 @@ Akonadi::Item SerializerBenchmark::createTestItem()
     todo->setSummary(QStringLiteral("summary"));
     todo->setDescription(QStringLiteral("content"));
     todo->setCompleted(false);
-    todo->setDtStart(QDateTime(QDate(2013, 11, 24)));
-    todo->setDtDue(QDateTime(QDate(2014, 03, 01)));
+    todo->setDtStart(QDate(2013, 11, 24).startOfDay());
+    todo->setDtDue(QDate(2014, 03, 01).startOfDay());
     todo->setRelatedTo(QStringLiteral("5"));
 
     // ... as payload of an item
