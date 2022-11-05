@@ -85,7 +85,11 @@ void RunningTaskWidget::setCollapsed(bool b)
     resize();
 }
 
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 void RunningTaskWidget::enterEvent(QEvent *)
+#else
+void RunningTaskWidget::enterEvent(QEnterEvent *)
+#endif
 {
     setCollapsed(false);
 }
