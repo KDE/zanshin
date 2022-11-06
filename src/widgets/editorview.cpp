@@ -155,7 +155,7 @@ bool EditorView::eventFilter(QObject *watched, QEvent *event)
 void EditorView::onTaskChanged()
 {
     auto task = m_model->property("task").value<Domain::Task::Ptr>();
-    setEnabled(task);
+    setEnabled(!task.isNull());
 }
 
 void EditorView::onTextOrTitleChanged()

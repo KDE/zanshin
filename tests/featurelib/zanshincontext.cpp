@@ -415,7 +415,7 @@ bool ZanshinContext::I_promote_the_item()
 bool ZanshinContext::I_add_a_project(const QString &projectName, const QString &parentSourceName)
 {
     auto source = dataSourceFromName(parentSourceName);
-    VERIFY(source);
+    VERIFY(!source.isNull());
 
     VERIFY(QMetaObject::invokeMethod(m_presentation, "addProject",
                                      Q_ARG(QString, projectName),
@@ -428,7 +428,7 @@ bool ZanshinContext::I_add_a_project(const QString &projectName, const QString &
 bool ZanshinContext::I_add_a_context(const QString &contextName, const QString &parentSourceName)
 {
     auto source = dataSourceFromName(parentSourceName);
-    VERIFY(source);
+    VERIFY(!source.isNull());
 
     VERIFY(QMetaObject::invokeMethod(m_presentation,
                                      "addContext",
@@ -533,7 +533,7 @@ bool ZanshinContext::I_list_the_items()
 bool ZanshinContext::I_open_the_item_in_the_editor()
 {
     auto task = currentTask();
-    VERIFY(task);
+    VERIFY(!task.isNull());
     m_editor = m_appModel->property("editor").value<QObject*>();
     VERIFY(m_editor);
     VERIFY(m_editor->setProperty("task", QVariant::fromValue(task)));
@@ -576,7 +576,7 @@ bool ZanshinContext::I_rename_the_item(const QString &taskName)
 bool ZanshinContext::I_open_the_item_in_the_editor_again()
 {
     auto task = currentTask();
-    VERIFY(task);
+    VERIFY(!task.isNull());
     VERIFY(m_editor->setProperty("task", QVariant::fromValue(Domain::Task::Ptr())));
     VERIFY(m_editor->setProperty("task", QVariant::fromValue(task)));
     waitForStableState();
@@ -777,7 +777,7 @@ bool ZanshinContext::the_list_does_not_contain(const QString &itemName)
 bool ZanshinContext::the_task_corresponding_to_the_item_is_done()
 {
     auto task = currentTask();
-    VERIFY(task);
+    VERIFY(!task.isNull());
     VERIFY(task->isDone());
 
     return true;

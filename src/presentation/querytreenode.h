@@ -84,10 +84,20 @@ public:
             return false;
     }
 
-    bool hasAdditionalInfo() const { return m_additionalInfo; }
+    bool hasAdditionalInfo() const { return hasAdditionalInfo(m_additionalInfo); }
     void setAdditionalInfo(const AdditionalInfo &info) { m_additionalInfo = info; }
 
 private:
+    template <typename T>
+    inline bool hasAdditionalInfo(const QSharedPointer<T> &p) const {
+        return !p.isNull();
+    }
+    template <typename T>
+    inline bool hasAdditionalInfo(const T &value) const
+    {
+        return value;
+    }
+
     void init(QueryTreeModelBase *model, const QueryGenerator &queryGenerator)
     {
         m_children = queryGenerator(m_item);

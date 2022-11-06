@@ -435,7 +435,7 @@ void PageView::onFilterToggled(bool show)
 void PageView::updateRunTaskAction()
 {
     const auto task = currentTask();
-    m_runTaskAction->setEnabled(task);
+    m_runTaskAction->setEnabled(!task.isNull());
 }
 
 void PageView::onRunTaskTriggered()
