@@ -10,6 +10,8 @@
 
 #include <Akonadi/Collection>
 
+#include <QObject>
+
 namespace Akonadi
 {
 

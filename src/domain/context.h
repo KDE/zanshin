@@ -9,6 +9,7 @@
 #define DOMAIN_CONTEXT_H
 
 #include <QMetaType>
+#include <QObject>
 #include <QSharedPointer>
 #include <QString>
 

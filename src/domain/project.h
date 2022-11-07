@@ -9,6 +9,7 @@
 #define DOMAIN_PROJECT_H
 
 #include <QMetaType>
+#include <QObject>
 #include <QSharedPointer>
 #include <QString>
 
