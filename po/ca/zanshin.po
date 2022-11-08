@@ -679,23 +679,3 @@ msgstr "Barra d'eines principal"
 #, kde-format
 msgid "Add \"%1\" to your todo list"
 msgstr "Afegeix «%1» a la vostra llista de tasques pendents"
-
-#~ msgctxt "@option today"
-#~ msgid "&Today"
-#~ msgstr "A&vui"
-
-#~ msgctxt "@option tomorrow"
-#~ msgid "To&morrow"
-#~ msgstr "De&mà"
-
-#~ msgctxt "@option next week"
-#~ msgid "Next &Week"
-#~ msgstr "&Setmana vinent"
-
-#~ msgctxt "@option next month"
-#~ msgid "Next M&onth"
-#~ msgstr "&Mes vinent"
-
-#~ msgctxt "@option do not specify a date"
-#~ msgid "No Date"
-#~ msgstr "Sense data"
