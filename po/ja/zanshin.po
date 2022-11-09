@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zanshin\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2022-06-07 00:57+0000\n"
+"POT-Creation-Date: 2022-11-09 00:49+0000\n"
 "PO-Revision-Date: 2010-10-26 11:50-0700\n"
 "Last-Translator: Japanese KDE translation team <kde-jp@kde.org>\n"
 "Language-Team: Japanese <kde-jp@kde.org>\n"
@@ -22,36 +22,6 @@ msgstr ""
 #, kde-format
 msgctxt "EMAIL OF TRANSLATORS"
 msgid "Your emails"
-msgstr ""
-
-#: 3rdparty/kdepim/libkdepim/kdateedit.cpp:429
-#, kde-format
-msgctxt "the day after today"
-msgid "tomorrow"
-msgstr ""
-
-#: 3rdparty/kdepim/libkdepim/kdateedit.cpp:430
-#, kde-format
-msgctxt "this day"
-msgid "today"
-msgstr ""
-
-#: 3rdparty/kdepim/libkdepim/kdateedit.cpp:431
-#, kde-format
-msgctxt "the day before today"
-msgid "yesterday"
-msgstr ""
-
-#: 3rdparty/kdepim/libkdepim/kdateedit.cpp:432
-#, kde-format
-msgctxt "the week after this week"
-msgid "next week"
-msgstr ""
-
-#: 3rdparty/kdepim/libkdepim/kdateedit.cpp:433
-#, kde-format
-msgctxt "the month after this month"
-msgid "next month"
 msgstr ""
 
 #: src/akonadi/akonadiconfigdialog.cpp:35
@@ -377,32 +347,32 @@ msgstr ""
 msgid "Configure %1..."
 msgstr ""
 
-#: src/widgets/editorview.cpp:32
+#: src/widgets/editorview.cpp:31
 #, kde-format
 msgid "Add Attachment"
 msgstr ""
 
-#: src/widgets/editorview.cpp:40
+#: src/widgets/editorview.cpp:36
 #, kde-format
 msgid "Never"
 msgstr ""
 
-#: src/widgets/editorview.cpp:41
+#: src/widgets/editorview.cpp:37
 #, kde-format
 msgid "Daily"
 msgstr ""
 
-#: src/widgets/editorview.cpp:42
+#: src/widgets/editorview.cpp:38
 #, kde-format
 msgid "Weekly"
 msgstr ""
 
-#: src/widgets/editorview.cpp:43
+#: src/widgets/editorview.cpp:39
 #, kde-format
 msgid "Monthly"
 msgstr ""
 
-#: src/widgets/editorview.cpp:44
+#: src/widgets/editorview.cpp:40
 #, kde-format
 msgid "Yearly"
 msgstr ""

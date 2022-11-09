@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zanshin\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2022-06-07 00:57+0000\n"
+"POT-Creation-Date: 2022-11-09 00:49+0000\n"
 "PO-Revision-Date: 2021-07-31 23:37+0200\n"
 "Last-Translator: Shinjo Park <kde@peremen.name>\n"
 "Language-Team: Korean <kde-kr@kde.org>\n"
@@ -26,36 +26,6 @@ msgstr "박신조"
 msgctxt "EMAIL OF TRANSLATORS"
 msgid "Your emails"
 msgstr "kde@peremen.name"
-
-#: 3rdparty/kdepim/libkdepim/kdateedit.cpp:429
-#, kde-format
-msgctxt "the day after today"
-msgid "tomorrow"
-msgstr "내일"
-
-#: 3rdparty/kdepim/libkdepim/kdateedit.cpp:430
-#, kde-format
-msgctxt "this day"
-msgid "today"
-msgstr "오늘"
-
-#: 3rdparty/kdepim/libkdepim/kdateedit.cpp:431
-#, kde-format
-msgctxt "the day before today"
-msgid "yesterday"
-msgstr "어제"
-
-#: 3rdparty/kdepim/libkdepim/kdateedit.cpp:432
-#, kde-format
-msgctxt "the week after this week"
-msgid "next week"
-msgstr "다음 주"
-
-#: 3rdparty/kdepim/libkdepim/kdateedit.cpp:433
-#, kde-format
-msgctxt "the month after this month"
-msgid "next month"
-msgstr "다음 달"
 
 #: src/akonadi/akonadiconfigdialog.cpp:35
 #, kde-format
@@ -380,32 +350,32 @@ msgstr "기본 원본으로 사용"
 msgid "Configure %1..."
 msgstr "%1 설정..."
 
-#: src/widgets/editorview.cpp:32
+#: src/widgets/editorview.cpp:31
 #, kde-format
 msgid "Add Attachment"
 msgstr "첨부 파일 추가"
 
-#: src/widgets/editorview.cpp:40
+#: src/widgets/editorview.cpp:36
 #, kde-format
 msgid "Never"
 msgstr "하지 않음"
 
-#: src/widgets/editorview.cpp:41
+#: src/widgets/editorview.cpp:37
 #, kde-format
 msgid "Daily"
 msgstr "일간"
 
-#: src/widgets/editorview.cpp:42
+#: src/widgets/editorview.cpp:38
 #, kde-format
 msgid "Weekly"
 msgstr "주간"
 
-#: src/widgets/editorview.cpp:43
+#: src/widgets/editorview.cpp:39
 #, kde-format
 msgid "Monthly"
 msgstr "월간"
 
-#: src/widgets/editorview.cpp:44
+#: src/widgets/editorview.cpp:40
 #, kde-format
 msgid "Yearly"
 msgstr "년간"
@@ -670,6 +640,26 @@ msgstr "주 도구 모음"
 #, kde-format
 msgid "Add \"%1\" to your todo list"
 msgstr "내 할 일 목록에 \"%1\" 추가"
+
+#~ msgctxt "the day after today"
+#~ msgid "tomorrow"
+#~ msgstr "내일"
+
+#~ msgctxt "this day"
+#~ msgid "today"
+#~ msgstr "오늘"
+
+#~ msgctxt "the day before today"
+#~ msgid "yesterday"
+#~ msgstr "어제"
+
+#~ msgctxt "the week after this week"
+#~ msgid "next week"
+#~ msgstr "다음 주"
+
+#~ msgctxt "the month after this month"
+#~ msgid "next month"
+#~ msgstr "다음 달"
 
 #~ msgctxt "@option today"
 #~ msgid "&Today"

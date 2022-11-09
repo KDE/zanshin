@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zanshin\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2022-06-07 00:57+0000\n"
+"POT-Creation-Date: 2022-11-09 00:49+0000\n"
 "PO-Revision-Date: 2022-04-09 12:06+0300\n"
 "Last-Translator: Emir SARI <emir_sari@icloud.com>\n"
 "Language-Team: Turkish <kde-l10n-tr@kde.org>\n"
@@ -24,36 +24,6 @@ msgstr "Kaan Özdinçer, Emir SARI"
 msgctxt "EMAIL OF TRANSLATORS"
 msgid "Your emails"
 msgstr "kaanozdincer@gmail.com, emir_sari@icloud.com"
-
-#: 3rdparty/kdepim/libkdepim/kdateedit.cpp:429
-#, kde-format
-msgctxt "the day after today"
-msgid "tomorrow"
-msgstr "yarın"
-
-#: 3rdparty/kdepim/libkdepim/kdateedit.cpp:430
-#, kde-format
-msgctxt "this day"
-msgid "today"
-msgstr "bugün"
-
-#: 3rdparty/kdepim/libkdepim/kdateedit.cpp:431
-#, kde-format
-msgctxt "the day before today"
-msgid "yesterday"
-msgstr "dün"
-
-#: 3rdparty/kdepim/libkdepim/kdateedit.cpp:432
-#, kde-format
-msgctxt "the week after this week"
-msgid "next week"
-msgstr "gelecek hafta"
-
-#: 3rdparty/kdepim/libkdepim/kdateedit.cpp:433
-#, kde-format
-msgctxt "the month after this month"
-msgid "next month"
-msgstr "gelecek ay"
 
 #: src/akonadi/akonadiconfigdialog.cpp:35
 #, kde-format
@@ -381,32 +351,32 @@ msgstr "Varsayılan Kaynak olarak Kullan"
 msgid "Configure %1..."
 msgstr "Yapılandır %1..."
 
-#: src/widgets/editorview.cpp:32
+#: src/widgets/editorview.cpp:31
 #, kde-format
 msgid "Add Attachment"
 msgstr "Eklenti Ekle"
 
-#: src/widgets/editorview.cpp:40
+#: src/widgets/editorview.cpp:36
 #, kde-format
 msgid "Never"
 msgstr "Asla"
 
-#: src/widgets/editorview.cpp:41
+#: src/widgets/editorview.cpp:37
 #, kde-format
 msgid "Daily"
 msgstr "Günlük"
 
-#: src/widgets/editorview.cpp:42
+#: src/widgets/editorview.cpp:38
 #, kde-format
 msgid "Weekly"
 msgstr "Haftalık"
 
-#: src/widgets/editorview.cpp:43
+#: src/widgets/editorview.cpp:39
 #, kde-format
 msgid "Monthly"
 msgstr "Aylık"
 
-#: src/widgets/editorview.cpp:44
+#: src/widgets/editorview.cpp:40
 #, kde-format
 msgid "Yearly"
 msgstr "Yıllık"
@@ -673,3 +643,23 @@ msgstr "Ana Araç Çubuğu"
 #, kde-format
 msgid "Add \"%1\" to your todo list"
 msgstr "\"%1\" ögesini yapılacaklar listenize ekleyin"
+
+#~ msgctxt "the day after today"
+#~ msgid "tomorrow"
+#~ msgstr "yarın"
+
+#~ msgctxt "this day"
+#~ msgid "today"
+#~ msgstr "bugün"
+
+#~ msgctxt "the day before today"
+#~ msgid "yesterday"
+#~ msgstr "dün"
+
+#~ msgctxt "the week after this week"
+#~ msgid "next week"
+#~ msgstr "gelecek hafta"
+
+#~ msgctxt "the month after this month"
+#~ msgid "next month"
+#~ msgstr "gelecek ay"

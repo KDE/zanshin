@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zanshin\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2022-06-07 00:57+0000\n"
+"POT-Creation-Date: 2022-11-09 00:49+0000\n"
 "PO-Revision-Date: 2021-09-21 12:51+0630\n"
 "Last-Translator: ဇေယျာလွင် <lw1nzayar@yandex.com>\n"
 "Language-Team: Burmese <kde-i18n-doc@kde.org>\n"
@@ -27,36 +27,6 @@ msgstr "ဇေယျာလွင်"
 msgctxt "EMAIL OF TRANSLATORS"
 msgid "Your emails"
 msgstr "lw1nzayar@yandex.com"
-
-#: 3rdparty/kdepim/libkdepim/kdateedit.cpp:429
-#, kde-format
-msgctxt "the day after today"
-msgid "tomorrow"
-msgstr "နံဖြန်"
-
-#: 3rdparty/kdepim/libkdepim/kdateedit.cpp:430
-#, kde-format
-msgctxt "this day"
-msgid "today"
-msgstr "ယနေ့"
-
-#: 3rdparty/kdepim/libkdepim/kdateedit.cpp:431
-#, kde-format
-msgctxt "the day before today"
-msgid "yesterday"
-msgstr "မနေ့"
-
-#: 3rdparty/kdepim/libkdepim/kdateedit.cpp:432
-#, kde-format
-msgctxt "the week after this week"
-msgid "next week"
-msgstr "နောက်အပတ်"
-
-#: 3rdparty/kdepim/libkdepim/kdateedit.cpp:433
-#, kde-format
-msgctxt "the month after this month"
-msgid "next month"
-msgstr "နောက်လ"
 
 #: src/akonadi/akonadiconfigdialog.cpp:35
 #, kde-format
@@ -383,32 +353,32 @@ msgstr "ဒီဖော့ဇစ်မြစ်အဖြစ်သုံးမည
 msgid "Configure %1..."
 msgstr "%1 ပြင်ဆင်မည်..."
 
-#: src/widgets/editorview.cpp:32
+#: src/widgets/editorview.cpp:31
 #, kde-format
 msgid "Add Attachment"
 msgstr "တွဲဖက်ဒေတာထည့်ပါ"
 
-#: src/widgets/editorview.cpp:40
+#: src/widgets/editorview.cpp:36
 #, kde-format
 msgid "Never"
 msgstr "ဘယ်တော့မှ"
 
-#: src/widgets/editorview.cpp:41
+#: src/widgets/editorview.cpp:37
 #, kde-format
 msgid "Daily"
 msgstr "နေ့စဥ်"
 
-#: src/widgets/editorview.cpp:42
+#: src/widgets/editorview.cpp:38
 #, kde-format
 msgid "Weekly"
 msgstr "အပတ်စဥ်"
 
-#: src/widgets/editorview.cpp:43
+#: src/widgets/editorview.cpp:39
 #, kde-format
 msgid "Monthly"
 msgstr "လစဥ်"
 
-#: src/widgets/editorview.cpp:44
+#: src/widgets/editorview.cpp:40
 #, kde-format
 msgid "Yearly"
 msgstr "နှစ်စဥ်"
@@ -673,6 +643,26 @@ msgstr "ပင်မကိရိယာတန်း"
 #, kde-format
 msgid "Add \"%1\" to your todo list"
 msgstr "သင်၏လုပ်ရန်စာရင်းသို့ \"%1\" ထည့်မည်"
+
+#~ msgctxt "the day after today"
+#~ msgid "tomorrow"
+#~ msgstr "နံဖြန်"
+
+#~ msgctxt "this day"
+#~ msgid "today"
+#~ msgstr "ယနေ့"
+
+#~ msgctxt "the day before today"
+#~ msgid "yesterday"
+#~ msgstr "မနေ့"
+
+#~ msgctxt "the week after this week"
+#~ msgid "next week"
+#~ msgstr "နောက်အပတ်"
+
+#~ msgctxt "the month after this month"
+#~ msgid "next month"
+#~ msgstr "နောက်လ"
 
 #~ msgctxt "@option today"
 #~ msgid "&Today"

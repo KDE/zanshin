@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zanshin\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2022-06-07 00:57+0000\n"
+"POT-Creation-Date: 2022-11-09 00:49+0000\n"
 "PO-Revision-Date: 2021-05-12 08:39+0200\n"
 "Last-Translator: Paolo Zamponi <zapaolo@email.it>\n"
 "Language-Team: Italian <kde-i18n-it@kde.org>\n"
@@ -28,36 +28,6 @@ msgstr "Paolo Zamponi,Valter Mura"
 msgctxt "EMAIL OF TRANSLATORS"
 msgid "Your emails"
 msgstr "zapaolo@email.it,"
-
-#: 3rdparty/kdepim/libkdepim/kdateedit.cpp:429
-#, kde-format
-msgctxt "the day after today"
-msgid "tomorrow"
-msgstr "domani"
-
-#: 3rdparty/kdepim/libkdepim/kdateedit.cpp:430
-#, kde-format
-msgctxt "this day"
-msgid "today"
-msgstr "oggi"
-
-#: 3rdparty/kdepim/libkdepim/kdateedit.cpp:431
-#, kde-format
-msgctxt "the day before today"
-msgid "yesterday"
-msgstr "ieri"
-
-#: 3rdparty/kdepim/libkdepim/kdateedit.cpp:432
-#, kde-format
-msgctxt "the week after this week"
-msgid "next week"
-msgstr "prossima settimana"
-
-#: 3rdparty/kdepim/libkdepim/kdateedit.cpp:433
-#, kde-format
-msgctxt "the month after this month"
-msgid "next month"
-msgstr "prossimo mese"
 
 #: src/akonadi/akonadiconfigdialog.cpp:35
 #, kde-format
@@ -384,32 +354,32 @@ msgstr "Imposta come fonte predefinita"
 msgid "Configure %1..."
 msgstr "Configura %1..."
 
-#: src/widgets/editorview.cpp:32
+#: src/widgets/editorview.cpp:31
 #, kde-format
 msgid "Add Attachment"
 msgstr "Aggiungi allegato"
 
-#: src/widgets/editorview.cpp:40
+#: src/widgets/editorview.cpp:36
 #, kde-format
 msgid "Never"
 msgstr "Mai"
 
-#: src/widgets/editorview.cpp:41
+#: src/widgets/editorview.cpp:37
 #, kde-format
 msgid "Daily"
 msgstr "Giornalmente"
 
-#: src/widgets/editorview.cpp:42
+#: src/widgets/editorview.cpp:38
 #, kde-format
 msgid "Weekly"
 msgstr "Settimanalmente"
 
-#: src/widgets/editorview.cpp:43
+#: src/widgets/editorview.cpp:39
 #, kde-format
 msgid "Monthly"
 msgstr "Mensilmente"
 
-#: src/widgets/editorview.cpp:44
+#: src/widgets/editorview.cpp:40
 #, kde-format
 msgid "Yearly"
 msgstr "Annualmente"
@@ -677,6 +647,26 @@ msgstr "Barra degli strumenti principale"
 #, kde-format
 msgid "Add \"%1\" to your todo list"
 msgstr "Aggiungi «%1» alla tua lista delle cose da fare"
+
+#~ msgctxt "the day after today"
+#~ msgid "tomorrow"
+#~ msgstr "domani"
+
+#~ msgctxt "this day"
+#~ msgid "today"
+#~ msgstr "oggi"
+
+#~ msgctxt "the day before today"
+#~ msgid "yesterday"
+#~ msgstr "ieri"
+
+#~ msgctxt "the week after this week"
+#~ msgid "next week"
+#~ msgstr "prossima settimana"
+
+#~ msgctxt "the month after this month"
+#~ msgid "next month"
+#~ msgstr "prossimo mese"
 
 #~ msgctxt "@option today"
 #~ msgid "&Today"

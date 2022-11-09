@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zanshin\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2022-06-07 00:57+0000\n"
+"POT-Creation-Date: 2022-11-09 00:49+0000\n"
 "PO-Revision-Date: 2022-09-18 06:44+0200\n"
 "Last-Translator: Temuri Doghonadze <temuri.doghonadze@gmail.com>\n"
 "Language-Team: Georgian <kde-i18n-doc@kde.org>\n"
@@ -27,36 +27,6 @@ msgstr "Temuri Doghonadze"
 msgctxt "EMAIL OF TRANSLATORS"
 msgid "Your emails"
 msgstr "Temuri.doghonadze@gmail.com"
-
-#: 3rdparty/kdepim/libkdepim/kdateedit.cpp:429
-#, kde-format
-msgctxt "the day after today"
-msgid "tomorrow"
-msgstr "ხვალ"
-
-#: 3rdparty/kdepim/libkdepim/kdateedit.cpp:430
-#, kde-format
-msgctxt "this day"
-msgid "today"
-msgstr "დღეს"
-
-#: 3rdparty/kdepim/libkdepim/kdateedit.cpp:431
-#, kde-format
-msgctxt "the day before today"
-msgid "yesterday"
-msgstr "გუშინ"
-
-#: 3rdparty/kdepim/libkdepim/kdateedit.cpp:432
-#, kde-format
-msgctxt "the week after this week"
-msgid "next week"
-msgstr "შემდეგი კვირა"
-
-#: 3rdparty/kdepim/libkdepim/kdateedit.cpp:433
-#, kde-format
-msgctxt "the month after this month"
-msgid "next month"
-msgstr "შემდეგი თვე"
 
 #: src/akonadi/akonadiconfigdialog.cpp:35
 #, kde-format
@@ -381,32 +351,32 @@ msgstr "ნაგულისხმებ წყაროდ გამოყე�
 msgid "Configure %1..."
 msgstr "%1-ის მორგება..."
 
-#: src/widgets/editorview.cpp:32
+#: src/widgets/editorview.cpp:31
 #, kde-format
 msgid "Add Attachment"
 msgstr "მიმაგრების დამატება"
 
-#: src/widgets/editorview.cpp:40
+#: src/widgets/editorview.cpp:36
 #, kde-format
 msgid "Never"
 msgstr "არასდროს"
 
-#: src/widgets/editorview.cpp:41
+#: src/widgets/editorview.cpp:37
 #, kde-format
 msgid "Daily"
 msgstr "დღიურად"
 
-#: src/widgets/editorview.cpp:42
+#: src/widgets/editorview.cpp:38
 #, kde-format
 msgid "Weekly"
 msgstr "კვირაში ერთხელ"
 
-#: src/widgets/editorview.cpp:43
+#: src/widgets/editorview.cpp:39
 #, kde-format
 msgid "Monthly"
 msgstr "თვეში ერთხელ"
 
-#: src/widgets/editorview.cpp:44
+#: src/widgets/editorview.cpp:40
 #, kde-format
 msgid "Yearly"
 msgstr "წლიურად"
@@ -671,3 +641,23 @@ msgstr "ხელსაწყოთა მთავარი ზოლი"
 #, kde-format
 msgid "Add \"%1\" to your todo list"
 msgstr ""
+
+#~ msgctxt "the day after today"
+#~ msgid "tomorrow"
+#~ msgstr "ხვალ"
+
+#~ msgctxt "this day"
+#~ msgid "today"
+#~ msgstr "დღეს"
+
+#~ msgctxt "the day before today"
+#~ msgid "yesterday"
+#~ msgstr "გუშინ"
+
+#~ msgctxt "the week after this week"
+#~ msgid "next week"
+#~ msgstr "შემდეგი კვირა"
+
+#~ msgctxt "the month after this month"
+#~ msgid "next month"
+#~ msgstr "შემდეგი თვე"

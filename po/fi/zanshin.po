@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zanshin\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2022-06-07 00:57+0000\n"
+"POT-Creation-Date: 2022-11-09 00:49+0000\n"
 "PO-Revision-Date: 2021-06-17 11:36+0300\n"
 "Last-Translator: Tommi Nieminen <translator@legisign.org>\n"
 "Language-Team: Finnish <kde-i18n-doc@kde.org>\n"
@@ -28,36 +28,6 @@ msgstr "Jiri Grönroos,Lasse Liehu,Tommi Nieminen"
 msgctxt "EMAIL OF TRANSLATORS"
 msgid "Your emails"
 msgstr "jiri.gronroos+kde@iki.fi,lasse.liehu@gmail.com,translator@legisign.org"
-
-#: 3rdparty/kdepim/libkdepim/kdateedit.cpp:429
-#, kde-format
-msgctxt "the day after today"
-msgid "tomorrow"
-msgstr "huomenna"
-
-#: 3rdparty/kdepim/libkdepim/kdateedit.cpp:430
-#, kde-format
-msgctxt "this day"
-msgid "today"
-msgstr "tänään"
-
-#: 3rdparty/kdepim/libkdepim/kdateedit.cpp:431
-#, kde-format
-msgctxt "the day before today"
-msgid "yesterday"
-msgstr "eilen"
-
-#: 3rdparty/kdepim/libkdepim/kdateedit.cpp:432
-#, kde-format
-msgctxt "the week after this week"
-msgid "next week"
-msgstr "ensi viikolla"
-
-#: 3rdparty/kdepim/libkdepim/kdateedit.cpp:433
-#, kde-format
-msgctxt "the month after this month"
-msgid "next month"
-msgstr "ensi kuussa"
 
 #: src/akonadi/akonadiconfigdialog.cpp:35
 #, kde-format
@@ -384,32 +354,32 @@ msgstr "Käytä oletuslähteenä"
 msgid "Configure %1..."
 msgstr "Asetukset: %1…"
 
-#: src/widgets/editorview.cpp:32
+#: src/widgets/editorview.cpp:31
 #, kde-format
 msgid "Add Attachment"
 msgstr "Lisää liite"
 
-#: src/widgets/editorview.cpp:40
+#: src/widgets/editorview.cpp:36
 #, kde-format
 msgid "Never"
 msgstr "Ei koskaan"
 
-#: src/widgets/editorview.cpp:41
+#: src/widgets/editorview.cpp:37
 #, kde-format
 msgid "Daily"
 msgstr "Päivittäin "
 
-#: src/widgets/editorview.cpp:42
+#: src/widgets/editorview.cpp:38
 #, kde-format
 msgid "Weekly"
 msgstr "Viikoittain "
 
-#: src/widgets/editorview.cpp:43
+#: src/widgets/editorview.cpp:39
 #, kde-format
 msgid "Monthly"
 msgstr "Kuukausittain"
 
-#: src/widgets/editorview.cpp:44
+#: src/widgets/editorview.cpp:40
 #, kde-format
 msgid "Yearly"
 msgstr "Vuosittain"
@@ -676,6 +646,26 @@ msgstr "Päätyökalurivi"
 #, kde-format
 msgid "Add \"%1\" to your todo list"
 msgstr "Lisää ”%1” tehtäväluetteloosi"
+
+#~ msgctxt "the day after today"
+#~ msgid "tomorrow"
+#~ msgstr "huomenna"
+
+#~ msgctxt "this day"
+#~ msgid "today"
+#~ msgstr "tänään"
+
+#~ msgctxt "the day before today"
+#~ msgid "yesterday"
+#~ msgstr "eilen"
+
+#~ msgctxt "the week after this week"
+#~ msgid "next week"
+#~ msgstr "ensi viikolla"
+
+#~ msgctxt "the month after this month"
+#~ msgid "next month"
+#~ msgstr "ensi kuussa"
 
 #~ msgctxt "@option today"
 #~ msgid "&Today"

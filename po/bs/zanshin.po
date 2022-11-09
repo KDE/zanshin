@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: kde 49i410\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2022-06-07 00:57+0000\n"
+"POT-Creation-Date: 2022-11-09 00:49+0000\n"
 "PO-Revision-Date: 2015-02-22 15:24+0100\n"
 "Last-Translator: Samir Ribić <megaribi@epn.ba>\n"
 "Language-Team: Bosnian\n"
@@ -30,36 +30,6 @@ msgstr "Samir Ribić,Amra Dautbegovic"
 msgctxt "EMAIL OF TRANSLATORS"
 msgid "Your emails"
 msgstr "Samir.ribic@etf.unsa.ba,adautbegov1@etf.unsa.ba"
-
-#: 3rdparty/kdepim/libkdepim/kdateedit.cpp:429
-#, kde-format
-msgctxt "the day after today"
-msgid "tomorrow"
-msgstr "sutra"
-
-#: 3rdparty/kdepim/libkdepim/kdateedit.cpp:430
-#, kde-format
-msgctxt "this day"
-msgid "today"
-msgstr "danas"
-
-#: 3rdparty/kdepim/libkdepim/kdateedit.cpp:431
-#, kde-format
-msgctxt "the day before today"
-msgid "yesterday"
-msgstr "jučer"
-
-#: 3rdparty/kdepim/libkdepim/kdateedit.cpp:432
-#, kde-format
-msgctxt "the week after this week"
-msgid "next week"
-msgstr "sljedeće sedmice"
-
-#: 3rdparty/kdepim/libkdepim/kdateedit.cpp:433
-#, kde-format
-msgctxt "the month after this month"
-msgid "next month"
-msgstr "sljedećeg mjeseca"
 
 #: src/akonadi/akonadiconfigdialog.cpp:35
 #, fuzzy, kde-format
@@ -435,33 +405,33 @@ msgstr ""
 msgid "Configure %1..."
 msgstr "Uredi redoslijed dovršavanja..."
 
-#: src/widgets/editorview.cpp:32
+#: src/widgets/editorview.cpp:31
 #, fuzzy, kde-format
 #| msgid "Attachments"
 msgid "Add Attachment"
 msgstr "Dodaci"
 
-#: src/widgets/editorview.cpp:40
+#: src/widgets/editorview.cpp:36
 #, kde-format
 msgid "Never"
 msgstr ""
 
-#: src/widgets/editorview.cpp:41
+#: src/widgets/editorview.cpp:37
 #, kde-format
 msgid "Daily"
 msgstr ""
 
-#: src/widgets/editorview.cpp:42
+#: src/widgets/editorview.cpp:38
 #, kde-format
 msgid "Weekly"
 msgstr ""
 
-#: src/widgets/editorview.cpp:43
+#: src/widgets/editorview.cpp:39
 #, kde-format
 msgid "Monthly"
 msgstr ""
 
-#: src/widgets/editorview.cpp:44
+#: src/widgets/editorview.cpp:40
 #, kde-format
 msgid "Yearly"
 msgstr ""
@@ -764,6 +734,26 @@ msgstr "Glavna alatna traka"
 #| msgid "Add \"%1\" to your todo list"
 msgid "Add \"%1\" to your todo list"
 msgstr "Dodajte \"%1\" u Vašu listu stvari za uraditi"
+
+#~ msgctxt "the day after today"
+#~ msgid "tomorrow"
+#~ msgstr "sutra"
+
+#~ msgctxt "this day"
+#~ msgid "today"
+#~ msgstr "danas"
+
+#~ msgctxt "the day before today"
+#~ msgid "yesterday"
+#~ msgstr "jučer"
+
+#~ msgctxt "the week after this week"
+#~ msgid "next week"
+#~ msgstr "sljedeće sedmice"
+
+#~ msgctxt "the month after this month"
+#~ msgid "next month"
+#~ msgstr "sljedećeg mjeseca"
 
 #, fuzzy
 #~| msgid "Today"
