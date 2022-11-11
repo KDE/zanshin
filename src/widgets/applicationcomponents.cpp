@@ -59,10 +59,10 @@ ApplicationComponents::~ApplicationComponents()
 QHash<QString, QAction*> ApplicationComponents::globalActions() const
 {
     auto actions = QHash<QString, QAction*>();
-    actions.unite(availableSourcesView()->globalActions());
-    actions.unite(availablePagesView()->globalActions());
-    actions.unite(pageView()->globalActions());
-    actions.unite(m_actions);
+    actions.insert(availableSourcesView()->globalActions());
+    actions.insert(availablePagesView()->globalActions());
+    actions.insert(pageView()->globalActions());
+    actions.insert(m_actions);
 
     return actions;
 }
