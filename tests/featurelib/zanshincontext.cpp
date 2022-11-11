@@ -749,7 +749,7 @@ bool ZanshinContext::the_list_is(const TableData &data)
                             Zanshin::indexString(expectedIndex, role));
         }
     }
-    COMPARE_OR_DUMP(m_indices.size(), referenceModel->rowCount());
+    COMPARE_OR_DUMP((int)m_indices.size(), referenceModel->rowCount());
 
     return true;
 }
