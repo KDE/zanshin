@@ -26,5 +26,5 @@ target_sources(kontact_zanshinplugin PRIVATE
 target_link_libraries(kontact_zanshinplugin KF5::Parts KF5::KontactInterface)
 
 install(TARGETS kontact_zanshinplugin DESTINATION ${KDE_INSTALL_PLUGINDIR}/pim${QT_MAJOR_VERSION}/kontact)
-install(FILES zanshin_part.rc DESTINATION ${KDE_INSTALL_KXMLGUI5DIR}/zanshin)
+install(FILES zanshin_part.rc DESTINATION ${KDE_INSTALL_KXMLGUIDIR}/zanshin)
 
