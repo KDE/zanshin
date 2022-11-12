@@ -7,10 +7,10 @@
 #include "runningtaskmodelinterface.h"
 
 #include <QApplication>
-#include <QDesktopWidget>
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QPushButton>
+#include <QScreen>
 
 #include <KLocalizedString>
 #include <KWindowSystem>
@@ -122,7 +122,7 @@ void RunningTaskWidget::onTaskRunDone()
 
 void RunningTaskWidget::resize()
 {
-    const auto screenGeometry = qApp->desktop()->availableGeometry(this);
+    const auto screenGeometry = screen()->availableGeometry();
     const int screenWidth = screenGeometry.width();
     const int height = m_collapsed ? 5 : sizeHint().height();
     setGeometry(QRect(screenGeometry.left(), screenGeometry.top(), screenWidth, height));
