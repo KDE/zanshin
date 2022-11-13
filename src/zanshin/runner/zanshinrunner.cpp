@@ -16,7 +16,8 @@
 #include <KConfig>
 #include <KLocalizedString>
 
-K_EXPORT_PLASMA_RUNNER(zanshin, ZanshinRunner)
+K_PLUGIN_CLASS_WITH_JSON(ZanshinRunner, "plasma-runner-zanshin.json")
+
 Domain::TaskRepository::Ptr createTaskRepository()
 {
     using namespace Akonadi;
@@ -25,8 +26,8 @@ Domain::TaskRepository::Ptr createTaskRepository()
     return Domain::TaskRepository::Ptr(repository);
 }
 
-ZanshinRunner::ZanshinRunner(QObject *parent, const QVariantList &args)
-    : Plasma::AbstractRunner(parent, args),
+ZanshinRunner::ZanshinRunner(QObject *parent, const KPluginMetaData &metaData, const QVariantList &args)
+    : Plasma::AbstractRunner(parent, metaData, args),
       m_taskRepository(createTaskRepository())
 {
     setObjectName(QStringLiteral("Zanshin"));

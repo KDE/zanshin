@@ -17,7 +17,7 @@ class ZanshinRunner : public Plasma::AbstractRunner
     Q_OBJECT
 
 public:
-    ZanshinRunner(QObject *parent, const QVariantList &args);
+    ZanshinRunner(QObject *parent, const KPluginMetaData &metaData, const QVariantList &args);
     ~ZanshinRunner();
 
     void match(Plasma::RunnerContext &context) override;

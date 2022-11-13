@@ -1,0 +1,15 @@
+{
+    "KPlugin": {
+        "Authors": [
+            {
+                "Name": "Zanshin Team"
+            }
+        ],
+        "Description": "Add tasks to your todo list",
+        "EnabledByDefault": true,
+        "Icon": "zanshin",
+        "Id": "org.kde.zanshin",
+        "License": "LGPL",
+        "Name":"Zanshin Tasks"
+    }
+}

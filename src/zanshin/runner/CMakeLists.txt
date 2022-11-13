@@ -1,17 +1,13 @@
 
-add_library(krunner_zanshin MODULE)
-target_sources(krunner_zanshin PRIVATE
+kcoreaddons_add_plugin(org.kde.zanshin INSTALL_NAMESPACE "kf${QT_MAJOR_VERSION}/krunner")
+target_sources(org.kde.zanshin PRIVATE
     zanshinrunner.cpp
     zanshinrunner.h
 )
-target_link_libraries(krunner_zanshin
+target_link_libraries(org.kde.zanshin
     akonadi
     domain
     utils
     KF5::ConfigCore
     KF5::Runner
 )
-
-install(TARGETS krunner_zanshin DESTINATION ${KDE_INSTALL_PLUGINDIR})
-install(FILES plasma-runner-zanshin.desktop DESTINATION ${KDE_INSTALL_KSERVICESDIR})
-
