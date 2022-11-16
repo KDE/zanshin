@@ -13,7 +13,6 @@ target_link_libraries(zanshin_part
 )
 
 install(TARGETS zanshin_part DESTINATION ${KDE_INSTALL_PLUGINDIR})
-install(FILES zanshin_part.desktop DESTINATION ${KDE_INSTALL_KSERVICESDIR})
 
 ##########################
 
