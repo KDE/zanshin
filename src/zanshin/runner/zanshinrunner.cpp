@@ -31,8 +31,6 @@ ZanshinRunner::ZanshinRunner(QObject *parent, const KPluginMetaData &metaData, c
       m_taskRepository(createTaskRepository())
 {
     setObjectName(QStringLiteral("Zanshin"));
-    setIgnoredTypes(Plasma::RunnerContext::Directory | Plasma::RunnerContext::File |
-                    Plasma::RunnerContext::NetworkLocation | Plasma::RunnerContext::Help);
 }
 
 ZanshinRunner::~ZanshinRunner()
