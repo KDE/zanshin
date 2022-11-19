@@ -2,14 +2,38 @@
     "KPlugin": {
         "Authors": [
             {
-                "Name": "Zanshin Team"
+                "Name": "Zanshin Team",
+                "Name[ca@valencia]": "Equip de Zanshin",
+                "Name[ca]": "Equip del Zanshin",
+                "Name[eu]": "Zanshin Taldea",
+                "Name[nl]": "Zanshin-team",
+                "Name[pt]": "Equipa do Zanshin",
+                "Name[tr]": "Zanshin Takımı",
+                "Name[uk]": "Команда Zanshin",
+                "Name[x-test]": "xxZanshin Teamxx"
             }
         ],
         "Description": "Add tasks to your todo list",
+        "Description[ca@valencia]": "Afig tasques a la vostra llista de tasques pendents",
+        "Description[ca]": "Afegeix tasques a la vostra llista de tasques pendents",
+        "Description[eu]": "Gehitu atazak zure eginkizunen zerrendara",
+        "Description[nl]": "Voeg taken toe aan uw lijst met taken",
+        "Description[pt]": "Adicionar tarefas à sua lista de itens por-fazer",
+        "Description[tr]": "Yapılacaklar listenize görevler ekleyin",
+        "Description[uk]": "Додайте завдання до вашого списку завдань",
+        "Description[x-test]": "xxAdd tasks to your todo listxx",
         "EnabledByDefault": true,
         "Icon": "zanshin",
         "Id": "org.kde.zanshin",
         "License": "LGPL",
-        "Name": "Zanshin Tasks"
+        "Name": "Zanshin Tasks",
+        "Name[ca@valencia]": "Tasques de Zanshin",
+        "Name[ca]": "Tasques del Zanshin",
+        "Name[eu]": "Zanshin atazak",
+        "Name[nl]": "Zanshin taken",
+        "Name[pt]": "Tarefas do Zanshin",
+        "Name[tr]": "Zanshin Görevler",
+        "Name[uk]": "Завдання Zanshin",
+        "Name[x-test]": "xxZanshin Tasksxx"
     }
 }
