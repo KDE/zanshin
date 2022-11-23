@@ -24,6 +24,7 @@ public:
     void run(const Plasma::RunnerContext &context, const Plasma::QueryMatch &action) override;
 private:
     Domain::TaskRepository::Ptr m_taskRepository;
+    const QString m_triggerWord;
 };
 
 

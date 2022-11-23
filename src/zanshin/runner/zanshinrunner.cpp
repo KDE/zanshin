@@ -27,10 +27,12 @@ Domain::TaskRepository::Ptr createTaskRepository()
 }
 
 ZanshinRunner::ZanshinRunner(QObject *parent, const KPluginMetaData &metaData, const QVariantList &args)
-    : Plasma::AbstractRunner(parent, metaData, args),
-      m_taskRepository(createTaskRepository())
+    : Plasma::AbstractRunner(parent, metaData, args)
+    , m_taskRepository(createTaskRepository())
+    , m_triggerWord(QStringLiteral("todo:"))
 {
     setObjectName(QStringLiteral("Zanshin"));
+    setTriggerWords({m_triggerWord});
 }
 
 ZanshinRunner::~ZanshinRunner()
@@ -41,7 +43,7 @@ void ZanshinRunner::match(Plasma::RunnerContext &context)
 {
     const QString command = context.query().trimmed();
 
-    if (!command.startsWith(QStringLiteral("todo:"), Qt::CaseInsensitive)) {
+    if (!command.startsWith(m_triggerWord)) {
         return;
     }
 
