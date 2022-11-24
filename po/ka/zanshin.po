@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: zanshin\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-11-23 00:49+0000\n"
-"PO-Revision-Date: 2022-09-18 06:44+0200\n"
+"PO-Revision-Date: 2022-11-23 06:36+0100\n"
 "Last-Translator: Temuri Doghonadze <temuri.doghonadze@gmail.com>\n"
 "Language-Team: Georgian <kde-i18n-doc@kde.org>\n"
 "Language: ka\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 3.1.1\n"
+"X-Generator: Poedit 3.2\n"
 
 #, kde-format
 msgctxt "NAME OF TRANSLATORS"
@@ -485,7 +485,7 @@ msgstr "წყარო"
 #: src/widgets/pageview.cpp:155
 #, kde-format
 msgid "Type and press enter to add a task"
-msgstr ""
+msgstr "ამოცანის დასამატებლად აკრიფეთ ის და ენტერს დააწექით"
 
 #: src/widgets/pageview.cpp:170
 #, kde-format
@@ -500,7 +500,7 @@ msgstr "ამოცანის წაშლა"
 #: src/widgets/pageview.cpp:191
 #, kde-format
 msgid "Promote Task as Project"
-msgstr ""
+msgstr "ამოცანის პროექტამდე წახალისება"
 
 #: src/widgets/pageview.cpp:205
 #, kde-format
@@ -520,22 +520,22 @@ msgstr "ახლა დაწყება"
 #: src/widgets/pageview.cpp:357
 #, kde-format
 msgid "Type and press enter to add an item"
-msgstr ""
+msgstr "ჩანაწერის დასამატებლად აკრიფეთ ის და ენტერს დააწექით"
 
 #: src/widgets/pageview.cpp:383
 #, kde-format
 msgid "Do you really want to delete the selected items and their children?"
-msgstr ""
+msgstr "მართლა გნებავთ მონიშნული ჩანაწერებისა და მათი შვილების წაშლა?"
 
 #: src/widgets/pageview.cpp:385
 #, kde-format
 msgid "Do you really want to delete the selected items?"
-msgstr ""
+msgstr "მართლა გნებავთ მონიშნული ჩანაწერების წაშლა?"
 
 #: src/widgets/pageview.cpp:393
 #, kde-format
 msgid "Do you really want to delete the selected task and all its children?"
-msgstr ""
+msgstr "მართლა გნებავთ მონიშნული ამოცანისა და მისი შვილების წაშლა?"
 
 #: src/widgets/pageview.cpp:397
 #, kde-format
@@ -545,7 +545,7 @@ msgstr "ამოცანების წაშლა"
 #: src/widgets/quickselectdialog.cpp:30
 #, kde-format
 msgid "Quick Select Dialog"
-msgstr ""
+msgstr "სწრაფი მონიშვნის ფანჯარა"
 
 #: src/widgets/quickselectdialog.cpp:32 src/widgets/quickselectdialog.cpp:70
 #, kde-format
@@ -560,7 +560,7 @@ msgstr "ბილიკი: %1"
 #: src/widgets/runningtaskwidget.cpp:36
 #, kde-format
 msgid "Zanshin Running Task Banner"
-msgstr ""
+msgstr "Zanshin -ის გაშვებულობის ბანერი"
 
 #: src/widgets/runningtaskwidget.cpp:46
 #, kde-format
@@ -581,7 +581,7 @@ msgstr ""
 #: src/zanshin/app/aboutdata.cpp:17
 #, kde-format
 msgid "Copyright 2008-2016, Kevin Ottens <ervin@kde.org>"
-msgstr ""
+msgstr "2008-2016, Kevin Ottens <ervin@kde.org>, ყველა უფლება დაცულია"
 
 #: src/zanshin/app/aboutdata.cpp:19
 #, kde-format
