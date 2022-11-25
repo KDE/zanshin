@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zanshin\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2022-11-23 00:49+0000\n"
+"POT-Creation-Date: 2022-11-25 00:48+0000\n"
 "PO-Revision-Date: 2021-05-12 08:39+0200\n"
 "Last-Translator: Paolo Zamponi <zapaolo@email.it>\n"
 "Language-Team: Italian <kde-i18n-it@kde.org>\n"
@@ -643,7 +643,7 @@ msgctxt "@title:menu"
 msgid "Main Toolbar"
 msgstr "Barra degli strumenti principale"
 
-#: src/zanshin/runner/zanshinrunner.cpp:60
+#: src/zanshin/runner/zanshinrunner.cpp:62
 #, kde-format
 msgid "Add \"%1\" to your todo list"
 msgstr "Aggiungi «%1» alla tua lista delle cose da fare"

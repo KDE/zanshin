@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2022-11-23 00:49+0000\n"
+"POT-Creation-Date: 2022-11-25 00:48+0000\n"
 "PO-Revision-Date: 2019-10-19 22:36+0200\n"
 "Last-Translator: Adrián Chaves (Gallaecio) <adrian@chaves.io>\n"
 "Language-Team: Galician <proxecto@trasno.gal>\n"
@@ -645,7 +645,7 @@ msgctxt "@title:menu"
 msgid "Main Toolbar"
 msgstr "Barra de ferramentas principal"
 
-#: src/zanshin/runner/zanshinrunner.cpp:60
+#: src/zanshin/runner/zanshinrunner.cpp:62
 #, kde-format
 msgid "Add \"%1\" to your todo list"
 msgstr "Engadir «%1» á lista de tarefas"
