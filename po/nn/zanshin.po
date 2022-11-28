@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zanshin\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2022-11-23 00:49+0000\n"
+"POT-Creation-Date: 2022-11-25 00:48+0000\n"
 "PO-Revision-Date: 2022-06-19 14:03+0200\n"
 "Last-Translator: Karl Ove Hufthammer <karl@huftis.org>\n"
 "Language-Team: Norwegian Nynorsk <l10n-no@lister.huftis.org>\n"
@@ -643,7 +643,7 @@ msgctxt "@title:menu"
 msgid "Main Toolbar"
 msgstr "Hovudverktøylinje"
 
-#: src/zanshin/runner/zanshinrunner.cpp:60
+#: src/zanshin/runner/zanshinrunner.cpp:62
 #, kde-format
 msgid "Add \"%1\" to your todo list"
 msgstr "Legg til «%1» i oppgåvelista"
