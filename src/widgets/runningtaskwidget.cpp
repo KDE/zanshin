@@ -14,6 +14,7 @@
 
 #include <KLocalizedString>
 #include <KWindowSystem>
+#include <KX11Extras>
 
 using namespace Widgets;
 
@@ -30,7 +31,7 @@ RunningTaskWidget::RunningTaskWidget(QWidget *parent)
     // This means no way to focus it with the keyboard, though, obviously.
 
     setWindowFlags(Qt::Window | Qt::BypassWindowManagerHint | Qt::FramelessWindowHint);
-    KWindowSystem::setOnAllDesktops(winId(), true);
+    KX11Extras::setOnAllDesktops(winId(), true);
     KWindowSystem::setState(winId(), NET::KeepAbove | NET::SkipTaskbar | NET::SkipPager);
 
     setWindowTitle(i18n("Zanshin Running Task Banner"));
