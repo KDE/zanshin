@@ -16,6 +16,7 @@
 #include <QWidgetAction>
 
 #include <KLocalizedString>
+#include <KWindowSystem>
 
 #include "availablepagesview.h"
 #include "availablesourcesview.h"
@@ -217,7 +218,9 @@ void ApplicationComponents::setModel(const QObjectPtr &model)
         m_runningTaskView->setModel(m_model ? m_model->property("runningTaskModel").value<Presentation::RunningTaskModelInterface*>()
                                             : nullptr);
     } else if (m_model) {
-        runningTaskView(); // We got a model so make sure this view exists now
+        if (!KWindowSystem::isPlatformWayland()) {
+            runningTaskView(); // We got a model so make sure this view exists now
+        }
     }
 }
 
