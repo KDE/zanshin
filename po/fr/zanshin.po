@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zanshin\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2022-11-25 00:48+0000\n"
+"POT-Creation-Date: 2022-12-20 00:47+0000\n"
 "PO-Revision-Date: 2021-05-09 10:42+0200\n"
 "Last-Translator: Xavier Besnard <xavier.besnard@neuf.fr>\n"
 "Language-Team: French <kde-francophone@kde.org>\n"
@@ -406,7 +406,7 @@ msgid "D&ue Date "
 msgstr "Date d'éc&héance"
 
 #. i18n: ectx: property (text), widget (QCheckBox, doneButton)
-#: src/widgets/editorview.ui:62 src/widgets/runningtaskwidget.cpp:50
+#: src/widgets/editorview.ui:62 src/widgets/runningtaskwidget.cpp:51
 #, kde-format
 msgid "Done"
 msgstr "Terminé"
@@ -570,12 +570,12 @@ msgstr ""
 msgid "Path: %1"
 msgstr "Emplacement : %1"
 
-#: src/widgets/runningtaskwidget.cpp:36
+#: src/widgets/runningtaskwidget.cpp:37
 #, kde-format
 msgid "Zanshin Running Task Banner"
 msgstr "Bannière tâches en cours Zanshin"
 
-#: src/widgets/runningtaskwidget.cpp:46
+#: src/widgets/runningtaskwidget.cpp:47
 #, kde-format
 msgid "Stop"
 msgstr "Arrêter"

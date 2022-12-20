@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libkdepim\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2022-11-25 00:48+0000\n"
+"POT-Creation-Date: 2022-12-20 00:47+0000\n"
 "PO-Revision-Date: 2021-05-08 17:51+0100\n"
 "Last-Translator: José Nuno Pires <zepires@gmail.com>\n"
 "Language-Team: pt <kde-i18n-pt@kde.org>\n"
@@ -401,7 +401,7 @@ msgid "D&ue Date "
 msgstr "Data-L&imite "
 
 #. i18n: ectx: property (text), widget (QCheckBox, doneButton)
-#: src/widgets/editorview.ui:62 src/widgets/runningtaskwidget.cpp:50
+#: src/widgets/editorview.ui:62 src/widgets/runningtaskwidget.cpp:51
 #, kde-format
 msgid "Done"
 msgstr "Concluído"
@@ -562,12 +562,12 @@ msgstr "Pode começar a escrever para filtrar a lista de páginas disponíveis"
 msgid "Path: %1"
 msgstr "Localização: %1"
 
-#: src/widgets/runningtaskwidget.cpp:36
+#: src/widgets/runningtaskwidget.cpp:37
 #, kde-format
 msgid "Zanshin Running Task Banner"
 msgstr "Separador da Tarefa do Zanshin em Execução"
 
-#: src/widgets/runningtaskwidget.cpp:46
+#: src/widgets/runningtaskwidget.cpp:47
 #, kde-format
 msgid "Stop"
 msgstr "Parar"

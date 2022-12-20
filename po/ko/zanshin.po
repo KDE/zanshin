@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zanshin\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2022-11-25 00:48+0000\n"
+"POT-Creation-Date: 2022-12-20 00:47+0000\n"
 "PO-Revision-Date: 2021-07-31 23:37+0200\n"
 "Last-Translator: Shinjo Park <kde@peremen.name>\n"
 "Language-Team: Korean <kde-kr@kde.org>\n"
@@ -395,7 +395,7 @@ msgid "D&ue Date "
 msgstr "만료 기한(&U)"
 
 #. i18n: ectx: property (text), widget (QCheckBox, doneButton)
-#: src/widgets/editorview.ui:62 src/widgets/runningtaskwidget.cpp:50
+#: src/widgets/editorview.ui:62 src/widgets/runningtaskwidget.cpp:51
 #, kde-format
 msgid "Done"
 msgstr "완료"
@@ -556,12 +556,12 @@ msgstr "사용 가능한 페이지 목록에 필터를 적용하려면 입력하
 msgid "Path: %1"
 msgstr "경로: %1"
 
-#: src/widgets/runningtaskwidget.cpp:36
+#: src/widgets/runningtaskwidget.cpp:37
 #, kde-format
 msgid "Zanshin Running Task Banner"
 msgstr "Zanshin 실행 중인 할 일 배너"
 
-#: src/widgets/runningtaskwidget.cpp:46
+#: src/widgets/runningtaskwidget.cpp:47
 #, kde-format
 msgid "Stop"
 msgstr "정지"

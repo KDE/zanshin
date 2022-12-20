@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2022-11-25 00:48+0000\n"
+"POT-Creation-Date: 2022-12-20 00:47+0000\n"
 "PO-Revision-Date: 2021-08-25 09:59+0200\n"
 "Last-Translator: Kristóf Kiszel <kiszel.kristof@gmail.com>\n"
 "Language-Team: Hungarian <kde-l10n-hu@kde.org>\n"
@@ -400,7 +400,7 @@ msgid "D&ue Date "
 msgstr "Határi&dő"
 
 #. i18n: ectx: property (text), widget (QCheckBox, doneButton)
-#: src/widgets/editorview.ui:62 src/widgets/runningtaskwidget.cpp:50
+#: src/widgets/editorview.ui:62 src/widgets/runningtaskwidget.cpp:51
 #, kde-format
 msgid "Done"
 msgstr "Kész"
@@ -561,12 +561,12 @@ msgstr "A gépelés elkezdésével szűrheti az elérhető oldalak listáját"
 msgid "Path: %1"
 msgstr "Elérési út: %1"
 
-#: src/widgets/runningtaskwidget.cpp:36
+#: src/widgets/runningtaskwidget.cpp:37
 #, kde-format
 msgid "Zanshin Running Task Banner"
 msgstr "A Zanshin feladatot futtat"
 
-#: src/widgets/runningtaskwidget.cpp:46
+#: src/widgets/runningtaskwidget.cpp:47
 #, kde-format
 msgid "Stop"
 msgstr "Leállítás"
