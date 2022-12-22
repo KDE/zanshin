@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zanshin\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2022-06-07 00:57+0000\n"
+"POT-Creation-Date: 2022-12-22 02:29+0000\n"
 "PO-Revision-Date: 2022-06-29 14:38+0200\n"
 "Last-Translator: giovanni <g.sora@tiscali.it>\n"
 "Language-Team: Interlingua <kde-i18n-doc@kde.org>\n"
@@ -312,7 +312,7 @@ msgstr "Non pote remover carga %1 ex Die de Labor"
 msgid "Cannot modify task %1 in Workday"
 msgstr "Non pote modificar carga %1 in Die de Labor"
 
-#: src/widgets/applicationcomponents.cpp:47
+#: src/widgets/applicationcomponents.cpp:48
 #, kde-format
 msgid "Move Task"
 msgstr "Move carga"

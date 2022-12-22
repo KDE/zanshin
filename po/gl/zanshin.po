@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2022-06-07 00:57+0000\n"
+"POT-Creation-Date: 2022-12-22 02:29+0000\n"
 "PO-Revision-Date: 2019-10-19 22:36+0200\n"
 "Last-Translator: Adrián Chaves (Gallaecio) <adrian@chaves.io>\n"
 "Language-Team: Galician <proxecto@trasno.gal>\n"
@@ -314,7 +314,7 @@ msgstr "Non se pode retirar a tarefa %1 do día laboral"
 msgid "Cannot modify task %1 in Workday"
 msgstr "Non se pode modificar a tarefa %1 do día laboral"
 
-#: src/widgets/applicationcomponents.cpp:47
+#: src/widgets/applicationcomponents.cpp:48
 #, kde-format
 msgid "Move Task"
 msgstr "Mover a tarefa"

@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zanshin\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2022-06-07 00:57+0000\n"
+"POT-Creation-Date: 2022-12-22 02:29+0000\n"
 "PO-Revision-Date: 2011-12-28 12:28-0500\n"
 "Last-Translator: Kevin Scannell <kscanne@gmail.com>\n"
 "Language-Team: Irish <gaeilge-gnulinux@lists.sourceforge.net>\n"
@@ -317,7 +317,7 @@ msgstr ""
 msgid "Cannot modify task %1 in Workday"
 msgstr ""
 
-#: src/widgets/applicationcomponents.cpp:47
+#: src/widgets/applicationcomponents.cpp:48
 #, kde-format
 msgid "Move Task"
 msgstr ""

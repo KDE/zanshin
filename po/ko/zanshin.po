@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zanshin\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2022-06-07 00:57+0000\n"
+"POT-Creation-Date: 2022-12-22 02:29+0000\n"
 "PO-Revision-Date: 2021-07-31 23:37+0200\n"
 "Last-Translator: Shinjo Park <kde@peremen.name>\n"
 "Language-Team: Korean <kde-kr@kde.org>\n"
@@ -310,7 +310,7 @@ msgstr "할 일 %1을(를) 업무일에서 삭제할 수 없음"
 msgid "Cannot modify task %1 in Workday"
 msgstr "할 일 %1을(를) 업무일에서 수정할 수 없음"
 
-#: src/widgets/applicationcomponents.cpp:47
+#: src/widgets/applicationcomponents.cpp:48
 #, kde-format
 msgid "Move Task"
 msgstr "할 일 이동"
