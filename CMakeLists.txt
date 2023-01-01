@@ -76,7 +76,7 @@ find_package(KF5 ${KF5_MIN_VERSION} REQUIRED COMPONENTS
     WindowSystem
     I18n
 )
-find_package(KF5 "5.20.40" REQUIRED COMPONENTS
+find_package(KF5 "5.22.40" REQUIRED COMPONENTS
     Akonadi
     AkonadiCalendar
     KontactInterface
