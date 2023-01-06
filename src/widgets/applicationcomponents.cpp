@@ -76,13 +76,13 @@ QObjectPtr ApplicationComponents::model() const
 AvailableSourcesView *ApplicationComponents::availableSourcesView() const
 {
     if (!m_availableSourcesView) {
-        auto availableSourcesView = new AvailableSourcesView(m_parent);
+        auto view = new AvailableSourcesView(m_parent);
         if (m_model) {
-            availableSourcesView->setModel(m_model->property("availableSources").value<QObject*>());
+            view->setModel(m_model->property("availableSources").value<QObject*>());
         }
 
         ApplicationComponents *self = const_cast<ApplicationComponents*>(this);
-        self->m_availableSourcesView = availableSourcesView;
+        self->m_availableSourcesView = view;
     }
 
     return m_availableSourcesView;
