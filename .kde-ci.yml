@@ -6,6 +6,7 @@ Dependencies:
   'require':
     'frameworks/extra-cmake-modules': '@stable'
     'frameworks/kcoreaddons': '@stable'
+    'frameworks/kconfig': '@stable'
     'frameworks/krunner': '@stable'
     'frameworks/kwindowsystem': '@stable'
     'frameworks/ki18n': '@stable'
