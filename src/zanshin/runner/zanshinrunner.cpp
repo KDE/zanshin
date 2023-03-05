@@ -27,8 +27,8 @@ Domain::TaskRepository::Ptr createTaskRepository()
 }
 
 ZanshinRunner::ZanshinRunner(QObject *parent, const KPluginMetaData &metaData, const QVariantList &args)
-    : Plasma::AbstractRunner(parent, metaData, args)
-    , m_taskRepository(createTaskRepository())
+    : AbstractRunner(parent, metaData, args)
+    ,  m_taskRepository(createTaskRepository())
     , m_triggerWord(QStringLiteral("todo:"))
 {
     setObjectName(QStringLiteral("Zanshin"));
@@ -39,7 +39,7 @@ ZanshinRunner::~ZanshinRunner()
 {
 }
 
-void ZanshinRunner::match(Plasma::RunnerContext &context)
+void ZanshinRunner::match(RunnerContext &context)
 {
     const QString command = context.query().trimmed();
 
@@ -53,11 +53,11 @@ void ZanshinRunner::match(Plasma::RunnerContext &context)
         return;
     }
 
-    QList<Plasma::QueryMatch> matches;
+    QList<QueryMatch> matches;
 
-    Plasma::QueryMatch match(this);
+    QueryMatch match(this);
     match.setData(summary);
-    match.setType(Plasma::QueryMatch::ExactMatch);
+    match.setType(QueryMatch::ExactMatch);
     match.setIcon(QIcon::fromTheme(QStringLiteral("zanshin")));
     match.setText(i18n("Add \"%1\" to your todo list", summary));
     match.setRelevance(1.0);
@@ -66,7 +66,7 @@ void ZanshinRunner::match(Plasma::RunnerContext &context)
     context.addMatches(matches);
 }
 
-void ZanshinRunner::run(const Plasma::RunnerContext &context, const Plasma::QueryMatch &match)
+void ZanshinRunner::run(const RunnerContext &context, const QueryMatch &match)
 {
     Q_UNUSED(context)
 
