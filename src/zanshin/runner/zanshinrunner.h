@@ -13,7 +13,7 @@
 #include "domain/taskrepository.h"
 
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-using namepace Plasma;
+using namespace Plasma;
 #else
 using namespace KRunner;
 #endif
@@ -26,10 +26,10 @@ public:
     ZanshinRunner(QObject *parent, const KPluginMetaData &metaData, const QVariantList &args);
     ~ZanshinRunner();
 
+private:
     void match(RunnerContext &context) override;
     void run(const RunnerContext &context, const QueryMatch &action) override;
 
-  private:
     Domain::TaskRepository::Ptr m_taskRepository;
     const QString m_triggerWord;
 };

@@ -28,7 +28,7 @@ Domain::TaskRepository::Ptr createTaskRepository()
 
 ZanshinRunner::ZanshinRunner(QObject *parent, const KPluginMetaData &metaData, const QVariantList &args)
     : AbstractRunner(parent, metaData, args)
-    ,  m_taskRepository(createTaskRepository())
+    , m_taskRepository(createTaskRepository())
     , m_triggerWord(QStringLiteral("todo:"))
 {
     setObjectName(QStringLiteral("Zanshin"));

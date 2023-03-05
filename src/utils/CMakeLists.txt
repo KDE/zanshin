@@ -14,5 +14,5 @@ target_sources(utils PRIVATE
 set_property(TARGET utils PROPERTY POSITION_INDEPENDENT_CODE ON)
 
 target_link_libraries(utils
-    KF5::CoreAddons
+    KF${QT_MAJOR_VERSION}::CoreAddons
 )

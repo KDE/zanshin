@@ -8,7 +8,7 @@ include_directories(${CMAKE_SOURCE_DIR}/tests ${CMAKE_SOURCE_DIR}/src)
 add_library(featurelib STATIC ${featurelib_SRCS})
 target_link_libraries(featurelib
     Qt::Test
-    KF5::ConfigCore
+    KF${QT_MAJOR_VERSION}::ConfigCore
     integration
 )
 

@@ -44,7 +44,7 @@ MACRO(ZANSHIN_AUTO_TESTS)
       testlib
       integration
       widgets
-      KF5::AkonadiXml
+      KPim${QT_MAJOR_VERSION}::AkonadiXml
     )
   ENDFOREACH(_testname)
 ENDMACRO(ZANSHIN_AUTO_TESTS)
@@ -69,7 +69,7 @@ MACRO(ZANSHIN_FEATURE_TESTS)
       testlib
       integration
       widgets
-      KF5::AkonadiXml
+      KPim${QT_MAJOR_VERSION}::AkonadiXml
     )
   ENDFOREACH(_testname)
 ENDMACRO(ZANSHIN_FEATURE_TESTS)

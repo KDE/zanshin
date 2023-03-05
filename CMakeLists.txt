@@ -7,8 +7,8 @@ set(RELEASE_SERVICE_VERSION "${RELEASE_SERVICE_VERSION_MAJOR}.${RELEASE_SERVICE_
 
 project(zanshin VERSION ${RELEASE_SERVICE_VERSION})
 
-set(KF5_MIN_VERSION "5.101.0")
-find_package(ECM ${KF5_MIN_VERSION} REQUIRED CONFIG)
+set(KF_MIN_VERSION "5.101.0")
+find_package(ECM ${KF_MIN_VERSION} REQUIRED CONFIG)
 set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/ ${CMAKE_MODULE_PATH} ${ECM_MODULE_PATH})
 set(KDE_COMPILERSETTINGS_LEVEL "5.84")
 
@@ -71,16 +71,17 @@ include_directories (
     ${Boost_INCLUDE_DIR}
 )
 
-find_package(KF5 ${KF5_MIN_VERSION} REQUIRED COMPONENTS
+find_package(KF${QT_MAJOR_VERSION} ${KF_MIN_VERSION} REQUIRED COMPONENTS
     Runner
     WindowSystem
     I18n
+    CalendarCore
+    Parts
 )
-find_package(KF5 "5.22.40" REQUIRED COMPONENTS
-    Akonadi
-    AkonadiCalendar
-    KontactInterface
-)
+
+find_package(KPim${QT_MAJOR_VERSION}Akonadi "5.22.40" REQUIRED)
+find_package(KPim${QT_MAJOR_VERSION}AkonadiCalendar "5.22.40" REQUIRED)
+find_package(KPim${QT_MAJOR_VERSION}KontactInterface "5.22.40" REQUIRED)
 
 add_subdirectory(src)
 ki18n_install(po)

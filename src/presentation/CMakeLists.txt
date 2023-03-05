@@ -42,4 +42,4 @@ target_sources(presentation PRIVATE
 
 set_property(TARGET presentation PROPERTY POSITION_INDEPENDENT_CODE ON)
 
-target_link_libraries(presentation Qt::Core Qt::Gui KF5::I18n domain utils)
+target_link_libraries(presentation Qt::Core Qt::Gui KF${QT_MAJOR_VERSION}::I18n domain utils)

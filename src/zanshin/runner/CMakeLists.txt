@@ -8,6 +8,6 @@ target_link_libraries(org.kde.zanshin
     akonadi
     domain
     utils
-    KF5::ConfigCore
-    KF5::Runner
+    KF${QT_MAJOR_VERSION}::ConfigCore
+    KF${QT_MAJOR_VERSION}::Runner
 )
