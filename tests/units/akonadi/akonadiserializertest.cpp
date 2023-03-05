@@ -14,7 +14,7 @@
 #include <Akonadi/Collection>
 #include <Akonadi/EntityDisplayAttribute>
 #include <Akonadi/Item>
-#include <KCalCore/Todo>
+#include <KCalendarCore/Todo>
 #if __has_include(<kcalcore_version.h>)
 #include <kcalcore_version.h>
 #else
@@ -25,7 +25,7 @@ Q_DECLARE_METATYPE(Akonadi::Item*)
 
 using Akonadi::Serializer;
 
-static void setTodoDates(KCalCore::Todo::Ptr todo, const QDate &start, const QDate &due) {
+static void setTodoDates(KCalendarCore::Todo::Ptr todo, const QDate &start, const QDate &due) {
     todo->setDtStart(start.startOfDay());
     todo->setDtDue(due.startOfDay());
 }
@@ -92,14 +92,14 @@ private slots:
         QTest::addColumn<QString>("expectedUid");
 
         Akonadi::Item item1;
-        KCalCore::Todo::Ptr todo1(new KCalCore::Todo);
+        KCalendarCore::Todo::Ptr todo1(new KCalendarCore::Todo);
         todo1->setUid(QString());
-        item1.setPayload<KCalCore::Todo::Ptr>(todo1);
+        item1.setPayload<KCalendarCore::Todo::Ptr>(todo1);
 
         Akonadi::Item item2;
-        KCalCore::Todo::Ptr todo2(new KCalCore::Todo);
+        KCalendarCore::Todo::Ptr todo2(new KCalendarCore::Todo);
         todo2->setUid(QStringLiteral("1"));
-        item2.setPayload<KCalCore::Todo::Ptr>(todo2);
+        item2.setPayload<KCalendarCore::Todo::Ptr>(todo2);
 
         QTest::newRow("task without uid") << item1 << QString();
         QTest::newRow("task with uid") << item2 << "1";
@@ -464,7 +464,7 @@ private slots:
         QFETCH(QStringList, contexts);
 
         // ... stored in a todo...
-        KCalCore::Todo::Ptr todo(new KCalCore::Todo);
+        KCalendarCore::Todo::Ptr todo(new KCalendarCore::Todo);
         todo->setSummary(summary);
         todo->setDescription(content);
 
@@ -482,7 +482,7 @@ private slots:
         // ... as payload of an item
         Akonadi::Item item;
         item.setMimeType(QStringLiteral("application/x-vnd.akonadi.calendar.todo"));
-        item.setPayload<KCalCore::Todo::Ptr>(todo);
+        item.setPayload<KCalendarCore::Todo::Ptr>(todo);
 
         // which has a parent collection
         Akonadi::Collection collection(43);
@@ -525,14 +525,14 @@ private slots:
         // GIVEN
 
         // A todo with the project flag
-        KCalCore::Todo::Ptr todo(new KCalCore::Todo);
+        KCalendarCore::Todo::Ptr todo(new KCalendarCore::Todo);
         todo->setSummary(QStringLiteral("foo"));
         todo->setCustomProperty(Serializer::customPropertyAppName(), Serializer::customPropertyIsProject(), QStringLiteral("1"));
 
         // ... as payload of an item
         Akonadi::Item item;
         item.setMimeType(QStringLiteral("application/x-vnd.akonadi.calendar.todo"));
-        item.setPayload<KCalCore::Todo::Ptr>(todo);
+        item.setPayload<KCalendarCore::Todo::Ptr>(todo);
 
         // WHEN
         Akonadi::Serializer serializer;
@@ -570,7 +570,7 @@ private slots:
         // GIVEN
 
         // A todo...
-        KCalCore::Todo::Ptr originalTodo(new KCalCore::Todo);
+        KCalendarCore::Todo::Ptr originalTodo(new KCalendarCore::Todo);
         originalTodo->setSummary(QStringLiteral("summary"));
         originalTodo->setDescription(QStringLiteral("content"));
         originalTodo->setCompleted(false);
@@ -580,16 +580,16 @@ private slots:
         originalTodo->setCustomProperty(Serializer::customPropertyAppName(),
                                         Serializer::customPropertyContextList(),
                                         QStringLiteral("context1,context2"));
-        KCalCore::Attendee originalAttendee(QStringLiteral("John Doe"),
+        KCalendarCore::Attendee originalAttendee(QStringLiteral("John Doe"),
                                             QStringLiteral("j@d.com"),
                                             true,
-                                            KCalCore::Attendee::Accepted);
+                                            KCalendarCore::Attendee::Accepted);
         originalTodo->addAttendee(originalAttendee);
 
         // ... as payload of an item...
         Akonadi::Item originalItem;
         originalItem.setMimeType(QStringLiteral("application/x-vnd.akonadi.calendar.todo"));
-        originalItem.setPayload<KCalCore::Todo::Ptr>(originalTodo);
+        originalItem.setPayload<KCalendarCore::Todo::Ptr>(originalTodo);
 
         // ... which has a parent collection...
         Akonadi::Collection originalCollection(43);
@@ -619,7 +619,7 @@ private slots:
         QFETCH(bool, updatedRunning);
 
         // ... in a new todo...
-        KCalCore::Todo::Ptr updatedTodo(new KCalCore::Todo);
+        KCalendarCore::Todo::Ptr updatedTodo(new KCalendarCore::Todo);
         updatedTodo->setSummary(updatedSummary);
         updatedTodo->setDescription(updatedContent);
 
@@ -638,7 +638,7 @@ private slots:
             updatedTodo->recurrence()->setDaily(1);
 
         for (int i = 0; i < updatedAttachmentData.size(); i++) {
-            KCalCore::Attachment attachment(QByteArray{});
+            KCalendarCore::Attachment attachment(QByteArray{});
             if (!updatedAttachmentData.at(i).isEmpty())
                 attachment.setDecodedData(updatedAttachmentData.at(i));
             else
@@ -657,7 +657,7 @@ private slots:
         // ... as payload of a new item
         Akonadi::Item updatedItem;
         updatedItem.setMimeType(QStringLiteral("application/x-vnd.akonadi.calendar.todo"));
-        updatedItem.setPayload<KCalCore::Todo::Ptr>(updatedTodo);
+        updatedItem.setPayload<KCalendarCore::Todo::Ptr>(updatedTodo);
 
         // ... which has a new parent collection
         Akonadi::Collection updatedCollection(45);
@@ -695,13 +695,13 @@ private slots:
         QTest::addColumn<int>("todoRecurrence");
         QTest::addColumn<Domain::Task::Recurrence>("expectedRecurrence");
 
-        QTest::newRow("none") << int(KCalCore::Recurrence::rNone) << Domain::Task::NoRecurrence;
-        QTest::newRow("minutely") << int(KCalCore::Recurrence::rMinutely) << Domain::Task::NoRecurrence;
-        QTest::newRow("hourly") << int(KCalCore::Recurrence::rHourly) << Domain::Task::NoRecurrence;
-        QTest::newRow("daily") << int(KCalCore::Recurrence::rDaily) << Domain::Task::RecursDaily;
-        QTest::newRow("weekly") << int(KCalCore::Recurrence::rWeekly) << Domain::Task::RecursWeekly;
-        QTest::newRow("monthly") << int(KCalCore::Recurrence::rMonthlyDay) << Domain::Task::RecursMonthly;
-        QTest::newRow("yearly") << int(KCalCore::Recurrence::rYearlyMonth) << Domain::Task::RecursYearly;
+        QTest::newRow("none") << int(KCalendarCore::Recurrence::rNone) << Domain::Task::NoRecurrence;
+        QTest::newRow("minutely") << int(KCalendarCore::Recurrence::rMinutely) << Domain::Task::NoRecurrence;
+        QTest::newRow("hourly") << int(KCalendarCore::Recurrence::rHourly) << Domain::Task::NoRecurrence;
+        QTest::newRow("daily") << int(KCalendarCore::Recurrence::rDaily) << Domain::Task::RecursDaily;
+        QTest::newRow("weekly") << int(KCalendarCore::Recurrence::rWeekly) << Domain::Task::RecursWeekly;
+        QTest::newRow("monthly") << int(KCalendarCore::Recurrence::rMonthlyDay) << Domain::Task::RecursMonthly;
+        QTest::newRow("yearly") << int(KCalendarCore::Recurrence::rYearlyMonth) << Domain::Task::RecursYearly;
     }
 
     void shouldUpdateTaskRecurrenceFromItem()
@@ -709,29 +709,29 @@ private slots:
         // GIVEN
 
         // A todo...
-        KCalCore::Todo::Ptr todo(new KCalCore::Todo);
+        KCalendarCore::Todo::Ptr todo(new KCalendarCore::Todo);
         todo->setSummary(QStringLiteral("summary"));
 
         QFETCH(int, todoRecurrence);
         switch (todoRecurrence) {
-        case KCalCore::Recurrence::rNone:
+        case KCalendarCore::Recurrence::rNone:
             break;
-        case KCalCore::Recurrence::rMinutely:
+        case KCalendarCore::Recurrence::rMinutely:
             todo->recurrence()->setMinutely(1);
             break;
-        case KCalCore::Recurrence::rHourly:
+        case KCalendarCore::Recurrence::rHourly:
             todo->recurrence()->setHourly(1);
             break;
-        case KCalCore::Recurrence::rDaily:
+        case KCalendarCore::Recurrence::rDaily:
             todo->recurrence()->setDaily(1);
             break;
-        case KCalCore::Recurrence::rWeekly:
+        case KCalendarCore::Recurrence::rWeekly:
             todo->recurrence()->setWeekly(1);
             break;
-        case KCalCore::Recurrence::rMonthlyDay:
+        case KCalendarCore::Recurrence::rMonthlyDay:
             todo->recurrence()->setMonthly(1);
             break;
-        case KCalCore::Recurrence::rYearlyMonth:
+        case KCalendarCore::Recurrence::rYearlyMonth:
             todo->recurrence()->setYearly(1);
             break;
         default:
@@ -741,7 +741,7 @@ private slots:
         // ... as payload of an item...
         Akonadi::Item item;
         item.setMimeType(QStringLiteral("application/x-vnd.akonadi.calendar.todo"));
-        item.setPayload<KCalCore::Todo::Ptr>(todo);
+        item.setPayload<KCalendarCore::Todo::Ptr>(todo);
 
         // ... which has a parent collection...
         Akonadi::Collection collection(43);
@@ -767,7 +767,7 @@ private slots:
         const QDate startDate(2013, 11, 10);
 
         // ... stored in a todo...
-        KCalCore::Todo::Ptr todo(new KCalCore::Todo);
+        KCalendarCore::Todo::Ptr todo(new KCalendarCore::Todo);
         todo->setSummary(QStringLiteral("summary"));
         todo->setDtStart(startDate.startOfDay());
         todo->recurrence()->setMonthly(1);
@@ -775,7 +775,7 @@ private slots:
         // ... as payload of an item...
         Akonadi::Item item;
         item.setMimeType(QStringLiteral("application/x-vnd.akonadi.calendar.todo"));
-        item.setPayload<KCalCore::Todo::Ptr>(todo);
+        item.setPayload<KCalendarCore::Todo::Ptr>(todo);
 
         // ... deserialized as a task
         Akonadi::Serializer serializer;
@@ -813,7 +813,7 @@ private slots:
         const QDate dueDate(2014, 03, 01);
 
         // ... stored in a todo...
-        KCalCore::Todo::Ptr originalTodo(new KCalCore::Todo);
+        KCalendarCore::Todo::Ptr originalTodo(new KCalendarCore::Todo);
         originalTodo->setSummary(summary);
         originalTodo->setDescription(content);
 
@@ -826,7 +826,7 @@ private slots:
         // ... as payload of an item...
         Akonadi::Item originalItem;
         originalItem.setMimeType(QStringLiteral("application/x-vnd.akonadi.calendar.todo"));
-        originalItem.setPayload<KCalCore::Todo::Ptr>(originalTodo);
+        originalItem.setPayload<KCalendarCore::Todo::Ptr>(originalTodo);
 
         // ... deserialized as a task
         Akonadi::Serializer serializer;
@@ -859,7 +859,7 @@ private slots:
         const QDate dueDate(2014, 03, 01);
 
         // ... stored in a todo...
-        KCalCore::Todo::Ptr originalTodo(new KCalCore::Todo);
+        KCalendarCore::Todo::Ptr originalTodo(new KCalendarCore::Todo);
         originalTodo->setSummary(summary);
         originalTodo->setDescription(content);
 
@@ -872,7 +872,7 @@ private slots:
         // ... as payload of an item...
         Akonadi::Item originalItem;
         originalItem.setMimeType(QStringLiteral("application/x-vnd.akonadi.calendar.todo"));
-        originalItem.setPayload<KCalCore::Todo::Ptr>(originalTodo);
+        originalItem.setPayload<KCalendarCore::Todo::Ptr>(originalTodo);
 
         // ... deserialized as a task
         Akonadi::Serializer serializer;
@@ -880,14 +880,14 @@ private slots:
 
         // WHEN
         // A todo with the project flag
-        KCalCore::Todo::Ptr projectTodo(new KCalCore::Todo);
+        KCalendarCore::Todo::Ptr projectTodo(new KCalendarCore::Todo);
         projectTodo->setSummary(QStringLiteral("foo"));
         projectTodo->setCustomProperty(Serializer::customPropertyAppName(), Serializer::customPropertyIsProject(), QStringLiteral("1"));
 
         // ... as payload of an item
         Akonadi::Item projectItem;
         projectItem.setMimeType(QStringLiteral("application/x-vnd.akonadi.calendar.todo"));
-        projectItem.setPayload<KCalCore::Todo::Ptr>(projectTodo);
+        projectItem.setPayload<KCalendarCore::Todo::Ptr>(projectTodo);
         serializer.updateTaskFromItem(task, projectItem);
 
         // THEN
@@ -981,7 +981,7 @@ private slots:
                                             << Domain::Task::Attachments()
                                             << false
                                             << QStringList();
-#if 0 // if we ever need time info, then we need a Task::setAllDay(bool) just like KCalCore::Todo has.
+#if 0 // if we ever need time info, then we need a Task::setAllDay(bool) just like KCalendarCore::Todo has.
       QTest::newRow("nominal_with_time_info_noid") << "summary" << "content" << true << QDateTime(QDate(2015, 3, 1), QTime(1, 2, 3), Qt::UTC)
                                               << QDateTime(QDate(2013, 11, 24), QTime(0, 1, 2), Qt::UTC) << QDateTime(QDate(2016, 3, 1), QTime(4, 5, 6), Qt::UTC)
                                               << qint64(-1) << qint64(-1) << QString()
@@ -1076,7 +1076,7 @@ private slots:
         auto item = serializer.createItemFromTask(task);
 
         // THEN
-        QCOMPARE(item.mimeType(), KCalCore::Todo::todoMimeType());
+        QCOMPARE(item.mimeType(), KCalendarCore::Todo::todoMimeType());
 
         QCOMPARE(item.isValid(), itemId > 0);
         if (itemId > 0) {
@@ -1088,7 +1088,7 @@ private slots:
             QCOMPARE(item.parentCollection().id(), parentCollectionId);
         }
 
-        auto todo = item.payload<KCalCore::Todo::Ptr>();
+        auto todo = item.payload<KCalendarCore::Todo::Ptr>();
         QCOMPARE(todo->summary(), summary);
         QCOMPARE(todo->description(), content);
         QCOMPARE(todo->isCompleted(), isDone);
@@ -1099,12 +1099,12 @@ private slots:
             QCOMPARE(int(todo->dtStart().timeSpec()), int(Qt::LocalTime));
         }
         QVERIFY(todo->allDay()); // this is always true currently...
-        const ushort expectedRecurrence = recurrence == Domain::Task::NoRecurrence ? KCalCore::Recurrence::rNone
-                                        : recurrence == Domain::Task::RecursDaily ? KCalCore::Recurrence::rDaily
-                                        : recurrence == Domain::Task::RecursWeekly ? KCalCore::Recurrence::rWeekly
-                                        : recurrence == Domain::Task::RecursMonthly ? KCalCore::Recurrence::rMonthlyDay
-                                        : recurrence == Domain::Task::RecursYearly ? KCalCore::Recurrence::rYearlyMonth
-                                        : KCalCore::Recurrence::rNone; // Shouldn't happen though
+        const ushort expectedRecurrence = recurrence == Domain::Task::NoRecurrence ? KCalendarCore::Recurrence::rNone
+                                        : recurrence == Domain::Task::RecursDaily ? KCalendarCore::Recurrence::rDaily
+                                        : recurrence == Domain::Task::RecursWeekly ? KCalendarCore::Recurrence::rWeekly
+                                        : recurrence == Domain::Task::RecursMonthly ? KCalendarCore::Recurrence::rMonthlyDay
+                                        : recurrence == Domain::Task::RecursYearly ? KCalendarCore::Recurrence::rYearlyMonth
+                                        : KCalendarCore::Recurrence::rNone; // Shouldn't happen though
         QCOMPARE(todo->recurrence()->recurrenceType(), expectedRecurrence);
         if (recurrence != Domain::Task::NoRecurrence)
             QCOMPARE(todo->recurrence()->frequency(), 1);
@@ -1153,7 +1153,7 @@ private slots:
         task->setProperty("todoUid", "1");
 
         // Create Child item
-        KCalCore::Todo::Ptr childTodo(new KCalCore::Todo);
+        KCalendarCore::Todo::Ptr childTodo(new KCalendarCore::Todo);
         childTodo->setSummary(summary);
         childTodo->setDescription(content);
 
@@ -1166,12 +1166,12 @@ private slots:
 
         Akonadi::Item childItem;
         childItem.setMimeType(QStringLiteral("application/x-vnd.akonadi.calendar.todo"));
-        childItem.setPayload<KCalCore::Todo::Ptr>(childTodo);
+        childItem.setPayload<KCalendarCore::Todo::Ptr>(childTodo);
 
         QTest::newRow("without parent") << task << childItem << false;
 
         // Create Child Item with parent
-        KCalCore::Todo::Ptr childTodo2(new KCalCore::Todo);
+        KCalendarCore::Todo::Ptr childTodo2(new KCalendarCore::Todo);
         childTodo2->setSummary(summary);
         childTodo2->setDescription(content);
 
@@ -1184,7 +1184,7 @@ private slots:
 
         Akonadi::Item childItem2;
         childItem2.setMimeType(QStringLiteral("application/x-vnd.akonadi.calendar.todo"));
-        childItem2.setPayload<KCalCore::Todo::Ptr>(childTodo2);
+        childItem2.setPayload<KCalendarCore::Todo::Ptr>(childTodo2);
 
         QTest::newRow("with parent") << task << childItem2 << true;
 
@@ -1217,13 +1217,13 @@ private slots:
         QTest::addColumn<QString>("expectedUid");
 
         Akonadi::Item item1;
-        KCalCore::Todo::Ptr todo1(new KCalCore::Todo);
-        item1.setPayload<KCalCore::Todo::Ptr>(todo1);
+        KCalendarCore::Todo::Ptr todo1(new KCalendarCore::Todo);
+        item1.setPayload<KCalendarCore::Todo::Ptr>(todo1);
 
         Akonadi::Item item2;
-        KCalCore::Todo::Ptr todo2(new KCalCore::Todo);
+        KCalendarCore::Todo::Ptr todo2(new KCalendarCore::Todo);
         todo2->setRelatedTo(QStringLiteral("1"));
-        item2.setPayload<KCalCore::Todo::Ptr>(todo2);
+        item2.setPayload<KCalendarCore::Todo::Ptr>(todo2);
 
         QTest::newRow("task without related") << item1 << QString();
         QTest::newRow("task with related") << item2 << "1";
@@ -1271,7 +1271,7 @@ private slots:
         QFETCH(QString, summary);
 
         // ... stored in a todo...
-        KCalCore::Todo::Ptr todo(new KCalCore::Todo);
+        KCalendarCore::Todo::Ptr todo(new KCalendarCore::Todo);
         todo->setSummary(summary);
         todo->setCustomProperty(Serializer::customPropertyAppName(), Serializer::customPropertyIsProject(), QStringLiteral("1"));
         QVERIFY(!todo->uid().isEmpty());
@@ -1279,7 +1279,7 @@ private slots:
         // ... as payload of an item
         Akonadi::Item item(42);
         item.setMimeType(QStringLiteral("application/x-vnd.akonadi.calendar.todo"));
-        item.setPayload<KCalCore::Todo::Ptr>(todo);
+        item.setPayload<KCalendarCore::Todo::Ptr>(todo);
 
         // which has a parent collection
         Akonadi::Collection collection(43);
@@ -1314,13 +1314,13 @@ private slots:
         // GIVEN
 
         // A todo without the project flag
-        KCalCore::Todo::Ptr todo(new KCalCore::Todo);
+        KCalendarCore::Todo::Ptr todo(new KCalendarCore::Todo);
         todo->setSummary(QStringLiteral("foo"));
 
         // ... as payload of an item
         Akonadi::Item item;
         item.setMimeType(QStringLiteral("application/x-vnd.akonadi.calendar.todo"));
-        item.setPayload<KCalCore::Todo::Ptr>(todo);
+        item.setPayload<KCalendarCore::Todo::Ptr>(todo);
 
         // WHEN
         Akonadi::Serializer serializer;
@@ -1343,14 +1343,14 @@ private slots:
         // GIVEN
 
         // A todo...
-        KCalCore::Todo::Ptr originalTodo(new KCalCore::Todo);
+        KCalendarCore::Todo::Ptr originalTodo(new KCalendarCore::Todo);
         originalTodo->setSummary(QStringLiteral("summary"));
         originalTodo->setCustomProperty(Serializer::customPropertyAppName(), Serializer::customPropertyIsProject(), QStringLiteral("1"));
 
         // ... as payload of an item...
         Akonadi::Item originalItem(42);
         originalItem.setMimeType(QStringLiteral("application/x-vnd.akonadi.calendar.todo"));
-        originalItem.setPayload<KCalCore::Todo::Ptr>(originalTodo);
+        originalItem.setPayload<KCalendarCore::Todo::Ptr>(originalTodo);
 
         // ... which has a parent collection...
         Akonadi::Collection originalCollection(43);
@@ -1366,7 +1366,7 @@ private slots:
         QFETCH(QString, updatedSummary);
 
         // ... in a new todo...
-        KCalCore::Todo::Ptr updatedTodo(new KCalCore::Todo);
+        KCalendarCore::Todo::Ptr updatedTodo(new KCalendarCore::Todo);
         updatedTodo->setSummary(updatedSummary);
         updatedTodo->setCustomProperty(Serializer::customPropertyAppName(), Serializer::customPropertyIsProject(), QStringLiteral("1"));
         QVERIFY(!updatedTodo->uid().isEmpty());
@@ -1374,7 +1374,7 @@ private slots:
         // ... as payload of a new item
         Akonadi::Item updatedItem(44);
         updatedItem.setMimeType(QStringLiteral("application/x-vnd.akonadi.calendar.todo"));
-        updatedItem.setPayload<KCalCore::Todo::Ptr>(updatedTodo);
+        updatedItem.setPayload<KCalendarCore::Todo::Ptr>(updatedTodo);
 
         // ... which has a new parent collection
         Akonadi::Collection updatedCollection(45);
@@ -1397,14 +1397,14 @@ private slots:
         const QString summary = QStringLiteral("summary");
 
         // ... stored in a todo...
-        KCalCore::Todo::Ptr originalTodo(new KCalCore::Todo);
+        KCalendarCore::Todo::Ptr originalTodo(new KCalendarCore::Todo);
         originalTodo->setSummary(summary);
         originalTodo->setCustomProperty(Serializer::customPropertyAppName(), Serializer::customPropertyIsProject(), QStringLiteral("1"));
 
         // ... as payload of an item...
         Akonadi::Item originalItem;
         originalItem.setMimeType(QStringLiteral("application/x-vnd.akonadi.calendar.todo"));
-        originalItem.setPayload<KCalCore::Todo::Ptr>(originalTodo);
+        originalItem.setPayload<KCalendarCore::Todo::Ptr>(originalTodo);
 
         // ... deserialized as a project
         Akonadi::Serializer serializer;
@@ -1426,14 +1426,14 @@ private slots:
         const QString summary = QStringLiteral("summary");
 
         // ... stored in a todo...
-        KCalCore::Todo::Ptr originalTodo(new KCalCore::Todo);
+        KCalendarCore::Todo::Ptr originalTodo(new KCalendarCore::Todo);
         originalTodo->setSummary(summary);
         originalTodo->setCustomProperty(Serializer::customPropertyAppName(), Serializer::customPropertyIsProject(), QStringLiteral("1"));
 
         // ... as payload of an item...
         Akonadi::Item originalItem;
         originalItem.setMimeType(QStringLiteral("application/x-vnd.akonadi.calendar.todo"));
-        originalItem.setPayload<KCalCore::Todo::Ptr>(originalTodo);
+        originalItem.setPayload<KCalendarCore::Todo::Ptr>(originalTodo);
 
         // ... deserialized as a project
         Akonadi::Serializer serializer;
@@ -1441,13 +1441,13 @@ private slots:
 
         // WHEN
         // A todo without the project flag
-        KCalCore::Todo::Ptr projectTodo(new KCalCore::Todo);
+        KCalendarCore::Todo::Ptr projectTodo(new KCalendarCore::Todo);
         projectTodo->setSummary(QStringLiteral("foo"));
 
         // ... as payload of an item
         Akonadi::Item projectItem;
         projectItem.setMimeType(QStringLiteral("application/x-vnd.akonadi.calendar.todo"));
-        projectItem.setPayload<KCalCore::Todo::Ptr>(projectTodo);
+        projectItem.setPayload<KCalendarCore::Todo::Ptr>(projectTodo);
         serializer.updateProjectFromItem(project, projectItem);
 
         // THEN
@@ -1493,7 +1493,7 @@ private slots:
         auto item = serializer.createItemFromProject(project);
 
         // THEN
-        QCOMPARE(item.mimeType(), KCalCore::Todo::todoMimeType());
+        QCOMPARE(item.mimeType(), KCalendarCore::Todo::todoMimeType());
 
         QCOMPARE(item.isValid(), itemId > 0);
         if (itemId > 0) {
@@ -1505,7 +1505,7 @@ private slots:
             QCOMPARE(item.parentCollection().id(), parentCollectionId);
         }
 
-        auto todo = item.payload<KCalCore::Todo::Ptr>();
+        auto todo = item.payload<KCalendarCore::Todo::Ptr>();
         QCOMPARE(todo->summary(), summary);
         QCOMPARE(todo->uid(), todoUid);
         QVERIFY(!todo->customProperty(Serializer::customPropertyAppName(), Serializer::customPropertyIsProject()).isEmpty());
@@ -1523,21 +1523,21 @@ private slots:
         project->setProperty("todoUid", "1");
 
         // Create unrelated todo
-        auto unrelatedTodo = KCalCore::Todo::Ptr::create();
+        auto unrelatedTodo = KCalendarCore::Todo::Ptr::create();
         unrelatedTodo->setSummary(QStringLiteral("summary"));
         Akonadi::Item unrelatedTodoItem;
         unrelatedTodoItem.setMimeType(QStringLiteral("application/x-vnd.akonadi.calendar.todo"));
-        unrelatedTodoItem.setPayload<KCalCore::Todo::Ptr>(unrelatedTodo);
+        unrelatedTodoItem.setPayload<KCalendarCore::Todo::Ptr>(unrelatedTodo);
 
         QTest::newRow("unrelated todo") << project << unrelatedTodoItem << false;
 
         // Create child todo
-        auto childTodo = KCalCore::Todo::Ptr::create();
+        auto childTodo = KCalendarCore::Todo::Ptr::create();
         childTodo->setSummary(QStringLiteral("summary"));
         childTodo->setRelatedTo(QStringLiteral("1"));
         Akonadi::Item childTodoItem;
         childTodoItem.setMimeType(QStringLiteral("application/x-vnd.akonadi.calendar.todo"));
-        childTodoItem.setPayload<KCalCore::Todo::Ptr>(childTodo);
+        childTodoItem.setPayload<KCalendarCore::Todo::Ptr>(childTodo);
 
         QTest::newRow("child todo") << project << childTodoItem << true;
 
@@ -1571,8 +1571,8 @@ private slots:
         QTest::addColumn<QString>("expectedRelatedToUid");
 
         Akonadi::Item item1;
-        KCalCore::Todo::Ptr todo1(new KCalCore::Todo);
-        item1.setPayload<KCalCore::Todo::Ptr>(todo1);
+        KCalendarCore::Todo::Ptr todo1(new KCalendarCore::Todo);
+        item1.setPayload<KCalendarCore::Todo::Ptr>(todo1);
 
         Domain::Task::Ptr parent(new Domain::Task);
         parent->setProperty("todoUid", "1");
@@ -1598,8 +1598,8 @@ private slots:
         serializer.updateItemParent(item, parent);
 
         // THEN
-        if (item.hasPayload<KCalCore::Todo::Ptr>()) {
-            auto todo = item.payload<KCalCore::Todo::Ptr>();
+        if (item.hasPayload<KCalendarCore::Todo::Ptr>()) {
+            auto todo = item.payload<KCalendarCore::Todo::Ptr>();
             QString relatedUid = todo->relatedTo();
             QCOMPARE(relatedUid, expectedRelatedToUid);
         }
@@ -1612,8 +1612,8 @@ private slots:
         QTest::addColumn<QString>("expectedRelatedToUid");
 
         Akonadi::Item todoItem;
-        KCalCore::Todo::Ptr todo(new KCalCore::Todo);
-        todoItem.setPayload<KCalCore::Todo::Ptr>(todo);
+        KCalendarCore::Todo::Ptr todo(new KCalendarCore::Todo);
+        todoItem.setPayload<KCalendarCore::Todo::Ptr>(todo);
 
         auto parent = Domain::Project::Ptr::create();
         parent->setProperty("todoUid", "1");
@@ -1639,8 +1639,8 @@ private slots:
         serializer.updateItemProject(item, parent);
 
         // THEN
-        if (item.hasPayload<KCalCore::Todo::Ptr>()) {
-            auto todo = item.payload<KCalCore::Todo::Ptr>();
+        if (item.hasPayload<KCalendarCore::Todo::Ptr>()) {
+            auto todo = item.payload<KCalendarCore::Todo::Ptr>();
             const QString relatedUid = todo->relatedTo();
             QCOMPARE(relatedUid, expectedRelatedToUid);
         }
@@ -1653,35 +1653,35 @@ private slots:
         QTest::addColumn<int>("size");
 
         Akonadi::Item item(12);
-        KCalCore::Todo::Ptr todo(new KCalCore::Todo);
+        KCalendarCore::Todo::Ptr todo(new KCalendarCore::Todo);
         todo->setUid(QStringLiteral("1"));
-        item.setPayload<KCalCore::Todo::Ptr>(todo);
+        item.setPayload<KCalendarCore::Todo::Ptr>(todo);
         Akonadi::Item::List items;
 
         QTest::newRow("empty list") << item << items << 0;
 
         Akonadi::Item item2(13);
-        KCalCore::Todo::Ptr todo2(new KCalCore::Todo);
-        item2.setPayload<KCalCore::Todo::Ptr>(todo2);
+        KCalendarCore::Todo::Ptr todo2(new KCalendarCore::Todo);
+        item2.setPayload<KCalendarCore::Todo::Ptr>(todo2);
         Akonadi::Item::List items2;
         items2 << item2;
 
         QTest::newRow("list without child") << item << items2 << 0;
 
         Akonadi::Item item3(14);
-        KCalCore::Todo::Ptr todo3(new KCalCore::Todo);
+        KCalendarCore::Todo::Ptr todo3(new KCalendarCore::Todo);
         todo3->setUid(QStringLiteral("3"));
         todo3->setRelatedTo(QStringLiteral("1"));
-        item3.setPayload<KCalCore::Todo::Ptr>(todo3);
+        item3.setPayload<KCalendarCore::Todo::Ptr>(todo3);
         Akonadi::Item::List items3;
         items3 << item2 << item3;
 
         QTest::newRow("list with child") << item << items3 << 1;
 
         Akonadi::Item item4(15);
-        KCalCore::Todo::Ptr todo4(new KCalCore::Todo);
+        KCalendarCore::Todo::Ptr todo4(new KCalendarCore::Todo);
         todo4->setRelatedTo(QStringLiteral("3"));
-        item4.setPayload<KCalCore::Todo::Ptr>(todo4);
+        item4.setPayload<KCalendarCore::Todo::Ptr>(todo4);
         Akonadi::Item::List items4;
         items4 << item2 << item3 << item4;
 
@@ -1712,9 +1712,9 @@ private slots:
         QTest::addColumn<Akonadi::Item>("item");
 
         Akonadi::Item item(15);
-        KCalCore::Todo::Ptr todo(new KCalCore::Todo);
+        KCalendarCore::Todo::Ptr todo(new KCalendarCore::Todo);
         todo->setRelatedTo(QStringLiteral("3"));
-        item.setPayload<KCalCore::Todo::Ptr>(todo);
+        item.setPayload<KCalendarCore::Todo::Ptr>(todo);
 
         QTest::newRow("nominal case") << item;
 
@@ -1732,8 +1732,8 @@ private slots:
         serializer.removeItemParent(item);
 
         // THEN
-        if (item.hasPayload<KCalCore::Todo::Ptr>())
-            QCOMPARE(item.payload<KCalCore::Todo::Ptr>()->relatedTo(), QString());
+        if (item.hasPayload<KCalendarCore::Todo::Ptr>())
+            QCOMPARE(item.payload<KCalendarCore::Todo::Ptr>()->relatedTo(), QString());
     }
 
     void shouldPromoteItemToProject_data()
@@ -1741,7 +1741,7 @@ private slots:
         QTest::addColumn<Akonadi::Item>("item");
 
         auto item = Akonadi::Item(15);
-        auto todo = KCalCore::Todo::Ptr::create();
+        auto todo = KCalendarCore::Todo::Ptr::create();
         todo->setRelatedTo(QStringLiteral("3"));
         item.setPayload(todo);
 
@@ -1759,8 +1759,8 @@ private slots:
         serializer.promoteItemToProject(item);
 
         // THEN
-        if (item.hasPayload<KCalCore::Todo::Ptr>()) {
-            auto todo = item.payload<KCalCore::Todo::Ptr>();
+        if (item.hasPayload<KCalendarCore::Todo::Ptr>()) {
+            auto todo = item.payload<KCalendarCore::Todo::Ptr>();
             QCOMPARE(todo->relatedTo(), QString());
             QVERIFY(!todo->customProperty(Serializer::customPropertyAppName(), Serializer::customPropertyIsProject()).isEmpty());
         }
@@ -1771,14 +1771,14 @@ private slots:
         QTest::addColumn<Akonadi::Item*>("item");
 
         Akonadi::Item *itemWithContexts = new Akonadi::Item(15);
-        KCalCore::Todo::Ptr todo(new KCalCore::Todo);
+        KCalendarCore::Todo::Ptr todo(new KCalendarCore::Todo);
         // we can cheat and not really create contexts...
         todo->setCustomProperty(Serializer::customPropertyAppName(), Serializer::customPropertyContextList(), "one,two");
-        itemWithContexts->setPayload<KCalCore::Todo::Ptr>(todo);
+        itemWithContexts->setPayload<KCalendarCore::Todo::Ptr>(todo);
         QTest::newRow("with_contexts") << itemWithContexts;
 
         Akonadi::Item *itemWithNoContext = new Akonadi::Item(15);
-        itemWithNoContext->setPayload<KCalCore::Todo::Ptr>(todo);
+        itemWithNoContext->setPayload<KCalendarCore::Todo::Ptr>(todo);
         QTest::newRow("no_context") << itemWithNoContext;
     }
 
@@ -1792,7 +1792,7 @@ private slots:
         serializer.clearItem(item);
 
         // THEN
-        auto todo = item->payload<KCalCore::Todo::Ptr>();
+        auto todo = item->payload<KCalendarCore::Todo::Ptr>();
         QVERIFY(todo->customProperty(Serializer::customPropertyAppName(), Serializer::customPropertyContextList()).isEmpty());
         delete item;
     }
@@ -1813,7 +1813,7 @@ private slots:
         QFETCH(QString, name);
 
         // ... stored in a todo...
-        KCalCore::Todo::Ptr todo(new KCalCore::Todo);
+        KCalendarCore::Todo::Ptr todo(new KCalendarCore::Todo);
         todo->setSummary(name);
         todo->setCustomProperty(Serializer::customPropertyAppName(), Serializer::customPropertyIsContext(), QStringLiteral("1"));
         QVERIFY(!todo->uid().isEmpty());
@@ -1821,7 +1821,7 @@ private slots:
         // ... as payload of an item
         Akonadi::Item item(42);
         item.setMimeType(QStringLiteral("application/x-vnd.akonadi.calendar.todo"));
-        item.setPayload<KCalCore::Todo::Ptr>(todo);
+        item.setPayload<KCalendarCore::Todo::Ptr>(todo);
 
         // which has a parent collection
         Akonadi::Collection collection(43);
@@ -1852,7 +1852,7 @@ private slots:
         QFETCH(bool, isProject);
 
         // A project todo
-        KCalCore::Todo::Ptr originalTodo(new KCalCore::Todo);
+        KCalendarCore::Todo::Ptr originalTodo(new KCalendarCore::Todo);
         originalTodo->setSummary("summary");
         if (isProject)
             originalTodo->setCustomProperty(Serializer::customPropertyAppName(), Serializer::customPropertyIsProject(), QStringLiteral("1"));
@@ -1860,7 +1860,7 @@ private slots:
         // ... as payload of an item...
         Akonadi::Item originalItem;
         originalItem.setMimeType(QStringLiteral("application/x-vnd.akonadi.calendar.todo"));
-        originalItem.setPayload<KCalCore::Todo::Ptr>(originalTodo);
+        originalItem.setPayload<KCalendarCore::Todo::Ptr>(originalTodo);
 
         // WHEN
         Akonadi::Serializer serializer;
@@ -1883,7 +1883,7 @@ private slots:
         QFETCH(QString, name);
 
         // ... stored in a todo...
-        KCalCore::Todo::Ptr todo(new KCalCore::Todo);
+        KCalendarCore::Todo::Ptr todo(new KCalendarCore::Todo);
         todo->setSummary(name);
         todo->setCustomProperty(Serializer::customPropertyAppName(), Serializer::customPropertyIsContext(), QStringLiteral("1"));
         QVERIFY(!todo->uid().isEmpty());
@@ -1891,7 +1891,7 @@ private slots:
         // ... as payload of an item
         Akonadi::Item item(42);
         item.setMimeType(QStringLiteral("application/x-vnd.akonadi.calendar.todo"));
-        item.setPayload<KCalCore::Todo::Ptr>(todo);
+        item.setPayload<KCalendarCore::Todo::Ptr>(todo);
 
         // WHEN
         Akonadi::Serializer serializer;
@@ -1923,14 +1923,14 @@ private slots:
         context->setName("summary");
         context->setProperty("todoUid", qint64(43));
 
-        KCalCore::Todo::Ptr wrongTodo(new KCalCore::Todo);
+        KCalendarCore::Todo::Ptr wrongTodo(new KCalendarCore::Todo);
         wrongTodo->setSummary("wrongSummary");
         if (isProject)
             wrongTodo->setCustomProperty(Serializer::customPropertyAppName(), Serializer::customPropertyIsProject(), QStringLiteral("1"));
 
         Akonadi::Item wrongItem;
         wrongItem.setMimeType(QStringLiteral("application/x-vnd.akonadi.calendar.todo"));
-        wrongItem.setPayload<KCalCore::Todo::Ptr>(wrongTodo);
+        wrongItem.setPayload<KCalendarCore::Todo::Ptr>(wrongTodo);
 
         // WHEN
         Akonadi::Serializer serializer;
@@ -1956,10 +1956,10 @@ private slots:
         QTest::newRow("Unrelated item") << context << unrelatedItem << false;
 
         Akonadi::Item relatedItem;
-        auto todo = KCalCore::Todo::Ptr::create();
+        auto todo = KCalendarCore::Todo::Ptr::create();
         todo->setSummary("summary");
         todo->setCustomProperty(Serializer::customPropertyAppName(), Serializer::customPropertyContextList(), contextUid);
-        relatedItem.setPayload<KCalCore::Todo::Ptr>(todo);
+        relatedItem.setPayload<KCalendarCore::Todo::Ptr>(todo);
         QTest::newRow("Related item") << context << relatedItem << true;
 
         auto invalidContext = Domain::Context::Ptr::create();
@@ -2016,7 +2016,7 @@ private slots:
 
         Akonadi::Serializer serializer;
         Akonadi::Item item = serializer.createItemFromContext(context);
-        auto todo = item.payload<KCalCore::Todo::Ptr>();
+        auto todo = item.payload<KCalendarCore::Todo::Ptr>();
 
         // THEN
         QCOMPARE(todo->summary(), name);
@@ -2049,22 +2049,22 @@ private slots:
         context->setProperty("todoUid", contextUid);
 
         Akonadi::Item item;
-        auto todo = KCalCore::Todo::Ptr::create();
+        auto todo = KCalendarCore::Todo::Ptr::create();
         todo->setSummary("summary");
-        item.setPayload<KCalCore::Todo::Ptr>(todo);
+        item.setPayload<KCalendarCore::Todo::Ptr>(todo);
         QTest::newRow("item_with_no_context") << context << item << contextUid;
 
         Akonadi::Item item2;
-        auto todo2 = KCalCore::Todo::Ptr::create();
+        auto todo2 = KCalendarCore::Todo::Ptr::create();
         todo2->setCustomProperty(Serializer::customPropertyAppName(), Serializer::customPropertyContextList(), "another");
-        item2.setPayload<KCalCore::Todo::Ptr>(todo2);
+        item2.setPayload<KCalendarCore::Todo::Ptr>(todo2);
         const QString bothContexts = QStringLiteral("another,") + contextUid;
         QTest::newRow("item_with_another_context") << context << item2 << bothContexts;
 
         Akonadi::Item item3;
-        auto todo3 = KCalCore::Todo::Ptr::create();
+        auto todo3 = KCalendarCore::Todo::Ptr::create();
         todo3->setCustomProperty(Serializer::customPropertyAppName(), Serializer::customPropertyContextList(), bothContexts);
-        item3.setPayload<KCalCore::Todo::Ptr>(todo3);
+        item3.setPayload<KCalendarCore::Todo::Ptr>(todo3);
         QTest::newRow("item_with_this_context_already") << context << item3 << bothContexts;
     }
 
@@ -2080,7 +2080,7 @@ private slots:
         serializer.addContextToTask(context, item);
 
         // THEN
-        KCalCore::Todo::Ptr todo = item.payload<KCalCore::Todo::Ptr>();
+        KCalendarCore::Todo::Ptr todo = item.payload<KCalendarCore::Todo::Ptr>();
         QCOMPARE(todo->customProperty(Serializer::customPropertyAppName(), Serializer::customPropertyContextList()), expectedContextList);
     }
 
@@ -2095,28 +2095,28 @@ private slots:
         context->setProperty("todoUid", contextUid);
 
         Akonadi::Item item;
-        auto todo = KCalCore::Todo::Ptr::create();
+        auto todo = KCalendarCore::Todo::Ptr::create();
         todo->setSummary("summary");
-        item.setPayload<KCalCore::Todo::Ptr>(todo);
+        item.setPayload<KCalendarCore::Todo::Ptr>(todo);
         QTest::newRow("item_with_no_context") << context << item << QString();
 
         Akonadi::Item item2;
-        auto todo2 = KCalCore::Todo::Ptr::create();
+        auto todo2 = KCalendarCore::Todo::Ptr::create();
         todo2->setCustomProperty(Serializer::customPropertyAppName(), Serializer::customPropertyContextList(), "another");
-        item2.setPayload<KCalCore::Todo::Ptr>(todo2);
+        item2.setPayload<KCalendarCore::Todo::Ptr>(todo2);
         QTest::newRow("item_with_another_context") << context << item2 << QString("another");
 
         Akonadi::Item item3;
-        auto todo3 = KCalCore::Todo::Ptr::create();
+        auto todo3 = KCalendarCore::Todo::Ptr::create();
         todo3->setCustomProperty(Serializer::customPropertyAppName(), Serializer::customPropertyContextList(), contextUid);
-        item3.setPayload<KCalCore::Todo::Ptr>(todo3);
+        item3.setPayload<KCalendarCore::Todo::Ptr>(todo3);
         QTest::newRow("item_with_this_context_already") << context << item3 << QString();
 
         Akonadi::Item item4;
-        auto todo4 = KCalCore::Todo::Ptr::create();
+        auto todo4 = KCalendarCore::Todo::Ptr::create();
         const QString bothContexts = QStringLiteral("another,") + contextUid;
         todo4->setCustomProperty(Serializer::customPropertyAppName(), Serializer::customPropertyContextList(), bothContexts);
-        item4.setPayload<KCalCore::Todo::Ptr>(todo4);
+        item4.setPayload<KCalendarCore::Todo::Ptr>(todo4);
         QTest::newRow("item_with_two_contexts") << context << item4 << QString("another");
     }
 
@@ -2132,7 +2132,7 @@ private slots:
         serializer.removeContextFromTask(context, item);
 
         // THEN
-        KCalCore::Todo::Ptr todo = item.payload<KCalCore::Todo::Ptr>();
+        KCalendarCore::Todo::Ptr todo = item.payload<KCalendarCore::Todo::Ptr>();
         QCOMPARE(todo->customProperty(Serializer::customPropertyAppName(), Serializer::customPropertyContextList()), expectedContextList);
     }
 

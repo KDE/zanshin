@@ -6,7 +6,7 @@
 
 #include <testlib/qtest_zanshin.h>
 
-#include <KCalCore/Todo>
+#include <KCalendarCore/Todo>
 
 #include "akonadi/akonadicollectionfetchjobinterface.h"
 #include "akonadi/akonadiitemfetchjobinterface.h"
@@ -26,8 +26,8 @@ using namespace Testlib;
 
 static QString titleFromItem(const Akonadi::Item &item)
 {
-    if (item.hasPayload<KCalCore::Todo::Ptr>()) {
-        const auto todo = item.payload<KCalCore::Todo::Ptr>();
+    if (item.hasPayload<KCalendarCore::Todo::Ptr>()) {
+        const auto todo = item.payload<KCalendarCore::Todo::Ptr>();
         return todo->summary();
     } else {
         return QString();
@@ -131,7 +131,7 @@ private slots:
             });
         };
         auto predicate = [] (const Akonadi::Item &contextItem) {
-            auto todo = contextItem.payload<KCalCore::Todo::Ptr>();
+            auto todo = contextItem.payload<KCalendarCore::Todo::Ptr>();
             return todo->summary().endsWith(QLatin1String("-in"));
         };
 
@@ -246,11 +246,11 @@ private slots:
             });
         };
         auto inPredicate = [] (const Akonadi::Item &contextItem) {
-            auto todo = contextItem.payload<KCalCore::Todo::Ptr>();
+            auto todo = contextItem.payload<KCalendarCore::Todo::Ptr>();
             return todo->summary().endsWith(QLatin1String("-in"));
         };
         auto exPredicate = [] (const Akonadi::Item &contextItem) {
-            auto todo = contextItem.payload<KCalCore::Todo::Ptr>();
+            auto todo = contextItem.payload<KCalendarCore::Todo::Ptr>();
             return todo->summary().endsWith(QLatin1String("-ex"));
         };
 

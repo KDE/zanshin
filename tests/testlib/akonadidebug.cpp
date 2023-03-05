@@ -6,7 +6,7 @@
 
 #include "akonadidebug.h"
 
-#include <KCalCore/Todo>
+#include <KCalendarCore/Todo>
 
 #include "akonadi/akonadicollectionfetchjobinterface.h"
 #include "akonadi/akonadiitemfetchjobinterface.h"
@@ -23,8 +23,8 @@ void TestLib::AkonadiDebug::dumpTree(const Akonadi::StorageInterface::Ptr &stora
         itemJob->kjob()->exec();
         foreach (const auto &item, itemJob->items()) {
             QString summary;
-            if (item.hasPayload<KCalCore::Todo::Ptr>())
-                summary = item.payload<KCalCore::Todo::Ptr>()->summary();
+            if (item.hasPayload<KCalendarCore::Todo::Ptr>())
+                summary = item.payload<KCalendarCore::Todo::Ptr>()->summary();
             qDebug() << "\tITEM:" << item.id() << item.remoteId() << summary;
         }
     }

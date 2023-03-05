@@ -8,7 +8,7 @@
 #include "akonadifakemonitor.h"
 #include "akonadifakestorage.h"
 
-#include <KCalCore/Todo>
+#include <KCalendarCore/Todo>
 
 #include "akonadi/akonadicache.h"
 #include "akonadi/akonadicachingstorage.h"
@@ -33,9 +33,9 @@ static Akonadi::Collection::Id findParentId(const Entity &entity)
 // Should be in the serializer ideally ... but we don't link to that from here anyway.
 static QStringList extractContextUids(const Akonadi::Item &taskItem)
 {
-    if (!taskItem.hasPayload<KCalCore::Todo::Ptr>())
+    if (!taskItem.hasPayload<KCalendarCore::Todo::Ptr>())
         return {};
-    auto todo = taskItem.payload<KCalCore::Todo::Ptr>();
+    auto todo = taskItem.payload<KCalendarCore::Todo::Ptr>();
     const QString contexts = todo->customProperty(Serializer::customPropertyAppName(), Serializer::customPropertyContextList());
     return contexts.split(',', Qt::SkipEmptyParts);
 }
@@ -43,14 +43,14 @@ static QStringList extractContextUids(const Akonadi::Item &taskItem)
 // Duplicated from the serializer
 static QString contextUid(const Akonadi::Item &contextItem)
 {
-    auto contextTodo = contextItem.payload<KCalCore::Todo::Ptr>();
+    auto contextTodo = contextItem.payload<KCalendarCore::Todo::Ptr>();
     return contextTodo->uid();
 }
 
 // Somewhat duplicated from the serializer
 static void removeContextFromTask(const QString &contextUid, Akonadi::Item &item)
 {
-    auto todo = item.payload<KCalCore::Todo::Ptr>();
+    auto todo = item.payload<KCalendarCore::Todo::Ptr>();
     const QString contexts = todo->customProperty(Serializer::customPropertyAppName(), Serializer::customPropertyContextList());
     QStringList contextList = contexts.split(',', Qt::SkipEmptyParts);
     contextList.removeAll(contextUid);
@@ -58,17 +58,17 @@ static void removeContextFromTask(const QString &contextUid, Akonadi::Item &item
         todo->removeCustomProperty(Serializer::customPropertyAppName(), Serializer::customPropertyContextList());
     else
         todo->setCustomProperty(Serializer::customPropertyAppName(), Serializer::customPropertyContextList(), contextList.join(','));
-    item.setPayload<KCalCore::Todo::Ptr>(todo);
+    item.setPayload<KCalendarCore::Todo::Ptr>(todo);
     Q_ASSERT(contextList == extractContextUids(item));
 }
 
 // Duplicate from the serializer
 static bool isContext(const Akonadi::Item &item)
 {
-    if (!item.hasPayload<KCalCore::Todo::Ptr>())
+    if (!item.hasPayload<KCalendarCore::Todo::Ptr>())
         return false;
 
-    auto todo = item.payload<KCalCore::Todo::Ptr>();
+    auto todo = item.payload<KCalendarCore::Todo::Ptr>();
     return !todo->customProperty(Serializer::customPropertyAppName(), Serializer::customPropertyIsContext()).isEmpty();
 }
 
@@ -166,7 +166,7 @@ void AkonadiFakeData::modifyCollection(const Akonadi::Collection &collection)
     m_monitor->changeCollection(notifiedCollection);
 
     const auto mimeTypes = collection.contentMimeTypes();
-    if (mimeTypes.contains(KCalCore::Todo::todoMimeType())) {
+    if (mimeTypes.contains(KCalendarCore::Todo::todoMimeType())) {
         const auto oldAttribute = oldCollection.attribute<Akonadi::ApplicationSelectedAttribute>();
         const auto oldSelected = oldAttribute ? oldAttribute->isSelected() : true;
         const auto newAttribute = newCollection.attribute<Akonadi::ApplicationSelectedAttribute>();

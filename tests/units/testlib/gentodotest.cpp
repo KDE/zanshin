@@ -6,7 +6,7 @@
 
 #include "testlib/gentodo.h"
 
-#include <KCalCore/Todo>
+#include <KCalendarCore/Todo>
 
 #include <testlib/qtest_zanshin.h>
 #include <akonadi/akonadiserializer.h>
@@ -29,8 +29,8 @@ private slots:
 
         // THEN
         QCOMPARE(newItem, item);
-        QCOMPARE(newItem.mimeType(), KCalCore::Todo::todoMimeType());
-        QVERIFY(newItem.hasPayload<KCalCore::Todo::Ptr>());
+        QCOMPARE(newItem.mimeType(), KCalendarCore::Todo::todoMimeType());
+        QVERIFY(newItem.hasPayload<KCalendarCore::Todo::Ptr>());
     }
 
     void shouldAllowToSetId()
@@ -57,7 +57,7 @@ private slots:
         Akonadi::Item item = GenTodo().withContexts({"42", "43", "44"});
 
         // THEN
-        auto todo = item.payload<KCalCore::Todo::Ptr>();
+        auto todo = item.payload<KCalendarCore::Todo::Ptr>();
         QStringList contextUids = todo->customProperty(Serializer::customPropertyAppName(), Serializer::customPropertyContextList()).split(',');
         QCOMPARE(contextUids.size(), 3);
         QCOMPARE(contextUids.at(0), "42");
@@ -71,13 +71,13 @@ private slots:
         Akonadi::Item item = GenTodo().asProject();
 
         // THEN
-        QVERIFY(!item.payload<KCalCore::Todo::Ptr>()->customProperty(Serializer::customPropertyAppName(), Serializer::customPropertyIsProject()).isEmpty());
+        QVERIFY(!item.payload<KCalendarCore::Todo::Ptr>()->customProperty(Serializer::customPropertyAppName(), Serializer::customPropertyIsProject()).isEmpty());
 
         // WHEN
         item = GenTodo(item).asProject(false);
 
         // THEN
-        QVERIFY(item.payload<KCalCore::Todo::Ptr>()->customProperty(Serializer::customPropertyAppName(), Serializer::customPropertyIsProject()).isEmpty());
+        QVERIFY(item.payload<KCalendarCore::Todo::Ptr>()->customProperty(Serializer::customPropertyAppName(), Serializer::customPropertyIsProject()).isEmpty());
     }
 
     void shouldAllowToSetContextType()
@@ -86,13 +86,13 @@ private slots:
         Akonadi::Item item = GenTodo().asContext();
 
         // THEN
-        QVERIFY(!item.payload<KCalCore::Todo::Ptr>()->customProperty(Serializer::customPropertyAppName(), Serializer::customPropertyIsContext()).isEmpty());
+        QVERIFY(!item.payload<KCalendarCore::Todo::Ptr>()->customProperty(Serializer::customPropertyAppName(), Serializer::customPropertyIsContext()).isEmpty());
 
         // WHEN
         item = GenTodo(item).asContext(false);
 
         // THEN
-        QVERIFY(item.payload<KCalCore::Todo::Ptr>()->customProperty(Serializer::customPropertyAppName(), Serializer::customPropertyIsContext()).isEmpty());
+        QVERIFY(item.payload<KCalendarCore::Todo::Ptr>()->customProperty(Serializer::customPropertyAppName(), Serializer::customPropertyIsContext()).isEmpty());
     }
 
     void shouldAllowToSetUid()
@@ -101,7 +101,7 @@ private slots:
         Akonadi::Item item = GenTodo().withUid(QStringLiteral("42"));
 
         // THEN
-        QCOMPARE(item.payload<KCalCore::Todo::Ptr>()->uid(), QStringLiteral("42"));
+        QCOMPARE(item.payload<KCalendarCore::Todo::Ptr>()->uid(), QStringLiteral("42"));
     }
 
     void shouldAllowToSetParentUid()
@@ -110,7 +110,7 @@ private slots:
         Akonadi::Item item = GenTodo().withParentUid(QStringLiteral("42"));
 
         // THEN
-        QCOMPARE(item.payload<KCalCore::Todo::Ptr>()->relatedTo(), QStringLiteral("42"));
+        QCOMPARE(item.payload<KCalendarCore::Todo::Ptr>()->relatedTo(), QStringLiteral("42"));
     }
 
     void shouldAllowToSetTitle()
@@ -119,7 +119,7 @@ private slots:
         Akonadi::Item item = GenTodo().withTitle(QStringLiteral("42"));
 
         // THEN
-        QCOMPARE(item.payload<KCalCore::Todo::Ptr>()->summary(), QStringLiteral("42"));
+        QCOMPARE(item.payload<KCalendarCore::Todo::Ptr>()->summary(), QStringLiteral("42"));
     }
 
     void shouldAllowToSetText()
@@ -128,7 +128,7 @@ private slots:
         Akonadi::Item item = GenTodo().withText(QStringLiteral("42"));
 
         // THEN
-        QCOMPARE(item.payload<KCalCore::Todo::Ptr>()->description(), QStringLiteral("42"));
+        QCOMPARE(item.payload<KCalendarCore::Todo::Ptr>()->description(), QStringLiteral("42"));
     }
 
     void shouldAllowToSetDoneState()
@@ -137,13 +137,13 @@ private slots:
         Akonadi::Item item = GenTodo().done();
 
         // THEN
-        QVERIFY(item.payload<KCalCore::Todo::Ptr>()->isCompleted());
+        QVERIFY(item.payload<KCalendarCore::Todo::Ptr>()->isCompleted());
 
         // WHEN
         item = GenTodo(item).done(false);
 
         // THEN
-        QVERIFY(!item.payload<KCalCore::Todo::Ptr>()->isCompleted());
+        QVERIFY(!item.payload<KCalendarCore::Todo::Ptr>()->isCompleted());
     }
 
     void shouldAllowToSetDoneDate()
@@ -152,7 +152,7 @@ private slots:
         Akonadi::Item item = GenTodo().withDoneDate(QDate(2015, 4, 12));
 
         // THEN
-        QCOMPARE(item.payload<KCalCore::Todo::Ptr>()->completed().toLocalTime().date(), QDate(2015, 04, 12));
+        QCOMPARE(item.payload<KCalendarCore::Todo::Ptr>()->completed().toLocalTime().date(), QDate(2015, 04, 12));
     }
 
     void shouldAllowToSetDoneDateString()
@@ -161,7 +161,7 @@ private slots:
         Akonadi::Item item = GenTodo().withDoneDate(QStringLiteral("2015-04-12"));
 
         // THEN
-        QCOMPARE(item.payload<KCalCore::Todo::Ptr>()->completed().toLocalTime().date(), QDate(2015, 04, 12));
+        QCOMPARE(item.payload<KCalendarCore::Todo::Ptr>()->completed().toLocalTime().date(), QDate(2015, 04, 12));
     }
 
     void shouldAllowToSetStartDate()
@@ -170,7 +170,7 @@ private slots:
         Akonadi::Item item = GenTodo().withStartDate(QDate(2015, 4, 12));
 
         // THEN
-        QCOMPARE(item.payload<KCalCore::Todo::Ptr>()->dtStart().date(), QDate(2015, 04, 12));
+        QCOMPARE(item.payload<KCalendarCore::Todo::Ptr>()->dtStart().date(), QDate(2015, 04, 12));
     }
 
     void shouldAllowToSetStartDateString()
@@ -179,7 +179,7 @@ private slots:
         Akonadi::Item item = GenTodo().withStartDate(QStringLiteral("2015-04-12"));
 
         // THEN
-        QCOMPARE(item.payload<KCalCore::Todo::Ptr>()->dtStart().date(), QDate(2015, 04, 12));
+        QCOMPARE(item.payload<KCalendarCore::Todo::Ptr>()->dtStart().date(), QDate(2015, 04, 12));
     }
 
     void shouldAllowToSetDueDate()
@@ -188,7 +188,7 @@ private slots:
         Akonadi::Item item = GenTodo().withDueDate(QDate(2015, 4, 12));
 
         // THEN
-        QCOMPARE(item.payload<KCalCore::Todo::Ptr>()->dtDue().date(), QDate(2015, 04, 12));
+        QCOMPARE(item.payload<KCalendarCore::Todo::Ptr>()->dtDue().date(), QDate(2015, 04, 12));
     }
 
     void shouldAllowToSetDueDateString()
@@ -197,7 +197,7 @@ private slots:
         Akonadi::Item item = GenTodo().withDueDate(QStringLiteral("2015-04-12"));
 
         // THEN
-        QCOMPARE(item.payload<KCalCore::Todo::Ptr>()->dtDue().date(), QDate(2015, 04, 12));
+        QCOMPARE(item.payload<KCalendarCore::Todo::Ptr>()->dtDue().date(), QDate(2015, 04, 12));
     }
 };
 

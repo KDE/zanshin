@@ -6,7 +6,7 @@
 
 #include "akonadimonitorimpl.h"
 
-#include <KCalCore/Todo>
+#include <KCalendarCore/Todo>
 
 #include <Akonadi/AttributeFactory>
 #include <Akonadi/CollectionFetchScope>
@@ -36,7 +36,7 @@ MonitorImpl::MonitorImpl()
     m_monitor->fetchCollection(true);
     m_monitor->setCollectionMonitored(Akonadi::Collection::root());
 
-    m_monitor->setMimeTypeMonitored(KCalCore::Todo::todoMimeType());
+    m_monitor->setMimeTypeMonitored(KCalendarCore::Todo::todoMimeType());
 
     auto collectionScope = m_monitor->collectionFetchScope();
     collectionScope.setContentMimeTypes(m_monitor->mimeTypesMonitored());

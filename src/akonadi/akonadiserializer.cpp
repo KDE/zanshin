@@ -10,7 +10,7 @@
 #include <Akonadi/Collection>
 #include <Akonadi/EntityDisplayAttribute>
 #include <Akonadi/Item>
-#include <KCalCore/Todo>
+#include <KCalendarCore/Todo>
 #if __has_include(<kcalcore_version.h>)
 #include <kcalcore_version.h>
 #else
@@ -47,8 +47,8 @@ bool Serializer::representsItem(QObjectPtr object, Item item)
 
 QString Serializer::itemUid(const Item &item)
 {
-    if (item.hasPayload<KCalCore::Todo::Ptr>()) {
-        const auto todo = item.payload<KCalCore::Todo::Ptr>();
+    if (item.hasPayload<KCalendarCore::Todo::Ptr>()) {
+        const auto todo = item.payload<KCalendarCore::Todo::Ptr>();
         return todo->uid();
     } else {
         return QString();
@@ -84,7 +84,7 @@ void Serializer::updateDataSourceFromCollection(Domain::DataSource::Ptr dataSour
 
     const auto mimeTypes = collection.contentMimeTypes();
     auto types = Domain::DataSource::ContentTypes();
-    if (mimeTypes.contains(KCalCore::Todo::todoMimeType()))
+    if (mimeTypes.contains(KCalendarCore::Todo::todoMimeType()))
         types |= Domain::DataSource::Tasks;
     dataSource->setContentTypes(types);
 
@@ -129,12 +129,12 @@ bool Serializer::isSelectedCollection(Collection collection)
 
 bool Akonadi::Serializer::isTaskCollection(Akonadi::Collection collection)
 {
-    return collection.contentMimeTypes().contains(KCalCore::Todo::todoMimeType());
+    return collection.contentMimeTypes().contains(KCalendarCore::Todo::todoMimeType());
 }
 
 bool Serializer::isTaskItem(Item item)
 {
-    if (!item.hasPayload<KCalCore::Todo::Ptr>())
+    if (!item.hasPayload<KCalendarCore::Todo::Ptr>())
         return false;
 
     return !isProjectItem(item) && !isContext(item);
@@ -155,7 +155,7 @@ void Serializer::updateTaskFromItem(Domain::Task::Ptr task, Item item)
     if (!isTaskItem(item))
         return;
 
-    auto todo = item.payload<KCalCore::Todo::Ptr>();
+    auto todo = item.payload<KCalendarCore::Todo::Ptr>();
 
     task->setTitle(todo->summary());
     task->setText(todo->description());
@@ -173,16 +173,16 @@ void Serializer::updateTaskFromItem(Domain::Task::Ptr task, Item item)
     task->setProperty("contextUids", contextUids);
 
     switch (todo->recurrence()->recurrenceType()) {
-    case KCalCore::Recurrence::rDaily:
+    case KCalendarCore::Recurrence::rDaily:
         task->setRecurrence(Domain::Task::RecursDaily);
         break;
-    case KCalCore::Recurrence::rWeekly:
+    case KCalendarCore::Recurrence::rWeekly:
         task->setRecurrence(Domain::Task::RecursWeekly);
         break;
-    case KCalCore::Recurrence::rMonthlyDay:
+    case KCalendarCore::Recurrence::rMonthlyDay:
         task->setRecurrence(Domain::Task::RecursMonthly);
         break;
-    case KCalCore::Recurrence::rYearlyMonth:
+    case KCalendarCore::Recurrence::rYearlyMonth:
         task->setRecurrence(Domain::Task::RecursYearly);
         break;
     default:
@@ -196,7 +196,7 @@ void Serializer::updateTaskFromItem(Domain::Task::Ptr task, Item item)
     attachments.reserve(attachmentsInput.size());
     std::transform(attachmentsInput.cbegin(), attachmentsInput.cend(),
                    std::back_inserter(attachments),
-                   [&mimeDb] (const KCalCore::Attachment &attach) {
+                   [&mimeDb] (const KCalendarCore::Attachment &attach) {
                        Domain::Task::Attachment attachment;
                        if (attach.isUri())
                            attachment.setUri(QUrl(attach.uri()));
@@ -215,7 +215,7 @@ bool Serializer::isTaskChild(Domain::Task::Ptr task, Akonadi::Item item)
     if (!isTaskItem(item))
         return false;
 
-    auto todo = item.payload<KCalCore::Todo::Ptr>();
+    auto todo = item.payload<KCalendarCore::Todo::Ptr>();
     if (todo->relatedTo() == task->property("todoUid"))
         return true;
 
@@ -224,13 +224,13 @@ bool Serializer::isTaskChild(Domain::Task::Ptr task, Akonadi::Item item)
 
 Akonadi::Item Serializer::createItemFromTask(Domain::Task::Ptr task)
 {
-    auto todo = KCalCore::Todo::Ptr::create();
+    auto todo = KCalendarCore::Todo::Ptr::create();
 
     todo->setSummary(task->title());
     todo->setDescription(task->text());
 
     // We only support all-day todos, so ignore timezone information and possible effect from timezone on dates
-    // KCalCore reads "DUE;VALUE=DATE:20171130" as QDateTime(QDate(2017, 11, 30), QTime(), Qt::LocalTime), for lack of timezone information
+    // KCalendarCore reads "DUE;VALUE=DATE:20171130" as QDateTime(QDate(2017, 11, 30), QTime(), Qt::LocalTime), for lack of timezone information
     // so we should never call toUtc() on that, it would mess up the date.
     // If one day we want to support time information, we need to add a task->isAllDay()/setAllDay().
     todo->setDtStart(task->startDate().startOfDay());
@@ -269,7 +269,7 @@ Akonadi::Item Serializer::createItemFromTask(Domain::Task::Ptr task)
     }
 
     for (const auto &attachment : task->attachments()) {
-        KCalCore::Attachment attach(QByteArray{});
+        KCalendarCore::Attachment attach(QByteArray{});
         if (attachment.isUri())
             attach.setUri(attachment.uri().toString());
         else
@@ -300,7 +300,7 @@ Akonadi::Item Serializer::createItemFromTask(Domain::Task::Ptr task)
         auto parentId = task->property("parentCollectionId").value<Akonadi::Collection::Id>();
         item.setParentCollection(Akonadi::Collection(parentId));
     }
-    item.setMimeType(KCalCore::Todo::todoMimeType());
+    item.setMimeType(KCalendarCore::Todo::todoMimeType());
     item.setPayload(todo);
     return item;
 }
@@ -308,7 +308,7 @@ Akonadi::Item Serializer::createItemFromTask(Domain::Task::Ptr task)
 QString Serializer::relatedUidFromItem(Akonadi::Item item)
 {
     if (isTaskItem(item)) {
-        const auto todo = item.payload<KCalCore::Todo::Ptr>();
+        const auto todo = item.payload<KCalendarCore::Todo::Ptr>();
         return todo->relatedTo();
     } else {
         return QString();
@@ -320,14 +320,14 @@ void Serializer::updateItemParent(Akonadi::Item item, Domain::Task::Ptr parent)
     if (!isTaskItem(item))
         return;
 
-    auto todo = item.payload<KCalCore::Todo::Ptr>();
+    auto todo = item.payload<KCalendarCore::Todo::Ptr>();
     todo->setRelatedTo(parent->property("todoUid").toString());
 }
 
 void Serializer::updateItemProject(Item item, Domain::Project::Ptr project)
 {
     if (isTaskItem(item)) {
-        auto todo = item.payload<KCalCore::Todo::Ptr>();
+        auto todo = item.payload<KCalendarCore::Todo::Ptr>();
         todo->setRelatedTo(project->property("todoUid").toString());
     }
 }
@@ -337,7 +337,7 @@ void Serializer::removeItemParent(Akonadi::Item item)
     if (!isTaskItem(item))
         return;
 
-    auto todo = item.payload<KCalCore::Todo::Ptr>();
+    auto todo = item.payload<KCalendarCore::Todo::Ptr>();
     todo->setRelatedTo(QString());
 }
 
@@ -346,7 +346,7 @@ void Serializer::promoteItemToProject(Akonadi::Item item)
     if (!isTaskItem(item))
         return;
 
-    auto todo = item.payload<KCalCore::Todo::Ptr>();
+    auto todo = item.payload<KCalendarCore::Todo::Ptr>();
     todo->setRelatedTo(QString());
     todo->setCustomProperty(Serializer::customPropertyAppName(), Serializer::customPropertyIsProject(), QStringLiteral("1"));
 }
@@ -357,7 +357,7 @@ void Serializer::clearItem(Akonadi::Item *item)
     if (!isTaskItem(*item))
         return;
 
-    auto todo = item->payload<KCalCore::Todo::Ptr>();
+    auto todo = item->payload<KCalendarCore::Todo::Ptr>();
     todo->removeCustomProperty(Serializer::customPropertyAppName(), Serializer::customPropertyContextList());
 }
 
@@ -367,14 +367,14 @@ Akonadi::Item::List Serializer::filterDescendantItems(const Akonadi::Item::List 
         return Akonadi::Item::List();
 
     Akonadi::Item::List itemsToProcess = potentialChildren;
-    Q_ASSERT(ancestorItem.isValid() && ancestorItem.hasPayload<KCalCore::Todo::Ptr>());
-    KCalCore::Todo::Ptr todo = ancestorItem.payload<KCalCore::Todo::Ptr>();
+    Q_ASSERT(ancestorItem.isValid() && ancestorItem.hasPayload<KCalendarCore::Todo::Ptr>());
+    KCalendarCore::Todo::Ptr todo = ancestorItem.payload<KCalendarCore::Todo::Ptr>();
 
     const auto bound = std::partition(itemsToProcess.begin(), itemsToProcess.end(),
                                       [ancestorItem, todo](Akonadi::Item currentItem) {
-                                          return (!currentItem.hasPayload<KCalCore::Todo::Ptr>()
+                                          return (!currentItem.hasPayload<KCalendarCore::Todo::Ptr>()
                                                || currentItem == ancestorItem
-                                               || currentItem.payload<KCalCore::Todo::Ptr>()->relatedTo() != todo->uid());
+                                               || currentItem.payload<KCalendarCore::Todo::Ptr>()->relatedTo() != todo->uid());
                                       });
 
     Akonadi::Item::List itemsRemoved;
@@ -393,10 +393,10 @@ Akonadi::Item::List Serializer::filterDescendantItems(const Akonadi::Item::List 
 
 bool Serializer::isProjectItem(Item item)
 {
-    if (!item.hasPayload<KCalCore::Todo::Ptr>())
+    if (!item.hasPayload<KCalendarCore::Todo::Ptr>())
         return false;
 
-    auto todo = item.payload<KCalCore::Todo::Ptr>();
+    auto todo = item.payload<KCalendarCore::Todo::Ptr>();
     return !todo->customProperty(Serializer::customPropertyAppName(), Serializer::customPropertyIsProject()).isEmpty();
 }
 
@@ -415,7 +415,7 @@ void Serializer::updateProjectFromItem(Domain::Project::Ptr project, Item item)
     if (!isProjectItem(item))
         return;
 
-    auto todo = item.payload<KCalCore::Todo::Ptr>();
+    auto todo = item.payload<KCalendarCore::Todo::Ptr>();
 
     project->setName(todo->summary());
     project->setProperty("itemId", item.id());
@@ -425,7 +425,7 @@ void Serializer::updateProjectFromItem(Domain::Project::Ptr project, Item item)
 
 Item Serializer::createItemFromProject(Domain::Project::Ptr project)
 {
-    auto todo = KCalCore::Todo::Ptr::create();
+    auto todo = KCalendarCore::Todo::Ptr::create();
 
     todo->setSummary(project->name());
     todo->setCustomProperty(Serializer::customPropertyAppName(), Serializer::customPropertyIsProject(), QStringLiteral("1"));
@@ -442,7 +442,7 @@ Item Serializer::createItemFromProject(Domain::Project::Ptr project)
         auto parentId = project->property("parentCollectionId").value<Akonadi::Collection::Id>();
         item.setParentCollection(Akonadi::Collection(parentId));
     }
-    item.setMimeType(KCalCore::Todo::todoMimeType());
+    item.setMimeType(KCalendarCore::Todo::todoMimeType());
     item.setPayload(todo);
     return item;
 }
@@ -457,7 +457,7 @@ bool Serializer::isProjectChild(Domain::Project::Ptr project, Item item)
         && todoUid == relatedUid;
 }
 
-static QStringList extractContexts(KCalCore::Todo::Ptr todo)
+static QStringList extractContexts(KCalendarCore::Todo::Ptr todo)
 {
     const QString contexts = todo->customProperty(Serializer::customPropertyAppName(), Serializer::customPropertyContextList());
     return contexts.split(',', Qt::SkipEmptyParts);
@@ -468,21 +468,21 @@ bool Serializer::isContextChild(Domain::Context::Ptr context, Item item) const
     if (!context->property("todoUid").isValid())
         return false;
 
-    if (!item.hasPayload<KCalCore::Todo::Ptr>())
+    if (!item.hasPayload<KCalendarCore::Todo::Ptr>())
         return false;
 
     auto contextUid = context->property("todoUid").toString();
-    auto todo = item.payload<KCalCore::Todo::Ptr>();
+    auto todo = item.payload<KCalendarCore::Todo::Ptr>();
     const auto contextList = extractContexts(todo);
     return contextList.contains(contextUid);
 }
 
 bool Serializer::isContext(Item item)
 {
-    if (!item.hasPayload<KCalCore::Todo::Ptr>())
+    if (!item.hasPayload<KCalendarCore::Todo::Ptr>())
         return false;
 
-    auto todo = item.payload<KCalCore::Todo::Ptr>();
+    auto todo = item.payload<KCalendarCore::Todo::Ptr>();
     return !todo->customProperty(Serializer::customPropertyAppName(), Serializer::customPropertyIsContext()).isEmpty();
 }
 
@@ -498,7 +498,7 @@ Domain::Context::Ptr Serializer::createContextFromItem(Item item)
 
 Akonadi::Item Serializer::createItemFromContext(Domain::Context::Ptr context)
 {
-    auto todo = KCalCore::Todo::Ptr::create();
+    auto todo = KCalendarCore::Todo::Ptr::create();
 
     todo->setSummary(context->name());
     todo->setCustomProperty(Serializer::customPropertyAppName(), Serializer::customPropertyIsContext(), QStringLiteral("1"));
@@ -515,7 +515,7 @@ Akonadi::Item Serializer::createItemFromContext(Domain::Context::Ptr context)
         auto parentId = context->property("parentCollectionId").value<Akonadi::Collection::Id>();
         item.setParentCollection(Akonadi::Collection(parentId));
     }
-    item.setMimeType(KCalCore::Todo::todoMimeType());
+    item.setMimeType(KCalendarCore::Todo::todoMimeType());
     item.setPayload(todo);
     return item;
 }
@@ -525,7 +525,7 @@ void Serializer::updateContextFromItem(Domain::Context::Ptr context, Item item)
     if (!isContext(item))
         return;
 
-    auto todo = item.payload<KCalCore::Todo::Ptr>();
+    auto todo = item.payload<KCalendarCore::Todo::Ptr>();
 
     context->setName(todo->summary());
     context->setProperty("itemId", item.id());
@@ -540,7 +540,7 @@ void Serializer::addContextToTask(Domain::Context::Ptr context, Item item)
         return;
     }
 
-    auto todo = item.payload<KCalCore::Todo::Ptr>();
+    auto todo = item.payload<KCalendarCore::Todo::Ptr>();
 
     if (!context->property("todoUid").isValid())
         return;
@@ -551,7 +551,7 @@ void Serializer::addContextToTask(Domain::Context::Ptr context, Item item)
         contextList.append(contextUid);
     todo->setCustomProperty(Serializer::customPropertyAppName(), Serializer::customPropertyContextList(), contextList.join(','));
 
-    item.setPayload<KCalCore::Todo::Ptr>(todo);
+    item.setPayload<KCalendarCore::Todo::Ptr>(todo);
 }
 
 void Serializer::removeContextFromTask(Domain::Context::Ptr context, Item item)
@@ -561,7 +561,7 @@ void Serializer::removeContextFromTask(Domain::Context::Ptr context, Item item)
         return;
     }
 
-    auto todo = item.payload<KCalCore::Todo::Ptr>();
+    auto todo = item.payload<KCalendarCore::Todo::Ptr>();
 
     if (!context->property("todoUid").isValid())
         return;
@@ -574,7 +574,7 @@ void Serializer::removeContextFromTask(Domain::Context::Ptr context, Item item)
     else
         todo->setCustomProperty(Serializer::customPropertyAppName(), Serializer::customPropertyContextList(), contextList.join(','));
 
-    item.setPayload<KCalCore::Todo::Ptr>(todo);
+    item.setPayload<KCalendarCore::Todo::Ptr>(todo);
 }
 
 QString Serializer::contextUid(Item item)
@@ -582,11 +582,11 @@ QString Serializer::contextUid(Item item)
     if (!isContext(item))
         return {};
 
-    auto todo = item.payload<KCalCore::Todo::Ptr>();
+    auto todo = item.payload<KCalendarCore::Todo::Ptr>();
     return todo->uid();
 }
 
-// KCalCore's CustomProperties doesn't implement case insensitivity
+// KCalendarCore's CustomProperties doesn't implement case insensitivity
 // and some CALDAV servers make everything uppercase. So do like most of kdepim
 // and use uppercase property names.
 

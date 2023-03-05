@@ -12,8 +12,8 @@
 #include <testlib/testsafety.h>
 #include <testlib/akonadidebug.h>
 
-#include <KCalCore/Todo>
-#include <KCalCore/ICalFormat>
+#include <KCalendarCore/Todo>
+#include <KCalendarCore/ICalFormat>
 
 #include <Akonadi/Collection>
 #include <Akonadi/TransactionSequence>
@@ -100,12 +100,12 @@ private slots:
         // THEN
         auto newItemList = m_migrator.fetchAllItems(WhichItems::OnlyContexts).items;
         Akonadi::Item::List contextItems;
-        QVector<KCalCore::Todo::Ptr> contextTodos;
+        QVector<KCalendarCore::Todo::Ptr> contextTodos;
         for (auto it = newItemList.constBegin(); it != newItemList.constEnd(); ++it) {
             const auto item = *it;
             if (m_serializer.isContext(item)) {
                 contextItems.append(item);
-                auto todo = item.payload<KCalCore::Todo::Ptr>();
+                auto todo = item.payload<KCalendarCore::Todo::Ptr>();
                 contextTodos.append(todo);
                 m_contextTodos.insert(todo->uid(), todo->summary());
             }
@@ -160,7 +160,7 @@ private:
     {
         QMap<QString, Akonadi::Item> itemHash;
         for (const Akonadi::Item &item : items) {
-            auto todo = item.payload<KCalCore::Todo::Ptr>();
+            auto todo = item.payload<KCalendarCore::Todo::Ptr>();
             itemHash.insert(todo->uid(), item);
         }
         return itemHash;
@@ -177,7 +177,7 @@ private:
         for (auto it = expectedItems.constBegin(); it != expectedItems.constEnd(); ++it) {
             const Akonadi::Item item = itemHash.value(it.key());
             //qDebug() << item.id() << it.key();
-            auto todo = item.payload<KCalCore::Todo::Ptr>();
+            auto todo = item.payload<KCalendarCore::Todo::Ptr>();
             QVERIFY(todo);
             const auto contextUids = todo->customProperty(Serializer::customPropertyAppName(), Serializer::customPropertyContextList()).split(',', Qt::SkipEmptyParts);
             QStringList contextNames;

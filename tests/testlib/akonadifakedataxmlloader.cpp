@@ -10,7 +10,7 @@
 #include <QDateTime>
 #include <Akonadi/XmlDocument>
 
-#include <KCalCore/Todo>
+#include <KCalendarCore/Todo>
 
 using namespace Testlib;
 

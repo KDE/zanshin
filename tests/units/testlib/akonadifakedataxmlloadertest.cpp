@@ -8,7 +8,7 @@
 #include "testlib/akonadifakedataxmlloader.h"
 #include <akonadi/akonadiserializer.h>
 
-#include <KCalCore/Todo>
+#include <KCalendarCore/Todo>
 
 #include <testlib/qtest_zanshin.h>
 
@@ -67,7 +67,7 @@ private slots:
 
         const auto firstContext = data.contexts().at(0);
         QCOMPARE(firstContext.remoteId(), "rid-online-context");
-        const auto contextAsTodo = firstContext.payload<KCalCore::Todo::Ptr>();
+        const auto contextAsTodo = firstContext.payload<KCalendarCore::Todo::Ptr>();
         QCOMPARE(contextAsTodo->uid(), "online-context");
         QCOMPARE(contextAsTodo->summary(), "Online");
         QCOMPARE(contextAsTodo->customProperty(Serializer::customPropertyAppName(), Serializer::customPropertyIsContext()), "1");

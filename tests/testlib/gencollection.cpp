@@ -8,7 +8,7 @@
 
 #include <Akonadi/EntityDisplayAttribute>
 
-#include <KCalCore/Todo>
+#include <KCalendarCore/Todo>
 
 #include "akonadi/akonadiapplicationselectedattribute.h"
 
@@ -70,9 +70,9 @@ GenCollection &GenCollection::withTaskContent(bool value)
 {
     auto mimeTypes = m_collection.contentMimeTypes();
     if (!value) {
-        mimeTypes.removeAll(KCalCore::Todo::todoMimeType());
-    } else if (!mimeTypes.contains(KCalCore::Todo::todoMimeType())) {
-        mimeTypes.append(KCalCore::Todo::todoMimeType());
+        mimeTypes.removeAll(KCalendarCore::Todo::todoMimeType());
+    } else if (!mimeTypes.contains(KCalendarCore::Todo::todoMimeType())) {
+        mimeTypes.append(KCalendarCore::Todo::todoMimeType());
     }
     m_collection.setContentMimeTypes(mimeTypes);
     return *this;

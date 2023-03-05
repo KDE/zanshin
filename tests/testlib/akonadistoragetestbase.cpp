@@ -12,8 +12,8 @@
 #include <testlib/akonadidebug.h>
 #include <testlib/monitorspy.h>
 
-#include <KCalCore/Todo>
-#include <KCalCore/ICalFormat>
+#include <KCalendarCore/Todo>
+#include <KCalendarCore/ICalFormat>
 
 #include "utils/mem_fn.h"
 
@@ -271,7 +271,7 @@ void AkonadiStorageTestBase::shouldNotifyItemAdded()
     MonitorSpy monitorSpy(monitor.data());
 
     // A todo...
-    KCalCore::Todo::Ptr todo(new KCalCore::Todo);
+    KCalendarCore::Todo::Ptr todo(new KCalendarCore::Todo);
     todo->setSummary(QStringLiteral("summary"));
     todo->setDescription(QStringLiteral("content"));
     todo->setCompleted(false);
@@ -281,7 +281,7 @@ void AkonadiStorageTestBase::shouldNotifyItemAdded()
     // ... as payload of an item...
     Akonadi::Item item;
     item.setMimeType(QStringLiteral("application/x-vnd.akonadi.calendar.todo"));
-    item.setPayload<KCalCore::Todo::Ptr>(todo);
+    item.setPayload<KCalendarCore::Todo::Ptr>(todo);
     item.addAttribute(new Akonadi::EntityDisplayAttribute);
 
     // WHEN
@@ -294,7 +294,7 @@ void AkonadiStorageTestBase::shouldNotifyItemAdded()
     // THEN
     QCOMPARE(spy.size(), 1);
     auto notifiedItem = spy.takeFirst().at(0).value<Akonadi::Item>();
-    QCOMPARE(*notifiedItem.payload<KCalCore::Todo::Ptr>(), *todo);
+    QCOMPARE(*notifiedItem.payload<KCalendarCore::Todo::Ptr>(), *todo);
     QVERIFY(notifiedItem.hasAttribute<Akonadi::EntityDisplayAttribute>());
 
     auto parent = notifiedItem.parentCollection();
@@ -345,7 +345,7 @@ void AkonadiStorageTestBase::shouldNotifyItemChanged()
     MonitorSpy monitorSpy(monitor.data());
 
     // A todo...
-    KCalCore::Todo::Ptr todo(new KCalCore::Todo);
+    KCalendarCore::Todo::Ptr todo(new KCalendarCore::Todo);
     todo->setSummary(QStringLiteral("summary"));
     todo->setDescription(QStringLiteral("content"));
     todo->setCompleted(false);
@@ -356,7 +356,7 @@ void AkonadiStorageTestBase::shouldNotifyItemChanged()
     Akonadi::Item item = fetchItemByRID(QStringLiteral("{1d33862f-f274-4c67-ab6c-362d56521ff6}"), calendar2());
     QVERIFY(item.isValid());
     item.setMimeType(QStringLiteral("application/x-vnd.akonadi.calendar.todo"));
-    item.setPayload<KCalCore::Todo::Ptr>(todo);
+    item.setPayload<KCalendarCore::Todo::Ptr>(todo);
     item.addAttribute(new Akonadi::EntityDisplayAttribute);
 
     // WHEN
@@ -370,7 +370,7 @@ void AkonadiStorageTestBase::shouldNotifyItemChanged()
     QCOMPARE(spy.size(), 1);
     auto notifiedItem = spy.takeFirst().at(0).value<Akonadi::Item>();
     QCOMPARE(notifiedItem.id(), item.id());
-    QCOMPARE(*notifiedItem.payload<KCalCore::Todo::Ptr>(), *todo);
+    QCOMPARE(*notifiedItem.payload<KCalendarCore::Todo::Ptr>(), *todo);
     QVERIFY(notifiedItem.hasAttribute<Akonadi::EntityDisplayAttribute>());
 
     auto parent = notifiedItem.parentCollection();
@@ -407,14 +407,14 @@ void AkonadiStorageTestBase::shouldUpdateItem()
     MonitorSpy monitorSpy(monitor.data());
 
     // A todo...
-    KCalCore::Todo::Ptr todo(new KCalCore::Todo);
+    KCalendarCore::Todo::Ptr todo(new KCalendarCore::Todo);
     todo->setSummary(QStringLiteral("new summary"));
     todo->setDescription(QStringLiteral("new content"));
 
     // ... as payload of an existing item (if we trust the test data)...
     Akonadi::Item item = fetchItemByRID(QStringLiteral("{1d33862f-f274-4c67-ab6c-362d56521ff4}"), calendar2());
     item.setMimeType(QStringLiteral("application/x-vnd.akonadi.calendar.todo"));
-    item.setPayload<KCalCore::Todo::Ptr>(todo);
+    item.setPayload<KCalendarCore::Todo::Ptr>(todo);
 
     // WHEN
     auto job = storage->updateItem(item, nullptr);
@@ -427,7 +427,7 @@ void AkonadiStorageTestBase::shouldUpdateItem()
     auto notifiedItem = spy.takeFirst().at(0).value<Akonadi::Item>();
     QCOMPARE(notifiedItem.id(), item.id());
 
-    QCOMPARE(*notifiedItem.payload<KCalCore::Todo::Ptr>(), *todo);
+    QCOMPARE(*notifiedItem.payload<KCalendarCore::Todo::Ptr>(), *todo);
 }
 
 void AkonadiStorageTestBase::shouldUseTransaction()
@@ -449,10 +449,10 @@ void AkonadiStorageTestBase::shouldUseTransaction()
     MonitorSpy monitorSpy(monitor.data());
 
     // WHEN
-    auto todo = item1.payload<KCalCore::Todo::Ptr>();
+    auto todo = item1.payload<KCalendarCore::Todo::Ptr>();
     todo->setSummary(QStringLiteral("Buy tomatoes"));
 
-    todo = item2.payload<KCalCore::Todo::Ptr>();
+    todo = item2.payload<KCalendarCore::Todo::Ptr>();
     todo->setSummary(QStringLiteral("Buy chocolate"));
 
     auto transaction = storage->createTransaction(nullptr);
@@ -474,8 +474,8 @@ void AkonadiStorageTestBase::shouldUseTransaction()
     QCOMPARE(job->items().size(), 1);
     item2 = job->items().at(0);
 
-    QCOMPARE(item1.payload<KCalCore::Todo::Ptr>()->summary(), QStringLiteral("Buy kiwis"));
-    QCOMPARE(item2.payload<KCalCore::Todo::Ptr>()->summary(), QStringLiteral("Buy cheese"));
+    QCOMPARE(item1.payload<KCalendarCore::Todo::Ptr>()->summary(), QStringLiteral("Buy kiwis"));
+    QCOMPARE(item2.payload<KCalendarCore::Todo::Ptr>()->summary(), QStringLiteral("Buy cheese"));
 }
 
 void AkonadiStorageTestBase::shouldCreateItem()
@@ -491,7 +491,7 @@ void AkonadiStorageTestBase::shouldCreateItem()
     MonitorSpy monitorSpy(monitor.data());
 
     // A todo...
-    KCalCore::Todo::Ptr todo(new KCalCore::Todo);
+    KCalendarCore::Todo::Ptr todo(new KCalendarCore::Todo);
     todo->setSummary(QStringLiteral("summary"));
     todo->setDescription(QStringLiteral("content"));
     todo->setCompleted(false);
@@ -501,7 +501,7 @@ void AkonadiStorageTestBase::shouldCreateItem()
     // ... as payload of a new item
     Akonadi::Item item;
     item.setMimeType(QStringLiteral("application/x-vnd.akonadi.calendar.todo"));
-    item.setPayload<KCalCore::Todo::Ptr>(todo);
+    item.setPayload<KCalendarCore::Todo::Ptr>(todo);
 
     // WHEN
     auto job = storage->createItem(item, calendar2());
@@ -513,7 +513,7 @@ void AkonadiStorageTestBase::shouldCreateItem()
     QCOMPARE(spy.size(), 1);
     auto notifiedItem = spy.takeFirst().at(0).value<Akonadi::Item>();
     QCOMPARE(notifiedItem.parentCollection(), calendar2());
-    QCOMPARE(*notifiedItem.payload<KCalCore::Todo::Ptr>(), *todo);
+    QCOMPARE(*notifiedItem.payload<KCalendarCore::Todo::Ptr>(), *todo);
 }
 
 void AkonadiStorageTestBase::shouldRetrieveItem()

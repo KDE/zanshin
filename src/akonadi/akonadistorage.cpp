@@ -8,7 +8,7 @@
 
 #include <algorithm>
 
-#include <KCalCore/Todo>
+#include <KCalendarCore/Todo>
 
 #include <Akonadi/CollectionCreateJob>
 #include <Akonadi/CollectionDeleteJob>
@@ -189,7 +189,7 @@ CollectionFetchJobInterface *Storage::fetchCollections(Collection collection, St
     auto job = new CollectionJob(collection, jobTypeFromDepth(depth), parent);
 
     auto scope = job->fetchScope();
-    scope.setContentMimeTypes({KCalCore::Todo::todoMimeType()});
+    scope.setContentMimeTypes({KCalendarCore::Todo::todoMimeType()});
     scope.setIncludeStatistics(true);
     scope.setAncestorRetrieval(CollectionFetchScope::All);
     scope.setListFilter(Akonadi::CollectionFetchScope::Display);

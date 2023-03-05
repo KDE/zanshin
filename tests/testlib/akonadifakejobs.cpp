@@ -6,7 +6,7 @@
 
 #include "akonadifakejobs.h"
 
-#include <KCalCore/Todo>
+#include <KCalendarCore/Todo>
 
 #include <QTimer>
 
@@ -25,7 +25,7 @@ Akonadi::Collection::List AkonadiFakeCollectionFetchJob::collections() const
         auto it = std::remove_if(result.begin(), result.end(),
                                  [] (const Akonadi::Collection &col) {
                                      const auto mime = col.contentMimeTypes();
-                                     return !mime.contains(KCalCore::Todo::todoMimeType());
+                                     return !mime.contains(KCalendarCore::Todo::todoMimeType());
                                  });
         result.erase(it, std::end(result));
     }

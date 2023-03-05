@@ -6,7 +6,7 @@
 
 #include <testlib/qtest_zanshin.h>
 #include <Akonadi/Item>
-#include <KCalCore/Todo>
+#include <KCalendarCore/Todo>
 #include "domain/task.h"
 #include "akonadi/akonadiserializer.h"
 
@@ -24,7 +24,7 @@ private slots:
 
 Akonadi::Item SerializerBenchmark::createTestItem()
 {
-    KCalCore::Todo::Ptr todo(new KCalCore::Todo);
+    KCalendarCore::Todo::Ptr todo(new KCalendarCore::Todo);
     todo->setSummary(QStringLiteral("summary"));
     todo->setDescription(QStringLiteral("content"));
     todo->setCompleted(false);
@@ -35,7 +35,7 @@ Akonadi::Item SerializerBenchmark::createTestItem()
     // ... as payload of an item
     Akonadi::Item item;
     item.setMimeType(QStringLiteral("application/x-vnd.akonadi.calendar.todo"));
-    item.setPayload<KCalCore::Todo::Ptr>(todo);
+    item.setPayload<KCalendarCore::Todo::Ptr>(todo);
 
     return item;
 }
@@ -57,10 +57,10 @@ void SerializerBenchmark::checkPayloadAndDeserialize()
     Akonadi::Serializer serializer;
     Domain::Task::Ptr task(new Domain::Task);
     QBENCHMARK {
-        if (!item.hasPayload<KCalCore::Todo::Ptr>())
+        if (!item.hasPayload<KCalendarCore::Todo::Ptr>())
             return;
 
-        auto todoCheck = item.payload<KCalCore::Todo::Ptr>();
+        auto todoCheck = item.payload<KCalendarCore::Todo::Ptr>();
         if (todoCheck->relatedTo() != QLatin1String("5")) {
             return;
         }
@@ -83,10 +83,10 @@ void SerializerBenchmark::checkPayload()
 {
     Akonadi::Item item = createTestItem();
     QBENCHMARK {
-        if (!item.hasPayload<KCalCore::Todo::Ptr>())
+        if (!item.hasPayload<KCalendarCore::Todo::Ptr>())
             return;
 
-        auto todoCheck = item.payload<KCalCore::Todo::Ptr>();
+        auto todoCheck = item.payload<KCalendarCore::Todo::Ptr>();
         if (todoCheck->relatedTo() != QLatin1String("5")) {
             return;
         }

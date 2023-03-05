@@ -6,7 +6,7 @@
 
 #include "gentodo.h"
 
-#include <KCalCore/Todo>
+#include <KCalendarCore/Todo>
 #include <QDateTime>
 #include <akonadi/akonadiserializer.h>
 
@@ -16,9 +16,9 @@ using Akonadi::Serializer;
 GenTodo::GenTodo(const Akonadi::Item &item)
     : m_item(item)
 {
-    m_item.setMimeType(KCalCore::Todo::todoMimeType());
-    if (!m_item.hasPayload<KCalCore::Todo::Ptr>())
-        m_item.setPayload(KCalCore::Todo::Ptr::create());
+    m_item.setMimeType(KCalendarCore::Todo::todoMimeType());
+    if (!m_item.hasPayload<KCalendarCore::Todo::Ptr>())
+        m_item.setPayload(KCalendarCore::Todo::Ptr::create());
 }
 
 Testlib::GenTodo::operator Akonadi::Item()
@@ -40,7 +40,7 @@ GenTodo &GenTodo::withParent(Akonadi::Collection::Id id)
 
 GenTodo &GenTodo::withContexts(const QStringList &contextUids)
 {
-    auto todo = m_item.payload<KCalCore::Todo::Ptr>();
+    auto todo = m_item.payload<KCalendarCore::Todo::Ptr>();
     if (contextUids.isEmpty())
         todo->removeCustomProperty(Serializer::customPropertyAppName(), Serializer::customPropertyContextList());
     else
@@ -50,7 +50,7 @@ GenTodo &GenTodo::withContexts(const QStringList &contextUids)
 
 GenTodo &GenTodo::asProject(bool value)
 {
-    auto todo = m_item.payload<KCalCore::Todo::Ptr>();
+    auto todo = m_item.payload<KCalendarCore::Todo::Ptr>();
     if (value)
         todo->setCustomProperty(Serializer::customPropertyAppName(), Serializer::customPropertyIsProject(), QStringLiteral("1"));
     else
@@ -60,7 +60,7 @@ GenTodo &GenTodo::asProject(bool value)
 
 GenTodo &GenTodo::asContext(bool value)
 {
-    auto todo = m_item.payload<KCalCore::Todo::Ptr>();
+    auto todo = m_item.payload<KCalendarCore::Todo::Ptr>();
     if (value)
         todo->setCustomProperty(Serializer::customPropertyAppName(), Serializer::customPropertyIsContext(), QStringLiteral("1"));
     else
@@ -70,66 +70,66 @@ GenTodo &GenTodo::asContext(bool value)
 
 GenTodo &GenTodo::withUid(const QString &uid)
 {
-    m_item.payload<KCalCore::Todo::Ptr>()->setUid(uid);
+    m_item.payload<KCalendarCore::Todo::Ptr>()->setUid(uid);
     return *this;
 }
 
 GenTodo &GenTodo::withParentUid(const QString &uid)
 {
-    m_item.payload<KCalCore::Todo::Ptr>()->setRelatedTo(uid);
+    m_item.payload<KCalendarCore::Todo::Ptr>()->setRelatedTo(uid);
     return *this;
 }
 
 GenTodo &GenTodo::withTitle(const QString &title)
 {
-    m_item.payload<KCalCore::Todo::Ptr>()->setSummary(title);
+    m_item.payload<KCalendarCore::Todo::Ptr>()->setSummary(title);
     return *this;
 }
 
 GenTodo &GenTodo::withText(const QString &text)
 {
-    m_item.payload<KCalCore::Todo::Ptr>()->setDescription(text);
+    m_item.payload<KCalendarCore::Todo::Ptr>()->setDescription(text);
     return *this;
 }
 
 GenTodo &GenTodo::done(bool value)
 {
-    m_item.payload<KCalCore::Todo::Ptr>()->setCompleted(value);
+    m_item.payload<KCalendarCore::Todo::Ptr>()->setCompleted(value);
     return *this;
 }
 
 GenTodo &GenTodo::withDoneDate(const QString &date)
 {
-    m_item.payload<KCalCore::Todo::Ptr>()->setCompleted(QDate::fromString(date, Qt::ISODate).startOfDay());
+    m_item.payload<KCalendarCore::Todo::Ptr>()->setCompleted(QDate::fromString(date, Qt::ISODate).startOfDay());
     return *this;
 }
 
 GenTodo &GenTodo::withDoneDate(const QDate &date)
 {
-    m_item.payload<KCalCore::Todo::Ptr>()->setCompleted(date.startOfDay());
+    m_item.payload<KCalendarCore::Todo::Ptr>()->setCompleted(date.startOfDay());
     return *this;
 }
 
 GenTodo &GenTodo::withStartDate(const QString &date)
 {
-    m_item.payload<KCalCore::Todo::Ptr>()->setDtStart(QDate::fromString(date, Qt::ISODate).startOfDay());
+    m_item.payload<KCalendarCore::Todo::Ptr>()->setDtStart(QDate::fromString(date, Qt::ISODate).startOfDay());
     return *this;
 }
 
 GenTodo &GenTodo::withStartDate(const QDate &date)
 {
-    m_item.payload<KCalCore::Todo::Ptr>()->setDtStart(date.startOfDay());
+    m_item.payload<KCalendarCore::Todo::Ptr>()->setDtStart(date.startOfDay());
     return *this;
 }
 
 GenTodo &GenTodo::withDueDate(const QString &date)
 {
-    m_item.payload<KCalCore::Todo::Ptr>()->setDtDue(QDate::fromString(date, Qt::ISODate).startOfDay());
+    m_item.payload<KCalendarCore::Todo::Ptr>()->setDtDue(QDate::fromString(date, Qt::ISODate).startOfDay());
     return *this;
 }
 
 GenTodo &GenTodo::withDueDate(const QDate &date)
 {
-    m_item.payload<KCalCore::Todo::Ptr>()->setDtDue(date.startOfDay());
+    m_item.payload<KCalendarCore::Todo::Ptr>()->setDtDue(date.startOfDay());
     return *this;
 }

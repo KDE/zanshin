@@ -10,7 +10,7 @@
 
 #include <functional>
 
-#include <KCalCore/Todo>
+#include <KCalendarCore/Todo>
 
 #include "akonadi/akonadiserializer.h"
 
@@ -25,8 +25,8 @@ using namespace std::placeholders;
 
 static QString titleFromItem(const Akonadi::Item &item)
 {
-    if (item.hasPayload<KCalCore::Todo::Ptr>()) {
-        const auto todo = item.payload<KCalCore::Todo::Ptr>();
+    if (item.hasPayload<KCalendarCore::Todo::Ptr>()) {
+        const auto todo = item.payload<KCalendarCore::Todo::Ptr>();
         return todo->summary();
     } else {
         return QString();

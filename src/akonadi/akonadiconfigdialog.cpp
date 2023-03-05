@@ -24,7 +24,7 @@
 #include <Akonadi/AgentManager>
 #include <Akonadi/AgentTypeDialog>
 
-#include <KCalCore/Todo>
+#include <KCalendarCore/Todo>
 
 using namespace Akonadi;
 
@@ -131,6 +131,6 @@ void ConfigDialog::onConfigureTriggered()
 
 void ConfigDialog::applyContentTypes(AgentFilterProxyModel *model)
 {
-    model->addMimeTypeFilter(KCalCore::Todo::todoMimeType());
+    model->addMimeTypeFilter(KCalendarCore::Todo::todoMimeType());
 }
 

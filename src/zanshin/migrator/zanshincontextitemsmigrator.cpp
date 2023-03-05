@@ -13,7 +13,7 @@
 #include <Akonadi/ItemDeleteJob>
 
 #include <QStringList>
-#include <KCalCore/Todo>
+#include <KCalendarCore/Todo>
 
 using Akonadi::Serializer;
 
@@ -40,8 +40,8 @@ ZanshinContextItemsMigrator::FetchResult ZanshinContextItemsMigrator::fetchAllIt
         auto items = job->items();
         Akonadi::Item::List selectedItems;
         foreach (const Akonadi::Item &item, items) {
-            if (item.hasPayload<KCalCore::Todo::Ptr>()) {
-                auto todo = item.payload<KCalCore::Todo::Ptr>();
+            if (item.hasPayload<KCalendarCore::Todo::Ptr>()) {
+                auto todo = item.payload<KCalendarCore::Todo::Ptr>();
                 if (!m_forceMigration) {
                     if (which == WhichItems::TasksToConvert && !todo->customProperty(Serializer::customPropertyAppName(), Serializer::customPropertyContextList()).isEmpty()) {
                         // This folder was already migrated, skip it
@@ -102,7 +102,7 @@ void ZanshinContextItemsMigrator::createContexts(const Akonadi::Tag::List &conte
         auto job = new Akonadi::ItemCreateJob(item, collection);
         if (job->exec()) {
             ++count;
-            m_tagUids.insert(tag.id(), job->item().payload<KCalCore::Todo::Ptr>()->uid());
+            m_tagUids.insert(tag.id(), job->item().payload<KCalendarCore::Todo::Ptr>()->uid());
         } else {
             qWarning() << "Failure to create context:" << job->errorString();
         }
@@ -135,7 +135,7 @@ void ZanshinContextItemsMigrator::associateContexts(Akonadi::Item::List& items)
             }
         }
         // While we're here, port from "Project" to "ISPROJECT"
-        auto todo = item.payload<KCalCore::Todo::Ptr>();
+        auto todo = item.payload<KCalendarCore::Todo::Ptr>();
         if (!todo->customProperty("Zanshin", "Project").isEmpty()) {
             todo->setCustomProperty(Serializer::customPropertyAppName(), Serializer::customPropertyIsProject(), QStringLiteral("1"));
             auto job = new Akonadi::ItemModifyJob(item);

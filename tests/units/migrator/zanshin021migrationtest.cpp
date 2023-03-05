@@ -12,8 +12,8 @@
 #include <testlib/testsafety.h>
 #include <testlib/akonadidebug.h>
 
-#include <KCalCore/Todo>
-#include <KCalCore/ICalFormat>
+#include <KCalendarCore/Todo>
+#include <KCalendarCore/ICalFormat>
 
 #include <Akonadi/Collection>
 #include <Akonadi/TransactionSequence>
