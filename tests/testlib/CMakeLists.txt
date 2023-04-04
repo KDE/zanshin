@@ -19,8 +19,8 @@ add_library(testlib STATIC ${testlib_SRCS})
 set_property(TARGET testlib PROPERTY POSITION_INDEPENDENT_CODE ON)
 
 target_link_libraries(testlib
-    KPim${QT_MAJOR_VERSION}::AkonadiCore
-    KPim${QT_MAJOR_VERSION}::AkonadiXml
+    KPim6::AkonadiCore
+    KPim6::AkonadiXml
     KF${QT_MAJOR_VERSION}::CalendarCore
     Qt::DBus
     Qt::Test

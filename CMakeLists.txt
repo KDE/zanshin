@@ -23,7 +23,7 @@ include(ECMPoQmTools)
 include(ECMSetupVersion)
 
 set(REQUIRED_QT_VERSION "5.15.2")
-find_package(Qt${QT_MAJOR_VERSION} ${QT_REQUIRED_VERSION} CONFIG REQUIRED Core Gui Widgets Test)
+find_package(Qt6 ${QT_REQUIRED_VERSION} CONFIG REQUIRED Core Gui Widgets Test)
 find_package(Boost REQUIRED)
 find_package(Threads REQUIRED)
 
@@ -79,9 +79,9 @@ find_package(KF${QT_MAJOR_VERSION} ${KF_MIN_VERSION} REQUIRED COMPONENTS
     Parts
 )
 
-find_package(KPim${QT_MAJOR_VERSION}Akonadi "5.22.40" REQUIRED)
-find_package(KPim${QT_MAJOR_VERSION}AkonadiCalendar "5.22.40" REQUIRED)
-find_package(KPim${QT_MAJOR_VERSION}KontactInterface "5.22.40" REQUIRED)
+find_package(KPim6Akonadi "5.22.40" REQUIRED)
+find_package(KPim6AkonadiCalendar "5.22.40" REQUIRED)
+find_package(KPim6KontactInterface "5.22.40" REQUIRED)
 
 add_subdirectory(src)
 ki18n_install(po)

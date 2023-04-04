@@ -54,9 +54,9 @@ target_sources(akonadi PRIVATE
 set_property(TARGET akonadi PROPERTY POSITION_INDEPENDENT_CODE ON)
 
 target_link_libraries(akonadi
-    KPim${QT_MAJOR_VERSION}::AkonadiCalendar
-    KPim${QT_MAJOR_VERSION}::AkonadiCore
-    KPim${QT_MAJOR_VERSION}::AkonadiWidgets
+    KPim6::AkonadiCalendar
+    KPim6::AkonadiCore
+    KPim6::AkonadiWidgets
     KF${QT_MAJOR_VERSION}::CalendarCore
     KF${QT_MAJOR_VERSION}::ConfigCore
 )
