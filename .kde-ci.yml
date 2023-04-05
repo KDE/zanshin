@@ -12,14 +12,3 @@ Dependencies:
     'pim/akonadi': '@same'
     'pim/akonadi-calendar': '@same'
     'pim/kontactinterface': '@same'
-
-- 'on': ['Linux/Qt6', 'FreeBSD/Qt6']
-  'require':
-    'frameworks/extra-cmake-modules': '@latest-kf6'
-    'frameworks/kcoreaddons': '@latest-kf6'
-    'frameworks/krunner': '@latest-kf6'
-    'frameworks/kwindowsystem': '@latest-kf6'
-    'frameworks/ki18n': '@latest-kf6'
-    'pim/akonadi': '@same'
-    'pim/akonadi-calendar': '@same'
-    'pim/kontactinterface': '@same'
