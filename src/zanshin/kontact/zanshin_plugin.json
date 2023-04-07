@@ -29,7 +29,6 @@
         "Description[x-test]": "xxKontact Zanshin Pluginxx",
         "EnabledByDefault": true,
         "Icon": "zanshin",
-        "Id": "kontact_zanshinplugin",
         "License": "GPL",
         "Name": "Task Lists",
         "Name[bg]": "Списъци със задачи",
