@@ -22,7 +22,7 @@ include(ECMMarkAsTest)
 include(ECMPoQmTools)
 include(ECMSetupVersion)
 
-set(REQUIRED_QT_VERSION "5.15.2")
+set(REQUIRED_QT_VERSION "6.4.0")
 find_package(Qt6 ${QT_REQUIRED_VERSION} CONFIG REQUIRED Core Gui Widgets Test)
 find_package(Boost REQUIRED)
 find_package(Threads REQUIRED)
@@ -71,7 +71,7 @@ include_directories (
     ${Boost_INCLUDE_DIR}
 )
 
-find_package(KF${QT_MAJOR_VERSION} ${KF_MIN_VERSION} REQUIRED COMPONENTS
+find_package(KF6 ${KF_MIN_VERSION} REQUIRED COMPONENTS
     Runner
     WindowSystem
     I18n
