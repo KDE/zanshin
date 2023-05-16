@@ -1,10 +1,10 @@
-# Emir SARI <emir_sari@icloud.com>, 2022.
+# Emir SARI <emir_sari@icloud.com>, 2022, 2023.
 msgid ""
 msgstr ""
 "Project-Id-Version: zanshin\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-12-22 00:48+0000\n"
-"PO-Revision-Date: 2022-11-22 16:49+0300\n"
+"PO-Revision-Date: 2023-05-15 21:13+0300\n"
 "Last-Translator: Emir SARI <emir_sari@icloud.com>\n"
 "Language-Team: Turkish <kde-l10n-tr@kde.org>\n"
 "Language: tr\n"
@@ -13,7 +13,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 "X-Qt-Contexts: true\n"
-"X-Generator: Lokalize 22.08.3\n"
+"X-Generator: Lokalize 23.03.70\n"
 
 #, kde-format
 msgctxt "NAME OF TRANSLATORS"
@@ -354,7 +354,7 @@ msgstr "Yapılandır %1..."
 #: src/widgets/editorview.cpp:31
 #, kde-format
 msgid "Add Attachment"
-msgstr "Eklenti Ekle"
+msgstr "Ek Ekle"
 
 #: src/widgets/editorview.cpp:36
 #, kde-format
@@ -405,13 +405,13 @@ msgstr "Tamamlandı"
 #: src/widgets/editorview.ui:86
 #, kde-format
 msgid "Add Attachment..."
-msgstr "Eklenti Ekle..."
+msgstr "Ek Ekle..."
 
 #. i18n: ectx: property (toolTip), widget (QToolButton, removeAttachmentButton)
 #: src/widgets/editorview.ui:100
 #, kde-format
 msgid "Remove Attachment"
-msgstr "Eklentiyi Kaldır"
+msgstr "Eki Kaldır"
 
 #. i18n: ectx: property (text), widget (QPushButton, startTodayButton)
 #: src/widgets/editorview.ui:121
