@@ -110,13 +110,13 @@
     <p xml:lang="tr">Zanshin, günlük işlerinizi yönetmek için güçlü ve basit bir uygulamadır. Birinin işinde ve kişisel hayatında yapması gereken şeyin kavramsal baskısını düzenlemenize ve azaltmanıza yardımcı olur. Artık dikkatinizi toplayabilecek ve hiçbir şeyi unutmayacaksınız.</p>
     <p xml:lang="uk">Zanshin — потужна і водночас проста програма для керування записами ваших щоденних завдань. За її допомогою ви зможете впорядкувати ваше життя і уникнути постійного тиску обставин та нестачі часу. Користуючись Zanshin, ви не забуватимете про події і почуватимете себе спокійнішими.</p>
     <p xml:lang="x-test">xxZanshin is a powerful yet simple application for managing your day to day actions. It helps you organize and reduce the cognitive pressure of what one has to do in his job and personal life. You'll never forget anything anymore, getting your mind like water.xx</p>
-    <p>Collect</p>
+    <p subtitle="true">Collect</p>
     <p>Worried about forgetting something? Unexpected memory losses? Zanshin is here to help you. You can collect your tasks and free your mind. You will soon stop hearing this voice nagging you about what you probably forgot, or what you should do. Just fire up Zanshin, once something is collected, you are sure to find it there.</p>
-    <p>Organize</p>
+    <p subtitle="true">Organize</p>
     <p>Zanshin makes it simple to put your daily life in order. Just create a few projects, a few contexts and start filling them with tasks. You can simply do this using drag and drop. Something has to be done before a given day? Just set a due date and it'll stand out from your other items. You need to work on a project? Focus on it and you will see all the related tasks. Feeling like dealing with your phone calls? Focus on your phone context to find all the pending calls you have to give.</p>
-    <p>Optimize</p>
+    <p subtitle="true">Optimize</p>
     <p>We hackers love our keyboards, and you probably find yourself more efficient with your hands on the keyboard as much as possible. That's why we crafted Zanshin carefully to be completely drivable from the keyboard. We added shortcuts to add tasks, move them to a project or a context, navigate, etc.</p>
-    <p>Integrate</p>
+    <p subtitle="true">Integrate</p>
     <p>Zanshin is an application of the KDE community, as such it unleashes even more power when used with other KDE Applications or within KDE Plasma Desktop. Using KMail? You can create a task right from an email you received and it'll appear in Zanshin's Inbox. Using KOrganizer? All your overdue and coming task will appear in the calendar view. Using Plasma Desktop? Then you can collect from anywhere using KRunner, just type in "todo: Buy apples", and you will find that tasks in Zanshin's Inbox, even if it wasn't running!</p>
   </description>
   <url type="homepage">http://apps.kde.org/zanshin</url>
