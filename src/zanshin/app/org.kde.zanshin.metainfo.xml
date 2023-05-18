@@ -110,145 +110,16 @@
     <p xml:lang="tr">Zanshin, günlük işlerinizi yönetmek için güçlü ve basit bir uygulamadır. Birinin işinde ve kişisel hayatında yapması gereken şeyin kavramsal baskısını düzenlemenize ve azaltmanıza yardımcı olur. Artık dikkatinizi toplayabilecek ve hiçbir şeyi unutmayacaksınız.</p>
     <p xml:lang="uk">Zanshin — потужна і водночас проста програма для керування записами ваших щоденних завдань. За її допомогою ви зможете впорядкувати ваше життя і уникнути постійного тиску обставин та нестачі часу. Користуючись Zanshin, ви не забуватимете про події і почуватимете себе спокійнішими.</p>
     <p xml:lang="x-test">xxZanshin is a powerful yet simple application for managing your day to day actions. It helps you organize and reduce the cognitive pressure of what one has to do in his job and personal life. You'll never forget anything anymore, getting your mind like water.xx</p>
-    <p>Features:</p>
-    <p xml:lang="bg">Функции:</p>
-    <p xml:lang="bs">Svojstva:</p>
-    <p xml:lang="ca">Característiques:</p>
-    <p xml:lang="ca-valencia">Característiques:</p>
-    <p xml:lang="cs">Vlastnosti:</p>
-    <p xml:lang="da">Funktioner:</p>
-    <p xml:lang="de">Funktionen:</p>
-    <p xml:lang="en-GB">Features:</p>
-    <p xml:lang="es">Funcionalidades:</p>
-    <p xml:lang="et">Omadused:</p>
-    <p xml:lang="eu">Ezaugarriak:</p>
-    <p xml:lang="fi">Ominaisuuksia:</p>
-    <p xml:lang="fr">Fonctionnalités :</p>
-    <p xml:lang="gl">Funcionalidades:</p>
-    <p xml:lang="hu">Szolgáltatások:</p>
-    <p xml:lang="ia">Characteristicas:</p>
-    <p xml:lang="id">Fitur:</p>
-    <p xml:lang="it">Caratteristiche:</p>
-    <p xml:lang="ka">თვისებები:</p>
-    <p xml:lang="ko">기능:</p>
-    <p xml:lang="lt">Ypatybės:</p>
-    <p xml:lang="my">စွမ်းဆောင်ရည်များ -</p>
-    <p xml:lang="nl">Mogelijkheden:</p>
-    <p xml:lang="nn">Funksjonar:</p>
-    <p xml:lang="pl">Możliwości:</p>
-    <p xml:lang="pt">Funcionalidades:</p>
-    <p xml:lang="pt-BR">Funcionalidades:</p>
-    <p xml:lang="ru">Возможности:</p>
-    <p xml:lang="sk">Funkcie:</p>
-    <p xml:lang="sl">Možnosti:</p>
-    <p xml:lang="sv">Funktioner:</p>
-    <p xml:lang="tr">Özellikler:</p>
-    <p xml:lang="uk">Можливості:</p>
-    <p xml:lang="x-test">xxFeatures:xx</p>
-    <ul>
-      <li>Collects tasks from everywhere</li>
-      <li xml:lang="bg">Обединява задачи от всички източници</li>
-      <li xml:lang="ca">Recull les tasques de tot arreu</li>
-      <li xml:lang="ca-valencia">Arreplega les tasques de tot arreu</li>
-      <li xml:lang="da">Indsamler opgaver fra alle steder</li>
-      <li xml:lang="de">Sammelt Aufgaben von überall</li>
-      <li xml:lang="en-GB">Collects tasks from everywhere</li>
-      <li xml:lang="es">Recopila tareas de todas partes</li>
-      <li xml:lang="et">Ülesannete koondamine kõikjalt</li>
-      <li xml:lang="eu">Leku guztietatik atazak biltzen ditu</li>
-      <li xml:lang="fi">Kokoaa tehtävät mistä vain</li>
-      <li xml:lang="fr">Collecte les tâches à partir de n'importe quelle source</li>
-      <li xml:lang="gl">Recolle tarefas de calquera parte.</li>
-      <li xml:lang="hu">Feladatok összegyűjtése mindenhonnan</li>
-      <li xml:lang="ia">Collige cargas ex ubique</li>
-      <li xml:lang="id">Mengumpulkan tugas dari mana pun</li>
-      <li xml:lang="it">Raccoglie le attività da qualsiasi posizione</li>
-      <li xml:lang="ka">შეაგროვეთ ამოცანები ყველა ადგლიდან</li>
-      <li xml:lang="ko">어디서든지 할 일 수집</li>
-      <li xml:lang="lt">Surenka užduotis iš bet kur</li>
-      <li xml:lang="my">နေရာတိုင်းမှအလုပ်များ စုစည်းသည်</li>
-      <li xml:lang="nl">Verzamelt notities overal vandaan</li>
-      <li xml:lang="nn">Samla oppgåver frå ulike stadar</li>
-      <li xml:lang="pl">Zbieranie zadań z każdego miejsca</li>
-      <li xml:lang="pt">Recolhe tarefas e notas de todo o lado</li>
-      <li xml:lang="pt-BR">Coletar tarefas de qualquer lugar</li>
-      <li xml:lang="ru">Сбор записей задач из различных источников</li>
-      <li xml:lang="sk">Zbiera úlohy a poznámky odvšadiaľ</li>
-      <li xml:lang="sl">Nabira naloge od vsepovsod</li>
-      <li xml:lang="sv">Samla in uppgifter från alla möjliga ställen</li>
-      <li xml:lang="tr">Her yerden işleri toplar</li>
-      <li xml:lang="uk">Збирання різноманітних записів завдань</li>
-      <li xml:lang="x-test">xxCollects tasks from everywherexx</li>
-      <li>Organize tasks in projects and contexts</li>
-      <li xml:lang="bg">Организиране на задачи в проекти и колекции</li>
-      <li xml:lang="ca">Organitza les tasques en projectes i contextos</li>
-      <li xml:lang="ca-valencia">Organitza les tasques en projectes i contextos</li>
-      <li xml:lang="da">Organiser opgaver i projekter og sammenhænge</li>
-      <li xml:lang="de">Organisation von Aufgaben in Projekten und Kontexten</li>
-      <li xml:lang="en-GB">Organise tasks in projects and contexts</li>
-      <li xml:lang="es">Organiza tareas en proyectos y contextos</li>
-      <li xml:lang="et">Ülesannete korraldamine projektide ja kontekstide järgi</li>
-      <li xml:lang="eu">Atazak proiektutan eta testuinguruan antolatzen ditu</li>
-      <li xml:lang="fi">Järjestää tehtävät projekteiksi ja konteksteiksi</li>
-      <li xml:lang="fr">Organiser des tâches dans des projets ou des environnements</li>
-      <li xml:lang="gl">Organice as tarefas por proxectos e contextos.</li>
-      <li xml:lang="hu">Feladatok rendszerezése projektekbe és kontextusokba</li>
-      <li xml:lang="ia">Organisa cargas in projectos e contextos</li>
-      <li xml:lang="id">Mengatur tugas dalam projek dan konteks</li>
-      <li xml:lang="it">Organizza le attività in progetti e contesti</li>
-      <li xml:lang="ka">დაალაგეთ ამოცანები პროექტებში და კონტექსტებში</li>
-      <li xml:lang="ko">할 일을 프로젝트와 문맥별로 정리</li>
-      <li xml:lang="lt">Sisteminkite užduotis į projektus ir kontekstus</li>
-      <li xml:lang="my">ပရောဂျက်များနှင့် သက်ဆိုင်ရာကိစ္စများတွင် အလုပ်များ စီစဥ်သည်</li>
-      <li xml:lang="nl">Organiseert taken in projecten en contexten</li>
-      <li xml:lang="nn">Organisera oppgåver i prosjekt og kontekstar</li>
-      <li xml:lang="pl">Porządkowanie zadań w projekty i konteksty</li>
-      <li xml:lang="pt">Organiza as tarefas e notas em projectos e contextos</li>
-      <li xml:lang="pt-BR">Organizar tarefas em projetos de contextos</li>
-      <li xml:lang="ru">Упорядочение задач по проектам и контекстам</li>
-      <li xml:lang="sk">Organizuje úlohy v projektoch a kontextoch</li>
-      <li xml:lang="sl">Organizira naloge v projektih in kontekstih</li>
-      <li xml:lang="sv">Organisera uppgifter i projekt och sammanhang</li>
-      <li xml:lang="tr">Proje ve içeriklerdeki işleri düzenle</li>
-      <li xml:lang="uk">Упорядковування завдань за проєктами та контекстами</li>
-      <li xml:lang="x-test">xxOrganize tasks in projects and contextsxx</li>
-      <li>Akonadi-enabled application allowing to get the data from virtually anywhere (local, imap, web service...)</li>
-      <li xml:lang="bg">Приложение с поддръжка на Akonadi, позволяващо получаване на данни от почти всяко място (локално, imap, уеб услуга...)</li>
-      <li xml:lang="bs">Akonadi omogućena aplikacija koja vam dopušta da dobavite podatke od u suštini bilo gdje (lokalno, imap, web servis...)</li>
-      <li xml:lang="ca">Habilitant les capacitats de l'Akonadi es permet obtenir les dades des de pràcticament qualsevol lloc (local, IMAP, servei web...)</li>
-      <li xml:lang="ca-valencia">Habilitant les capacitats d'Akonadi es permet obtindre les dades des de pràcticament qualsevol lloc (local, IMAP, servei web...)</li>
-      <li xml:lang="da">Akonadi-aktiveret program som giver mulighed for at hente data fra næsten hvor som helst (lokalt, imap, webtjeneste...)</li>
-      <li xml:lang="de">Akonadi-fähige Anwendung, die es erlaubt, die Daten von praktisch überall her zu erhalten (Lokal, IMAP, Webdienste ...)</li>
-      <li xml:lang="en-GB">Akonadi-enabled application allowing to get the data from virtually anywhere (local, imap, web service...)</li>
-      <li xml:lang="es">Al funcionar con Akonadi le permite obtener datos de virtualmente cualquier parte (local, imap, servicio web...)</li>
-      <li xml:lang="et">Akonadi kasutamise võimalusega rakendus lubab andmeid hankida sisuliselt kõikjal (kohalikust arvutist, IMAP-i kaudu, veebiteenusest ...)</li>
-      <li xml:lang="eu">Akonadi-gaitutako aplikazioa, hori dela eta ia edozein lekutatik datuak lortu ditzake (lokalak, imap, web zerbitzuak, ...)</li>
-      <li xml:lang="fi">Akonadia hyödyntävä sovellus, joka sallii tietojen noutamisen lähes mistä vain (paikallisesti, IMAPista, verkkopalvelusta…)</li>
-      <li xml:lang="fr">Application compatible avec Akonadi vous permettant d'obtenir des données de pratiquement n'importe quelle source (locale, imap, service Internet, etc.)</li>
-      <li xml:lang="gl">A aplicación é compatíbel con Akonadi, e permítelle obter datos de practicamente calquera lugar (local, IMAP, servizos web).</li>
-      <li xml:lang="hu">Akonadi támogatással rendelkező alkalmazás, amely lényegében bárhonnan tud adatot gyűjteni (helyi, IMAP, webes szolgáltatás…)</li>
-      <li xml:lang="ia">Application habilitate per Akonadi permittente obtener datos ex virtualmente ubique (local,imap, servicios web...)</li>
-      <li xml:lang="id">Memungkinkan aplikasi akonadi difungsikan untuk mendapatkan data dari (layanan web, imap, local...) mana pun secara visual</li>
-      <li xml:lang="it">Applicazione abilitata da Akonadi, che permette di recuperare i dati virtualmente da qualsiasi posizione (locale, imap, servizi web...)</li>
-      <li xml:lang="ka">Akonadi-ის მხარდაჭერით ამ აპლიკაციას მონაცემების თითქმის ყველა ადგილიდან (ლოკალური, imap, webservice) მიღება შეუძლია</li>
-      <li xml:lang="ko">Akonadi를 사용하여 어디서든지 데이터 수집(로컬, IMAP, 웹 서비스 등)</li>
-      <li xml:lang="lt">Akonadi įgalinta programa, leidžianti gauti duomenis virtualiai iš bet kur (vietinio kompiuterio, imap, saityno paslaugos...)</li>
-      <li xml:lang="my">မည်သည်နေရာမှမဆို (စက်တွင်း၊ အိုင်မတ်၊ ဝက်ဘ်ဝန်ဆောင်မှု...) ဒေတာရယူနိုင်သည့် အကွန်နဒီဖွင့်ထားသော အပ္ပလီကေးရှင်း</li>
-      <li xml:lang="nl">In Akonadi opgenomen toepassing waarmee de gegevens werkelijk overal vandaan gehaald kunnen worden (lokaal, imap, webservice...)</li>
-      <li xml:lang="nn">Akonadi-basert program som lèt deg henta data frå omtrent kor som helst (lokalt, IMAP, vevtenester, …)</li>
-      <li xml:lang="pl">Program wykorzystuje Akonadi, więc można pobierać dane praktycznie z każdego miejsca (lokalnie, imap, usługa sieciowa...)</li>
-      <li xml:lang="pt">Aplicação com suporte para o Akonadi, permitindo-lhe recolher os dados de praticamente todo o lado (local, IMAP, serviço Web...)</li>
-      <li xml:lang="pt-BR">Aplicativo habilitado para Akonadi que permite obter dados de virtualmente qualquer lugar (local, imap, serviço Web...)</li>
-      <li xml:lang="ru">Интеграция с Akonadi, что позволяет программе получать данные практически из любых источников (локальная сеть, imap, интернет-служба...)</li>
-      <li xml:lang="sk">Aplikácia používajúca Akonadi umožňujúca získanie údajov zdanlivo odvšadiaľ (miestne, imap, webové služby...)</li>
-      <li xml:lang="sl">Akonadi aplikacija omogoča pridobivanje podatkov iz skoraj kjer koli (lokalno, imap, spletne storitve...)</li>
-      <li xml:lang="sv">Program med Akonadi-stöd som gör det möjligt att hämta data från i stort sett var som helst (lokalt, IMAP, webbtjänster ...)</li>
-      <li xml:lang="tr">Akonadi etkinleştirilmiş bu uygulama, sanal bir yerden (yerel, imap, web servisi...) veriyi almanıza imkan sağlar</li>
-      <li xml:lang="uk">Інтеграція з Akonadi, що надає програмі змогу отримувати дані практично з будь-яких джерел (локальна мережа, imap, інтернет-служба...)</li>
-      <li xml:lang="x-test">xxAkonadi-enabled application allowing to get the data from virtually anywhere (local, imap, web service...)xx</li>
-    </ul>
+    <p>Collect</p>
+    <p>Worried about forgetting something? Unexpected memory losses? Zanshin is here to help you. You can collect your tasks and free your mind. You will soon stop hearing this voice nagging you about what you probably forgot, or what you should do. Just fire up Zanshin, once something is collected, you are sure to find it there.</p>
+    <p>Organize</p>
+    <p>Zanshin makes it simple to put your daily life in order. Just create a few projects, a few contexts and start filling them with tasks. You can simply do this using drag and drop. Something has to be done before a given day? Just set a due date and it'll stand out from your other items. You need to work on a project? Focus on it and you will see all the related tasks. Feeling like dealing with your phone calls? Focus on your phone context to find all the pending calls you have to give.</p>
+    <p>Optimize</p>
+    <p>We hackers love our keyboards, and you probably find yourself more efficient with your hands on the keyboard as much as possible. That's why we crafted Zanshin carefully to be completely drivable from the keyboard. We added shortcuts to add tasks, move them to a project or a context, navigate, etc.</p>
+    <p>Integrate</p>
+    <p>Zanshin is an application of the KDE community, as such it unleashes even more power when used with other KDE Applications or within KDE Plasma Desktop. Using KMail? You can create a task right from an email you received and it'll appear in Zanshin's Inbox. Using KOrganizer? All your overdue and coming task will appear in the calendar view. Using Plasma Desktop? Then you can collect from anywhere using KRunner, just type in "todo: Buy apples", and you will find that tasks in Zanshin's Inbox, even if it wasn't running!</p>
   </description>
-  <url type="homepage">http://zanshin.kde.org</url>
+  <url type="homepage">http://apps.kde.org/zanshin</url>
   <url type="bugtracker">https://bugs.kde.org/enter_bug.cgi?format=guided&amp;product=zanshin</url>
   <screenshots>
     <screenshot type="default">
