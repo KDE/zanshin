@@ -51,7 +51,6 @@
         "Description[x-test]": "xxAdd tasks to your todo listxx",
         "EnabledByDefault": true,
         "Icon": "zanshin",
-        "Id": "org.kde.zanshin",
         "License": "LGPL",
         "Name": "Zanshin Tasks",
         "Name[bg]": "Управление на задачи Zanshin",
