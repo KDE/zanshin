@@ -82,7 +82,7 @@
     <p xml:lang="ca">El Zanshin és una aplicació potent i senzilla per a la gestió de les accions del vostre dia a dia. Us ajudarà a organitzar i reduir la pressió cognitiva del que un ha de fer en el seu treball i vida personal. Mai oblidareu res més, fareu que la vostra ment sigui com l'aigua.</p>
     <p xml:lang="ca-valencia">Zanshin és una aplicació potent i senzilla per a la gestió de les accions del vostre dia a dia. Vos ajudarà a organitzar i reduir la pressió cognitiva del que un ha de fer en el seu treball i vida personal. Mai oblidareu res més, fareu que la vostra ment siga com l'aigua.</p>
     <p xml:lang="da">Zanshin er et kraftfuldt men alligevel simpelt program til at håndtere dine daglige handlinger. Den hjælper dig med at organisere og reducere det kongnitive pres i forbindelse med job og det personlige liv. Du vil aldrig glemme noget længere, med tanker som var de vand.</p>
-    <p xml:lang="de">Zanshin ist eine leistungsstarke und dennoch einfache Anwendung zur Verwaltung Ihrer täglichen Aktionen. Es hilft Ihnen bei der Organisation und erleichtert die Aufgaben in Beruf und Privatleben. Sie werden nie mehr etwas vergessen</p>
+    <p xml:lang="de">Zanshin ist eine leistungsstarke und dennoch einfache Anwendung zur Verwaltung Ihrer täglichen Aktionen. Es hilft Ihnen bei der Organisation und erleichtert die Aufgaben in Beruf und Privatleben. Sie werden nie mehr etwas vergessen.</p>
     <p xml:lang="en-GB">Zanshin is a powerful yet simple application for managing your day to day actions. It helps you organise and reduce the cognitive pressure of what one has to do in his job and personal life. You'll never forget anything any more, getting your mind like water.</p>
     <p xml:lang="es">Zanshin es una potente a la vez que sencilla aplicación para la gestión de acciones diarias. Le ayudad a organizar y reducir la presión cognitiva de todo lo que debe hacer en el trabajo y en su vida personal. Nunca volverá a olvidarse de nada, haciendo que su mente sea clara como el agua.</p>
     <p xml:lang="et">Zanshin on lihtne ja tõhus tööriist oma igapäevaste ülesannete haldamiseks. See aitab neid korrastada ja vähendada kognitiivset survet, mis inimest töö- ja eraelus tabab. Sa ei unusta enam kunagi mitte midagi, sinu mõistus püsib vahe kui nuga.</p>
@@ -113,10 +113,12 @@
     <p subtitle="true">Collect</p>
     <p subtitle="true" xml:lang="ca">Recull</p>
     <p subtitle="true" xml:lang="ca-valencia">Arreplega</p>
+    <p subtitle="true" xml:lang="de">Sammeln</p>
     <p subtitle="true" xml:lang="en-GB">Collect</p>
     <p subtitle="true" xml:lang="es">Recopilar</p>
     <p subtitle="true" xml:lang="fr">Collecter</p>
     <p subtitle="true" xml:lang="gl">Apunta</p>
+    <p subtitle="true" xml:lang="ka">შეგროვება</p>
     <p subtitle="true" xml:lang="nl">Verzamelen</p>
     <p subtitle="true" xml:lang="pt">Recolher</p>
     <p subtitle="true" xml:lang="sl">Zbiraj</p>
@@ -130,6 +132,7 @@
     <p xml:lang="es">¿Le preocupa olvidar algo? ¿Pérdidas de memoria inesperadas? Zanshin está aquí para ayudarle. Puede recopilar sus tareas y liberar su mente. Pronto dejará de escuchar esa voz que le reprocha haberse olvidado de algo o que le dice lo que debe hacer. Solo tiene que lanzar Zanshin y, tras recopilar datos, seguramente los encontrará allí.</p>
     <p xml:lang="fr">Vous avez peur d’oublier quelque chose ? Des pertes de mémoire inattendues ? Zanshin est là pour vous aider. Vous pouvez collecter vos tâches et libérer votre esprit. Vous cesserez bientôt d’entendre cette voix vous harceler sur ce que vous avez probablement oublié ou ce que vous devriez faire. Juste lancer Zanshin pour qu'une fois que quelque chose est recueilli, vous êtes sûr de trouver là.</p>
     <p xml:lang="gl">Preocúpache esquecer algo? Pásache ás veces? Zanshin está aquí para axudar. Podes apuntar as túas tarefas para descargar a mente. Non has tardar en deixar de oír esa voz interior que che di que seguramente esqueciches algunha cousa, ou te di que deberías facer. Só terás que iniciar Zanshin, e todo o que apuntases seguirá aí.</p>
+    <p xml:lang="ka">ნერვიულობთ, რამე არ დაგავიწყდეთ? მოულოდნელად გავიწყდებათ ყველაფერი? Zanshin-ი აქაა, რათა დაგეხმაროთ. შეგიძლიათ მოაგროვოთ თქვენი ამოცანები და დაისვენოთ. აზრებს, რომ რამე დაგავიწყდათ, მალევე მოიშორებთ. უბრალოდ გაუშვით Zanshin-ი და როგორც კი რამეს მოაგროვებთ, დარწმუნებული ბრძანდებოდეთ, რომ ის იქ გელოდებათ.</p>
     <p xml:lang="nl">Zorgen over iets vergeten? Onverwacht verlies van geheugen? Zanshin is hier om u te helpen. U kunt uw taken verzamelen en uw geest bevrijden. U zult spoedig stoppen met in gedachten te zeuren over wat u waarschijnlijk vergeten bent of wat u zou doen. Start Zanshin, nadat er iets is verzameld, u weet zeker dat het hier te vinden is.</p>
     <p xml:lang="pt">Está preocupado por se esquecer de alguma coisa? Perdas de memória inesperadas? O Zanshin está aqui para o ajudar. Poderá recolher as suas tarefas e libertar a sua mente. Irá em breve parar de ouvir esta voz que o incomoda sobre o que se esqueceu, ou sobre o que deveria fazer. Basta invocar o Zanshin; assim que tudo estiver recolhido, terá a certeza que o encontrará lá.</p>
     <p xml:lang="sl">Vas skrbi, da bi kaj pozabili? Nepričakovane izgube pomnilnika? Zanshin vam lahko pomaga. Lahko zberete svoje naloge in osvobodite svoj um. Kmalu boste nehali slišati ta glas, ki vas bo preganjal, kaj ste morda pozabili ali bi morali storiti. Samo poženite Zanshina, ko ste nekaj zbrali in gotovo najdete tam.</p>
@@ -139,10 +142,12 @@
     <p subtitle="true">Organize</p>
     <p subtitle="true" xml:lang="ca">Organitza</p>
     <p subtitle="true" xml:lang="ca-valencia">Organitza</p>
+    <p subtitle="true" xml:lang="de">Organisieren</p>
     <p subtitle="true" xml:lang="en-GB">Organise</p>
     <p subtitle="true" xml:lang="es">Organizar</p>
     <p subtitle="true" xml:lang="fr">Organiser</p>
     <p subtitle="true" xml:lang="gl">Organiza</p>
+    <p subtitle="true" xml:lang="ka">ორგანიზება</p>
     <p subtitle="true" xml:lang="nl">Organiseren</p>
     <p subtitle="true" xml:lang="pt">Organizar</p>
     <p subtitle="true" xml:lang="sl">Organiziraj</p>
@@ -164,10 +169,12 @@
     <p subtitle="true">Optimize</p>
     <p subtitle="true" xml:lang="ca">Optimitza</p>
     <p subtitle="true" xml:lang="ca-valencia">Optimitza</p>
+    <p subtitle="true" xml:lang="de">Optimieren</p>
     <p subtitle="true" xml:lang="en-GB">Optimise</p>
     <p subtitle="true" xml:lang="es">Optimizar</p>
     <p subtitle="true" xml:lang="fr">Optimiser</p>
     <p subtitle="true" xml:lang="gl">Optimiza</p>
+    <p subtitle="true" xml:lang="ka">ოპტიმიზაცია</p>
     <p subtitle="true" xml:lang="nl">Optimaliseren</p>
     <p subtitle="true" xml:lang="pt">Optimizar</p>
     <p subtitle="true" xml:lang="sl">Optimiziraj</p>
@@ -179,7 +186,9 @@
     <p xml:lang="ca-valencia">Als hackers ens encanten els nostres teclats, i probablement sereu més eficient amb les mans al teclat sempre que es puga. És per açò que hem fet Zanshin amb cura per a ser completament gestionable amb el teclat. S'han afegit dreceres per a afegir tasques, moure-les a un projecte o context, navegar, etc.</p>
     <p xml:lang="en-GB">We hackers love our keyboards, and you probably find yourself more efficient with your hands on the keyboard as much as possible. That's why we crafted Zanshin carefully to be completely drivable from the keyboard. We added shortcuts to add tasks, move them to a project or a context, navigate, etc.</p>
     <p xml:lang="es">A los programadores nos encanta usar el teclado, y probablemente se dé cuenta de que es más efectivo tener las manos en el teclado el máximo tiempo posible. Por ello hemos creado Zanshin para que se pueda controlar completamente con el teclado. Hemos añadido atajos de teclado para añadir tareas, moverlas a un proyecto o a un contexto, navegar, etc.</p>
+    <p xml:lang="fr">Nous les hackers, nous aimons nos claviers et vous vous trouvez probablement plus efficace avec vos mains sur le clavier autant que possible. C’est pourquoi nous avons soigneusement conçu Zanshin pour qu’il soit entièrement pilotable depuis le clavier. Nous avons ajouté des raccourcis pour ajouter des tâches, les déplacer vers un projet ou un contexte, naviguer, etc.</p>
     <p xml:lang="gl">Á xente metida na informática encántannos os teclados, e seguro que canto máis tempo pasan as túas mans no teclado máis eficiente te sentes. É por iso que fixemos que Zanshin poda usarse completamente desde o teclado. Engadimos atallos para engadir tarefas, movelas a un proxecto ou contexto, navegar, etc.</p>
+    <p xml:lang="ka">ჩვენ, პროგრამისტებს, ძალიან გვიყვარს ჩვენი კლავიატურები და თქვენც ალბათ უფრო და უფრო კომფორტულად გრძნობთ თავს კრეფისას. Zanshin-ი ზუსტად ამიტომ არსებობს. ის სრულად მართვადია კლავიატურიდან. ყველაფერს, ამოცანების დამატებას, მათი პროექტში გადატანას, კონტექსტის დამატებას, ნავიგაციას და ა.შ. თავისი მალსახმობები გააჩნია.</p>
     <p xml:lang="nl">Wij hackers houden van ons toetsenbord en u vindt uzelf efficiënter met uw handen zo veel mogelijke op het toetsenbord. Dat is waarom we Zanshin zorgvuldig hebben ontworpen om volledig te besturen vanaf het toetsenbord. We hebben sneltoetsen toegevoegd aan taken, ze verplaatsen naar een project of een context, navigeren, etc.</p>
     <p xml:lang="pt">Nós programadores gostamos dos nossos teclados, e provavelmente já descobriu que é mais eficiente com as suas mãos sobre o teclado o maior tempo possível. É por isso que modelámos o Zanshin cuidadosamente para ser completamente manipulado a partir do teclado. Adicionámos atalhos para adicionar tarefas, movê-las para um projecto ou contexto, navegar, etc.</p>
     <p xml:lang="sl">Mi hekerji imamo radi naše tipkovnice in verjetno se boste tudi vi čim bolj učinkoviti z rokami na tipkovnici, kolikor je le možno. Zato smo Zanshin previdno izdelali tako, da je popolnoma voden s tipkovnice. Dodali smo bližnjice, da bi dodali naloge, jih premaknili v projekt ali kontekst, krmarili itd.</p>
@@ -189,10 +198,12 @@
     <p subtitle="true">Integrate</p>
     <p subtitle="true" xml:lang="ca">Integra</p>
     <p subtitle="true" xml:lang="ca-valencia">Integra</p>
+    <p subtitle="true" xml:lang="de">Integrieren</p>
     <p subtitle="true" xml:lang="en-GB">Integrate</p>
     <p subtitle="true" xml:lang="es">Integrar</p>
     <p subtitle="true" xml:lang="fr">Intégrer</p>
     <p subtitle="true" xml:lang="gl">Integra</p>
+    <p subtitle="true" xml:lang="ka">ინტეგრირება</p>
     <p subtitle="true" xml:lang="nl">Integreren</p>
     <p subtitle="true" xml:lang="pt">Integrar</p>
     <p subtitle="true" xml:lang="sl">Integriraj</p>
