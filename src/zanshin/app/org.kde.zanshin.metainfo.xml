@@ -124,6 +124,7 @@
     <p subtitle="true" xml:lang="ka">შეგროვება</p>
     <p subtitle="true" xml:lang="nl">Verzamelen</p>
     <p subtitle="true" xml:lang="pt">Recolher</p>
+    <p subtitle="true" xml:lang="pt-BR">Coletar</p>
     <p subtitle="true" xml:lang="sl">Zbiraj</p>
     <p subtitle="true" xml:lang="tr">Topla</p>
     <p subtitle="true" xml:lang="uk">Збирання</p>
@@ -158,6 +159,7 @@
     <p subtitle="true" xml:lang="ka">ორგანიზება</p>
     <p subtitle="true" xml:lang="nl">Organiseren</p>
     <p subtitle="true" xml:lang="pt">Organizar</p>
+    <p subtitle="true" xml:lang="pt-BR">Organizar</p>
     <p subtitle="true" xml:lang="sl">Organiziraj</p>
     <p subtitle="true" xml:lang="tr">Organize Et</p>
     <p subtitle="true" xml:lang="uk">Впорядкування</p>
@@ -192,6 +194,7 @@
     <p subtitle="true" xml:lang="ka">ოპტიმიზაცია</p>
     <p subtitle="true" xml:lang="nl">Optimaliseren</p>
     <p subtitle="true" xml:lang="pt">Optimizar</p>
+    <p subtitle="true" xml:lang="pt-BR">Otimizar</p>
     <p subtitle="true" xml:lang="sl">Optimiziraj</p>
     <p subtitle="true" xml:lang="tr">Eniyile</p>
     <p subtitle="true" xml:lang="uk">Оптимізація</p>
@@ -226,6 +229,7 @@
     <p subtitle="true" xml:lang="ka">ინტეგრირება</p>
     <p subtitle="true" xml:lang="nl">Integreren</p>
     <p subtitle="true" xml:lang="pt">Integrar</p>
+    <p subtitle="true" xml:lang="pt-BR">Integrar</p>
     <p subtitle="true" xml:lang="sl">Integriraj</p>
     <p subtitle="true" xml:lang="tr">Tümleştir</p>
     <p subtitle="true" xml:lang="uk">Інтеграція</p>
