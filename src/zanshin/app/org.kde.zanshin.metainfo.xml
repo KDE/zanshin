@@ -114,6 +114,7 @@
     <p subtitle="true" xml:lang="bg">Събиране</p>
     <p subtitle="true" xml:lang="ca">Recull</p>
     <p subtitle="true" xml:lang="ca-valencia">Arreplega</p>
+    <p subtitle="true" xml:lang="cs">Sesbírat</p>
     <p subtitle="true" xml:lang="de">Sammeln</p>
     <p subtitle="true" xml:lang="en-GB">Collect</p>
     <p subtitle="true" xml:lang="es">Recopilar</p>
@@ -149,6 +150,7 @@
     <p subtitle="true" xml:lang="bg">Организиране</p>
     <p subtitle="true" xml:lang="ca">Organitza</p>
     <p subtitle="true" xml:lang="ca-valencia">Organitza</p>
+    <p subtitle="true" xml:lang="cs">Organizovat</p>
     <p subtitle="true" xml:lang="de">Organisieren</p>
     <p subtitle="true" xml:lang="en-GB">Organise</p>
     <p subtitle="true" xml:lang="es">Organizar</p>
@@ -184,6 +186,7 @@
     <p subtitle="true" xml:lang="bg">Оптимизиране</p>
     <p subtitle="true" xml:lang="ca">Optimitza</p>
     <p subtitle="true" xml:lang="ca-valencia">Optimitza</p>
+    <p subtitle="true" xml:lang="cs">Optimalizovat</p>
     <p subtitle="true" xml:lang="de">Optimieren</p>
     <p subtitle="true" xml:lang="en-GB">Optimise</p>
     <p subtitle="true" xml:lang="es">Optimizar</p>
@@ -219,6 +222,7 @@
     <p subtitle="true" xml:lang="bg">Интегриране</p>
     <p subtitle="true" xml:lang="ca">Integra</p>
     <p subtitle="true" xml:lang="ca-valencia">Integra</p>
+    <p subtitle="true" xml:lang="cs">Integrovat</p>
     <p subtitle="true" xml:lang="de">Integrieren</p>
     <p subtitle="true" xml:lang="en-GB">Integrate</p>
     <p subtitle="true" xml:lang="es">Integrar</p>
