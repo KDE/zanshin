@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-12-22 00:48+0000\n"
-"PO-Revision-Date: 2023-04-28 18:07+0200\n"
+"PO-Revision-Date: 2023-06-17 13:57+0200\n"
 "Last-Translator: Adrián Chaves (Gallaecio) <adrian@chaves.io>\n"
 "Language-Team: Galician <proxecto@trasno.gal>\n"
 "Language: gl\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Lokalize 23.04.0\n"
+"X-Generator: Lokalize 23.04.2\n"
 
 #, kde-format
 msgctxt "NAME OF TRANSLATORS"
@@ -116,7 +116,7 @@ msgstr "Non se pode converter a tarefa %1 en subordinada de %2"
 #: src/presentation/workdaypagemodel.cpp:127
 #, kde-format
 msgid "Cannot deparent task %1 from its parent"
-msgstr "Non se pode eliminar a asociación da tarefa %1 coa súa tarefa superior"
+msgstr "Non se pode romper a asociación da tarefa %1 coa súa tarefa superior"
 
 #: src/presentation/availablepagesmodel.cpp:117
 #, kde-format
@@ -222,7 +222,7 @@ msgstr "Non se pode modificar a tarefa %1 do contexto %2"
 #: src/presentation/contextpagemodel.cpp:147
 #, kde-format
 msgid "Cannot dissociate task %1 from its parent"
-msgstr "Non se pode eliminar a asociación da tarefa %1 coa súa tarefa superior"
+msgstr "Non se pode romper a asociación da tarefa %1 coa súa tarefa superior"
 
 #: src/presentation/inboxpagemodel.cpp:35
 #, kde-format
