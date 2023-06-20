@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-12-22 00:48+0000\n"
-"PO-Revision-Date: 2023-06-17 13:57+0200\n"
+"PO-Revision-Date: 2023-06-19 14:19+0200\n"
 "Last-Translator: Adrián Chaves (Gallaecio) <adrian@chaves.io>\n"
 "Language-Team: Galician <proxecto@trasno.gal>\n"
 "Language: gl\n"
@@ -396,7 +396,7 @@ msgstr "Editor"
 #: src/widgets/editorview.ui:41
 #, kde-format
 msgid "D&ue Date "
-msgstr "Data lím&ite:"
+msgstr "Data lím&ite"
 
 #. i18n: ectx: property (text), widget (QCheckBox, doneButton)
 #: src/widgets/editorview.ui:62 src/widgets/runningtaskwidget.cpp:51
@@ -508,12 +508,12 @@ msgstr "Converter a tarefa en proxecto"
 #: src/widgets/pageview.cpp:205
 #, kde-format
 msgid "Show done tasks"
-msgstr "Mostrar as tarefas completadas"
+msgstr "Amosar as tarefas completadas"
 
 #: src/widgets/pageview.cpp:213
 #, kde-format
 msgid "Show future tasks"
-msgstr "Mostrar as tarefas futuras"
+msgstr "Amosar as tarefas futuras"
 
 #: src/widgets/pageview.cpp:239
 #, kde-format
