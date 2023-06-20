@@ -51,7 +51,7 @@
   <summary xml:lang="eu">Eginkizunak kudeatzeko aplikazioa</summary>
   <summary xml:lang="fi">Tehtävänhallintasovellus</summary>
   <summary xml:lang="fr">Application de gestion des tâches à faire</summary>
-  <summary xml:lang="gl">Aplicación de xestión de tarefas</summary>
+  <summary xml:lang="gl">Aplicación de xestión de tarefas.</summary>
   <summary xml:lang="hu">Tennivaló-kezelő alkalmazás</summary>
   <summary xml:lang="ia">Application per gerer agenda (actiones de facer)</summary>
   <summary xml:lang="id">Aplikasi Pengelolaan Hal Melakukan</summary>
@@ -119,7 +119,7 @@
     <p subtitle="true" xml:lang="en-GB">Collect</p>
     <p subtitle="true" xml:lang="es">Recopilar</p>
     <p subtitle="true" xml:lang="fr">Collecter</p>
-    <p subtitle="true" xml:lang="gl">Apunta</p>
+    <p subtitle="true" xml:lang="gl">Apunta.</p>
     <p subtitle="true" xml:lang="ia">Collige</p>
     <p subtitle="true" xml:lang="it">Raccogli</p>
     <p subtitle="true" xml:lang="ka">შეგროვება</p>
@@ -155,7 +155,7 @@
     <p subtitle="true" xml:lang="en-GB">Organise</p>
     <p subtitle="true" xml:lang="es">Organizar</p>
     <p subtitle="true" xml:lang="fr">Organiser</p>
-    <p subtitle="true" xml:lang="gl">Organiza</p>
+    <p subtitle="true" xml:lang="gl">Organiza.</p>
     <p subtitle="true" xml:lang="ia">Organisa</p>
     <p subtitle="true" xml:lang="it">Organizza</p>
     <p subtitle="true" xml:lang="ka">ორგანიზება</p>
@@ -191,7 +191,7 @@
     <p subtitle="true" xml:lang="en-GB">Optimise</p>
     <p subtitle="true" xml:lang="es">Optimizar</p>
     <p subtitle="true" xml:lang="fr">Optimiser</p>
-    <p subtitle="true" xml:lang="gl">Optimiza</p>
+    <p subtitle="true" xml:lang="gl">Optimiza.</p>
     <p subtitle="true" xml:lang="ia">Optimisa</p>
     <p subtitle="true" xml:lang="it">Ottimizza</p>
     <p subtitle="true" xml:lang="ka">ოპტიმიზაცია</p>
@@ -209,7 +209,7 @@
     <p xml:lang="en-GB">We hackers love our keyboards, and you probably find yourself more efficient with your hands on the keyboard as much as possible. That's why we crafted Zanshin carefully to be completely drivable from the keyboard. We added shortcuts to add tasks, move them to a project or a context, navigate, etc.</p>
     <p xml:lang="es">A los programadores nos encanta usar el teclado, y probablemente se dé cuenta de que es más efectivo tener las manos en el teclado el máximo tiempo posible. Por ello hemos creado Zanshin para que se pueda controlar completamente con el teclado. Hemos añadido atajos de teclado para añadir tareas, moverlas a un proyecto o a un contexto, navegar, etc.</p>
     <p xml:lang="fr">Nous les hackers, nous aimons nos claviers et vous vous trouvez probablement plus efficace avec vos mains sur le clavier autant que possible. C'est pourquoi nous avons soigneusement conçu Zanshin pour qu'il soit entièrement pilotable depuis le clavier. Nous avons ajouté des raccourcis pour ajouter des tâches, les déplacer vers un projet ou un contexte, naviguer, etc.</p>
-    <p xml:lang="gl">Á xente metida na informática encántannos os teclados, e seguro que canto máis tempo pasan as túas mans no teclado máis eficiente te sentes. É por iso que fixemos que Zanshin poda usarse completamente desde o teclado. Engadimos atallos para engadir tarefas, movelas a un proxecto ou contexto, navegar, etc.</p>
+    <p xml:lang="gl">Á xente metida na informática encántannos os teclados, e seguro que canto máis tempo pasan as túas mans no teclado máis eficiente te sentes. É por iso que fixemos que Zanshin poda usarse completamente desde o teclado. Engadimos atallos para engadir tarefas, movelas a un proxecto ou contexto, navegar…</p>
     <p xml:lang="it">Noi hacker adoriamo le tastiere, e anche tu probabilmente sei più efficiente se hai le mani sulla tastiera il più possibile. Ecco perché abbiamo realizzato con cura Zanshin, in modo che sia completamente manovrabile da tastiera. Abbiamo aggiunto delle scorciatoie per aggiungere le attività, per spostarle in un progetto o contesto, per navigare, ecc.</p>
     <p xml:lang="ka">ჩვენ, პროგრამისტებს, ძალიან გვიყვარს ჩვენი კლავიატურები და თქვენც ალბათ უფრო და უფრო კომფორტულად გრძნობთ თავს კრეფისას. Zanshin-ი ზუსტად ამიტომ არსებობს. ის სრულად მართვადია კლავიატურიდან. ყველაფერს, ამოცანების დამატებას, მათი პროექტში გადატანას, კონტექსტის დამატებას, ნავიგაციას და ა.შ. თავისი მალსახმობები გააჩნია.</p>
     <p xml:lang="nl">Wij hackers houden van ons toetsenbord en u vindt uzelf efficiënter met uw handen zo veel mogelijke op het toetsenbord. Dat is waarom we Zanshin zorgvuldig hebben ontworpen om volledig te besturen vanaf het toetsenbord. We hebben sneltoetsen toegevoegd aan taken, ze verplaatsen naar een project of een context, navigeren, etc.</p>
@@ -227,7 +227,7 @@
     <p subtitle="true" xml:lang="en-GB">Integrate</p>
     <p subtitle="true" xml:lang="es">Integrar</p>
     <p subtitle="true" xml:lang="fr">Intégrer</p>
-    <p subtitle="true" xml:lang="gl">Integra</p>
+    <p subtitle="true" xml:lang="gl">Integra.</p>
     <p subtitle="true" xml:lang="ia">Integrar</p>
     <p subtitle="true" xml:lang="it">Integra</p>
     <p subtitle="true" xml:lang="ka">ინტეგრირება</p>
@@ -272,7 +272,7 @@
       <caption xml:lang="eu">Zanshin leiho nagusia</caption>
       <caption xml:lang="fi">Zanshinin pääikkuna</caption>
       <caption xml:lang="fr">Fenêtre principale de Zanshin</caption>
-      <caption xml:lang="gl">Xanela principal de Zanshin</caption>
+      <caption xml:lang="gl">Xanela principal de Zanshin.</caption>
       <caption xml:lang="hu">A Zanshin főablaka</caption>
       <caption xml:lang="ia">Fenestra principal de Zanshin</caption>
       <caption xml:lang="id">Jendela utama Zanshin</caption>
