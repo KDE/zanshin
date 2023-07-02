@@ -845,3 +845,5 @@ Domain::DataSource::Ptr ZanshinContext::dataSourceFromName(const QString &source
     return index.data(Presentation::QueryTreeModelBase::ObjectRole)
                 .value<Domain::DataSource::Ptr>();
 }
+
+#include "moc_zanshincontext.cpp"

@@ -499,3 +499,5 @@ Domain::Task::Ptr PageView::currentTask() const
 }
 
 #include "pageview.moc"
+
+#include "moc_pageview.cpp"

@@ -112,3 +112,5 @@ void ApplicationModel::setErrorHandler(ErrorHandler *errorHandler)
     if (m_currentPage)
         m_currentPage.staticCast<PageModel>()->setErrorHandler(errorHandler);
 }
+
+#include "moc_applicationmodel.cpp"

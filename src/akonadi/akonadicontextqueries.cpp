@@ -67,3 +67,5 @@ ContextQueries::TaskResult::Ptr ContextQueries::findTopLevelTasks(Domain::Contex
     m_integrator->bind("ContextQueries::findTopLevelTasks", query, fetch, predicate);
     return query->result();
 }
+
+#include "moc_akonadicontextqueries.cpp"

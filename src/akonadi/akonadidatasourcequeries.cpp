@@ -83,3 +83,5 @@ DataSourceQueries::CollectionInputQuery::PredicateFunction DataSourceQueries::cr
             && collection.parentCollection() == root;
     };
 }
+
+#include "moc_akonadidatasourcequeries.cpp"

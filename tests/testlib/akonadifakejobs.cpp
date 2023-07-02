@@ -66,3 +66,5 @@ void AkonadiFakeItemFetchJob::setCollection(const Akonadi::Collection &collectio
     m_collection = collection;
 }
 
+
+#include "moc_akonadifakejobs.cpp"

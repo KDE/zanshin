@@ -173,3 +173,5 @@ void Cache::onItemRemoved(const Item &item)
     for (auto &itemList : m_collectionItems)
         itemList.removeAll(item.id());
 }
+
+#include "moc_akonadicache.cpp"

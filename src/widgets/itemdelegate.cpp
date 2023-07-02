@@ -171,3 +171,5 @@ void ItemDelegate::setEditorData(QWidget *editor, const QModelIndex &index) cons
         QStyledItemDelegate::setEditorData(editor, index);
     }
 }
+
+#include "moc_itemdelegate.cpp"

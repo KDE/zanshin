@@ -288,3 +288,5 @@ void ApplicationComponents::moveItems(const QModelIndex &destination, const QMod
     availablePagesModel->dropMimeData(data.get(), Qt::MoveAction, -1, -1, destination);
 }
 
+
+#include "moc_applicationcomponents.cpp"

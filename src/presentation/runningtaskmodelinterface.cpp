@@ -15,3 +15,5 @@ RunningTaskModelInterface::RunningTaskModelInterface(QObject *parent)
 RunningTaskModelInterface::~RunningTaskModelInterface()
 {
 }
+
+#include "moc_runningtaskmodelinterface.cpp"

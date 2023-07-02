@@ -54,3 +54,5 @@ void AkonadiFakeMonitor::moveItem(const Akonadi::Item &item)
 }
 
 
+
+#include "moc_akonadifakemonitor.cpp"

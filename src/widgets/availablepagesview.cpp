@@ -323,3 +323,5 @@ void AvailablePagesView::onInitTimeout()
         m_pagesView->expandAll();
     }
 }
+
+#include "moc_availablepagesview.cpp"

@@ -57,3 +57,5 @@ void MonitorSpy::onDelayExpired()
 {
     m_isFinished = true;
 }
+
+#include "moc_monitorspy.cpp"

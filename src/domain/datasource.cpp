@@ -74,3 +74,5 @@ void DataSource::setSelected(bool selected)
     m_selected = selected;
     emit selectedChanged(selected);
 }
+
+#include "moc_datasource.cpp"

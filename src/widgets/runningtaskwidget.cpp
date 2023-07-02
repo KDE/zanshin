@@ -138,3 +138,5 @@ QString RunningTaskWidget::currentText() const
 {
     return m_titleLabel->text();
 }
+
+#include "moc_runningtaskwidget.cpp"

@@ -16,3 +16,5 @@ MonitorInterface::MonitorInterface(QObject *parent)
 MonitorInterface::~MonitorInterface()
 {
 }
+
+#include "moc_akonadimonitorinterface.cpp"

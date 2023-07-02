@@ -76,3 +76,5 @@ bool Part::openFile()
 }
 
 #include "part.moc"
+
+#include "moc_part.cpp"

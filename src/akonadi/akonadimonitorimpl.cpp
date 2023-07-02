@@ -93,3 +93,5 @@ bool MonitorImpl::hasSupportedMimeTypes(const Collection &collection)
     mimeIntersection.intersect(listToSet(collection.contentMimeTypes()));
     return !mimeIntersection.isEmpty();
 }
+
+#include "moc_akonadimonitorimpl.cpp"

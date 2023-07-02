@@ -113,3 +113,5 @@ void NameAndDataSourceDialog::onUserInputChanged()
 }
 
 #include "nameanddatasourcedialog.moc"
+
+#include "moc_nameanddatasourcedialog.cpp"

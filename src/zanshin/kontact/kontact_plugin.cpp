@@ -21,3 +21,5 @@ KParts::Part *Plugin::createPart()
 }
 
 #include "kontact_plugin.moc"
+
+#include "moc_kontact_plugin.cpp"

@@ -119,3 +119,5 @@ KJob *ProjectRepository::dissociate(Domain::Task::Ptr child)
 
     return job;
 }
+
+#include "moc_akonadiprojectrepository.cpp"

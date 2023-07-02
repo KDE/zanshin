@@ -134,3 +134,5 @@ void ConfigDialog::applyContentTypes(AgentFilterProxyModel *model)
     model->addMimeTypeFilter(KCalendarCore::Todo::todoMimeType());
 }
 
+
+#include "moc_akonadiconfigdialog.cpp"

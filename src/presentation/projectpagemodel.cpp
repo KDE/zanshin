@@ -145,3 +145,5 @@ QAbstractItemModel *ProjectPageModel::createCentralListModel()
 
     return new QueryTreeModel<Domain::Task::Ptr>(query, flags, data, setData, drop, drag, nullptr, this);
 }
+
+#include "moc_projectpagemodel.cpp"

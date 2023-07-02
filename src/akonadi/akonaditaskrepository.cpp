@@ -284,3 +284,5 @@ KJob *TaskRepository::dissociateAll(Domain::Task::Ptr child)
 
     return job;
 }
+
+#include "moc_akonaditaskrepository.cpp"

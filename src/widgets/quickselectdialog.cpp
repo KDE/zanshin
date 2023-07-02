@@ -109,3 +109,5 @@ void QuickSelectDialog::setModel(QAbstractItemModel *model)
     m_filterProxyModel->setSourceModel(m_model);
     m_tree->expandAll();
 }
+
+#include "moc_quickselectdialog.cpp"

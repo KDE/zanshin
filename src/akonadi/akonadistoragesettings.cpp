@@ -39,3 +39,5 @@ void StorageSettings::setDefaultCollection(const Collection &collection)
     config.sync();
     emit defaultCollectionChanged(collection);
 }
+
+#include "moc_akonadistoragesettings.cpp"

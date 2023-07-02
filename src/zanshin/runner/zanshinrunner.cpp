@@ -80,3 +80,5 @@ void ZanshinRunner::run(const RunnerContext &context, const QueryMatch &match)
 }
 
 #include "zanshinrunner.moc"
+
+#include "moc_zanshinrunner.cpp"

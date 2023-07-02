@@ -143,3 +143,5 @@ void AvailableSourcesView::setSourceModel(const QByteArray &propertyName)
     if (modelProperty.canConvert<QAbstractItemModel*>())
         m_sortProxy->setSourceModel(modelProperty.value<QAbstractItemModel*>());
 }
+
+#include "moc_availablesourcesview.cpp"

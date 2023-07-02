@@ -132,3 +132,5 @@ QAbstractItemModel *AllTasksPageModel::createCentralListModel()
 
     return new QueryTreeModel<Domain::Task::Ptr, TaskExtraDataPtr>(query, flags, data, setData, drop, drag, fetchAdditionalInfo, this);
 }
+
+#include "moc_alltaskspagemodel.cpp"

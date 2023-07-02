@@ -139,3 +139,5 @@ bool TaskFilterProxyModel::lessThan(const QModelIndex &left, const QModelIndex &
     return leftDue < rightDue
         || leftStart < rightStart;
 }
+
+#include "moc_taskfilterproxymodel.cpp"

@@ -41,3 +41,5 @@ QSize DataSourceDelegate::sizeHint(const QStyleOptionViewItem &option, const QMo
     size.setHeight(DELEGATE_HEIGHT + 4);
     return size;
 }
+
+#include "moc_datasourcedelegate.cpp"

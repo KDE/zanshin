@@ -253,3 +253,5 @@ bool QueryTreeModelBase::isModelIndexValid(const QModelIndex &index) const
     const int count = parentNode->childCount();
     return index.row() < count;
 }
+
+#include "moc_querytreemodelbase.cpp"

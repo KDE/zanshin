@@ -275,3 +275,5 @@ void EditorView::onAttachmentDoubleClicked(const QModelIndex &index)
 
     QMetaObject::invokeMethod(m_model, "openAttachment", Q_ARG(QModelIndex, index));
 }
+
+#include "moc_editorview.cpp"

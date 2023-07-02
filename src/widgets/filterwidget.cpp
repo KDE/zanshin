@@ -81,3 +81,5 @@ void FilterWidget::onDescendingClicked()
 {
     m_model->setSortOrder(Qt::DescendingOrder);
 }
+
+#include "moc_filterwidget.cpp"

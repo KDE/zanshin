@@ -226,3 +226,5 @@ void TaskQueries::onWorkdayPollTimeout()
         m_findWorkdayTopLevel->reset();
     }
 }
+
+#include "moc_akonaditaskqueries.cpp"

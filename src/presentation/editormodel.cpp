@@ -443,3 +443,5 @@ void EditorModel::applyNewRecurrence(Domain::Task::Recurrence recurrence)
 }
 
 #include "editormodel.moc"
+
+#include "moc_editormodel.cpp"

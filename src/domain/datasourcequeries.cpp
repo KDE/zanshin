@@ -31,3 +31,5 @@ void DataSourceQueries::setDefaultSource(DataSource::Ptr source)
     changeDefaultSource(source);
     emit notifier()->defaultSourceChanged();
 }
+
+#include "moc_datasourcequeries.cpp"

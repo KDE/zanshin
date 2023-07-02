@@ -58,3 +58,5 @@ QString FakeJob::expectedErrorText() const
 {
     return m_errorText;
 }
+
+#include "moc_fakejob.cpp"

@@ -812,3 +812,5 @@ Akonadi::Collection AkonadiStorageTestBase::emails()
     return fetchCollectionByRID(QStringLiteral("{14096930-7bfe-46ca-8fba-7c04d3b62ec8}"));
 }
 
+
+#include "moc_akonadistoragetestbase.cpp"

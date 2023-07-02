@@ -80,3 +80,5 @@ void RunningTaskModel::doneTask()
     m_runningTask->setDone(true);
     stopTask();
 }
+
+#include "moc_runningtaskmodel.cpp"

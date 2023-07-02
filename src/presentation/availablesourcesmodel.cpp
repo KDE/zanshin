@@ -136,3 +136,5 @@ void AvailableSourcesModel::emitDefaultSourceChanged(const QModelIndex &root)
         emitDefaultSourceChanged(index);
     }
 }
+
+#include "moc_availablesourcesmodel.cpp"

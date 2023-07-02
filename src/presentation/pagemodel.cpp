@@ -118,3 +118,5 @@ QVariant PageModel::defaultTaskData(const Domain::Task::Ptr &task, int role, con
     }
     return QVariant();
 }
+
+#include "moc_pagemodel.cpp"

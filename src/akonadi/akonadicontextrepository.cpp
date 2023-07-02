@@ -112,3 +112,5 @@ KJob *ContextRepository::dissociateAll(Domain::Task::Ptr child)
 
     return job;
 }
+
+#include "moc_akonadicontextrepository.cpp"

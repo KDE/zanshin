@@ -312,3 +312,5 @@ QAbstractItemModel *AvailablePagesModel::createPageListModel()
 
     return new QueryTreeModel<QObjectPtr>(query, flags, data, setData, drop, drag, nullptr, this);
 }
+
+#include "moc_availablepagesmodel.cpp"

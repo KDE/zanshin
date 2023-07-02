@@ -39,3 +39,5 @@ ProjectQueries::TaskResult::Ptr ProjectQueries::findTopLevel(Domain::Project::Pt
     m_integrator->bind("ProjectQueries::findTopLevel", query, fetch, predicate);
     return query->result();
 }
+
+#include "moc_akonadiprojectqueries.cpp"

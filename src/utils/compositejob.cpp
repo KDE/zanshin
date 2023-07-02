@@ -58,3 +58,5 @@ void CompositeJob::slotResult(KJob *job)
             emitResult();
     }
 }
+
+#include "moc_compositejob.cpp"

@@ -115,3 +115,5 @@ void LiveQueryIntegrator::cleanupQueries()
     m_collectionInputQueries.removeAll(Domain::LiveQueryInput<Collection>::WeakPtr());
     m_itemInputQueries.removeAll(Domain::LiveQueryInput<Item>::WeakPtr());
 }
+
+#include "moc_akonadilivequeryintegrator.cpp"

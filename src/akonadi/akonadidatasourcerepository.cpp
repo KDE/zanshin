@@ -38,3 +38,5 @@ void DataSourceRepository::windowNeedsDataBackend(QWidget *window)
 {
     Akonadi::ControlGui::widgetNeedsAkonadi(window);
 }
+
+#include "moc_akonadidatasourcerepository.cpp"

@@ -24,3 +24,5 @@ bool AvailablePagesSortFilterProxyModel::lessThan(const QModelIndex &left, const
     }
     return QSortFilterProxyModel::lessThan(left, right);
 }
+
+#include "moc_availablepagessortfilterproxymodel.cpp"
