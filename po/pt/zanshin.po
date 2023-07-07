@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: libkdepim\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-12-22 00:48+0000\n"
-"PO-Revision-Date: 2021-05-08 17:51+0100\n"
+"PO-Revision-Date: 2023-05-22 22:21+0100\n"
 "Last-Translator: José Nuno Pires <zepires@gmail.com>\n"
 "Language-Team: pt <kde-i18n-pt@kde.org>\n"
 "Language: pt\n"
@@ -434,7 +434,7 @@ msgstr "&Recorrência"
 #: src/widgets/editorview.ui:146
 #, kde-format
 msgid "St&art Date"
-msgstr "D&ata Inicial"
+msgstr "D&ata de Início"
 
 #: src/widgets/filterwidget.cpp:29
 #, kde-format

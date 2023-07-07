@@ -1,10 +1,10 @@
-# Emir SARI <emir_sari@icloud.com>, 2022.
+# Emir SARI <emir_sari@icloud.com>, 2022, 2023.
 msgid ""
 msgstr ""
 "Project-Id-Version: zanshin\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-12-22 00:48+0000\n"
-"PO-Revision-Date: 2022-11-22 16:49+0300\n"
+"PO-Revision-Date: 2023-06-11 22:19+0300\n"
 "Last-Translator: Emir SARI <emir_sari@icloud.com>\n"
 "Language-Team: Turkish <kde-l10n-tr@kde.org>\n"
 "Language: tr\n"
@@ -13,7 +13,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 "X-Qt-Contexts: true\n"
-"X-Generator: Lokalize 22.08.3\n"
+"X-Generator: Lokalize 23.07.70\n"
 
 #, kde-format
 msgctxt "NAME OF TRANSLATORS"
@@ -354,7 +354,7 @@ msgstr "Yapılandır %1..."
 #: src/widgets/editorview.cpp:31
 #, kde-format
 msgid "Add Attachment"
-msgstr "Eklenti Ekle"
+msgstr "Ek Ekle"
 
 #: src/widgets/editorview.cpp:36
 #, kde-format
@@ -405,13 +405,13 @@ msgstr "Tamamlandı"
 #: src/widgets/editorview.ui:86
 #, kde-format
 msgid "Add Attachment..."
-msgstr "Eklenti Ekle..."
+msgstr "Ek Ekle..."
 
 #. i18n: ectx: property (toolTip), widget (QToolButton, removeAttachmentButton)
 #: src/widgets/editorview.ui:100
 #, kde-format
 msgid "Remove Attachment"
-msgstr "Eklentiyi Kaldır"
+msgstr "Eki Kaldır"
 
 #. i18n: ectx: property (text), widget (QPushButton, startTodayButton)
 #: src/widgets/editorview.ui:121
@@ -423,7 +423,7 @@ msgstr "&Bugün için Seç"
 #: src/widgets/editorview.ui:130
 #, kde-format
 msgid "&Recurrence"
-msgstr "&Tekrarlama"
+msgstr "&Yineleme"
 
 #. i18n: ectx: property (text), widget (QLabel, startDateLabel)
 #: src/widgets/editorview.ui:146
@@ -451,7 +451,7 @@ msgstr "Süzgeç..."
 #: src/widgets/filterwidget.ui:65
 #, kde-format
 msgid "Sort in descending order"
-msgstr "Azalan şekilde sıralar"
+msgstr "Azalan şekilde sırala"
 
 #. i18n: ectx: property (toolTip), widget (QToolButton, ascendingButton)
 #: src/widgets/filterwidget.ui:88
@@ -485,7 +485,7 @@ msgstr "Kaynak"
 #: src/widgets/pageview.cpp:155
 #, kde-format
 msgid "Type and press enter to add a task"
-msgstr "Bir göreve klemek için yazıp Enter'a basın"
+msgstr "Bir görev eklemek için yazıp Giriş'e basın"
 
 #: src/widgets/pageview.cpp:170
 #, kde-format
@@ -562,7 +562,7 @@ msgstr "Yol: %1"
 #: src/widgets/runningtaskwidget.cpp:37
 #, kde-format
 msgid "Zanshin Running Task Banner"
-msgstr "Zanshin Çalışan Görev Afişi"
+msgstr "Zanşin Çalışan Görev Afişi"
 
 #: src/widgets/runningtaskwidget.cpp:47
 #, kde-format
@@ -572,7 +572,7 @@ msgstr "Dur"
 #: src/zanshin/app/aboutdata.cpp:14
 #, kde-format
 msgid "Zanshin Tasks"
-msgstr "Zanshin Görevleri"
+msgstr "Zanşin Görevleri"
 
 #: src/zanshin/app/aboutdata.cpp:15
 #, kde-format
