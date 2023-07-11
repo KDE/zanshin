@@ -23,7 +23,7 @@ class ZanshinRunner : public AbstractRunner
     Q_OBJECT
 
 public:
-    ZanshinRunner(QObject *parent, const KPluginMetaData &metaData, const QVariantList &args);
+    ZanshinRunner(QObject *parent, const KPluginMetaData &metaData);
     ~ZanshinRunner();
 
 private:

@@ -26,8 +26,8 @@ Domain::TaskRepository::Ptr createTaskRepository()
     return Domain::TaskRepository::Ptr(repository);
 }
 
-ZanshinRunner::ZanshinRunner(QObject *parent, const KPluginMetaData &metaData, const QVariantList &args)
-    : AbstractRunner(parent, metaData, args)
+ZanshinRunner::ZanshinRunner(QObject *parent, const KPluginMetaData &metaData)
+    : AbstractRunner(parent, metaData)
     , m_taskRepository(createTaskRepository())
     , m_triggerWord(QStringLiteral("todo:"))
 {
