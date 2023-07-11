@@ -14,11 +14,7 @@ class Part : public KParts::ReadOnlyPart
     Q_OBJECT
 
 public:
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-    Part(QWidget *parentWidget, QObject *parent, const QVariantList &);
-#else
     Part(QWidget *parentWidget, QObject *parent, const KPluginMetaData &data, const QVariantList &);
-#endif
     ~Part();
 
 protected:

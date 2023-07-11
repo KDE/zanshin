@@ -27,13 +27,8 @@
 #include "integration/dependencies.h"
 
 K_PLUGIN_FACTORY(PartFactory, registerPlugin<Part>();)
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-Part::Part(QWidget *parentWidget, QObject *parent, const QVariantList &)
-    : KParts::ReadOnlyPart(parent)
-#else
 Part::Part(QWidget *parentWidget, QObject *parent, const KPluginMetaData &data, const QVariantList &)
     : KParts::ReadOnlyPart(parent, data)
-#endif
 {
     Integration::initializeGlobalAppDependencies();
 

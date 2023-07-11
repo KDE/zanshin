@@ -42,11 +42,7 @@ private slots:
     void setCollapsed(bool b);
 
 protected:
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-    void enterEvent(QEvent *ev) override;
-#else
     void enterEvent(QEnterEvent *ev) override;
-#endif
     void leaveEvent(QEvent *ev) override;
 
 private:
