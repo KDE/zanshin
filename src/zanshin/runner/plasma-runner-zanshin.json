@@ -9,6 +9,7 @@
                 "Name[cs]": "Tým Zanshin",
                 "Name[de]": "Zanshin-Team",
                 "Name[en_GB]": "Zanshin Team",
+                "Name[eo]": "Zanshin-Teamo",
                 "Name[es]": "Equipo de Zanshin",
                 "Name[eu]": "Zanshin Taldea",
                 "Name[fi]": "Zanshin-työryhmä",
@@ -25,7 +26,7 @@
                 "Name[pt_BR]": "Equipe do Zanshin",
                 "Name[ru]": "Команда Zanshin",
                 "Name[sl]": "Ekipa Zanshin",
-                "Name[tr]": "Zanshin Takımı",
+                "Name[tr]": "Zanşin Takımı",
                 "Name[uk]": "Команда Zanshin",
                 "Name[x-test]": "xxZanshin Teamxx"
             }
@@ -37,6 +38,7 @@
         "Description[cs]": "Přidat úlohy do seznamu úloh",
         "Description[de]": "Aufgaben zu Ihrer Aufgabenliste hinzufügen",
         "Description[en_GB]": "Add tasks to your to-do list",
+        "Description[eo]": "Aldoni taskojn al via listo de farendaĵoj",
         "Description[es]": "Añadir tareas a su lista de pendientes",
         "Description[eu]": "Gehitu atazak zure eginkizunen zerrendara",
         "Description[fi]": "Lisää tehtäviä tehtäväluetteloosi",
@@ -67,6 +69,7 @@
         "Name[cs]": "Úkoly Zanshin",
         "Name[de]": "Zanshin-Aufgaben",
         "Name[en_GB]": "Zanshin Tasks",
+        "Name[eo]": "Zanshin-Taskoj",
         "Name[es]": "Tareas de Zanshin",
         "Name[eu]": "Zanshin atazak",
         "Name[fi]": "Zanshin-tehtävät",
@@ -83,7 +86,7 @@
         "Name[pt_BR]": "Lista de tarefas Zanshin",
         "Name[ru]": "Задачи Zanshin",
         "Name[sl]": "Zanshinove naloge",
-        "Name[tr]": "Zanshin Görevler",
+        "Name[tr]": "Zanşin Görevler",
         "Name[uk]": "Завдання Zanshin",
         "Name[x-test]": "xxZanshin Tasksxx"
     }
