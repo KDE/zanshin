@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: kdeorg\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-12-22 00:48+0000\n"
-"PO-Revision-Date: 2023-07-03 11:39\n"
+"PO-Revision-Date: 2023-07-18 11:12\n"
 "Last-Translator: \n"
 "Language-Team: Chinese Simplified\n"
 "Language: zh_CN\n"
@@ -158,7 +158,7 @@ msgstr "上下文"
 #: src/presentation/availablepagesmodel.cpp:153
 #, kde-format
 msgid "All Tasks"
-msgstr ""
+msgstr "全部任务"
 
 #: src/presentation/availablepagesmodel.cpp:252
 #, kde-format
@@ -283,7 +283,7 @@ msgstr ""
 #: src/widgets/applicationcomponents.cpp:48
 #, kde-format
 msgid "Move Task"
-msgstr ""
+msgstr "移动任务"
 
 #: src/widgets/availablepagesview.cpp:50
 #, kde-format
