@@ -650,23 +650,3 @@ msgstr "Barra d'eines principal"
 #, kde-format
 msgid "Add \"%1\" to your todo list"
 msgstr "Afig «%1» a la vostra llista de tasques pendents"
-
-#~ msgctxt "the day after today"
-#~ msgid "tomorrow"
-#~ msgstr "demà"
-
-#~ msgctxt "this day"
-#~ msgid "today"
-#~ msgstr "hui"
-
-#~ msgctxt "the day before today"
-#~ msgid "yesterday"
-#~ msgstr "ahir"
-
-#~ msgctxt "the week after this week"
-#~ msgid "next week"
-#~ msgstr "setmana vinent"
-
-#~ msgctxt "the month after this month"
-#~ msgid "next month"
-#~ msgstr "mes vinent"
