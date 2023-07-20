@@ -1,13 +1,13 @@
 cmake_minimum_required(VERSION 3.16)
 # KDE Application Version, managed by release script
 set(RELEASE_SERVICE_VERSION_MAJOR "23")
-set(RELEASE_SERVICE_VERSION_MINOR "07")
+set(RELEASE_SERVICE_VERSION_MINOR "11")
 set(RELEASE_SERVICE_VERSION_MICRO "70")
 set(RELEASE_SERVICE_VERSION "${RELEASE_SERVICE_VERSION_MAJOR}.${RELEASE_SERVICE_VERSION_MINOR}.${RELEASE_SERVICE_VERSION_MICRO}")
 
 project(zanshin VERSION ${RELEASE_SERVICE_VERSION})
 
-set(KF_MIN_VERSION "5.101.0")
+set(KF_MIN_VERSION "5.240.0")
 find_package(ECM ${KF_MIN_VERSION} REQUIRED CONFIG)
 set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/ ${CMAKE_MODULE_PATH} ${ECM_MODULE_PATH})
 set(KDE_COMPILERSETTINGS_LEVEL "5.84")
@@ -79,9 +79,9 @@ find_package(KF6 ${KF_MIN_VERSION} REQUIRED COMPONENTS
     Parts
 )
 
-find_package(KPim6Akonadi "5.22.40" REQUIRED)
-find_package(KPim6AkonadiCalendar "5.22.40" REQUIRED)
-find_package(KPim6KontactInterface "5.22.40" REQUIRED)
+find_package(KPim${QT_MAJOR_VERSION}Akonadi "5.240.40" REQUIRED)
+find_package(KPim${QT_MAJOR_VERSION}AkonadiCalendar "5.240.40" REQUIRED)
+find_package(KPim${QT_MAJOR_VERSION}KontactInterface "5.240.40" REQUIRED)
 
 add_subdirectory(src)
 ki18n_install(po)

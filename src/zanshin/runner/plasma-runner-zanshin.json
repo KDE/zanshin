@@ -9,6 +9,7 @@
                 "Name[cs]": "Tým Zanshin",
                 "Name[de]": "Zanshin-Team",
                 "Name[en_GB]": "Zanshin Team",
+                "Name[eo]": "Zanshin-Teamo",
                 "Name[es]": "Equipo de Zanshin",
                 "Name[eu]": "Zanshin Taldea",
                 "Name[fi]": "Zanshin-työryhmä",
@@ -27,7 +28,8 @@
                 "Name[sl]": "Ekipa Zanshin",
                 "Name[tr]": "Zanşin Takımı",
                 "Name[uk]": "Команда Zanshin",
-                "Name[x-test]": "xxZanshin Teamxx"
+                "Name[x-test]": "xxZanshin Teamxx",
+                "Name[zh_CN]": "Zanshin 团队"
             }
         ],
         "Description": "Add tasks to your todo list",
@@ -37,6 +39,7 @@
         "Description[cs]": "Přidat úlohy do seznamu úloh",
         "Description[de]": "Aufgaben zu Ihrer Aufgabenliste hinzufügen",
         "Description[en_GB]": "Add tasks to your to-do list",
+        "Description[eo]": "Aldoni taskojn al via listo de farendaĵoj",
         "Description[es]": "Añadir tareas a su lista de pendientes",
         "Description[eu]": "Gehitu atazak zure eginkizunen zerrendara",
         "Description[fi]": "Lisää tehtäviä tehtäväluetteloosi",
@@ -56,6 +59,7 @@
         "Description[tr]": "Yapılacaklar listenize görevler ekleyin",
         "Description[uk]": "Додайте завдання до вашого списку завдань",
         "Description[x-test]": "xxAdd tasks to your todo listxx",
+        "Description[zh_CN]": "将任务添加到您的待办事项",
         "EnabledByDefault": true,
         "Icon": "zanshin",
         "License": "LGPL",
@@ -66,6 +70,7 @@
         "Name[cs]": "Úkoly Zanshin",
         "Name[de]": "Zanshin-Aufgaben",
         "Name[en_GB]": "Zanshin Tasks",
+        "Name[eo]": "Zanshin-Taskoj",
         "Name[es]": "Tareas de Zanshin",
         "Name[eu]": "Zanshin atazak",
         "Name[fi]": "Zanshin-tehtävät",
@@ -84,6 +89,7 @@
         "Name[sl]": "Zanshinove naloge",
         "Name[tr]": "Zanşin Görevler",
         "Name[uk]": "Завдання Zanshin",
-        "Name[x-test]": "xxZanshin Tasksxx"
+        "Name[x-test]": "xxZanshin Tasksxx",
+        "Name[zh_CN]": "Zanshin 任务"
     }
 }
