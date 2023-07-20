@@ -28,7 +28,8 @@
                 "Name[sl]": "Ekipa Zanshin",
                 "Name[tr]": "Zanşin Takımı",
                 "Name[uk]": "Команда Zanshin",
-                "Name[x-test]": "xxZanshin Teamxx"
+                "Name[x-test]": "xxZanshin Teamxx",
+                "Name[zh_CN]": "Zanshin 团队"
             }
         ],
         "Description": "Add tasks to your todo list",
@@ -58,6 +59,7 @@
         "Description[tr]": "Yapılacaklar listenize görevler ekleyin",
         "Description[uk]": "Додайте завдання до вашого списку завдань",
         "Description[x-test]": "xxAdd tasks to your todo listxx",
+        "Description[zh_CN]": "将任务添加到您的待办事项",
         "EnabledByDefault": true,
         "Icon": "zanshin",
         "Id": "org.kde.zanshin",
@@ -88,6 +90,7 @@
         "Name[sl]": "Zanshinove naloge",
         "Name[tr]": "Zanşin Görevler",
         "Name[uk]": "Завдання Zanshin",
-        "Name[x-test]": "xxZanshin Tasksxx"
+        "Name[x-test]": "xxZanshin Tasksxx",
+        "Name[zh_CN]": "Zanshin 任务"
     }
 }
