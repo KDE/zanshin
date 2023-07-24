@@ -37,7 +37,7 @@ msgstr "설정"
 msgid ""
 "Please select or create a resource which will be used by the application to "
 "store and query its TODOs."
-msgstr "프로그램에서 할 일을 저장하고 질의할 자원을 만들거나 선택하십시오."
+msgstr "앱에서 할 일을 저장하고 질의할 자원을 만들거나 선택하십시오."
 
 #: src/akonadi/akonadiconfigdialog.cpp:49
 #, kde-format
@@ -575,7 +575,7 @@ msgstr "Zanshin 할 일"
 #, kde-format
 msgid ""
 "A Getting Things Done application which aims at getting your mind like water"
-msgstr "마음을 물처럼 흐르게 하는 Getting Things Done 프로그램"
+msgstr "마음을 물처럼 흐르게 하는 Getting Things Done 앱"
 
 #: src/zanshin/app/aboutdata.cpp:17
 #, kde-format
