@@ -12,6 +12,7 @@
   <name xml:lang="da">Zanshin</name>
   <name xml:lang="de">Zanshin</name>
   <name xml:lang="en-GB">Zanshin</name>
+  <name xml:lang="eo">Zanshin</name>
   <name xml:lang="es">Zanshin</name>
   <name xml:lang="et">Zanshin</name>
   <name xml:lang="eu">Zanshin</name>
@@ -47,6 +48,7 @@
   <summary xml:lang="da">Program til håndtering af gøremål</summary>
   <summary xml:lang="de">Verwaltungsprogramm für Aufgaben</summary>
   <summary xml:lang="en-GB">To Do Management Application</summary>
+  <summary xml:lang="eo">Por Fari Administrado-Apliko</summary>
   <summary xml:lang="es">Aplicación de gestión de tareas pendientes</summary>
   <summary xml:lang="et">Ülesannete haldamise rakendus</summary>
   <summary xml:lang="eu">Eginkizunak kudeatzeko aplikazioa</summary>
@@ -58,7 +60,7 @@
   <summary xml:lang="id">Aplikasi Pengelolaan Hal Melakukan</summary>
   <summary xml:lang="it">Applicazione di gestione delle cose da fare</summary>
   <summary xml:lang="ka">გასაკეთებელი საგნების მართვის აპლიკაცია</summary>
-  <summary xml:lang="ko">할 일 관리 프로그램</summary>
+  <summary xml:lang="ko">할 일 관리 앱</summary>
   <summary xml:lang="lt">Užduočių valdymo programa</summary>
   <summary xml:lang="my">လုပ်ရန် စီမံမှု အပ္ပလီကေးရှင်း</summary>
   <summary xml:lang="nl">Beheertoepassing voor te verrichten taken</summary>
@@ -86,6 +88,7 @@
     <p xml:lang="da">Zanshin er et kraftfuldt men alligevel simpelt program til at håndtere dine daglige handlinger. Den hjælper dig med at organisere og reducere det kongnitive pres i forbindelse med job og det personlige liv. Du vil aldrig glemme noget længere, med tanker som var de vand.</p>
     <p xml:lang="de">Zanshin ist eine leistungsstarke und dennoch einfache Anwendung zur Verwaltung Ihrer täglichen Aktionen. Es hilft Ihnen bei der Organisation und erleichtert die Aufgaben in Beruf und Privatleben. Sie werden nie mehr etwas vergessen.</p>
     <p xml:lang="en-GB">Zanshin is a powerful yet simple application for managing your day to day actions. It helps you organise and reduce the cognitive pressure of what one has to do in his job and personal life. You'll never forget anything any more, getting your mind like water.</p>
+    <p xml:lang="eo">Zanshin estas potenca sed simpla aplikaĵo por administri viajn ĉiutagajn agojn. Ĝi helpas vin organizi kaj redukti la kognan premon de tio, kion oni devas fari en sia laboro kaj persona vivo. Vi neniam plu forgesos ion ajn, farante vian menson kiel akvon.</p>
     <p xml:lang="es">Zanshin es una potente a la vez que sencilla aplicación para la gestión de acciones diarias. Le ayudad a organizar y reducir la presión cognitiva de todo lo que debe hacer en el trabajo y en su vida personal. Nunca volverá a olvidarse de nada, haciendo que su mente sea clara como el agua.</p>
     <p xml:lang="et">Zanshin on lihtne ja tõhus tööriist oma igapäevaste ülesannete haldamiseks. See aitab neid korrastada ja vähendada kognitiivset survet, mis inimest töö- ja eraelus tabab. Sa ei unusta enam kunagi mitte midagi, sinu mõistus püsib vahe kui nuga.</p>
     <p xml:lang="eu">Zanshin zure eguneroko ekintzak kudeatzeko aplikazio erraz baina ahaltsu bat da. Lanean zein bizitza pertsonalean egin behar duzuna antolatzen laguntzen dizu eta horrek dakarren presio kognitiboa murrizten du. Ez duzu berriz ezer ere ahaztuko, zure gogoa ur gisan isur dadin lortzeko.</p>
@@ -97,7 +100,7 @@
     <p xml:lang="id">Zanshin adalah aplikasi yang kuat namun sederhana untuk mengelola aksi keseharianmu. Ini membantu kamu mengatur dan mengurangi tekanan kognitif dari apa yang harus dilakukan seseorang dalam pekerjaan dan kehidupan pribadinya. Kamu tidak akan pernah melupakan apa pun lagi, membuat pikiranmu seperti air.</p>
     <p xml:lang="it">Zanshin è un'applicazione semplice ma potente per la gestione delle tue attività giornaliere. Ti aiuta a organizzarti e riduce lo stress mentale che ciascuno di noi sperimenta durante la propria vita privata e lavorativa. Non dimenticherai più nulla, e la tua mente sarà fresca e leggera come l'acqua.</p>
     <p xml:lang="ka">Zanshin მძლავრი, მაგრამ ადვილი აპლიკაციაა თქვენი დღიდან-დღემდე საქმეების დასაგეგმად. ის საშუალებას გაძლევთ შეამციროთ კოგნიტიური დაწოლა, ვის რისი გაკეთება სჭირდება სამსახურში, თუ პირად ცხოვრებაში. თქვენ არაფერი აღარასდროს დაგავიწყდებათ.</p>
-    <p xml:lang="ko">Zanshin은 매일 할 일을 관리하는 강력하고 간단한 프로그램입니다. 공적 및 사적으로 할 일을 정리하고 인지 압박을 줄입니다. 더 이상 무언가를 잊어버리지 않아도 됩니다.</p>
+    <p xml:lang="ko">Zanshin은 매일 할 일을 관리하는 강력하고 간단한 앱입니다. 공적 및 사적으로 할 일을 정리하고 인지 압박을 줄입니다. 더 이상 무언가를 잊어버리지 않아도 됩니다.</p>
     <p xml:lang="lt">Zanshin yra galinga, bet paprasta programa, skirta tvarkyti jūsų kasdienius veiksmus. Ji padeda susisteminti užduotis ir sumažinti jaučiamą stresą, kuris atsiranda dėl visų užduočių jūsų asmeniniame gyvenime ar darbe. Daugiau niekada nieko nebepamirškite.</p>
     <p xml:lang="my">ဇန်ရှင်သည် နိစ္စဓူဝကိစ္စများကို စီမံပေးမည့် ရိုးရှင်းသော်လည်း စွမ်းရည်ပြည့်ဝလှသော အပ္ပလီကေးရှင်းတစ်ခုဖြစ်သည်။ ယင်းသည် သင်၏ အလုပ်နှင့် အိမ်နေဘဝများတွင် ဘာလုပ်ရမည်ကို စီမံရာတွင် ကူညီပေးသည်။ သင်အနေနဲ့ နောက်ထပ် ဘယ်အရာမှ မေ့တော့မည်မဟုတ်။ စိတ် ရေလိုကြည်လာပါလိမ့်မည်။</p>
     <p xml:lang="nl">Zanshin is een krachtig en toch eenvoudige toepassing voor het beheer van uw dagelijkse acties. Het helpt u bij het organiseren en reduceert de mentale druk over wat er allemaal gedaan moet worden op het persoonlijke en zakelijke vlak. U zult nooit meer iets vergeten, uw geheugen is geen zeef meer.</p>
@@ -119,6 +122,7 @@
     <p subtitle="true" xml:lang="cs">Sesbírat</p>
     <p subtitle="true" xml:lang="de">Sammeln</p>
     <p subtitle="true" xml:lang="en-GB">Collect</p>
+    <p subtitle="true" xml:lang="eo">Kolekti</p>
     <p subtitle="true" xml:lang="es">Recopilar</p>
     <p subtitle="true" xml:lang="fi">Kokoa</p>
     <p subtitle="true" xml:lang="fr">Collecter</p>
@@ -139,6 +143,7 @@
     <p xml:lang="ca">Esteu amoïnat/da per oblidar alguna cosa? Pèrdues inesperades de memòria? El Zanshin és aquí per ajudar-vos. Podeu recollir les vostres tasques i alliberar la ment. Aviat deixarà de sentir aquesta veu queixant-se del que probablement vàreu oblidar o del que haurien de fer. Només activeu el Zanshin, sempre que es reculli quelcom, segur que la trobareu allà.</p>
     <p xml:lang="ca-valencia">Esteu amoïnat/da per oblidar alguna cosa? Pèrdues inesperades de memòria? Zanshin és ací per a ajudar-vos. Podeu arreplegar les vostres tasques i alliberar la ment. Prompte deixareu de queixar-vos del que probablement vàreu oblidar o del que s'ha de fer. Només activeu Zanshin, sempre que s'arreplegue alguna cosa, segur que la trobareu allà.</p>
     <p xml:lang="en-GB">Worried about forgetting something? Unexpected memory losses? Zanshin is here to help you. You can collect your tasks and free your mind. You will soon stop hearing this voice nagging you about what you probably forgot, or what you should do. Just fire up Zanshin, once something is collected, you are sure to find it there.</p>
+    <p xml:lang="eo">Ĉu vi zorgas pri forgeso de io? Neatenditaj memorperdoj? Zanshin estas ĉi tie por helpi vin. Vi povas kolekti viajn taskojn kaj liberigi vian menson. Vi baldaŭ ĉesos aŭdi ĉi tiun voĉon ĝeni vin pri tio, kion vi verŝajne forgesis, aŭ kion vi devus fari. Nur ekbruligi Zanshin, post kiam io estas kolektita, vi certe trovos ĝin tie.</p>
     <p xml:lang="es">¿Le preocupa olvidar algo? ¿Pérdidas de memoria inesperadas? Zanshin está aquí para ayudarle. Puede recopilar sus tareas y liberar su mente. Pronto dejará de escuchar esa voz que le reprocha haberse olvidado de algo o que le dice lo que debe hacer. Solo tiene que lanzar Zanshin y, tras recopilar datos, seguramente los encontrará allí.</p>
     <p xml:lang="fi">Pelkäätkö unohtavasi jotakin? Yllättäviä muistikatkoja? Zanshin auttaa. Voit koota tehtäväsi ja rauhoittua. Pian ehkä unohtamistasi asioista tai tehtävistä nalkuttava ääni lakkaa kuulumasta. Kun jotakin on koossa, käynnistä vain Zanshin, ja löydät sen sieltä.</p>
     <p xml:lang="fr">Vous avez peur d'oublier quelque chose ? Des pertes de mémoire inattendues ? Zanshin est là pour vous aider. Vous pouvez collecter vos tâches et libérer votre esprit. Vous cesserez bientôt d'entendre cette voix vous harceler sur ce que vous avez probablement oublié ou ce que vous devriez faire. Juste lancer Zanshin pour qu'une fois que quelque chose est recueilli, vous êtes sûr de trouver là.</p>
@@ -159,6 +164,7 @@
     <p subtitle="true" xml:lang="cs">Organizovat</p>
     <p subtitle="true" xml:lang="de">Organisieren</p>
     <p subtitle="true" xml:lang="en-GB">Organise</p>
+    <p subtitle="true" xml:lang="eo">Organizi</p>
     <p subtitle="true" xml:lang="es">Organizar</p>
     <p subtitle="true" xml:lang="fi">Järjestä</p>
     <p subtitle="true" xml:lang="fr">Organiser</p>
@@ -179,6 +185,7 @@
     <p xml:lang="ca">El Zanshin fa que sigui fàcil posar ordre a la vostra vida diària. Només cal crear alguns projectes, uns pocs contextos i començar a omplir-los de tasques. Podeu fer-ho senzillament arrossegant i deixant anar. Cal fer alguna cosa abans d'un dia determinat? Només establiu una data de venciment i es destacarà dels altres elements. Heu de treballar en un projecte? Centreu-vos en això i veureu totes les tasques relacionades. Us afecten les trucades telefòniques? Centreu-vos en el context del telèfon per trobar totes les trucades pendents que hàgiu de fer.</p>
     <p xml:lang="ca-valencia">Zanshin fa que siga fàcil posar ordre a la vostra vida diària. Només cal crear alguns projectes, uns pocs contextos i començar a omplir-los de tasques. Podeu fer-ho senzillament arrossegant i deixant anar. Cal fer alguna cosa abans d'un dia determinat? Només establiu una data de venciment i es destacarà dels altres elements. Heu de treballar en un projecte? Centreu-vos en açò i veureu totes les tasques relacionades. Us afecten les tocades telefòniques? Centreu-vos en el context del telèfon per a trobar totes les tocades pendents que hàgeu de fer.</p>
     <p xml:lang="en-GB">Zanshin makes it simple to put your daily life in order. Just create a few projects, a few contexts and start filling them with tasks. You can simply do this using drag and drop. Something has to be done before a given day? Just set a due date and it'll stand out from your other items. You need to work on a project? Focus on it and you will see all the related tasks. Feeling like dealing with your phone calls? Focus on your phone context to find all the pending calls you have to give.</p>
+    <p xml:lang="eo">Zanshin faciligas ordigi vian ĉiutagan vivon. Nur kreu kelkajn projektojn, kelkajn kuntekstojn kaj komencu plenigi ilin per taskoj. Vi povas simple fari ĉi tion uzante treni kaj faligi. Ĉu io devas esti farita antaŭ difinita tago? Nur agordu limdaton kaj ĝi elstaras inter viaj aliaj aĵoj. Ĉu vi bezonas labori pri projekto? Fokusu ĝin kaj vi vidos ĉiujn rilatajn taskojn. Ĉu vi emas trakti viajn telefonvokojn? Koncentru vian telefonan kuntekston por trovi ĉiujn pritraktatajn vokojn, kiujn vi devas doni.</p>
     <p xml:lang="es">Zanshin hace que sea sencillo poner sus tareas cotidianas en orden. Solo tiene que crear algunos proyectos, algunos contextos y empezar a llenarlos con tareas. Puede conseguirlo con solo arrastrar y soltar. ¿Debe hacer algo antes de cierto día? Asigne una fecha de vencimiento para que destaque del resto de elementos. ¿Necesita trabajar en un proyecto? Céntrese en él y verá todas las tareas relacionadas. ¿Debe ocuparse de sus llamadas telefónicas? Concéntrese en el contexto del teléfono para encontrar todas las llamadas pendientes que tiene que hacer.</p>
     <p xml:lang="fi">Zanshinilla arkielämän pitäminen järjestyksessä on helppoa. Luo vain muutama projekti ja konteksti ja ala täyttää niitä tehtävillä. Tämän voi tehdä vetämällä ja pudottamalla. Jotakin on tehtävä ennen tiettyä päivää? Aseta vain määräpäivä, jolloin se erottuu muista kohteista. Projekti vaatii t yötä? Kohdista siihen, ja näet kaikki siihen liittyvät tehtävät. Pitääkö soittaa jonnekin? Kohdista puhelinkontekstiin, niin näet kaikki jonossa odottavat puhelut.</p>
     <p xml:lang="fr">Zanshin vous permet de mettre de l'ordre dans votre vie quotidienne. Créez quelques projets, quelques contextes et commencez à y insérer des tâches. Vous pouvez simplement le faire par un glisser-déposer. Il faut faire quelque chose avant un jour donné ? Il suffit de définir une date d'échéance et il se démarquera de vos autres éléments. Vous devez travailler sur un projet ? Concentrez-vous sur ce dernier et vous verrez toutes les tâches associés. Vous avez envie de gérer vos appels téléphoniques ? Concentrez-vous sur le contexte de votre téléphone pour trouver tous les appels en attente que vous devez effectuer.</p>
@@ -199,6 +206,7 @@
     <p subtitle="true" xml:lang="cs">Optimalizovat</p>
     <p subtitle="true" xml:lang="de">Optimieren</p>
     <p subtitle="true" xml:lang="en-GB">Optimise</p>
+    <p subtitle="true" xml:lang="eo">Optimumigu</p>
     <p subtitle="true" xml:lang="es">Optimizar</p>
     <p subtitle="true" xml:lang="fi">Optimoi</p>
     <p subtitle="true" xml:lang="fr">Optimiser</p>
@@ -219,6 +227,7 @@
     <p xml:lang="ca">Als hackers ens encanten els nostres teclats, i probablement sereu més eficient amb les mans al teclat sempre que es pugui. És per això que hem fet el Zanshin amb cura per ser completament gestionable amb el teclat. S'han afegit dreceres per a afegir tasques, moure-les a un projecte o context, navegar, etc.</p>
     <p xml:lang="ca-valencia">Als hackers ens encanten els nostres teclats, i probablement sereu més eficient amb les mans al teclat sempre que es puga. És per açò que hem fet Zanshin amb cura per a ser completament gestionable amb el teclat. S'han afegit dreceres per a afegir tasques, moure-les a un projecte o context, navegar, etc.</p>
     <p xml:lang="en-GB">We hackers love our keyboards, and you probably find yourself more efficient with your hands on the keyboard as much as possible. That's why we crafted Zanshin carefully to be completely drivable from the keyboard. We added shortcuts to add tasks, move them to a project or a context, navigate, etc.</p>
+    <p xml:lang="eo">Ni hackers amas niajn klavarojn, kaj vi verŝajne trovos vin pli efika kun viaj manoj sur la klavaro kiel eble plej multe. Tial ni zorge ellaboris Zanshin por esti tute veturebla de la klavaro. Ni aldonis ŝparvojojn por aldoni taskojn, movi ilin al projekto aŭ kunteksto, navigi ktp.</p>
     <p xml:lang="es">A los programadores nos encanta usar el teclado, y probablemente se dé cuenta de que es más efectivo tener las manos en el teclado el máximo tiempo posible. Por ello hemos creado Zanshin para que se pueda controlar completamente con el teclado. Hemos añadido atajos de teclado para añadir tareas, moverlas a un proyecto o a un contexto, navegar, etc.</p>
     <p xml:lang="fi">Hakkerit rakastavat näppäimistöjään, joten saatat tuntea olevasi tehokkaampi sormiesi pysyessä näppäimillä. Siksi Zanshinista on huolella tehty mahdollisimman käytettävä suoraan näppäimistöltä. Pikanäppäimet on tehtävien lisäämiseen, projektiin tai kontekstiin siirtämiseen, liikkumiseen jne.</p>
     <p xml:lang="fr">Nous les hackers, nous aimons nos claviers et vous vous trouvez probablement plus efficace avec vos mains sur le clavier autant que possible. C'est pourquoi nous avons soigneusement conçu Zanshin pour qu'il soit entièrement pilotable depuis le clavier. Nous avons ajouté des raccourcis pour ajouter des tâches, les déplacer vers un projet ou un contexte, naviguer, etc.</p>
@@ -239,6 +248,7 @@
     <p subtitle="true" xml:lang="cs">Integrovat</p>
     <p subtitle="true" xml:lang="de">Integrieren</p>
     <p subtitle="true" xml:lang="en-GB">Integrate</p>
+    <p subtitle="true" xml:lang="eo">Integri</p>
     <p subtitle="true" xml:lang="es">Integrar</p>
     <p subtitle="true" xml:lang="fi">Eheytä</p>
     <p subtitle="true" xml:lang="fr">Intégrer</p>
@@ -258,6 +268,7 @@
     <p xml:lang="ca">El Zanshin és una aplicació de la comunitat KDE, i com a tal, desenvolupa encara més potència quan s'utilitza amb altres aplicacions de KDE o dins de l'escriptori Plasma de KDE. Useu el KMail? Podeu crear una tasca des d'un correu electrònic que heu rebut i apareixerà a la safata d'entrada del Zanshin. Useu el KOrganizer? Totes les vostres tasques pendents i futures apareixeran a la vista del calendari. Useu l'escriptori Plasma? Llavors podreu recollir des de qualsevol lloc utilitzant el KRunner, escriviu «todo: Compra pomes», i trobareu aquestes tasques a la safata d'entrada del Zanshin, fins i tot si no s'estava executant!</p>
     <p xml:lang="ca-valencia">Zanshin és una aplicació de la comunitat KDE, i com a tal, desenvolupa encara més potència quan s'utilitza amb altres aplicacions de KDE o dins de l'escriptori Plasma de KDE. Utilitzeu KMail? Podeu crear una tasca des d'un correu electrònic que heu rebut i apareixerà a la safata d'entrada de Zanshin. Utilitzeu KOrganizer? Totes les vostres tasques pendents i futures apareixeran a la vista del calendari. Utilitzeu l'escriptori Plasma? Llavors podreu arreplegar des de qualsevol lloc utilitzant KRunner, escriviu «todo: Compra pomes», i trobareu estes tasques a la safata d'entrada de Zanshin, fins i tot si no s'estava executant!</p>
     <p xml:lang="en-GB">Zanshin is an application of the KDE community, as such it unleashes even more power when used with other KDE Applications or within KDE Plasma Desktop. Using KMail? You can create a task right from an email you received and it'll appear in Zanshin's Inbox. Using KOrganizer? All your overdue and coming task will appear in the calendar view. Using Plasma Desktop? Then you can collect from anywhere using KRunner, just type in "to-do: Buy apples", and you will find that tasks in Zanshin's Inbox, even if it wasn't running!</p>
+    <p xml:lang="eo">Zanshin estas aplikaĵo de la KDE-komunumo, ĉar tia ĝi liberigas eĉ pli da potenco kiam ĝi estas uzata kun aliaj KDE-Aplikoj aŭ ene de KDE Plasma Desktop. Ĉu uzi KMail? Vi povas krei taskon ĝuste de retpoŝto, kiun vi ricevis kaj ĝi aperos en la Enirkesto de Zanshin. Ĉu uzi KOrganizer? Ĉiuj via posttempa kaj venonta tasko aperos en la kalendara vido. Ĉu vi uzas Plasma Labortablo? Tiam vi povas kolekti de ie ajn uzante KRunner, simple tajpu "todo: Aĉetu pomojn", kaj vi trovos tiujn taskojn en la Enirkesto de Zanshin, eĉ se ĝi ne funkciis!</p>
     <p xml:lang="es">Zanshin es una aplicación de la comunidad KDE. Como tal, es aún más potente cuando se usa con otras aplicaciones de KDE o dentro del escritorio KDE Plasma. ¿Usa KMail? Puede crear tareas directamente desde los mensajes de correo electrónico que haya recibido para que aparezcan en la bandeja de entrada de Zanshin. ¿Usa KOrganizer? Todas las tareas vencidas y próximas a vencer aparecerán en la vista del calendario. ¿Usa el escritorio Plasma? En tal caso puede recopilar tareas de cualquier sitio usando KRunner; solo tiene que escribir «todo: Comprar manzanas» y verá dicha tarea en la bandeja de entrada de Zanshin, incluso aunque no estuviera funcionando.</p>
     <p xml:lang="fi">Zanshin on sovellus KDE-yhteisöltä, joten se on vieläkin tehokkaampi toista KDE-sovellusten kanssa tai KDE Plasma -työpöydältä käytettynä. Käytätkö KMailia? Tehtävän voi luoda suoraan vastaanotetusta sähköpostista, ja se näkyy Zanshinin saapuneissa viesteissä. Käytätkö KOrganizeria? Kaikki myöhästyneet ja tulevat tehtävät näkyvät kalenterinäkymässä. Käytätkö Plasma-työpöytää? Silloin voi KRunnerilla koota mistä vain: kirjoita vain ”todo: Osta omenia”, ja näet tehtävät Zanshinin saapuneissa viesteissä, vaikkei ohjelma olisi ollut käynnissä!</p>
     <p xml:lang="fr">Zanshin est une application de la communauté KDE, car elle libère encore plus de puissance lorsqu'elle est utilisée avec d'autres applications KDE ou avec le bureau Plasma de KDE. Vous utilisez KMail ? Vous pouvez créer une tâche à partir d'un courriel que vous avez reçu et il apparaîtra dans la boîte de réception de Zanshin. Vous utilisez KOrganizer ? Toutes vos tâches en retard et à venir apparaîtront dans l'affichage du calendrier. Vous utiliser le bureau Plasma ? Alors, vous pouvez collecter de n'importe où en utilisant KRunner. Il vous suffit de taper "todo : Acheter des pommes" et vous trouverez que cette tâche dans la boîte de réception de Zanshin, même si elle n'était pas en cours d'exécution !</p>
@@ -284,6 +295,7 @@
       <caption xml:lang="da">Zanshins hovedvindue</caption>
       <caption xml:lang="de">Zanshin-Hauptfenster</caption>
       <caption xml:lang="en-GB">Zanshin main window</caption>
+      <caption xml:lang="eo">Zanshin ĉefa fenestro</caption>
       <caption xml:lang="es">Ventana principal de Zanshin</caption>
       <caption xml:lang="et">Zanshini peaaken</caption>
       <caption xml:lang="eu">Zanshin leiho nagusia</caption>
