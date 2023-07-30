@@ -49,8 +49,8 @@ set_property(TARGET widgets PROPERTY POSITION_INDEPENDENT_CODE ON)
 target_link_libraries(widgets
     Qt::Widgets
     presentation
-    KF${QT_MAJOR_VERSION}::ConfigCore
-    KF${QT_MAJOR_VERSION}::ItemModels
-    KF${QT_MAJOR_VERSION}::WidgetsAddons
-    KF${QT_MAJOR_VERSION}::WindowSystem
+    KF6::ConfigCore
+    KF6::ItemModels
+    KF6::WidgetsAddons
+    KF6::WindowSystem
 )

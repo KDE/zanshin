@@ -57,6 +57,6 @@ target_link_libraries(akonadi
     KPim6::AkonadiCalendar
     KPim6::AkonadiCore
     KPim6::AkonadiWidgets
-    KF${QT_MAJOR_VERSION}::CalendarCore
-    KF${QT_MAJOR_VERSION}::ConfigCore
+    KF6::CalendarCore
+    KF6::ConfigCore
 )

@@ -21,7 +21,7 @@ set_property(TARGET testlib PROPERTY POSITION_INDEPENDENT_CODE ON)
 target_link_libraries(testlib
     KPim6::AkonadiCore
     KPim6::AkonadiXml
-    KF${QT_MAJOR_VERSION}::CalendarCore
+    KF6::CalendarCore
     Qt::DBus
     Qt::Test
 )

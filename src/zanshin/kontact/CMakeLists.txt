@@ -7,7 +7,7 @@ target_sources(zanshin_part PRIVATE
 )
 kde_enable_exceptions()
 target_link_libraries(zanshin_part
-    KF${QT_MAJOR_VERSION}::Parts
+    KF6::Parts
     integration
     widgets
 )
@@ -22,8 +22,8 @@ target_sources(kontact_zanshinplugin PRIVATE
     kontact_plugin.cpp
     kontact_plugin.h
 )
-target_link_libraries(kontact_zanshinplugin KF${QT_MAJOR_VERSION}::Parts KPim6::KontactInterface)
+target_link_libraries(kontact_zanshinplugin KF6::Parts KPim6::KontactInterface)
 
-install(TARGETS kontact_zanshinplugin DESTINATION ${KDE_INSTALL_PLUGINDIR}/pim${QT_MAJOR_VERSION}/kontact)
+install(TARGETS kontact_zanshinplugin DESTINATION ${KDE_INSTALL_PLUGINDIR}/pim6/kontact)
 install(FILES zanshin_part.rc DESTINATION ${KDE_INSTALL_KXMLGUIDIR}/zanshin)
 

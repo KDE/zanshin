@@ -79,9 +79,9 @@ find_package(KF6 ${KF_MIN_VERSION} REQUIRED COMPONENTS
     Parts
 )
 
-find_package(KPim${QT_MAJOR_VERSION}Akonadi "5.240.40" REQUIRED)
-find_package(KPim${QT_MAJOR_VERSION}AkonadiCalendar "5.240.40" REQUIRED)
-find_package(KPim${QT_MAJOR_VERSION}KontactInterface "5.240.40" REQUIRED)
+find_package(KPim6Akonadi "5.240.40" REQUIRED)
+find_package(KPim6AkonadiCalendar "5.240.40" REQUIRED)
+find_package(KPim6KontactInterface "5.240.40" REQUIRED)
 
 add_subdirectory(src)
 ki18n_install(po)
