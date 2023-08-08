@@ -37,22 +37,22 @@ msgstr "설정"
 msgid ""
 "Please select or create a resource which will be used by the application to "
 "store and query its TODOs."
-msgstr "앱에서 할 일을 저장하고 질의할 자원을 만들거나 선택하십시오."
+msgstr "앱에서 할 일을 저장하고 질의할 리소스를 만들거나 선택하십시오."
 
 #: src/akonadi/akonadiconfigdialog.cpp:49
 #, kde-format
 msgid "Add resource"
-msgstr "자원 추가"
+msgstr "리소스 추가"
 
 #: src/akonadi/akonadiconfigdialog.cpp:56
 #, kde-format
 msgid "Remove resource"
-msgstr "자원 삭제"
+msgstr "리소스 삭제"
 
 #: src/akonadi/akonadiconfigdialog.cpp:63
 #, kde-format
 msgid "Configure resource..."
-msgstr "자원 설정..."
+msgstr "리소스 설정..."
 
 #: src/akonadi/akonadiconfigdialog.cpp:111
 #, kde-format
