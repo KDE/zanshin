@@ -19,7 +19,7 @@ A Getting Things Done application which aims at getting your mind like water.
 
 #### Dependencies
 
-- Make sure to have Qt > 5.12, KF5Akonadi, AkonadiCalendar, KontactInterface, Runner, WindowSystem, I18n.
+- Make sure to have Qt > 6.4, Akonadi, AkonadiCalendar, KontactInterface, Runner, WindowSystem, I18n.
 	- For openSUSE Tumbleweed users:
 		```sh
 		$ zypper in akonadi-server-devel \
