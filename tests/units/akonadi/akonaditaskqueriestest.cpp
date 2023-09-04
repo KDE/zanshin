@@ -817,7 +817,7 @@ private slots:
         auto storage = Akonadi::StorageInterface::Ptr(data.createStorage());
         auto serializer = Akonadi::Serializer::Ptr(new Akonadi::Serializer);
         auto monitor = Akonadi::MonitorInterface::Ptr(data.createMonitor());
-        QScopedPointer<Domain::TaskQueries> queries(new Akonadi::TaskQueries(storage,
+        std::unique_ptr<Domain::TaskQueries> queries(new Akonadi::TaskQueries(storage,
                                                                              serializer,
                                                                              monitor,
                                                                              Akonadi::Cache::Ptr()));
@@ -834,7 +834,7 @@ private slots:
         auto result = queries->findChildren(task1);
 
         if (deleteQuery)
-            delete queries.take();
+            delete queries.release();
 
         // THEN
         QVERIFY(result->data().isEmpty());
@@ -894,7 +894,7 @@ private slots:
         auto storage = Akonadi::StorageInterface::Ptr(data.createStorage());
         auto serializer = Akonadi::Serializer::Ptr(new Akonadi::Serializer);
         auto monitor = Akonadi::MonitorInterface::Ptr(data.createMonitor());
-        QScopedPointer<Domain::TaskQueries> queries(new Akonadi::TaskQueries(storage,
+        std::unique_ptr<Domain::TaskQueries> queries(new Akonadi::TaskQueries(storage,
                                                                              serializer,
                                                                              monitor,
                                                                              Akonadi::Cache::Ptr()));
@@ -917,7 +917,7 @@ private slots:
         auto result = queries->findAll();
 
         if (deleteQuery)
-            delete queries.take();
+            delete queries.release();
 
         // THEN
         QVERIFY(result->data().isEmpty());
@@ -978,7 +978,7 @@ private slots:
         auto storage = Akonadi::StorageInterface::Ptr(data.createStorage());
         auto serializer = Akonadi::Serializer::Ptr(new Akonadi::Serializer);
         auto monitor = Akonadi::MonitorInterface::Ptr(data.createMonitor());
-        QScopedPointer<Domain::TaskQueries> queries(new Akonadi::TaskQueries(storage,
+        std::unique_ptr<Domain::TaskQueries> queries(new Akonadi::TaskQueries(storage,
                                                                              serializer,
                                                                              monitor,
                                                                              Akonadi::Cache::Ptr()));
@@ -1001,7 +1001,7 @@ private slots:
         auto result = queries->findInboxTopLevel();
 
         if (deleteQuery)
-            delete queries.take();
+            delete queries.release();
 
         // THEN
         QVERIFY(result->data().isEmpty());

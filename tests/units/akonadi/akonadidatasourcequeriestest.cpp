@@ -252,7 +252,7 @@ private slots:
         data.createCollection(GenCollection().withId(42).withRootAsParent().withTaskContent());
         data.createCollection(GenCollection().withId(43).withRootAsParent().withNoteContent());
 
-        QScopedPointer<Domain::DataSourceQueries> queries(new Akonadi::DataSourceQueries(Akonadi::StorageInterface::Ptr(data.createStorage()),
+        std::unique_ptr<Domain::DataSourceQueries> queries(new Akonadi::DataSourceQueries(Akonadi::StorageInterface::Ptr(data.createStorage()),
                                                                                          Akonadi::SerializerInterface::Ptr(new Akonadi::Serializer),
                                                                                          Akonadi::MonitorInterface::Ptr(data.createMonitor())));
         QFETCH(int, colErrorCode);
@@ -267,7 +267,7 @@ private slots:
         Domain::QueryResult<Domain::DataSource::Ptr>::Ptr result = queries->findTopLevel();
 
         if (deleteQuery)
-            delete queries.take();
+            delete queries.release();
 
         // THEN
         QVERIFY(result->data().isEmpty());
@@ -456,14 +456,14 @@ private slots:
                                                            AkonadiFakeStorageBehavior::FetchBehavior(colFetchBehavior));
 
         // WHEN
-        QScopedPointer<Domain::DataSourceQueries> queries(new Akonadi::DataSourceQueries(Akonadi::StorageInterface::Ptr(data.createStorage()),
+        std::unique_ptr<Domain::DataSourceQueries> queries(new Akonadi::DataSourceQueries(Akonadi::StorageInterface::Ptr(data.createStorage()),
                                                                                          serializer,
                                                                                          Akonadi::MonitorInterface::Ptr(data.createMonitor())));
 
         Domain::QueryResult<Domain::DataSource::Ptr>::Ptr result = queries->findChildren(topLevelDataSource);
 
         if (deleteQuery)
-            delete queries.take();
+            delete queries.release();
 
         // THEN
         QVERIFY(result->data().isEmpty());
@@ -627,7 +627,7 @@ private slots:
         data.createCollection(GenCollection().withId(44).withName(QStringLiteral("44Note")).withRootAsParent().withNoteContent().selected(false));
         data.createCollection(GenCollection().withId(45).withName(QStringLiteral("45Note")).withParent(44).withNoteContent().selected(true));
 
-        QScopedPointer<Domain::DataSourceQueries> queries(new Akonadi::DataSourceQueries(Akonadi::StorageInterface::Ptr(data.createStorage()),
+        std::unique_ptr<Domain::DataSourceQueries> queries(new Akonadi::DataSourceQueries(Akonadi::StorageInterface::Ptr(data.createStorage()),
                                                                                          Akonadi::SerializerInterface::Ptr(new Akonadi::Serializer),
                                                                                          Akonadi::MonitorInterface::Ptr(data.createMonitor())));
         QFETCH(int, colErrorCode);
@@ -642,7 +642,7 @@ private slots:
         Domain::QueryResult<Domain::DataSource::Ptr>::Ptr result = queries->findAllSelected();
 
         if (deleteQuery)
-            delete queries.take();
+            delete queries.release();
 
         // THEN
         QVERIFY(result->data().isEmpty());
@@ -668,7 +668,7 @@ private slots:
 
         // WHEN
         auto serializer = Akonadi::Serializer::Ptr(new Akonadi::Serializer);
-        QScopedPointer<Domain::DataSourceQueries> queries(new Akonadi::DataSourceQueries(Akonadi::StorageInterface::Ptr(data.createStorage()),
+        std::unique_ptr<Domain::DataSourceQueries> queries(new Akonadi::DataSourceQueries(Akonadi::StorageInterface::Ptr(data.createStorage()),
                                                                                          serializer,
                                                                                          Akonadi::MonitorInterface::Ptr(data.createMonitor())));
         Domain::DataSource::Ptr dataSource1 = serializer->createDataSourceFromCollection(data.collection(42), Akonadi::SerializerInterface::BaseName);
