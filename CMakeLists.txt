@@ -84,7 +84,7 @@ find_package(KPim6Akonadi "5.240.40" REQUIRED)
 find_package(KPim6AkonadiCalendar "5.240.40" REQUIRED)
 find_package(KPim6KontactInterface "5.240.40" REQUIRED)
 
-ecm_set_disabled_deprecation_versions(QT 5.15.0
+ecm_set_disabled_deprecation_versions(QT 6.3.0
      KF 5.240.0
     )
 
