@@ -21,6 +21,7 @@ include(ECMInstallIcons)
 include(ECMMarkAsTest)
 include(ECMPoQmTools)
 include(ECMSetupVersion)
+include(ECMDeprecationSettings)
 
 set(REQUIRED_QT_VERSION "6.5.0")
 find_package(Qt6 ${QT_REQUIRED_VERSION} CONFIG REQUIRED Core Gui Widgets Test)
@@ -82,6 +83,10 @@ find_package(KF6 ${KF_MIN_VERSION} REQUIRED COMPONENTS
 find_package(KPim6Akonadi "5.240.40" REQUIRED)
 find_package(KPim6AkonadiCalendar "5.240.40" REQUIRED)
 find_package(KPim6KontactInterface "5.240.40" REQUIRED)
+
+ecm_set_disabled_deprecation_versions(QT 5.15.0
+     KF 5.240.0
+    )
 
 add_subdirectory(src)
 ki18n_install(po)
