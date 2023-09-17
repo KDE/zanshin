@@ -27,7 +27,7 @@ QuickSelectDialog::QuickSelectDialog(QWidget *parent)
       m_label(new QLabel(this)),
       m_tree(new QTreeView(this))
 {
-    setWindowTitle(i18n("Quick Select Dialog"));
+    setWindowTitle(i18nc("@title:window", "Quick Select Dialog"));
 
     m_label->setText(i18n("You can start typing to filter the list of available pages"));
     m_filterProxyModel->setRecursiveFilteringEnabled(true);

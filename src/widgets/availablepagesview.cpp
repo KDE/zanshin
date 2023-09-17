@@ -237,7 +237,7 @@ void AvailablePagesView::onAddProjectTriggered()
 void AvailablePagesView::onAddContextTriggered()
 {
     NameAndDataSourceDialogInterface::Ptr dialog = m_projectDialogFactory(this);
-    dialog->setWindowTitle(i18n("Add a context"));
+    dialog->setWindowTitle(i18nc("@title:window", "Add a context"));
     dialog->setDataSourcesModel(m_sources);
 
     if (dialog->exec() == QDialog::Accepted) {

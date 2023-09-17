@@ -34,7 +34,7 @@ RunningTaskWidget::RunningTaskWidget(QWidget *parent)
     KX11Extras::setOnAllDesktops(winId(), true);
     KWindowSystem::setState(winId(), NET::KeepAbove | NET::SkipTaskbar | NET::SkipPager);
 
-    setWindowTitle(i18n("Zanshin Running Task Banner"));
+    setWindowTitle(i18nc("@title:window", "Zanshin Running Task Banner"));
 
     // Current idea for a good background color:
     // the selection color, i.e. usually blue. Arguable ;)

@@ -32,7 +32,7 @@ ConfigDialog::ConfigDialog(QWidget *parent)
     : QDialog(parent),
       m_agentInstanceWidget(new Akonadi::AgentInstanceWidget(this))
 {
-    setWindowTitle(i18n("Configure"));
+    setWindowTitle(i18nc("@title:window", "Configure"));
 
     auto description = new QLabel(this);
     description->setWordWrap(true);
