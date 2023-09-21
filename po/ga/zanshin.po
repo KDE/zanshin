@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zanshin\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2022-12-22 00:48+0000\n"
+"POT-Creation-Date: 2023-09-21 00:46+0000\n"
 "PO-Revision-Date: 2011-12-28 12:28-0500\n"
 "Last-Translator: Kevin Scannell <kscanne@gmail.com>\n"
 "Language-Team: Irish <gaeilge-gnulinux@lists.sourceforge.net>\n"
@@ -29,9 +29,11 @@ msgid "Your emails"
 msgstr "kscanne@gmail.com"
 
 #: src/akonadi/akonadiconfigdialog.cpp:35
-#, kde-format
+#, fuzzy, kde-format
+#| msgid "Remove"
+msgctxt "@title:window"
 msgid "Configure"
-msgstr ""
+msgstr "Bain"
 
 #: src/akonadi/akonadiconfigdialog.cpp:39
 #, kde-format
@@ -331,6 +333,7 @@ msgstr ""
 #: src/widgets/availablepagesview.cpp:240
 #, fuzzy, kde-format
 #| msgid "Contexts"
+msgctxt "@title:window"
 msgid "Add a context"
 msgstr "Comhthéacsanna"
 
@@ -566,6 +569,7 @@ msgstr ""
 
 #: src/widgets/quickselectdialog.cpp:30
 #, kde-format
+msgctxt "@title:window"
 msgid "Quick Select Dialog"
 msgstr ""
 
@@ -581,6 +585,7 @@ msgstr ""
 
 #: src/widgets/runningtaskwidget.cpp:37
 #, kde-format
+msgctxt "@title:window"
 msgid "Zanshin Running Task Banner"
 msgstr ""
 

@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zanshin\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2022-12-22 00:48+0000\n"
+"POT-Creation-Date: 2023-09-21 00:46+0000\n"
 "PO-Revision-Date: 2022-07-28 13:59+0200\n"
 "Last-Translator: Mincho Kondarev <mkondarev@yahoo.de>\n"
 "Language-Team: Bulgarian <kde-i18n-doc@kde.org>\n"
@@ -28,7 +28,9 @@ msgid "Your emails"
 msgstr "mkondarev@yahoo.de"
 
 #: src/akonadi/akonadiconfigdialog.cpp:35
-#, kde-format
+#, fuzzy, kde-format
+#| msgid "Configure"
+msgctxt "@title:window"
 msgid "Configure"
 msgstr "Настройване"
 
@@ -318,7 +320,9 @@ msgid "Go to Page..."
 msgstr "Отиване на страница..."
 
 #: src/widgets/availablepagesview.cpp:240
-#, kde-format
+#, fuzzy, kde-format
+#| msgid "Add a context"
+msgctxt "@title:window"
 msgid "Add a context"
 msgstr "Добавяне на контекст"
 
@@ -545,7 +549,9 @@ msgid "Delete Tasks"
 msgstr "Изтриване на задача"
 
 #: src/widgets/quickselectdialog.cpp:30
-#, kde-format
+#, fuzzy, kde-format
+#| msgid "Quick Select Dialog"
+msgctxt "@title:window"
 msgid "Quick Select Dialog"
 msgstr "Бързо избиране"
 
@@ -561,7 +567,9 @@ msgid "Path: %1"
 msgstr "Път: %1"
 
 #: src/widgets/runningtaskwidget.cpp:37
-#, kde-format
+#, fuzzy, kde-format
+#| msgid "Zanshin Running Task Banner"
+msgctxt "@title:window"
 msgid "Zanshin Running Task Banner"
 msgstr "Лента с изпълняващи се задачи на Zanshin"
 

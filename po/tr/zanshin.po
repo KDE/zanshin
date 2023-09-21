@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zanshin\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2022-12-22 00:48+0000\n"
+"POT-Creation-Date: 2023-09-21 00:46+0000\n"
 "PO-Revision-Date: 2023-06-11 22:19+0300\n"
 "Last-Translator: Emir SARI <emir_sari@icloud.com>\n"
 "Language-Team: Turkish <kde-l10n-tr@kde.org>\n"
@@ -26,7 +26,9 @@ msgid "Your emails"
 msgstr "kaanozdincer@gmail.com, emir_sari@icloud.com"
 
 #: src/akonadi/akonadiconfigdialog.cpp:35
-#, kde-format
+#, fuzzy, kde-format
+#| msgid "Configure"
+msgctxt "@title:window"
 msgid "Configure"
 msgstr "Yapılandır"
 
@@ -316,7 +318,9 @@ msgid "Go to Page..."
 msgstr "Sayfaya Git..."
 
 #: src/widgets/availablepagesview.cpp:240
-#, kde-format
+#, fuzzy, kde-format
+#| msgid "Add a context"
+msgctxt "@title:window"
 msgid "Add a context"
 msgstr "Bir bağlam ekle"
 
@@ -543,7 +547,9 @@ msgid "Delete Tasks"
 msgstr "Görevleri Sil"
 
 #: src/widgets/quickselectdialog.cpp:30
-#, kde-format
+#, fuzzy, kde-format
+#| msgid "Quick Select Dialog"
+msgctxt "@title:window"
 msgid "Quick Select Dialog"
 msgstr "Hızlı Seçim Penceresi"
 
@@ -560,7 +566,9 @@ msgid "Path: %1"
 msgstr "Yol: %1"
 
 #: src/widgets/runningtaskwidget.cpp:37
-#, kde-format
+#, fuzzy, kde-format
+#| msgid "Zanshin Running Task Banner"
+msgctxt "@title:window"
 msgid "Zanshin Running Task Banner"
 msgstr "Zanşin Çalışan Görev Afişi"
 

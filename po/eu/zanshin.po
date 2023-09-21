@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zanshin\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2022-12-22 00:48+0000\n"
+"POT-Creation-Date: 2023-09-21 00:46+0000\n"
 "PO-Revision-Date: 2021-07-15 20:26+0200\n"
 "Last-Translator: Iñigo Salvador Azurmendi <xalba@ni.eus>\n"
 "Language-Team: Basque <kde-i18n-eu@kde.org>\n"
@@ -31,7 +31,9 @@ msgid "Your emails"
 msgstr "xalba@ni.eus"
 
 #: src/akonadi/akonadiconfigdialog.cpp:35
-#, kde-format
+#, fuzzy, kde-format
+#| msgid "Configure"
+msgctxt "@title:window"
 msgid "Configure"
 msgstr "Konfiguratu"
 
@@ -321,7 +323,9 @@ msgid "Go to Page..."
 msgstr "Joan ... orrira"
 
 #: src/widgets/availablepagesview.cpp:240
-#, kde-format
+#, fuzzy, kde-format
+#| msgid "Add a context"
+msgctxt "@title:window"
 msgid "Add a context"
 msgstr "Gehitu testuinguru bat"
 
@@ -547,7 +551,9 @@ msgid "Delete Tasks"
 msgstr "Ezabatu atazak"
 
 #: src/widgets/quickselectdialog.cpp:30
-#, kde-format
+#, fuzzy, kde-format
+#| msgid "Quick Select Dialog"
+msgctxt "@title:window"
 msgid "Quick Select Dialog"
 msgstr "Hautapen azkarrerako elkarrizketa-koadroa"
 
@@ -562,7 +568,9 @@ msgid "Path: %1"
 msgstr "Bide-izena: %1"
 
 #: src/widgets/runningtaskwidget.cpp:37
-#, kde-format
+#, fuzzy, kde-format
+#| msgid "Zanshin Running Task Banner"
+msgctxt "@title:window"
 msgid "Zanshin Running Task Banner"
 msgstr "Zanshing martxan dauden atazen iragarki-banda"
 

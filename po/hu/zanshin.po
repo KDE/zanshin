@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2022-12-22 00:48+0000\n"
+"POT-Creation-Date: 2023-09-21 00:46+0000\n"
 "PO-Revision-Date: 2021-08-25 09:59+0200\n"
 "Last-Translator: Kristóf Kiszel <kiszel.kristof@gmail.com>\n"
 "Language-Team: Hungarian <kde-l10n-hu@kde.org>\n"
@@ -30,7 +30,9 @@ msgid "Your emails"
 msgstr "kiszel.kristof@gmail.com,urbalazs@gmail.com"
 
 #: src/akonadi/akonadiconfigdialog.cpp:35
-#, kde-format
+#, fuzzy, kde-format
+#| msgid "Configure"
+msgctxt "@title:window"
 msgid "Configure"
 msgstr "Beállítások"
 
@@ -320,7 +322,9 @@ msgid "Go to Page..."
 msgstr "Ugrás oldalra…"
 
 #: src/widgets/availablepagesview.cpp:240
-#, kde-format
+#, fuzzy, kde-format
+#| msgid "Add a context"
+msgctxt "@title:window"
 msgid "Add a context"
 msgstr "Környezet hozzáadása"
 
@@ -547,7 +551,9 @@ msgid "Delete Tasks"
 msgstr "Feladatok törlése"
 
 #: src/widgets/quickselectdialog.cpp:30
-#, kde-format
+#, fuzzy, kde-format
+#| msgid "Quick Select Dialog"
+msgctxt "@title:window"
 msgid "Quick Select Dialog"
 msgstr "Gyorsválasztó párbeszédablak"
 
@@ -562,7 +568,9 @@ msgid "Path: %1"
 msgstr "Elérési út: %1"
 
 #: src/widgets/runningtaskwidget.cpp:37
-#, kde-format
+#, fuzzy, kde-format
+#| msgid "Zanshin Running Task Banner"
+msgctxt "@title:window"
 msgid "Zanshin Running Task Banner"
 msgstr "A Zanshin feladatot futtat"
 

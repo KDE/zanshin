@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: kdeorg\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2022-12-22 00:48+0000\n"
+"POT-Creation-Date: 2023-09-21 00:46+0000\n"
 "PO-Revision-Date: 2023-09-16 10:09\n"
 "Last-Translator: \n"
 "Language-Team: Chinese Simplified\n"
@@ -28,7 +28,9 @@ msgid "Your emails"
 msgstr "kde-china@kde.org"
 
 #: src/akonadi/akonadiconfigdialog.cpp:35
-#, kde-format
+#, fuzzy, kde-format
+#| msgid "Configure"
+msgctxt "@title:window"
 msgid "Configure"
 msgstr "配置"
 
@@ -317,6 +319,7 @@ msgstr "转到页面..."
 
 #: src/widgets/availablepagesview.cpp:240
 #, kde-format
+msgctxt "@title:window"
 msgid "Add a context"
 msgstr ""
 
@@ -543,6 +546,7 @@ msgstr ""
 
 #: src/widgets/quickselectdialog.cpp:30
 #, kde-format
+msgctxt "@title:window"
 msgid "Quick Select Dialog"
 msgstr ""
 
@@ -558,6 +562,7 @@ msgstr "路径：%1"
 
 #: src/widgets/runningtaskwidget.cpp:37
 #, kde-format
+msgctxt "@title:window"
 msgid "Zanshin Running Task Banner"
 msgstr ""
 

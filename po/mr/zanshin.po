@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2022-12-22 00:48+0000\n"
+"POT-Creation-Date: 2023-09-21 00:46+0000\n"
 "PO-Revision-Date: 2013-03-09 11:42+0530\n"
 "Last-Translator: Chetan Khona <chetan@kompkin.com>\n"
 "Language-Team: Marathi <kde-i18n-doc@kde.org>\n"
@@ -29,9 +29,11 @@ msgid "Your emails"
 msgstr "chetan@kompkin.com"
 
 #: src/akonadi/akonadiconfigdialog.cpp:35
-#, kde-format
+#, fuzzy, kde-format
+#| msgid "Remove"
+msgctxt "@title:window"
 msgid "Configure"
-msgstr ""
+msgstr "काढून टाका"
 
 #: src/akonadi/akonadiconfigdialog.cpp:39
 #, kde-format
@@ -327,6 +329,7 @@ msgstr ""
 #: src/widgets/availablepagesview.cpp:240
 #, fuzzy, kde-format
 #| msgid "New Action"
+msgctxt "@title:window"
 msgid "Add a context"
 msgstr "नवीन क्रिया"
 
@@ -559,6 +562,7 @@ msgstr ""
 
 #: src/widgets/quickselectdialog.cpp:30
 #, kde-format
+msgctxt "@title:window"
 msgid "Quick Select Dialog"
 msgstr ""
 
@@ -574,6 +578,7 @@ msgstr "मार्ग"
 
 #: src/widgets/runningtaskwidget.cpp:37
 #, kde-format
+msgctxt "@title:window"
 msgid "Zanshin Running Task Banner"
 msgstr ""
 

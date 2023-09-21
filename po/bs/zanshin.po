@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: kde 49i410\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2022-12-22 00:48+0000\n"
+"POT-Creation-Date: 2023-09-21 00:46+0000\n"
 "PO-Revision-Date: 2015-02-22 15:24+0100\n"
 "Last-Translator: Samir Ribić <megaribi@epn.ba>\n"
 "Language-Team: Bosnian\n"
@@ -34,6 +34,7 @@ msgstr "Samir.ribic@etf.unsa.ba,adautbegov1@etf.unsa.ba"
 #: src/akonadi/akonadiconfigdialog.cpp:35
 #, fuzzy, kde-format
 #| msgid "Configure Zanshin"
+msgctxt "@title:window"
 msgid "Configure"
 msgstr "Konfiguriši  Zanshin"
 
@@ -364,6 +365,7 @@ msgstr ""
 #: src/widgets/availablepagesview.cpp:240
 #, fuzzy, kde-format
 #| msgid "No Context"
+msgctxt "@title:window"
 msgid "Add a context"
 msgstr "Nema objašnjenja"
 
@@ -621,6 +623,7 @@ msgstr ""
 
 #: src/widgets/quickselectdialog.cpp:30
 #, kde-format
+msgctxt "@title:window"
 msgid "Quick Select Dialog"
 msgstr ""
 
@@ -637,9 +640,11 @@ msgid "Path: %1"
 msgstr "Staza: %1"
 
 #: src/widgets/runningtaskwidget.cpp:37
-#, kde-format
+#, fuzzy, kde-format
+#| msgid "Zanshin Todo"
+msgctxt "@title:window"
 msgid "Zanshin Running Task Banner"
-msgstr ""
+msgstr "Zanshin zadaci"
 
 #: src/widgets/runningtaskwidget.cpp:47
 #, kde-format

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zanshin\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2022-12-22 00:48+0000\n"
+"POT-Creation-Date: 2023-09-21 00:46+0000\n"
 "PO-Revision-Date: 2011-06-16 17:24+0200\n"
 "Last-Translator: Manfred Wiese <m.j.wiese@web.de>\n"
 "Language-Team: Low Saxon <kde-i18n-nds@kde.org>\n"
@@ -30,9 +30,11 @@ msgid "Your emails"
 msgstr "m.j.wiese@web.de"
 
 #: src/akonadi/akonadiconfigdialog.cpp:35
-#, kde-format
+#, fuzzy, kde-format
+#| msgid "New Project"
+msgctxt "@title:window"
 msgid "Configure"
-msgstr ""
+msgstr "Nieg Projekt"
 
 #: src/akonadi/akonadiconfigdialog.cpp:39
 #, kde-format
@@ -354,6 +356,7 @@ msgstr ""
 #: src/widgets/availablepagesview.cpp:240
 #, fuzzy, kde-format
 #| msgid "Contexts"
+msgctxt "@title:window"
 msgid "Add a context"
 msgstr "Kontexten"
 
@@ -592,6 +595,7 @@ msgstr "Nieg Kategorie"
 
 #: src/widgets/quickselectdialog.cpp:30
 #, kde-format
+msgctxt "@title:window"
 msgid "Quick Select Dialog"
 msgstr ""
 
@@ -607,6 +611,7 @@ msgstr ""
 
 #: src/widgets/runningtaskwidget.cpp:37
 #, kde-format
+msgctxt "@title:window"
 msgid "Zanshin Running Task Banner"
 msgstr ""
 
