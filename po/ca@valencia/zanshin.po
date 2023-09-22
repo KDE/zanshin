@@ -4,13 +4,13 @@
 # version 3 or later versions approved by the membership of KDE e.V.
 #
 # Antoni Bella Pérez <antonibella5@yahoo.com>, 2014, 2015, 2016, 2017, 2018, 2019, 2020.
-# Josep M. Ferrer <txemaq@gmail.com>, 2014, 2015, 2016, 2017, 2019, 2021.
+# Josep M. Ferrer <txemaq@gmail.com>, 2014, 2015, 2016, 2017, 2019, 2021, 2023.
 msgid ""
 msgstr ""
 "Project-Id-Version: zanshin\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-09-21 00:46+0000\n"
-"PO-Revision-Date: 2021-10-24 21:22+0200\n"
+"PO-Revision-Date: 2023-09-21 15:14+0200\n"
 "Last-Translator: Josep M. Ferrer <txemaq@gmail.com>\n"
 "Language-Team: Catalan <kde-i18n-ca@kde.org>\n"
 "Language: ca@valencia\n"
@@ -19,7 +19,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Accelerator-Marker: &\n"
-"X-Generator: Lokalize 20.12.0\n"
+"X-Generator: Lokalize 22.12.3\n"
 "X-Qt-Contexts: true\n"
 
 #, kde-format
@@ -33,8 +33,7 @@ msgid "Your emails"
 msgstr "antonibella5@yahoo.com"
 
 #: src/akonadi/akonadiconfigdialog.cpp:35
-#, fuzzy, kde-format
-#| msgid "Configure"
+#, kde-format
 msgctxt "@title:window"
 msgid "Configure"
 msgstr "Configura"
@@ -325,8 +324,7 @@ msgid "Go to Page..."
 msgstr "Ves a la pàgina..."
 
 #: src/widgets/availablepagesview.cpp:240
-#, fuzzy, kde-format
-#| msgid "Add a context"
+#, kde-format
 msgctxt "@title:window"
 msgid "Add a context"
 msgstr "Afig un context"
@@ -554,8 +552,7 @@ msgid "Delete Tasks"
 msgstr "Suprimix les tasques"
 
 #: src/widgets/quickselectdialog.cpp:30
-#, fuzzy, kde-format
-#| msgid "Quick Select Dialog"
+#, kde-format
 msgctxt "@title:window"
 msgid "Quick Select Dialog"
 msgstr "Diàleg de selecció ràpida"
@@ -571,8 +568,7 @@ msgid "Path: %1"
 msgstr "Camí: %1"
 
 #: src/widgets/runningtaskwidget.cpp:37
-#, fuzzy, kde-format
-#| msgid "Zanshin Running Task Banner"
+#, kde-format
 msgctxt "@title:window"
 msgid "Zanshin Running Task Banner"
 msgstr "Rètol d'execució de tasques de Zanshin"

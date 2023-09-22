@@ -3,13 +3,13 @@
 # This file is distributed under the license LGPL version 2.1 or
 # version 3 or later versions approved by the membership of KDE e.V.
 #
-# Yuri Chornoivan <yurchor@ukr.net>, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2021.
+# Yuri Chornoivan <yurchor@ukr.net>, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2021, 2023.
 msgid ""
 msgstr ""
 "Project-Id-Version: zanshin\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-09-21 00:46+0000\n"
-"PO-Revision-Date: 2021-05-08 08:15+0300\n"
+"PO-Revision-Date: 2023-09-21 13:27+0300\n"
 "Last-Translator: Yuri Chornoivan <yurchor@ukr.net>\n"
 "Language-Team: Ukrainian <kde-i18n-uk@kde.org>\n"
 "Language: uk\n"
@@ -32,11 +32,10 @@ msgid "Your emails"
 msgstr "yurchor@ukr.net"
 
 #: src/akonadi/akonadiconfigdialog.cpp:35
-#, fuzzy, kde-format
-#| msgid "Configure"
+#, kde-format
 msgctxt "@title:window"
 msgid "Configure"
-msgstr "Налаштувати"
+msgstr "Налаштування"
 
 #: src/akonadi/akonadiconfigdialog.cpp:39
 #, kde-format
@@ -326,11 +325,10 @@ msgid "Go to Page..."
 msgstr "Перейти до сторінки…"
 
 #: src/widgets/availablepagesview.cpp:240
-#, fuzzy, kde-format
-#| msgid "Add a context"
+#, kde-format
 msgctxt "@title:window"
 msgid "Add a context"
-msgstr "Додати контекст"
+msgstr "Додавання контексту"
 
 #: src/widgets/availablepagesview.cpp:265
 #, kde-format
@@ -557,8 +555,7 @@ msgid "Delete Tasks"
 msgstr "Вилучення завдань"
 
 #: src/widgets/quickselectdialog.cpp:30
-#, fuzzy, kde-format
-#| msgid "Quick Select Dialog"
+#, kde-format
 msgctxt "@title:window"
 msgid "Quick Select Dialog"
 msgstr "Діалогове вікно швидкого вибору"
@@ -575,11 +572,10 @@ msgid "Path: %1"
 msgstr "Шлях: %1"
 
 #: src/widgets/runningtaskwidget.cpp:37
-#, fuzzy, kde-format
-#| msgid "Zanshin Running Task Banner"
+#, kde-format
 msgctxt "@title:window"
 msgid "Zanshin Running Task Banner"
-msgstr "Заголовок завдання, яке виконується, у Zanshin"
+msgstr "Заголовок завдання, яке виконується у Zanshin"
 
 #: src/widgets/runningtaskwidget.cpp:47
 #, kde-format

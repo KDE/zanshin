@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2022-12-22 00:48+0000\n"
+"POT-Creation-Date: 2023-09-21 00:46+0000\n"
 "PO-Revision-Date: 2011-08-04 12:30+0200\n"
 "Last-Translator: Bjørn Steensrud <bjornst@skogkatt.homelinux.org>\n"
 "Language-Team: Norwegian Bokmål <l10n-no@lister.huftis.org>\n"
@@ -31,6 +31,7 @@ msgstr "bjornst@skogkatt.homelinux.org"
 
 #: src/akonadi/akonadiconfigdialog.cpp:35
 #, kde-format
+msgctxt "@title:window"
 msgid "Configure"
 msgstr ""
 
@@ -321,6 +322,7 @@ msgstr ""
 
 #: src/widgets/availablepagesview.cpp:240
 #, kde-format
+msgctxt "@title:window"
 msgid "Add a context"
 msgstr ""
 
@@ -547,6 +549,7 @@ msgstr ""
 
 #: src/widgets/quickselectdialog.cpp:30
 #, kde-format
+msgctxt "@title:window"
 msgid "Quick Select Dialog"
 msgstr ""
 
@@ -562,6 +565,7 @@ msgstr "Sti: %1"
 
 #: src/widgets/runningtaskwidget.cpp:37
 #, kde-format
+msgctxt "@title:window"
 msgid "Zanshin Running Task Banner"
 msgstr ""
 

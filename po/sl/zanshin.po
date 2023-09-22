@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-09-21 00:46+0000\n"
-"PO-Revision-Date: 2021-05-12 08:46+0200\n"
+"PO-Revision-Date: 2023-09-21 17:40+0200\n"
 "Last-Translator: Matjaž Jeran <matjaz.jeran@amis.net>\n"
 "Language-Team: Slovenian <lugos-slo@lugos.si>\n"
 "Language: sl\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=4; plural=(n%100==1 ? 1 : n%100==2 ? 2 : n%100==3 || n"
 "%100==4 ? 3 : 0);\n"
-"X-Generator: Lokalize 20.12.2\n"
+"X-Generator: Poedit 3.3.2\n"
 "X-Qt-Contexts: true\n"
 
 #, kde-format
@@ -31,11 +31,10 @@ msgid "Your emails"
 msgstr "matija@suklje.name,matjaz.jeran@amis.net"
 
 #: src/akonadi/akonadiconfigdialog.cpp:35
-#, fuzzy, kde-format
-#| msgid "Configure"
+#, kde-format
 msgctxt "@title:window"
 msgid "Configure"
-msgstr "Nastavi"
+msgstr "Konfiguriraj"
 
 #: src/akonadi/akonadiconfigdialog.cpp:39
 #, kde-format
@@ -323,8 +322,7 @@ msgid "Go to Page..."
 msgstr "Pojdi na stran..."
 
 #: src/widgets/availablepagesview.cpp:240
-#, fuzzy, kde-format
-#| msgid "Add a context"
+#, kde-format
 msgctxt "@title:window"
 msgid "Add a context"
 msgstr "Dodaj kontekst"
@@ -551,8 +549,7 @@ msgid "Delete Tasks"
 msgstr "Izbriši naloge"
 
 #: src/widgets/quickselectdialog.cpp:30
-#, fuzzy, kde-format
-#| msgid "Quick Select Dialog"
+#, kde-format
 msgctxt "@title:window"
 msgid "Quick Select Dialog"
 msgstr "Hitri izbirni dialog"
@@ -568,8 +565,7 @@ msgid "Path: %1"
 msgstr "Pot: %1"
 
 #: src/widgets/runningtaskwidget.cpp:37
-#, fuzzy, kde-format
-#| msgid "Zanshin Running Task Banner"
+#, kde-format
 msgctxt "@title:window"
 msgid "Zanshin Running Task Banner"
 msgstr "Zanshin tekoča pasica nalog"
