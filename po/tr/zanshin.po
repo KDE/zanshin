@@ -26,8 +26,7 @@ msgid "Your emails"
 msgstr "kaanozdincer@gmail.com, emir_sari@icloud.com"
 
 #: src/akonadi/akonadiconfigdialog.cpp:35
-#, fuzzy, kde-format
-#| msgid "Configure"
+#, kde-format
 msgctxt "@title:window"
 msgid "Configure"
 msgstr "Yapılandır"
@@ -39,22 +38,22 @@ msgid ""
 "store and query its TODOs."
 msgstr ""
 "Lütfen uygulama tarafından, yapılacakları depolamak ve sorgulamak için "
-"kullanacak bir kaynak seçin veya oluşturun."
+"kullanacak bir özkaynak seçin veya oluşturun."
 
 #: src/akonadi/akonadiconfigdialog.cpp:49
 #, kde-format
 msgid "Add resource"
-msgstr "Kaynak ekle"
+msgstr "Özkaynak ekle"
 
 #: src/akonadi/akonadiconfigdialog.cpp:56
 #, kde-format
 msgid "Remove resource"
-msgstr "Kaynağı kaldır"
+msgstr "Özkaynağı kaldır"
 
 #: src/akonadi/akonadiconfigdialog.cpp:63
 #, kde-format
 msgid "Configure resource..."
-msgstr "Kaynağı yapılandır..."
+msgstr "Özkaynağı yapılandır..."
 
 #: src/akonadi/akonadiconfigdialog.cpp:111
 #, kde-format
@@ -318,11 +317,10 @@ msgid "Go to Page..."
 msgstr "Sayfaya Git..."
 
 #: src/widgets/availablepagesview.cpp:240
-#, fuzzy, kde-format
-#| msgid "Add a context"
+#, kde-format
 msgctxt "@title:window"
 msgid "Add a context"
-msgstr "Bir bağlam ekle"
+msgstr "Bir Bağlam Ekle"
 
 #: src/widgets/availablepagesview.cpp:265
 #, kde-format
@@ -348,7 +346,7 @@ msgstr "'%1' bağlamını gerçekten silmek istiyor musunuz?"
 #: src/widgets/availablesourcesview.cpp:55
 #, kde-format
 msgid "Use as Default Source"
-msgstr "Varsayılan Kaynak olarak Kullan"
+msgstr "Öntanımlı Kaynak olarak Kullan"
 
 #: src/widgets/availablesourcesview.cpp:76
 #, kde-format
@@ -449,7 +447,7 @@ msgstr "Tarihe göre sırala"
 #: src/widgets/filterwidget.ui:31 src/widgets/pageview.cpp:197
 #, kde-format
 msgid "Filter..."
-msgstr "Süzgeç..."
+msgstr "Süz..."
 
 #. i18n: ectx: property (toolTip), widget (QToolButton, descendingButton)
 #: src/widgets/filterwidget.ui:65
@@ -547,11 +545,10 @@ msgid "Delete Tasks"
 msgstr "Görevleri Sil"
 
 #: src/widgets/quickselectdialog.cpp:30
-#, fuzzy, kde-format
-#| msgid "Quick Select Dialog"
+#, kde-format
 msgctxt "@title:window"
 msgid "Quick Select Dialog"
-msgstr "Hızlı Seçim Penceresi"
+msgstr "Hızlı Seçim İletişim Kutusu"
 
 #: src/widgets/quickselectdialog.cpp:32 src/widgets/quickselectdialog.cpp:70
 #, kde-format
@@ -566,8 +563,7 @@ msgid "Path: %1"
 msgstr "Yol: %1"
 
 #: src/widgets/runningtaskwidget.cpp:37
-#, fuzzy, kde-format
-#| msgid "Zanshin Running Task Banner"
+#, kde-format
 msgctxt "@title:window"
 msgid "Zanshin Running Task Banner"
 msgstr "Zanşin Çalışan Görev Afişi"
@@ -575,7 +571,7 @@ msgstr "Zanşin Çalışan Görev Afişi"
 #: src/widgets/runningtaskwidget.cpp:47
 #, kde-format
 msgid "Stop"
-msgstr "Dur"
+msgstr "Durdur"
 
 #: src/zanshin/app/aboutdata.cpp:14
 #, kde-format
@@ -601,7 +597,7 @@ msgstr "Kevin Ottens"
 #: src/zanshin/app/aboutdata.cpp:20
 #, kde-format
 msgid "Lead Developer"
-msgstr "Lider Geliştirici"
+msgstr "Ana Geliştirici"
 
 #: src/zanshin/app/aboutdata.cpp:23
 #, kde-format
@@ -650,24 +646,4 @@ msgstr "Ana Araç Çubuğu"
 #: src/zanshin/runner/zanshinrunner.cpp:62
 #, kde-format
 msgid "Add \"%1\" to your todo list"
-msgstr "\"%1\" ögesini yapılacaklar listenize ekleyin"
-
-#~ msgctxt "the day after today"
-#~ msgid "tomorrow"
-#~ msgstr "yarın"
-
-#~ msgctxt "this day"
-#~ msgid "today"
-#~ msgstr "bugün"
-
-#~ msgctxt "the day before today"
-#~ msgid "yesterday"
-#~ msgstr "dün"
-
-#~ msgctxt "the week after this week"
-#~ msgid "next week"
-#~ msgstr "gelecek hafta"
-
-#~ msgctxt "the month after this month"
-#~ msgid "next month"
-#~ msgstr "gelecek ay"
+msgstr "\"%1\" ögesini yapılacaklar listesine ekle"

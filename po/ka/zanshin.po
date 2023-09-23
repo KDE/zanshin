@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: zanshin\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-09-21 00:46+0000\n"
-"PO-Revision-Date: 2022-11-24 07:10+0100\n"
+"PO-Revision-Date: 2023-09-22 06:30+0200\n"
 "Last-Translator: Temuri Doghonadze <temuri.doghonadze@gmail.com>\n"
 "Language-Team: Georgian <kde-i18n-doc@kde.org>\n"
 "Language: ka\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 3.2\n"
+"X-Generator: Poedit 3.3.2\n"
 
 #, kde-format
 msgctxt "NAME OF TRANSLATORS"
@@ -29,8 +29,7 @@ msgid "Your emails"
 msgstr "Temuri.doghonadze@gmail.com"
 
 #: src/akonadi/akonadiconfigdialog.cpp:35
-#, fuzzy, kde-format
-#| msgid "Configure"
+#, kde-format
 msgctxt "@title:window"
 msgid "Configure"
 msgstr "მორგება"
@@ -321,8 +320,7 @@ msgid "Go to Page..."
 msgstr "გვერდზე გადასვლა..."
 
 #: src/widgets/availablepagesview.cpp:240
-#, fuzzy, kde-format
-#| msgid "Add a context"
+#, kde-format
 msgctxt "@title:window"
 msgid "Add a context"
 msgstr "კონტექსტის დამატება"
@@ -549,8 +547,7 @@ msgid "Delete Tasks"
 msgstr "ამოცანების წაშლა"
 
 #: src/widgets/quickselectdialog.cpp:30
-#, fuzzy, kde-format
-#| msgid "Quick Select Dialog"
+#, kde-format
 msgctxt "@title:window"
 msgid "Quick Select Dialog"
 msgstr "სწრაფი მონიშვნის ფანჯარა"
@@ -566,11 +563,10 @@ msgid "Path: %1"
 msgstr "ბილიკი: %1"
 
 #: src/widgets/runningtaskwidget.cpp:37
-#, fuzzy, kde-format
-#| msgid "Zanshin Running Task Banner"
+#, kde-format
 msgctxt "@title:window"
 msgid "Zanshin Running Task Banner"
-msgstr "Zanshin -ის გაშვებულობის ბანერი"
+msgstr "Zanshin-ის გაშვებული ამოცანის ბანერი"
 
 #: src/widgets/runningtaskwidget.cpp:47
 #, kde-format
@@ -580,7 +576,7 @@ msgstr "შეჩერება"
 #: src/zanshin/app/aboutdata.cpp:14
 #, kde-format
 msgid "Zanshin Tasks"
-msgstr "Zanshin -ის ამოცანები"
+msgstr "Zanshin-ის ამოცანები"
 
 #: src/zanshin/app/aboutdata.cpp:15
 #, kde-format
