@@ -2,14 +2,14 @@
 # This file is distributed under the same license as the PACKAGE package.
 # Marce Villarino <mvillarino@kde-espana.es>, 2013.
 # Adrián Chaves Fernández <adriyetichaves@gmail.com>, 2015, 2016, 2017.
-# Adrián Chaves (Gallaecio) <adrian@chaves.io>, 2017, 2018, 2019, 2023.
+# SPDX-FileCopyrightText: 2023 Adrián Chaves (Gallaecio)
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-09-21 00:46+0000\n"
-"PO-Revision-Date: 2023-08-06 05:02+0200\n"
+"PO-Revision-Date: 2023-09-24 14:40+0200\n"
 "Last-Translator: Adrián Chaves (Gallaecio) <adrian@chaves.io>\n"
 "Language-Team: Galician <proxecto@trasno.gal>\n"
 "Language: gl\n"
@@ -17,12 +17,12 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Lokalize 23.04.3\n"
+"X-Generator: Lokalize 23.08.1\n"
 
 #, kde-format
 msgctxt "NAME OF TRANSLATORS"
 msgid "Your names"
-msgstr "Adrián Chaves Fernández"
+msgstr "Adrian Chaves (Gallaecio)"
 
 #, kde-format
 msgctxt "EMAIL OF TRANSLATORS"
@@ -30,8 +30,7 @@ msgid "Your emails"
 msgstr "adrian@chaves.io"
 
 #: src/akonadi/akonadiconfigdialog.cpp:35
-#, fuzzy, kde-format
-#| msgid "Configure"
+#, kde-format
 msgctxt "@title:window"
 msgid "Configure"
 msgstr "Configurar"
@@ -73,22 +72,22 @@ msgstr "Seguro que quere eliminar as instancias de axente seleccionadas?"
 #: src/akonadi/akonaditaskrepository.cpp:51
 #, kde-format
 msgid "Could not find a collection to store the task into!"
-msgstr "Non se puido atopar unha colección na que almacenar a tarefa!"
+msgstr "Non foi posíbel atopar unha colección na que almacenar a tarefa!"
 
 #: src/akonadi/akonaditaskrepository.cpp:198
 #, kde-format
 msgid "Could not associate '%1', it is an ancestor of '%2'"
-msgstr "Non se puido asociar «%1», é un antecesor de «%2»."
+msgstr "Non foi posíbel asociar «%1», é un antecesor de «%2»."
 
 #: src/presentation/alltaskspagemodel.cpp:35
 #, kde-format
 msgid "Cannot add task %1"
-msgstr "Non se pode engadir a tarefa %1"
+msgstr "Non é posíbel engadir a tarefa %1"
 
 #: src/presentation/alltaskspagemodel.cpp:46
 #, kde-format
 msgid "Cannot remove task %1"
-msgstr "Non se pode retirar a tarefa %1"
+msgstr "Non é posíbel retirar a tarefa %1"
 
 #: src/presentation/alltaskspagemodel.cpp:56
 #: src/presentation/contextpagemodel.cpp:74
@@ -97,13 +96,13 @@ msgstr "Non se pode retirar a tarefa %1"
 #: src/presentation/workdaypagemodel.cpp:63
 #, kde-format
 msgid "Cannot promote task %1 to be a project"
-msgstr "Non se pode converter a tarefa %1 nun proxecto"
+msgstr "Non é posíbel converter a tarefa %1 nun proxecto"
 
 #: src/presentation/alltaskspagemodel.cpp:97
 #: src/presentation/editormodel.cpp:390
 #, kde-format
 msgid "Cannot modify task %1"
-msgstr "Non se pode modificar a tarefa %1"
+msgstr "Non é posíbel modificar a tarefa %1"
 
 #: src/presentation/alltaskspagemodel.cpp:122
 #: src/presentation/contextpagemodel.cpp:144
@@ -111,34 +110,34 @@ msgstr "Non se pode modificar a tarefa %1"
 #: src/presentation/workdaypagemodel.cpp:119
 #, kde-format
 msgid "Cannot move task %1 as sub-task of %2"
-msgstr "Non se pode converter a tarefa %1 en subordinada de %2"
+msgstr "Non é posíbel converter a tarefa %1 en subordinada de %2"
 
 #: src/presentation/alltaskspagemodel.cpp:125
 #: src/presentation/inboxpagemodel.cpp:114
 #: src/presentation/workdaypagemodel.cpp:127
 #, kde-format
 msgid "Cannot deparent task %1 from its parent"
-msgstr "Non se pode romper a asociación da tarefa %1 coa súa tarefa superior"
+msgstr "Non é posíbel romper a asociación da tarefa %1 coa súa tarefa superior"
 
 #: src/presentation/availablepagesmodel.cpp:117
 #, kde-format
 msgid "Cannot add project %1 in dataSource %2"
-msgstr "Non se pode engadir o proxecto %1 da fonte de datos %2"
+msgstr "Non é posíbel engadir o proxecto %1 da fonte de datos %2"
 
 #: src/presentation/availablepagesmodel.cpp:125
 #, kde-format
 msgid "Cannot add context %1"
-msgstr "Non se pode engadir o contexto %1"
+msgstr "Non é posíbel engadir o contexto %1"
 
 #: src/presentation/availablepagesmodel.cpp:133
 #, kde-format
 msgid "Cannot remove project %1"
-msgstr "Non se pode retirar o proxecto %1"
+msgstr "Non é posíbel retirar o proxecto %1"
 
 #: src/presentation/availablepagesmodel.cpp:136
 #, kde-format
 msgid "Cannot remove context %1"
-msgstr "Non se pode retirar o contexto %1"
+msgstr "Non é posíbel retirar o contexto %1"
 
 #: src/presentation/availablepagesmodel.cpp:145
 #: src/widgets/itemdelegate.cpp:143
@@ -169,122 +168,122 @@ msgstr "Todas as tarefas"
 #: src/presentation/availablepagesmodel.cpp:252
 #, kde-format
 msgid "Cannot modify project %1"
-msgstr "Non se pode modificar o proxecto %1"
+msgstr "Non é posíbel modificar o proxecto %1"
 
 #: src/presentation/availablepagesmodel.cpp:257
 #, kde-format
 msgid "Cannot modify context %1"
-msgstr "Non se pode modificar o contexto %1"
+msgstr "Non é posíbel modificar o contexto %1"
 
 #: src/presentation/availablepagesmodel.cpp:276
 #, kde-format
 msgid "Cannot add %1 to project %2"
-msgstr "Non se pode engadir %1 ao proxecto %2"
+msgstr "Non é posíbel engadir %1 ao proxecto %2"
 
 #: src/presentation/availablepagesmodel.cpp:282
 #, kde-format
 msgid "Cannot add %1 to context %2"
-msgstr "Non se pode engadir %1 ao contexto %2"
+msgstr "Non é posíbel engadir %1 ao contexto %2"
 
 #: src/presentation/availablepagesmodel.cpp:288
 #, kde-format
 msgid "Cannot move %1 to Inbox"
-msgstr "Non se pode mover %1 á caixa de entrada"
+msgstr "Non é posíbel mover %1 á caixa de entrada"
 
 #: src/presentation/availablepagesmodel.cpp:292
 #, kde-format
 msgid "Cannot move task %1 to Inbox"
-msgstr "Non se pode mover a tarefa %1 á caixa de entrada"
+msgstr "Non é posíbel mover a tarefa %1 á caixa de entrada"
 
 #: src/presentation/availablepagesmodel.cpp:301
 #, kde-format
 msgid "Cannot update task %1 to Workday"
-msgstr "Non se pode actualizar a tarefa %1 a día laboral"
+msgstr "Non é posíbel actualizar a tarefa %1 a día laboral"
 
 #: src/presentation/availablesourcesmodel.cpp:99
 #, kde-format
 msgid "Cannot modify source %1"
-msgstr "Non se pode modificar a fonte %1"
+msgstr "Non é posíbel modificar a fonte %1"
 
 #: src/presentation/contextpagemodel.cpp:54
 #, kde-format
 msgid "Cannot add task %1 in context %2"
-msgstr "Non se pode engadir a tarefa %1 ao contexto %2"
+msgstr "Non é posíbel engadir a tarefa %1 ao contexto %2"
 
 #: src/presentation/contextpagemodel.cpp:65
 #, kde-format
 msgid "Cannot remove task %1 from context %2"
-msgstr "Non se pode retirar a tarefa %1 do contexto %2"
+msgstr "Non é posíbel retirar a tarefa %1 do contexto %2"
 
 #: src/presentation/contextpagemodel.cpp:115
 #, kde-format
 msgid "Cannot modify task %1 in context %2"
-msgstr "Non se pode modificar a tarefa %1 do contexto %2"
+msgstr "Non é posíbel modificar a tarefa %1 do contexto %2"
 
 #: src/presentation/contextpagemodel.cpp:147
 #, kde-format
 msgid "Cannot dissociate task %1 from its parent"
-msgstr "Non se pode romper a asociación da tarefa %1 coa súa tarefa superior"
+msgstr "Non é posíbel romper a asociación da tarefa %1 coa súa tarefa superior"
 
 #: src/presentation/inboxpagemodel.cpp:35
 #, kde-format
 msgid "Cannot add task %1 in Inbox"
-msgstr "Non se pode engadir a tarefa %1 á caixa de entrada"
+msgstr "Non é posíbel engadir a tarefa %1 á caixa de entrada"
 
 #: src/presentation/inboxpagemodel.cpp:46
 #, kde-format
 msgid "Cannot remove task %1 from Inbox"
-msgstr "Non se pode retirar a tarefa %1 da caixa de entrada"
+msgstr "Non é posíbel retirar a tarefa %1 da caixa de entrada"
 
 #: src/presentation/inboxpagemodel.cpp:96
 #, kde-format
 msgid "Cannot modify task %1 in Inbox"
-msgstr "Non se pode modificar a tarefa %1 na caixa de entrada"
+msgstr "Non é posíbel modificar a tarefa %1 na caixa de entrada"
 
 #: src/presentation/projectpagemodel.cpp:47
 #, kde-format
 msgid "Cannot add task %1 in project %2"
-msgstr "Non se pode engadir a tarefa %1 ao proxecto %2"
+msgstr "Non é posíbel engadir a tarefa %1 ao proxecto %2"
 
 #: src/presentation/projectpagemodel.cpp:58
 #, kde-format
 msgid "Cannot remove task %1 from project %2"
-msgstr "Non se pode retirar a tarefa %1 do proxecto %2"
+msgstr "Non é posíbel retirar a tarefa %1 do proxecto %2"
 
 #: src/presentation/projectpagemodel.cpp:104
 #, kde-format
 msgid "Cannot modify task %1 in project %2"
-msgstr "Non se pode modificar a tarefa %1 do proxecto %2"
+msgstr "Non é posíbel modificar a tarefa %1 do proxecto %2"
 
 #: src/presentation/projectpagemodel.cpp:130
 #, kde-format
 msgid "Cannot move task %1 as a sub-task of %2"
-msgstr "Non se pode converter a tarefa %1 en subordinada de %2"
+msgstr "Non é posíbel converter a tarefa %1 en subordinada de %2"
 
 #: src/presentation/runningtaskmodel.cpp:46
 #, kde-format
 msgid "Cannot update task %1 to 'not running'"
-msgstr "Non se pode actualizar o estado da tarefa %1 a «non en execución»"
+msgstr "Non é posíbel actualizar o estado da tarefa %1 a «non en execución»"
 
 #: src/presentation/runningtaskmodel.cpp:54
 #, kde-format
 msgid "Cannot update task %1 to 'running'"
-msgstr "Non se pode actualizar o estado da tarefa %1 a «en execución»"
+msgstr "Non é posíbel actualizar o estado da tarefa %1 a «en execución»"
 
 #: src/presentation/workdaypagemodel.cpp:42
 #, kde-format
 msgid "Cannot add task %1 in Workday"
-msgstr "Non se pode engadir a tarefa %1 ao día laboral"
+msgstr "Non é posíbel engadir a tarefa %1 ao día laboral"
 
 #: src/presentation/workdaypagemodel.cpp:53
 #, kde-format
 msgid "Cannot remove task %1 from Workday"
-msgstr "Non se pode retirar a tarefa %1 do día laboral"
+msgstr "Non é posíbel retirar a tarefa %1 do día laboral"
 
 #: src/presentation/workdaypagemodel.cpp:104
 #, kde-format
 msgid "Cannot modify task %1 in Workday"
-msgstr "Non se pode modificar a tarefa %1 do día laboral"
+msgstr "Non é posíbel modificar a tarefa %1 do día laboral"
 
 #: src/widgets/applicationcomponents.cpp:48
 #, kde-format
@@ -322,8 +321,7 @@ msgid "Go to Page..."
 msgstr "Ir á páxina…"
 
 #: src/widgets/availablepagesview.cpp:240
-#, fuzzy, kde-format
-#| msgid "Add a context"
+#, kde-format
 msgctxt "@title:window"
 msgid "Add a context"
 msgstr "Engadir un contexto"
@@ -406,7 +404,7 @@ msgstr "Data lím&ite"
 #: src/widgets/editorview.ui:62 src/widgets/runningtaskwidget.cpp:51
 #, kde-format
 msgid "Done"
-msgstr "Feito"
+msgstr "Feito."
 
 #. i18n: ectx: property (toolTip), widget (QToolButton, addAttachmentButton)
 #: src/widgets/editorview.ui:86
@@ -552,8 +550,7 @@ msgid "Delete Tasks"
 msgstr "Eliminar as tarefas"
 
 #: src/widgets/quickselectdialog.cpp:30
-#, fuzzy, kde-format
-#| msgid "Quick Select Dialog"
+#, kde-format
 msgctxt "@title:window"
 msgid "Quick Select Dialog"
 msgstr "Diálogo de selección rápida"
@@ -569,8 +566,7 @@ msgid "Path: %1"
 msgstr "Ruta: %1"
 
 #: src/widgets/runningtaskwidget.cpp:37
-#, fuzzy, kde-format
-#| msgid "Zanshin Running Task Banner"
+#, kde-format
 msgctxt "@title:window"
 msgid "Zanshin Running Task Banner"
 msgstr "Cartel da tarefa en execución de Zanshin"
@@ -606,7 +602,7 @@ msgstr "Kevin Ottens"
 #: src/zanshin/app/aboutdata.cpp:20
 #, kde-format
 msgid "Lead Developer"
-msgstr "Desenvolvedor principal"
+msgstr "Liderado no desenvolvemento."
 
 #: src/zanshin/app/aboutdata.cpp:23
 #, kde-format
@@ -616,7 +612,7 @@ msgstr "Mario Bensi"
 #: src/zanshin/app/aboutdata.cpp:24 src/zanshin/app/aboutdata.cpp:28
 #, kde-format
 msgid "Developer"
-msgstr "Desenvolvedor"
+msgstr "Desenvolvemento."
 
 #: src/zanshin/app/aboutdata.cpp:27
 #, kde-format
