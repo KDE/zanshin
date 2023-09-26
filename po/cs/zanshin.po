@@ -30,8 +30,7 @@ msgid "Your emails"
 msgstr "vit@pelcak.org"
 
 #: src/akonadi/akonadiconfigdialog.cpp:35
-#, fuzzy, kde-format
-#| msgid "Configure"
+#, kde-format
 msgctxt "@title:window"
 msgid "Configure"
 msgstr "Nastavit"
@@ -322,11 +321,10 @@ msgid "Go to Page..."
 msgstr "Přejít na stranu..."
 
 #: src/widgets/availablepagesview.cpp:240
-#, fuzzy, kde-format
-#| msgid "Add a context"
+#, kde-format
 msgctxt "@title:window"
 msgid "Add a context"
-msgstr "Přidat kontext"
+msgstr ""
 
 #: src/widgets/availablepagesview.cpp:265
 #, kde-format
@@ -551,11 +549,10 @@ msgid "Delete Tasks"
 msgstr "Smazat úlohy"
 
 #: src/widgets/quickselectdialog.cpp:30
-#, fuzzy, kde-format
-#| msgid "Quick Select Dialog"
+#, kde-format
 msgctxt "@title:window"
 msgid "Quick Select Dialog"
-msgstr "Dialog rychlého výběru"
+msgstr ""
 
 #: src/widgets/quickselectdialog.cpp:32 src/widgets/quickselectdialog.cpp:70
 #, kde-format
@@ -568,11 +565,10 @@ msgid "Path: %1"
 msgstr "Cesta: %1"
 
 #: src/widgets/runningtaskwidget.cpp:37
-#, fuzzy, kde-format
-#| msgid "Zanshin Tasks"
+#, kde-format
 msgctxt "@title:window"
 msgid "Zanshin Running Task Banner"
-msgstr "Úlohy Zanshin"
+msgstr ""
 
 #: src/widgets/runningtaskwidget.cpp:47
 #, kde-format
