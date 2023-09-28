@@ -2,14 +2,14 @@
 # This file is distributed under the same license as the PACKAGE package.
 # Valter Mura <valtermura@gmail.com>, 2011, 2014, 2015.
 # Vincenzo Reale <smart2128vr@gmail.com>, 2016.
-# Paolo Zamponi <feus73@gmail.com>, 2018, 2019, 2021.
+# SPDX-FileCopyrightText: 2018, 2019, 2021, 2023 Paolo Zamponi <feus73@gmail.com>
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: zanshin\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-09-21 00:46+0000\n"
-"PO-Revision-Date: 2021-05-12 08:39+0200\n"
+"PO-Revision-Date: 2023-09-23 23:08+0200\n"
 "Last-Translator: Paolo Zamponi <feus73@gmail.com>\n"
 "Language-Team: Italian <kde-i18n-it@kde.org>\n"
 "Language: it\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Lokalize 21.04.0\n"
+"X-Generator: Lokalize 23.08.1\n"
 
 #, kde-format
 msgctxt "NAME OF TRANSLATORS"
@@ -30,8 +30,7 @@ msgid "Your emails"
 msgstr "feus73@gmail.com,"
 
 #: src/akonadi/akonadiconfigdialog.cpp:35
-#, fuzzy, kde-format
-#| msgid "Configure"
+#, kde-format
 msgctxt "@title:window"
 msgid "Configure"
 msgstr "Configura"
@@ -322,8 +321,7 @@ msgid "Go to Page..."
 msgstr "Vai alla pagina..."
 
 #: src/widgets/availablepagesview.cpp:240
-#, fuzzy, kde-format
-#| msgid "Add a context"
+#, kde-format
 msgctxt "@title:window"
 msgid "Add a context"
 msgstr "Aggiungi un contesto"
@@ -550,8 +548,7 @@ msgid "Delete Tasks"
 msgstr "Elimina attività"
 
 #: src/widgets/quickselectdialog.cpp:30
-#, fuzzy, kde-format
-#| msgid "Quick Select Dialog"
+#, kde-format
 msgctxt "@title:window"
 msgid "Quick Select Dialog"
 msgstr "Finestra di selezione rapida"
@@ -568,8 +565,7 @@ msgid "Path: %1"
 msgstr "Percorso: %1"
 
 #: src/widgets/runningtaskwidget.cpp:37
-#, fuzzy, kde-format
-#| msgid "Zanshin Running Task Banner"
+#, kde-format
 msgctxt "@title:window"
 msgid "Zanshin Running Task Banner"
 msgstr "Striscione attività in esecuzione di Zanshin"
