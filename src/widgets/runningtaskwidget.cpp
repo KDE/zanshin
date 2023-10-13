@@ -31,8 +31,10 @@ RunningTaskWidget::RunningTaskWidget(QWidget *parent)
     // This means no way to focus it with the keyboard, though, obviously.
 
     setWindowFlags(Qt::Window | Qt::BypassWindowManagerHint | Qt::FramelessWindowHint);
-    KX11Extras::setOnAllDesktops(winId(), true);
-    KWindowSystem::setState(winId(), NET::KeepAbove | NET::SkipTaskbar | NET::SkipPager);
+    if (KWindowSystem::isPlatformX11()) {
+        KX11Extras::setOnAllDesktops(winId(), true);
+        KX11Extras::setState(winId(), NET::KeepAbove | NET::SkipTaskbar | NET::SkipPager);
+    }
 
     setWindowTitle(i18nc("@title:window", "Zanshin Running Task Banner"));
 
