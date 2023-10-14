@@ -196,7 +196,7 @@ msgstr "No s'ha pogut moure %1 a la safata d'entrada"
 #: src/presentation/availablepagesmodel.cpp:292
 #, kde-format
 msgid "Cannot move task %1 to Inbox"
-msgstr "No s'ha pogut moure la tasca %1 a la safata d'entrada"
+msgstr "No s'ha pogut moure la tasca %1 cap a la safata d'entrada"
 
 #: src/presentation/availablepagesmodel.cpp:301
 #, kde-format
@@ -321,7 +321,7 @@ msgstr "Pàgina següent"
 #: src/widgets/availablepagesview.cpp:105
 #, kde-format
 msgid "Go to Page..."
-msgstr "Ves a la pàgina..."
+msgstr "Ves fins a la pàgina..."
 
 #: src/widgets/availablepagesview.cpp:240
 #, kde-format
