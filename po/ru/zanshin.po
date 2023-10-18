@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-09-21 00:46+0000\n"
+"POT-Creation-Date: 2023-10-18 01:42+0000\n"
 "PO-Revision-Date: 2022-02-17 12:05+0300\n"
 "Last-Translator: Olesya Gerasimenko <translation-team@basealt.ru>\n"
 "Language-Team: Basealt Translation Team\n"
@@ -410,7 +410,7 @@ msgid "D&ue Date "
 msgstr "С&рок выполнения "
 
 #. i18n: ectx: property (text), widget (QCheckBox, doneButton)
-#: src/widgets/editorview.ui:62 src/widgets/runningtaskwidget.cpp:51
+#: src/widgets/editorview.ui:62 src/widgets/runningtaskwidget.cpp:53
 #, kde-format
 msgid "Done"
 msgstr "Выполнено"
@@ -575,14 +575,14 @@ msgstr "Можно начать набор текста для фильтрац�
 msgid "Path: %1"
 msgstr "Путь: %1"
 
-#: src/widgets/runningtaskwidget.cpp:37
+#: src/widgets/runningtaskwidget.cpp:39
 #, fuzzy, kde-format
 #| msgid "Zanshin Running Task Banner"
 msgctxt "@title:window"
 msgid "Zanshin Running Task Banner"
 msgstr "Заголовок выполняемого задания в Zanshin"
 
-#: src/widgets/runningtaskwidget.cpp:47
+#: src/widgets/runningtaskwidget.cpp:49
 #, kde-format
 msgid "Stop"
 msgstr "Остановить"

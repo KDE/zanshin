@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-09-21 00:46+0000\n"
+"POT-Creation-Date: 2023-10-18 01:42+0000\n"
 "PO-Revision-Date: 2021-05-10 20:14+0200\n"
 "Last-Translator: Stefan Asserhäll <stefan.asserhall@bredband.net>\n"
 "Language-Team: Swedish <kde-i18n-doc@kde.org>\n"
@@ -402,7 +402,7 @@ msgid "D&ue Date "
 msgstr "Färdigdat&um "
 
 #. i18n: ectx: property (text), widget (QCheckBox, doneButton)
-#: src/widgets/editorview.ui:62 src/widgets/runningtaskwidget.cpp:51
+#: src/widgets/editorview.ui:62 src/widgets/runningtaskwidget.cpp:53
 #, kde-format
 msgid "Done"
 msgstr "Klar"
@@ -569,14 +569,14 @@ msgstr "Du kan börja skriva för att filtrera listan med tillgängliga sidor"
 msgid "Path: %1"
 msgstr "Sökväg: %1"
 
-#: src/widgets/runningtaskwidget.cpp:37
+#: src/widgets/runningtaskwidget.cpp:39
 #, fuzzy, kde-format
 #| msgid "Zanshin Running Task Banner"
 msgctxt "@title:window"
 msgid "Zanshin Running Task Banner"
 msgstr "Zanshin banderoll för pågående uppgift"
 
-#: src/widgets/runningtaskwidget.cpp:47
+#: src/widgets/runningtaskwidget.cpp:49
 #, kde-format
 msgid "Stop"
 msgstr "Stoppa"
