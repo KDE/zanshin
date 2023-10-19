@@ -100,7 +100,7 @@ private slots:
         // THEN
         auto newItemList = m_migrator.fetchAllItems(WhichItems::OnlyContexts).items;
         Akonadi::Item::List contextItems;
-        QVector<KCalendarCore::Todo::Ptr> contextTodos;
+        QList<KCalendarCore::Todo::Ptr> contextTodos;
         for (auto it = newItemList.constBegin(); it != newItemList.constEnd(); ++it) {
             const auto item = *it;
             if (m_serializer.isContext(item)) {

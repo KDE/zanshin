@@ -51,7 +51,7 @@ inline bool qCompare(const Akonadi::Item &left, const Akonadi::Item &right,
 namespace
 {
     template<typename T>
-    QSet<T> listToSet(const QVector<T> &list)
+    QSet<T> listToSet(const QList<T> &list)
     {
         return {list.cbegin(), list.cend()};
     }

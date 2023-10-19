@@ -192,7 +192,7 @@ private slots:
 
         // THEN
         const auto toItemIds = [](const Akonadi::Item::List &items) {
-            auto res = QVector<Akonadi::Item::Id>();
+            auto res = QList<Akonadi::Item::Id>();
             res.reserve(items.size());
             std::transform(items.cbegin(), items.cend(),
                            std::back_inserter(res),
@@ -201,7 +201,7 @@ private slots:
             return res;
         };
 
-        auto expectedIds = QVector<Akonadi::Item::Id>() << 42 << 45 << 52;
+        auto expectedIds = QList<Akonadi::Item::Id>() << 42 << 45 << 52;
         {
             const auto itemFetchIds = toItemIds(job->items());
             QCOMPARE(itemFetchIds, expectedIds);
@@ -253,7 +253,7 @@ private slots:
 
         // THEN
         const auto toItemIds = [](const Akonadi::Item::List &items) {
-            auto res = QVector<Akonadi::Item::Id>();
+            auto res = QList<Akonadi::Item::Id>();
             res.reserve(items.size());
             std::transform(items.cbegin(), items.cend(),
                            std::back_inserter(res),
@@ -262,7 +262,7 @@ private slots:
             return res;
         };
 
-        auto expectedIds = QVector<Akonadi::Item::Id>() << 44;
+        auto expectedIds = QList<Akonadi::Item::Id>() << 44;
         {
             const auto itemFetchIds = toItemIds(job->items());
             QCOMPARE(itemFetchIds, expectedIds);

@@ -10,7 +10,7 @@
 #include <QPersistentModelIndex>
 #include <QSharedPointer>
 #include <QPointer>
-#include <QVector>
+#include <QList>
 
 #include "domain/task.h"
 #include "domain/datasource.h"
@@ -40,8 +40,8 @@ class ZanshinContext : public QObject
 public:
     struct TableData
     {
-        QVector<QByteArray> roles;
-        QVector<QVector<QVariant>> rows;
+        QList<QByteArray> roles;
+        QList<QList<QVariant>> rows;
     };
 
     explicit ZanshinContext(QObject *parent = nullptr);

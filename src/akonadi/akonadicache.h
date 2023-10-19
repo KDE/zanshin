@@ -54,7 +54,7 @@ private:
 
     bool m_collectionListPopulated;
     Collection::List m_collections;
-    QHash<Collection::Id, QVector<Item::Id>> m_collectionItems;
+    QHash<Collection::Id, QList<Item::Id>> m_collectionItems;
 
     QHash<Item::Id, Item> m_items;
 };

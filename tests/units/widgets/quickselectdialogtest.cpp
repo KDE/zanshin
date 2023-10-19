@@ -15,7 +15,7 @@
 #include <QTestEventList>
 #include <QTimer>
 #include <QTreeView>
-#include <QVector>
+#include <QList>
 
 #include "widgets/quickselectdialog.h"
 
@@ -76,7 +76,7 @@ private:
         contexts->setChild(0, 0, contextChildOne);
         contexts->setChild(1, 0, contextChildTwo);
 
-        auto items = QVector<QStandardItem*>();
+        auto items = QList<QStandardItem*>();
         items << inbox << workday << projects << contexts;
 
         for (int i = 0; i < items.size(); ++i)
@@ -189,7 +189,7 @@ private slots:
         dlg.setModel(model);
         dlg.show();
 
-        auto selectedItemNames = QVector<QString>();
+        auto selectedItemNames = QList<QString>();
         selectedItemNames  << QStringLiteral("Inbox") << QStringLiteral("Workday") << QStringLiteral("ProjectOne") << QStringLiteral("ProjectTwo") <<  QStringLiteral("ContextOne") << QStringLiteral("ContextTwo") << QStringLiteral("TagOne") << QStringLiteral("TagTwo");
 
         foreach (const auto &itemName, selectedItemNames) {

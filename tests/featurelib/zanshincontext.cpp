@@ -706,7 +706,7 @@ bool ZanshinContext::I_change_the_default_data_source(const QString &sourceName)
 bool ZanshinContext::the_list_is(const TableData &data)
 {
     auto roleNames = model()->roleNames();
-    QVector<int> usedRoles;
+    QList<int> usedRoles;
 
     for (const auto &roleName : data.roles) {
         const int role = roleNames.key(roleName, -1);
