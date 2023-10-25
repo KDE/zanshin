@@ -37,7 +37,7 @@
 
 int main(int argc, char **argv)
 {
-    KLocalizedString::setApplicationDomain("zanshin");
+    KLocalizedString::setApplicationDomain(QByteArrayLiteral("zanshin"));
     QApplication app(argc, argv);
     Integration::initializeGlobalAppDependencies();
 
