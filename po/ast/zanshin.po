@@ -1,39 +1,37 @@
-# Copyright (C) YEAR This_file_is_part_of_KDE
-# This file is distributed under the same license as the PACKAGE package.
-# SPDX-FileCopyrightText: 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2019, 2023 Vít Pelčák <vit@pelcak.org>
-# Tomáš Chvátal <tomas.chvatal@gmail.com>, 2012.
-# Vit Pelcak <vit@pelcak.org>, 2021, 2023.
+# Copyright (C) 2023 This file is copyright:
+# This file is distributed under the same license as the zanshin package.
 #
+# SPDX-FileCopyrightText: 2023 Enol P. <enolp@softastur.org>
 msgid ""
 msgstr ""
-"Project-Id-Version: \n"
+"Project-Id-Version: zanshin\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-10-18 01:42+0000\n"
-"PO-Revision-Date: 2023-10-19 14:39+0200\n"
-"Last-Translator: Vit Pelcak <vit@pelcak.org>\n"
-"Language-Team: Czech <kde-i18n-doc@kde.org>\n"
-"Language: cs\n"
+"PO-Revision-Date: 2023-10-25 10:12+0200\n"
+"Last-Translator: Enol P. <enolp@softastur.org>\n"
+"Language-Team: \n"
+"Language: ast_ES\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Lokalize 23.08.2\n"
-"Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
 
 #, kde-format
 msgctxt "NAME OF TRANSLATORS"
 msgid "Your names"
-msgstr "Vít Pelčák"
+msgstr "Softastur"
 
 #, kde-format
 msgctxt "EMAIL OF TRANSLATORS"
 msgid "Your emails"
-msgstr "vit@pelcak.org"
+msgstr "alministradores@softastur.org"
 
 #: src/akonadi/akonadiconfigdialog.cpp:35
 #, kde-format
 msgctxt "@title:window"
 msgid "Configure"
-msgstr "Nastavit"
+msgstr ""
 
 #: src/akonadi/akonadiconfigdialog.cpp:39
 #, kde-format
@@ -41,33 +39,31 @@ msgid ""
 "Please select or create a resource which will be used by the application to "
 "store and query its TODOs."
 msgstr ""
-"Prosím vyberte nebo vytvořte zdroj, který bude použit aplikací pro ukládání "
-"a hledání úloh."
 
 #: src/akonadi/akonadiconfigdialog.cpp:49
 #, kde-format
 msgid "Add resource"
-msgstr "Přidat zdroj"
+msgstr ""
 
 #: src/akonadi/akonadiconfigdialog.cpp:56
 #, kde-format
 msgid "Remove resource"
-msgstr "Odstranit zdroj"
+msgstr ""
 
 #: src/akonadi/akonadiconfigdialog.cpp:63
 #, kde-format
 msgid "Configure resource..."
-msgstr "Nastavit zdroj..."
+msgstr ""
 
 #: src/akonadi/akonadiconfigdialog.cpp:111
 #, kde-format
 msgid "Multiple Agent Deletion"
-msgstr "Smazání více agentů"
+msgstr ""
 
 #: src/akonadi/akonadiconfigdialog.cpp:112
 #, kde-format
 msgid "Do you really want to delete the selected agent instances?"
-msgstr "Opravdu si přejete smazat vybrané instance agenta?"
+msgstr ""
 
 #: src/akonadi/akonaditaskrepository.cpp:51
 #, kde-format
@@ -82,12 +78,12 @@ msgstr ""
 #: src/presentation/alltaskspagemodel.cpp:35
 #, kde-format
 msgid "Cannot add task %1"
-msgstr "Nelze přidat úlohu %1"
+msgstr ""
 
 #: src/presentation/alltaskspagemodel.cpp:46
 #, kde-format
 msgid "Cannot remove task %1"
-msgstr "Nelze odstranit úlohu %1"
+msgstr ""
 
 #: src/presentation/alltaskspagemodel.cpp:56
 #: src/presentation/contextpagemodel.cpp:74
@@ -102,7 +98,7 @@ msgstr ""
 #: src/presentation/editormodel.cpp:390
 #, kde-format
 msgid "Cannot modify task %1"
-msgstr "Nelze upravit úlohu %1"
+msgstr ""
 
 #: src/presentation/alltaskspagemodel.cpp:122
 #: src/presentation/contextpagemodel.cpp:144
@@ -127,43 +123,43 @@ msgstr ""
 #: src/presentation/availablepagesmodel.cpp:125
 #, kde-format
 msgid "Cannot add context %1"
-msgstr "Nelze přidat kontext %1"
+msgstr ""
 
 #: src/presentation/availablepagesmodel.cpp:133
 #, kde-format
 msgid "Cannot remove project %1"
-msgstr "Nelze odstranit projekt %1"
+msgstr ""
 
 #: src/presentation/availablepagesmodel.cpp:136
 #, kde-format
 msgid "Cannot remove context %1"
-msgstr "Nelze odstranit kontext %1"
+msgstr ""
 
 #: src/presentation/availablepagesmodel.cpp:145
 #: src/widgets/itemdelegate.cpp:143
 #, kde-format
 msgid "Inbox"
-msgstr "Příchozí"
+msgstr ""
 
 #: src/presentation/availablepagesmodel.cpp:147
 #, kde-format
 msgid "Workday"
-msgstr "Pracovní den"
+msgstr ""
 
 #: src/presentation/availablepagesmodel.cpp:149
 #, kde-format
 msgid "Projects"
-msgstr "Projekty"
+msgstr ""
 
 #: src/presentation/availablepagesmodel.cpp:151
 #, kde-format
 msgid "Contexts"
-msgstr "Kontexty"
+msgstr ""
 
 #: src/presentation/availablepagesmodel.cpp:153
 #, kde-format
 msgid "All Tasks"
-msgstr "Všechny úlohy"
+msgstr ""
 
 #: src/presentation/availablepagesmodel.cpp:252
 #, kde-format
@@ -203,7 +199,7 @@ msgstr ""
 #: src/presentation/availablesourcesmodel.cpp:99
 #, kde-format
 msgid "Cannot modify source %1"
-msgstr "Nelze upravit zdroj %1"
+msgstr ""
 
 #: src/presentation/contextpagemodel.cpp:54
 #, kde-format
@@ -263,12 +259,12 @@ msgstr ""
 #: src/presentation/runningtaskmodel.cpp:46
 #, kde-format
 msgid "Cannot update task %1 to 'not running'"
-msgstr "Nelze aktualizovat úlohu %1 na 'neběží'"
+msgstr ""
 
 #: src/presentation/runningtaskmodel.cpp:54
 #, kde-format
 msgid "Cannot update task %1 to 'running'"
-msgstr "Nelze aktualizovat úlohu %1 na 'běží'"
+msgstr ""
 
 #: src/presentation/workdaypagemodel.cpp:42
 #, kde-format
@@ -288,103 +284,103 @@ msgstr ""
 #: src/widgets/applicationcomponents.cpp:48
 #, kde-format
 msgid "Move Task"
-msgstr "Přesunout úlohu"
+msgstr ""
 
 #: src/widgets/availablepagesview.cpp:50
 #, kde-format
 msgid "New Project"
-msgstr "Nový projekt"
+msgstr ""
 
 #: src/widgets/availablepagesview.cpp:56
 #, kde-format
 msgid "New Context"
-msgstr "Nový kontext"
+msgstr ""
 
 #: src/widgets/availablepagesview.cpp:62
 #, kde-format
 msgid "Remove Page"
-msgstr "Odstranit stranu"
+msgstr ""
 
 #: src/widgets/availablepagesview.cpp:91
 #, kde-format
 msgid "Previous Page"
-msgstr "Předchozí strana"
+msgstr ""
 
 #: src/widgets/availablepagesview.cpp:98
 #, kde-format
 msgid "Next Page"
-msgstr "Následující strana"
+msgstr ""
 
 #: src/widgets/availablepagesview.cpp:105
 #, kde-format
 msgid "Go to Page..."
-msgstr "Přejít na stranu..."
+msgstr ""
 
 #: src/widgets/availablepagesview.cpp:240
 #, kde-format
 msgctxt "@title:window"
 msgid "Add a context"
-msgstr "Přidat kontext"
+msgstr ""
 
 #: src/widgets/availablepagesview.cpp:265
 #, kde-format
 msgid "Delete Project"
-msgstr "Smazat projekt"
+msgstr ""
 
 #: src/widgets/availablepagesview.cpp:266
 #, kde-format
 msgid "Do you really want to delete the project '%1', with all its actions?"
-msgstr "Opravdu si přejete smazat projet \"%1\" se všemi jeho činnostmi?"
+msgstr ""
 
 #: src/widgets/availablepagesview.cpp:268
 #, kde-format
 msgid "Delete Context"
-msgstr "Smazat kontext"
+msgstr ""
 
 #: src/widgets/availablepagesview.cpp:269
 #, kde-format
 msgid "Do you really want to delete the context '%1'?"
-msgstr "Opravdu si přejete smazat kontext '%1'?"
+msgstr ""
 
 #: src/widgets/availablesourcesview.cpp:55
 #, kde-format
 msgid "Use as Default Source"
-msgstr "Použít jako výchozí zdroj"
+msgstr ""
 
 #: src/widgets/availablesourcesview.cpp:76
 #, kde-format
 msgid "Configure %1..."
-msgstr "Nastavit %1..."
+msgstr ""
 
 #: src/widgets/editorview.cpp:31
 #, kde-format
 msgid "Add Attachment"
-msgstr "Přidat přílohu"
+msgstr ""
 
 #: src/widgets/editorview.cpp:36
 #, kde-format
 msgid "Never"
-msgstr "Nikdy"
+msgstr ""
 
 #: src/widgets/editorview.cpp:37
 #, kde-format
 msgid "Daily"
-msgstr "Denně"
+msgstr ""
 
 #: src/widgets/editorview.cpp:38
 #, kde-format
 msgid "Weekly"
-msgstr "Týdně"
+msgstr ""
 
 #: src/widgets/editorview.cpp:39
 #, kde-format
 msgid "Monthly"
-msgstr "Každý měsíc"
+msgstr ""
 
 #: src/widgets/editorview.cpp:40
 #, kde-format
 msgid "Yearly"
-msgstr "Ročně"
+msgstr ""
 
 #. i18n: ectx: property (windowTitle), widget (QWidget, EditorView)
 #. i18n: ectx: property (text), widget (QListView, attachmentList)
@@ -392,177 +388,176 @@ msgstr "Ročně"
 #: src/zanshin/app/main.cpp:84
 #, kde-format
 msgid "Editor"
-msgstr "Editor"
+msgstr ""
 
 #. i18n: ectx: property (text), widget (QLabel, dueDateLabel)
 #: src/widgets/editorview.ui:41
 #, kde-format
 msgid "D&ue Date "
-msgstr "Dat&um splnění"
+msgstr ""
 
 #. i18n: ectx: property (text), widget (QCheckBox, doneButton)
 #: src/widgets/editorview.ui:62 src/widgets/runningtaskwidget.cpp:53
 #, kde-format
 msgid "Done"
-msgstr "Hotovo"
+msgstr ""
 
 #. i18n: ectx: property (toolTip), widget (QToolButton, addAttachmentButton)
 #: src/widgets/editorview.ui:86
 #, kde-format
 msgid "Add Attachment..."
-msgstr "Přidat přílohu..."
+msgstr ""
 
 #. i18n: ectx: property (toolTip), widget (QToolButton, removeAttachmentButton)
 #: src/widgets/editorview.ui:100
 #, kde-format
 msgid "Remove Attachment"
-msgstr "Odstranit přílohu"
+msgstr ""
 
 #. i18n: ectx: property (text), widget (QPushButton, startTodayButton)
 #: src/widgets/editorview.ui:121
 #, kde-format
 msgid "Select for &Today"
-msgstr "Vyber&te dnešek"
+msgstr ""
 
 #. i18n: ectx: property (text), widget (QLabel, recurrenceLabel)
 #: src/widgets/editorview.ui:130
 #, kde-format
 msgid "&Recurrence"
-msgstr "Opa&kování"
+msgstr ""
 
 #. i18n: ectx: property (text), widget (QLabel, startDateLabel)
 #: src/widgets/editorview.ui:146
 #, kde-format
 msgid "St&art Date"
-msgstr "Počáteční d&atum"
+msgstr ""
 
 #: src/widgets/filterwidget.cpp:29
 #, kde-format
 msgid "Sort by title"
-msgstr "Řadit podle názvu"
+msgstr ""
 
 #: src/widgets/filterwidget.cpp:30
 #, kde-format
 msgid "Sort by date"
-msgstr "Řadit podle data"
+msgstr ""
 
 #. i18n: ectx: property (placeholderText), widget (QLineEdit, filterEdit)
 #: src/widgets/filterwidget.ui:31 src/widgets/pageview.cpp:197
 #, kde-format
 msgid "Filter..."
-msgstr "Filtr..."
+msgstr ""
 
 #. i18n: ectx: property (toolTip), widget (QToolButton, descendingButton)
 #: src/widgets/filterwidget.ui:65
 #, kde-format
 msgid "Sort in descending order"
-msgstr "Seřadit sestupně"
+msgstr ""
 
 #. i18n: ectx: property (toolTip), widget (QToolButton, ascendingButton)
 #: src/widgets/filterwidget.ui:88
 #, kde-format
 msgid "Sort in ascending order"
-msgstr "Seřadit vzestupně"
+msgstr ""
 
 #: src/widgets/itemdelegate.cpp:141
 #, kde-format
 msgid "Project: %1"
-msgstr "Projekt: %1"
+msgstr ""
 
 #. i18n: ectx: property (windowTitle), widget (QDialog, NameAndDataSourceDialog)
 #: src/widgets/nameanddatasourcedialog.ui:14
 #, kde-format
 msgid "Add a project"
-msgstr "Přidat projekt"
+msgstr ""
 
-# Tohle vypadá na název vlastnosti. Jméno bycvh nechal pro lidi a zvířata.
 #. i18n: ectx: property (text), widget (QLabel, nameLabel)
 #: src/widgets/nameanddatasourcedialog.ui:25
 #, kde-format
 msgid "Name"
-msgstr "Název"
+msgstr ""
 
 #. i18n: ectx: property (text), widget (QLabel, sourceLabel)
 #: src/widgets/nameanddatasourcedialog.ui:42
 #, kde-format
 msgid "Source"
-msgstr "Zdroj"
+msgstr ""
 
 #: src/widgets/pageview.cpp:155
 #, kde-format
 msgid "Type and press enter to add a task"
-msgstr "Pro přidání úlohy ji napište a stiskněte Enter"
+msgstr ""
 
 #: src/widgets/pageview.cpp:170
 #, kde-format
 msgid "New Task"
-msgstr "Nová úloha"
+msgstr ""
 
 #: src/widgets/pageview.cpp:183
 #, kde-format
 msgid "Remove Task"
-msgstr "Odstranit úlohu"
+msgstr ""
 
 #: src/widgets/pageview.cpp:191
 #, kde-format
 msgid "Promote Task as Project"
-msgstr "Povýšit úlohu na projekt"
+msgstr ""
 
 #: src/widgets/pageview.cpp:205
 #, kde-format
 msgid "Show done tasks"
-msgstr "Zobrazit dokončené úlohy"
+msgstr ""
 
 #: src/widgets/pageview.cpp:213
 #, kde-format
 msgid "Show future tasks"
-msgstr "Zobrazit budoucí úlohy"
+msgstr ""
 
 #: src/widgets/pageview.cpp:239
 #, kde-format
 msgid "Start Now"
-msgstr "Spustit nyní"
+msgstr ""
 
 #: src/widgets/pageview.cpp:357
 #, kde-format
 msgid "Type and press enter to add an item"
-msgstr "Pro přidání položky ji napište a stiskněte Enter"
+msgstr ""
 
 #: src/widgets/pageview.cpp:383
 #, kde-format
 msgid "Do you really want to delete the selected items and their children?"
-msgstr "Opravdu si přejete smazat vybrané položky a všechny jejich potomky?"
+msgstr ""
 
 #: src/widgets/pageview.cpp:385
 #, kde-format
 msgid "Do you really want to delete the selected items?"
-msgstr "Opravdu si přejete smazat vybrané položky?"
+msgstr ""
 
 #: src/widgets/pageview.cpp:393
 #, kde-format
 msgid "Do you really want to delete the selected task and all its children?"
-msgstr "Opravdu si přejete smazat vybranou úlohu a všechny její potomky?"
+msgstr ""
 
 #: src/widgets/pageview.cpp:397
 #, kde-format
 msgid "Delete Tasks"
-msgstr "Smazat úlohy"
+msgstr ""
 
 #: src/widgets/quickselectdialog.cpp:30
 #, kde-format
 msgctxt "@title:window"
 msgid "Quick Select Dialog"
-msgstr "Dialog rychlého výběru"
+msgstr ""
 
 #: src/widgets/quickselectdialog.cpp:32 src/widgets/quickselectdialog.cpp:70
 #, kde-format
 msgid "You can start typing to filter the list of available pages"
-msgstr "Můžete začít psát pro filtrování seznamu dostupných stránek"
+msgstr ""
 
 #: src/widgets/quickselectdialog.cpp:72
 #, kde-format
 msgid "Path: %1"
-msgstr "Cesta: %1"
+msgstr ""
 
 #: src/widgets/runningtaskwidget.cpp:39
 #, kde-format
@@ -573,79 +568,79 @@ msgstr ""
 #: src/widgets/runningtaskwidget.cpp:49
 #, kde-format
 msgid "Stop"
-msgstr "Zastavit"
+msgstr ""
 
 #: src/zanshin/app/aboutdata.cpp:14
 #, kde-format
 msgid "Zanshin Tasks"
-msgstr "Úlohy Zanshin"
+msgstr ""
 
 #: src/zanshin/app/aboutdata.cpp:15
 #, kde-format
 msgid ""
 "A Getting Things Done application which aims at getting your mind like water"
-msgstr "Aplikace GTD, která vaší mysli umožní proudit jako voda"
+msgstr ""
 
 #: src/zanshin/app/aboutdata.cpp:17
 #, kde-format
 msgid "Copyright 2008-2016, Kevin Ottens <ervin@kde.org>"
-msgstr "Autorská práva 2008-2016, Kevin Ottens <ervin@kde.org>"
+msgstr ""
 
 #: src/zanshin/app/aboutdata.cpp:19
 #, kde-format
 msgid "Kevin Ottens"
-msgstr "Kevin Ottens"
+msgstr ""
 
 #: src/zanshin/app/aboutdata.cpp:20
 #, kde-format
 msgid "Lead Developer"
-msgstr "Hlavní vývojář"
+msgstr ""
 
 #: src/zanshin/app/aboutdata.cpp:23
 #, kde-format
 msgid "Mario Bensi"
-msgstr "Mario Bensi"
+msgstr ""
 
 #: src/zanshin/app/aboutdata.cpp:24 src/zanshin/app/aboutdata.cpp:28
 #, kde-format
 msgid "Developer"
-msgstr "Vývojář"
+msgstr ""
 
 #: src/zanshin/app/aboutdata.cpp:27
 #, kde-format
 msgid "Franck Arrecot"
-msgstr "Franck Arrecot"
+msgstr ""
 
 #: src/zanshin/app/main.cpp:76
 #, kde-format
 msgid "Sources"
-msgstr "Zdroje"
+msgstr ""
 
 #: src/zanshin/app/main.cpp:80
 #, kde-format
 msgid "Pages"
-msgstr "Strany"
+msgstr ""
 
 #. i18n: ectx: Menu (go)
 #: src/zanshin/app/zanshinui.rc:15 src/zanshin/kontact/zanshin_part.rc:15
 #, kde-format
 msgid "&Go"
-msgstr "Pře&jít"
+msgstr ""
 
 #. i18n: ectx: Menu
 #: src/zanshin/app/zanshinui.rc:27
 #, kde-format
 msgid "&Panels"
-msgstr "&Panely"
+msgstr ""
 
 #. i18n: ectx: ToolBar (mainToolBar)
 #: src/zanshin/app/zanshinui.rc:35 src/zanshin/kontact/zanshin_part.rc:27
 #, kde-format
 msgctxt "@title:menu"
 msgid "Main Toolbar"
-msgstr "Hlavní panel nástrojů"
+msgstr ""
 
 #: src/zanshin/runner/zanshinrunner.cpp:62
 #, kde-format
 msgid "Add \"%1\" to your todo list"
-msgstr "Přidat \"%1\" do seznamu úloh"
+msgstr ""
