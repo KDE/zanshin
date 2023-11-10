@@ -34,10 +34,6 @@ ZanshinRunner::ZanshinRunner(QObject *parent, const KPluginMetaData &metaData)
     setTriggerWords({m_triggerWord});
 }
 
-ZanshinRunner::~ZanshinRunner()
-{
-}
-
 void ZanshinRunner::match(RunnerContext &context)
 {
     const QString command = context.query().trimmed();

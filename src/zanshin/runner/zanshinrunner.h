@@ -4,7 +4,6 @@
    * SPDX-License-Identifier: GPL-2.0-only OR GPL-3.0-only OR LicenseRef-KDE-Accepted-GPL
    */
 
-
 #ifndef ZANSHINRUNNER_H
 #define ZANSHINRUNNER_H
 
@@ -20,7 +19,6 @@ class ZanshinRunner : public AbstractRunner
 
 public:
     ZanshinRunner(QObject *parent, const KPluginMetaData &metaData);
-    ~ZanshinRunner();
 
 private:
     void match(RunnerContext &context) override;
