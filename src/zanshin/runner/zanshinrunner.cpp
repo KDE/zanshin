@@ -30,7 +30,6 @@ ZanshinRunner::ZanshinRunner(QObject *parent, const KPluginMetaData &metaData)
     , m_taskRepository(createTaskRepository())
     , m_triggerWord(QStringLiteral("todo:"))
 {
-    setObjectName(QStringLiteral("Zanshin"));
     setTriggerWords({m_triggerWord});
 }
 
