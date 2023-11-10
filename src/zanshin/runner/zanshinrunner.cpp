@@ -6,10 +6,10 @@
 
 #include "zanshinrunner.h"
 
-#include "domain/task.h"
-#include "akonadi/akonaditaskrepository.h"
 #include "akonadi/akonadiserializer.h"
 #include "akonadi/akonadistorage.h"
+#include "akonadi/akonaditaskrepository.h"
+#include "domain/task.h"
 
 #include <QIcon>
 
@@ -21,8 +21,7 @@ K_PLUGIN_CLASS_WITH_JSON(ZanshinRunner, "plasma-runner-zanshin.json")
 Domain::TaskRepository::Ptr createTaskRepository()
 {
     using namespace Akonadi;
-    auto repository = new TaskRepository(StorageInterface::Ptr(new Storage),
-                                         SerializerInterface::Ptr(new Serializer));
+    auto repository = new TaskRepository(StorageInterface::Ptr(new Storage), SerializerInterface::Ptr(new Serializer));
     return Domain::TaskRepository::Ptr(repository);
 }
 
@@ -57,7 +56,7 @@ void ZanshinRunner::match(RunnerContext &context)
 
     QueryMatch match(this);
     match.setData(summary);
-    match.setType(QueryMatch::ExactMatch);
+    match.setCategoryRelevance(QueryMatch::CategoryRelevance::Highest);
     match.setIcon(QIcon::fromTheme(QStringLiteral("zanshin")));
     match.setText(i18n("Add \"%1\" to your todo list", summary));
     match.setRelevance(1.0);
