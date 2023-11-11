@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zanshin\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-10-18 01:42+0000\n"
+"POT-Creation-Date: 2023-11-11 01:44+0000\n"
 "PO-Revision-Date: 2023-10-02 09:09+0100\n"
 "Last-Translator: Oliver Kellogg <okellogg@users.sourceforge.net>\n"
 "Language-Team: Esperanto <kde-i18n-eo@kde.org>\n"
@@ -643,7 +643,7 @@ msgctxt "@title:menu"
 msgid "Main Toolbar"
 msgstr "Ĉefa Ilobreto"
 
-#: src/zanshin/runner/zanshinrunner.cpp:62
+#: src/zanshin/runner/zanshinrunner.cpp:56
 #, kde-format
 msgid "Add \"%1\" to your todo list"
 msgstr "Aldoni \"%1\" al via listo"

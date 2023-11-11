@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zanshin\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-10-18 01:42+0000\n"
+"POT-Creation-Date: 2023-11-11 01:44+0000\n"
 "PO-Revision-Date: 2021-09-21 12:51+0630\n"
 "Last-Translator: ဇေယျာလွင် <lw1nzayar@yandex.com>\n"
 "Language-Team: Burmese <kde-i18n-doc@kde.org>\n"
@@ -647,7 +647,7 @@ msgctxt "@title:menu"
 msgid "Main Toolbar"
 msgstr "ပင်မကိရိယာတန်း"
 
-#: src/zanshin/runner/zanshinrunner.cpp:62
+#: src/zanshin/runner/zanshinrunner.cpp:56
 #, kde-format
 msgid "Add \"%1\" to your todo list"
 msgstr "သင်၏လုပ်ရန်စာရင်းသို့ \"%1\" ထည့်မည်"

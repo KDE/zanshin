@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libkdepim\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-10-18 01:42+0000\n"
+"POT-Creation-Date: 2023-11-11 01:44+0000\n"
 "PO-Revision-Date: 2023-05-22 22:21+0100\n"
 "Last-Translator: José Nuno Pires <zepires@gmail.com>\n"
 "Language-Team: pt <kde-i18n-pt@kde.org>\n"
@@ -652,7 +652,7 @@ msgctxt "@title:menu"
 msgid "Main Toolbar"
 msgstr "Barra Principal"
 
-#: src/zanshin/runner/zanshinrunner.cpp:62
+#: src/zanshin/runner/zanshinrunner.cpp:56
 #, kde-format
 msgid "Add \"%1\" to your todo list"
 msgstr "Adicionar o \"%1\" à sua lista de tarefas"
