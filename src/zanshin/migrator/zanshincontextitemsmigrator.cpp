@@ -69,7 +69,7 @@ ZanshinContextItemsMigrator::FetchResult ZanshinContextItemsMigrator::fetchAllIt
             result.items += selectedItems;
         }
     }
-    if (!result.pickedCollection.isValid())
+    if (!result.pickedCollection.isValid() && !collections.isEmpty())
         result.pickedCollection = collections.first();
 
     if (deletedCount > 0) {
