@@ -45,21 +45,21 @@ ConfigDialog::ConfigDialog(QWidget *parent)
     toolBar->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
 
     auto addAction = new QAction(this);
-    addAction->setObjectName(QStringLiteral("addAction"));
+    addAction->setObjectName(QLatin1StringView("addAction"));
     addAction->setText(i18n("Add resource"));
     addAction->setIcon(QIcon::fromTheme(QStringLiteral("list-add")));
     connect(addAction, &QAction::triggered, this, &ConfigDialog::onAddTriggered);
     toolBar->addAction(addAction);
 
     auto removeAction = new QAction(this);
-    removeAction->setObjectName(QStringLiteral("removeAction"));
+    removeAction->setObjectName(QLatin1StringView("removeAction"));
     removeAction->setText(i18n("Remove resource"));
     removeAction->setIcon(QIcon::fromTheme(QStringLiteral("list-remove")));
     connect(removeAction, &QAction::triggered, this, &ConfigDialog::onRemoveTriggered);
     toolBar->addAction(removeAction);
 
     auto configureAction = new QAction(this);
-    configureAction->setObjectName(QStringLiteral("settingsAction"));
+    configureAction->setObjectName(QLatin1StringView("settingsAction"));
     configureAction->setText(i18n("Configure resource..."));
     configureAction->setIcon(QIcon::fromTheme(QStringLiteral("configure")));
     connect(configureAction, &QAction::triggered, this, &ConfigDialog::onConfigureTriggered);

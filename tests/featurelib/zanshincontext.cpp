@@ -112,7 +112,7 @@ void ZanshinContext::setModel(QAbstractItemModel *model)
         return;
     m_sourceModel = model;
     if (!qobject_cast<QSortFilterProxyModel *>(model)) {
-        m_proxyModel->setObjectName(QStringLiteral("m_proxyModel_in_ZanshinContext"));
+        m_proxyModel->setObjectName(QLatin1StringView("m_proxyModel_in_ZanshinContext"));
         m_proxyModel->setSourceModel(model);
         m_proxyModel->setSortRole(Qt::DisplayRole);
         m_proxyModel->sort(0);
@@ -735,7 +735,7 @@ bool ZanshinContext::the_list_is(const TableData &data)
         proxy.setSourceModel(&inputModel);
         proxy.setSortRole(Qt::DisplayRole);
         proxy.sort(0);
-        proxy.setObjectName(QStringLiteral("the_list_is_proxy"));
+        proxy.setObjectName(QLatin1StringView("the_list_is_proxy"));
     } else {
         referenceModel = &inputModel;
     }

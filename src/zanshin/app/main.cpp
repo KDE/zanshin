@@ -74,15 +74,15 @@ int main(int argc, char **argv)
     widget->setLayout(layout);
 
     auto sourcesDock = new QDockWidget(i18n("Sources"));
-    sourcesDock->setObjectName(QStringLiteral("sourcesDock"));
+    sourcesDock->setObjectName(QLatin1StringView("sourcesDock"));
     sourcesDock->setWidget(components->availableSourcesView());
 
     auto pagesDock = new QDockWidget(i18n("Pages"));
-    pagesDock->setObjectName(QStringLiteral("pagesDock"));
+    pagesDock->setObjectName(QLatin1StringView("pagesDock"));
     pagesDock->setWidget(components->availablePagesView());
 
     auto editorDock = new QDockWidget(i18n("Editor"));
-    editorDock->setObjectName(QStringLiteral("editorDock"));
+    editorDock->setObjectName(QLatin1StringView("editorDock"));
     editorDock->setWidget(components->editorView());
 
     auto window = new KXmlGuiWindow;

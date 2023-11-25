@@ -126,16 +126,16 @@ PageView::PageView(QWidget *parent)
       m_quickAddEdit(new QLineEdit(this)),
       m_runningTaskModel(nullptr)
 {
-    m_messageWidget->setObjectName(QStringLiteral("messageWidget"));
+    m_messageWidget->setObjectName(QLatin1StringView("messageWidget"));
     m_messageWidget->setCloseButtonVisible(true);
     m_messageWidget->setMessageType(KMessageWidget::Error);
     m_messageWidget->setWordWrap(true);
     m_messageWidget->hide();
 
-    m_filterWidget->setObjectName(QStringLiteral("filterWidget"));
+    m_filterWidget->setObjectName(QLatin1StringView("filterWidget"));
     m_filterWidget->hide();
 
-    m_centralView->setObjectName(QStringLiteral("centralView"));
+    m_centralView->setObjectName(QLatin1StringView("centralView"));
     m_centralView->header()->hide();
     m_centralView->setAlternatingRowColors(true);
     m_centralView->setItemDelegate(new ItemDelegate(this));
@@ -151,7 +151,7 @@ PageView::PageView(QWidget *parent)
     connect(m_centralView->model(), &QAbstractItemModel::modelReset, m_centralView, &QTreeView::expandAll);
     m_centralView->setStyle(new TreeProxyStyle);
 
-    m_quickAddEdit->setObjectName(QStringLiteral("quickAddEdit"));
+    m_quickAddEdit->setObjectName(QLatin1StringView("quickAddEdit"));
     m_quickAddEdit->setPlaceholderText(i18n("Type and press enter to add a task"));
     connect(m_quickAddEdit, &QLineEdit::returnPressed, this, &PageView::onReturnPressed);
 
@@ -166,20 +166,20 @@ PageView::PageView(QWidget *parent)
     m_messageBoxInterface = MessageBox::Ptr::create();
 
     auto addItemAction = new QAction(this);
-    addItemAction->setObjectName(QStringLiteral("addItemAction"));
+    addItemAction->setObjectName(QLatin1StringView("addItemAction"));
     addItemAction->setText(i18n("New Task"));
     addItemAction->setIcon(QIcon::fromTheme(QStringLiteral("list-add")));
     addItemAction->setShortcut(Qt::CTRL | Qt::Key_N);
     connect(addItemAction, &QAction::triggered, this, &PageView::onAddItemRequested);
 
-    m_cancelAction->setObjectName(QStringLiteral("cancelAddItemAction"));
+    m_cancelAction->setObjectName(QLatin1StringView("cancelAddItemAction"));
     m_cancelAction->setShortcut(Qt::Key_Escape);
     addAction(m_cancelAction);
     connect(m_cancelAction, &QAction::triggered,
             m_centralView, static_cast<void(QWidget::*)()>(&QWidget::setFocus));
 
     auto removeItemAction = new QAction(this);
-    removeItemAction->setObjectName(QStringLiteral("removeItemAction"));
+    removeItemAction->setObjectName(QLatin1StringView("removeItemAction"));
     removeItemAction->setText(i18n("Remove Task"));
     removeItemAction->setIcon(QIcon::fromTheme(QStringLiteral("list-remove")));
     removeItemAction->setShortcut(Qt::Key_Delete);
@@ -187,13 +187,13 @@ PageView::PageView(QWidget *parent)
     addAction(removeItemAction);
 
     auto promoteItemAction = new QAction(this);
-    promoteItemAction->setObjectName(QStringLiteral("promoteItemAction"));
+    promoteItemAction->setObjectName(QLatin1StringView("promoteItemAction"));
     promoteItemAction->setText(i18n("Promote Task as Project"));
     promoteItemAction->setShortcut(Qt::CTRL | Qt::SHIFT | Qt::Key_P);
     connect(promoteItemAction, &QAction::triggered, this, &PageView::onPromoteItemRequested);
 
     auto filterViewAction = new QAction(this);
-    filterViewAction->setObjectName(QStringLiteral("filterViewAction"));
+    filterViewAction->setObjectName(QLatin1StringView("filterViewAction"));
     filterViewAction->setText(i18n("Filter..."));
     filterViewAction->setIcon(QIcon::fromTheme(QStringLiteral("edit-find")));
     filterViewAction->setShortcut(Qt::CTRL | Qt::Key_F);
@@ -201,7 +201,7 @@ PageView::PageView(QWidget *parent)
     connect(filterViewAction, &QAction::triggered, this, &PageView::onFilterToggled);
 
     auto doneViewAction = new QAction(this);
-    doneViewAction->setObjectName(QStringLiteral("doneViewAction"));
+    doneViewAction->setObjectName(QLatin1StringView("doneViewAction"));
     doneViewAction->setText(i18n("Show done tasks"));
     doneViewAction->setIcon(QIcon::fromTheme(QStringLiteral("view-pim-tasks")));
     doneViewAction->setShortcut(Qt::CTRL | Qt::SHIFT | Qt::Key_D);
@@ -209,7 +209,7 @@ PageView::PageView(QWidget *parent)
     connect(doneViewAction, &QAction::triggered, m_filterWidget, &FilterWidget::setShowDoneTasks);
 
     auto futureViewAction = new QAction(this);
-    futureViewAction->setObjectName(QStringLiteral("futureViewAction"));
+    futureViewAction->setObjectName(QLatin1StringView("futureViewAction"));
     futureViewAction->setText(i18n("Show future tasks"));
     futureViewAction->setIcon(QIcon::fromTheme(QStringLiteral("view-calendar-whatsnext")));
     futureViewAction->setShortcut(Qt::CTRL | Qt::SHIFT | Qt::Key_F);
@@ -234,7 +234,7 @@ PageView::PageView(QWidget *parent)
             });
 
     m_runTaskAction = new QAction(this);
-    m_runTaskAction->setObjectName(QStringLiteral("runTaskAction"));
+    m_runTaskAction->setObjectName(QLatin1StringView("runTaskAction"));
     m_runTaskAction->setShortcut(Qt::CTRL | Qt::Key_Space);
     m_runTaskAction->setText(i18n("Start Now"));
     m_runTaskAction->setIcon(QIcon::fromTheme(QStringLiteral("media-playback-start")));

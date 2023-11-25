@@ -33,7 +33,7 @@ QuickSelectDialog::QuickSelectDialog(QWidget *parent)
     m_filterProxyModel->setRecursiveFilteringEnabled(true);
 
     m_tree->setModel(m_filterProxyModel);
-    m_tree->setObjectName(QStringLiteral("pagesView"));
+    m_tree->setObjectName(QLatin1StringView("pagesView"));
     m_tree->header()->hide();
     m_tree->expandAll();
     m_tree->setFocus();

@@ -35,7 +35,7 @@ AvailableSourcesView::AvailableSourcesView(QWidget *parent)
     m_sortProxy->setDynamicSortFilter(true);
     m_sortProxy->sort(0);
 
-    m_sourcesView->setObjectName(QStringLiteral("sourcesView"));
+    m_sourcesView->setObjectName(QLatin1StringView("sourcesView"));
     m_sourcesView->header()->hide();
     m_sourcesView->setModel(m_sortProxy);
     connect(m_sourcesView->selectionModel(), &QItemSelectionModel::selectionChanged,
@@ -48,10 +48,10 @@ AvailableSourcesView::AvailableSourcesView(QWidget *parent)
     m_sourcesView->setItemDelegate(delegate);
 
     auto actionBar = new QToolBar(this);
-    actionBar->setObjectName(QStringLiteral("actionBar"));
+    actionBar->setObjectName(QLatin1StringView("actionBar"));
     actionBar->setIconSize(QSize(16, 16));
 
-    m_defaultAction->setObjectName(QStringLiteral("defaultAction"));
+    m_defaultAction->setObjectName(QLatin1StringView("defaultAction"));
     m_defaultAction->setText(i18n("Use as Default Source"));
     m_defaultAction->setIcon(QIcon::fromTheme(QStringLiteral("folder-favorites")));
     connect(m_defaultAction, &QAction::triggered, this, &AvailableSourcesView::onDefaultTriggered);
@@ -72,7 +72,7 @@ AvailableSourcesView::AvailableSourcesView(QWidget *parent)
     layout->setContentsMargins(margins);
 
     auto settingsAction = new QAction(this);
-    settingsAction->setObjectName(QStringLiteral("settingsAction"));
+    settingsAction->setObjectName(QLatin1StringView("settingsAction"));
     settingsAction->setText(i18n("Configure %1...", QApplication::applicationName()));
     settingsAction->setIcon(QIcon::fromTheme(QStringLiteral("configure")));
     connect(settingsAction, &QAction::triggered, this, &AvailableSourcesView::onSettingsTriggered);

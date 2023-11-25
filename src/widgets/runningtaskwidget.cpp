@@ -45,11 +45,11 @@ RunningTaskWidget::RunningTaskWidget(QWidget *parent)
     setPalette(pal);
     setAutoFillBackground(true);
 
-    m_stopButton->setObjectName(QStringLiteral("stopButton"));
+    m_stopButton->setObjectName(QLatin1StringView("stopButton"));
     m_stopButton->setText(i18n("Stop"));
     connect(m_stopButton, &QAbstractButton::clicked, this, &RunningTaskWidget::onTaskRunStopped);
 
-    m_doneButton->setObjectName(QStringLiteral("doneButton"));
+    m_doneButton->setObjectName(QLatin1StringView("doneButton"));
     m_doneButton->setText(i18n("Done"));
     connect(m_doneButton, &QAbstractButton::clicked, this, &RunningTaskWidget::onTaskRunDone);
 

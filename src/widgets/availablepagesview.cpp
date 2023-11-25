@@ -38,27 +38,27 @@ AvailablePagesView::AvailablePagesView(QWidget *parent)
       m_sources(nullptr),
       m_pagesView(new QTreeView(this))
 {
-    m_pagesView->setObjectName(QStringLiteral("pagesView"));
+    m_pagesView->setObjectName(QLatin1StringView("pagesView"));
     m_pagesView->header()->hide();
     m_pagesView->setDragDropMode(QTreeView::DropOnly);
 
     auto actionBar = new QToolBar(this);
-    actionBar->setObjectName(QStringLiteral("actionBar"));
+    actionBar->setObjectName(QLatin1StringView("actionBar"));
     actionBar->setIconSize(QSize(16, 16));
 
-    m_addProjectAction->setObjectName(QStringLiteral("addProjectAction"));
+    m_addProjectAction->setObjectName(QLatin1StringView("addProjectAction"));
     m_addProjectAction->setText(i18n("New Project"));
     m_addProjectAction->setIcon(QIcon::fromTheme(QStringLiteral("view-pim-tasks")));
     connect(m_addProjectAction, &QAction::triggered, this, &AvailablePagesView::onAddProjectTriggered);
     actionBar->addAction(m_addProjectAction);
 
-    m_addContextAction->setObjectName(QStringLiteral("addContextAction"));
+    m_addContextAction->setObjectName(QLatin1StringView("addContextAction"));
     m_addContextAction->setText(i18n("New Context"));
     m_addContextAction->setIcon(QIcon::fromTheme(QStringLiteral("view-pim-notes")));
     connect(m_addContextAction, &QAction::triggered, this, &AvailablePagesView::onAddContextTriggered);
     actionBar->addAction(m_addContextAction);
 
-    m_removeAction->setObjectName(QStringLiteral("removeAction"));
+    m_removeAction->setObjectName(QLatin1StringView("removeAction"));
     m_removeAction->setText(i18n("Remove Page"));
     m_removeAction->setIcon(QIcon::fromTheme(QStringLiteral("list-remove")));
     connect(m_removeAction, &QAction::triggered, this, &AvailablePagesView::onRemoveTriggered);
@@ -87,21 +87,21 @@ AvailablePagesView::AvailablePagesView(QWidget *parent)
     m_messageBoxInterface = MessageBox::Ptr::create();
 
     auto goPreviousAction = new QAction(this);
-    goPreviousAction->setObjectName(QStringLiteral("goPreviousAction"));
+    goPreviousAction->setObjectName(QLatin1StringView("goPreviousAction"));
     goPreviousAction->setText(i18n("Previous Page"));
     goPreviousAction->setIcon(QIcon::fromTheme(QStringLiteral("go-up")));
     goPreviousAction->setShortcut(Qt::ALT | Qt::Key_Up);
     connect(goPreviousAction, &QAction::triggered, this, &AvailablePagesView::onGoPreviousTriggered);
 
     auto goNextAction = new QAction(this);
-    goNextAction->setObjectName(QStringLiteral("goNextAction"));
+    goNextAction->setObjectName(QLatin1StringView("goNextAction"));
     goNextAction->setText(i18n("Next Page"));
     goNextAction->setIcon(QIcon::fromTheme(QStringLiteral("go-down")));
     goNextAction->setShortcut(Qt::ALT | Qt::Key_Down);
     connect(goNextAction, &QAction::triggered, this, &AvailablePagesView::onGoNextTriggered);
 
     auto goToAction = new QAction(this);
-    goToAction->setObjectName(QStringLiteral("goToAction"));
+    goToAction->setObjectName(QLatin1StringView("goToAction"));
     goToAction->setText(i18n("Go to Page..."));
     goToAction->setShortcut(Qt::Key_J);
     connect(goToAction, &QAction::triggered, this, &AvailablePagesView::onGoToTriggered);
