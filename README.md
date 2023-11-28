@@ -30,7 +30,7 @@ A Getting Things Done application which aims at getting your mind like water.
 		ki18n-devel
 		```
 
-- Alternatively you can try [kdesrc-build](https://community.kde.org/Get_Involved/development#Set_up_kdesrc-build) or [KDE PIM Docker image for development](https://community.kde.org/KDE_PIM/Docker).
+- Alternatively you can try [kdesrc-build](https://community.kde.org/Get_Involved/development) or [KDE PIM Docker image for development](https://community.kde.org/KDE_PIM/Docker).
 
 #### Issues and TO DO
 

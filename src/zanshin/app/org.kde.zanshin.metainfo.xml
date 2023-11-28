@@ -319,7 +319,7 @@
     <p xml:lang="uk">Zanshin є програмою спільноти KDE. Тому його повною потужністю можна скористатися у поєднанні із іншими програмами KDE або стільницею Плазма KDE. Користуєтеся KMail? Ви можете створити завдання безпосередньо на основі отриманого вами повідомлення електронної пошти, і його запис з'явиться у теці «Вхідні» Zanshin. Користуєтеся KOrganizer? Усі прострочені та наступні завдання буде показано на панелі календаря цієї програми. Користуєтеся стільницею Плазми? Ви можете створювати завдання будь-коли за допомогою KRunner, просто введіть «todo: Придбати яблука», і пункт завдання опиниться у теці «Вхідні» Zanshin, навіть якщо програму не запущено!</p>
     <p xml:lang="x-test">xxZanshin is an application of the KDE community, as such it unleashes even more power when used with other KDE Applications or within KDE Plasma Desktop. Using KMail? You can create a task right from an email you received and it'll appear in Zanshin's Inbox. Using KOrganizer? All your overdue and coming task will appear in the calendar view. Using Plasma Desktop? Then you can collect from anywhere using KRunner, just type in "todo: Buy apples", and you will find that tasks in Zanshin's Inbox, even if it wasn't running!xx</p>
   </description>
-  <url type="homepage">http://apps.kde.org/zanshin</url>
+  <url type="homepage">https://apps.kde.org/zanshin</url>
   <url type="bugtracker">https://bugs.kde.org/enter_bug.cgi?format=guided&amp;product=zanshin</url>
   <screenshots>
     <screenshot type="default">
