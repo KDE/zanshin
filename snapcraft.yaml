@@ -24,8 +24,6 @@ apps:
         - unity7
         - removable-media
         - akonadi-svc
-        - network
-        - network-bind
         command-chain:
         - snap/command-chain/desktop-launch
 assumes:
