@@ -119,7 +119,7 @@ parts:
         - libboost-dev
         - libkf5doctools-dev
         build-snaps:
-        - akonadi/edge
+        - akonadi-sdk/edge
         stage-packages:
         - libboost-dev
         - libxml2
