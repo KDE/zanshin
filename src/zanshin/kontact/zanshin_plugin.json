@@ -31,6 +31,7 @@
         "Description[uk]": "Додаток Kontact Zanshin",
         "Description[x-test]": "xxKontact Zanshin Pluginxx",
         "Description[zh_CN]": "Kontact Zanshin 插件",
+        "Description[zh_TW]": "Kontact Zanshin 外掛程式",
         "EnabledByDefault": true,
         "Icon": "zanshin",
         "License": "GPL",
@@ -65,6 +66,7 @@
         "Name[uk]": "Списки завдань",
         "Name[x-test]": "xxTask Listsxx",
         "Name[zh_CN]": "任务列表",
+        "Name[zh_TW]": "工作列表",
         "Version": "0.1"
     },
     "X-KDE-KontactPartExecutableName": "zanshin",
