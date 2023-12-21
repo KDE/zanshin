@@ -1,34 +1,35 @@
+# SPDX-FileCopyrightText: 2023 Kisaragi Hiu <mail@kisaragi-hiu.com>
 msgid ""
 msgstr ""
 "Project-Id-Version: zanshin_qt\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-11-11 01:44+0000\n"
-"PO-Revision-Date: 2016-09-22 20:30+0800\n"
-"Last-Translator: Jeff Huang <s8321414@gmail.com>\n"
-"Language-Team: Traditional Chinese <zh-l10n@lists.linux.org.tw>\n"
+"PO-Revision-Date: 2023-12-20 16:54+0900\n"
+"Last-Translator: Kisaragi Hiu <mail@kisaragi-hiu.com>\n"
+"Language-Team: Traditional Chinese <zh-l10n@lists.slat.org>\n"
 "Language: zh_TW\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Translate Toolkit 1.10.0\n"
+"X-Generator: Lokalize 23.08.4\n"
 "X-Qt-Contexts: true\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
 #, kde-format
 msgctxt "NAME OF TRANSLATORS"
 msgid "Your names"
-msgstr ""
+msgstr "Kisaragi Hiu"
 
 #, kde-format
 msgctxt "EMAIL OF TRANSLATORS"
 msgid "Your emails"
-msgstr ""
+msgstr "mail@kisaragi-hiu.com"
 
 #: src/akonadi/akonadiconfigdialog.cpp:35
 #, kde-format
 msgctxt "@title:window"
 msgid "Configure"
-msgstr ""
+msgstr "設定"
 
 #: src/akonadi/akonadiconfigdialog.cpp:39
 #, kde-format
@@ -40,17 +41,17 @@ msgstr ""
 #: src/akonadi/akonadiconfigdialog.cpp:49
 #, kde-format
 msgid "Add resource"
-msgstr ""
+msgstr "新增資源"
 
 #: src/akonadi/akonadiconfigdialog.cpp:56
 #, kde-format
 msgid "Remove resource"
-msgstr ""
+msgstr "移除資源"
 
 #: src/akonadi/akonadiconfigdialog.cpp:63
 #, kde-format
 msgid "Configure resource..."
-msgstr ""
+msgstr "設定資源..."
 
 #: src/akonadi/akonadiconfigdialog.cpp:111
 #, kde-format
@@ -141,12 +142,12 @@ msgstr ""
 #: src/presentation/availablepagesmodel.cpp:147
 #, kde-format
 msgid "Workday"
-msgstr ""
+msgstr "工作日"
 
 #: src/presentation/availablepagesmodel.cpp:149
 #, kde-format
 msgid "Projects"
-msgstr ""
+msgstr "專案"
 
 #: src/presentation/availablepagesmodel.cpp:151
 #, kde-format
@@ -156,7 +157,7 @@ msgstr ""
 #: src/presentation/availablepagesmodel.cpp:153
 #, kde-format
 msgid "All Tasks"
-msgstr ""
+msgstr "所有工作"
 
 #: src/presentation/availablepagesmodel.cpp:252
 #, kde-format
@@ -281,12 +282,12 @@ msgstr ""
 #: src/widgets/applicationcomponents.cpp:48
 #, kde-format
 msgid "Move Task"
-msgstr ""
+msgstr "移動工作"
 
 #: src/widgets/availablepagesview.cpp:50
 #, kde-format
 msgid "New Project"
-msgstr ""
+msgstr "新增專案"
 
 #: src/widgets/availablepagesview.cpp:56
 #, kde-format
@@ -296,22 +297,22 @@ msgstr ""
 #: src/widgets/availablepagesview.cpp:62
 #, kde-format
 msgid "Remove Page"
-msgstr ""
+msgstr "移除頁面"
 
 #: src/widgets/availablepagesview.cpp:91
 #, kde-format
 msgid "Previous Page"
-msgstr ""
+msgstr "上一頁"
 
 #: src/widgets/availablepagesview.cpp:98
 #, kde-format
 msgid "Next Page"
-msgstr ""
+msgstr "下一頁"
 
 #: src/widgets/availablepagesview.cpp:105
 #, kde-format
 msgid "Go to Page..."
-msgstr ""
+msgstr "跳到頁面..."
 
 #: src/widgets/availablepagesview.cpp:240
 #, kde-format
@@ -322,7 +323,7 @@ msgstr ""
 #: src/widgets/availablepagesview.cpp:265
 #, kde-format
 msgid "Delete Project"
-msgstr ""
+msgstr "刪除專案"
 
 #: src/widgets/availablepagesview.cpp:266
 #, kde-format
@@ -347,37 +348,37 @@ msgstr ""
 #: src/widgets/availablesourcesview.cpp:76
 #, kde-format
 msgid "Configure %1..."
-msgstr ""
+msgstr "設定 %1…"
 
 #: src/widgets/editorview.cpp:31
 #, kde-format
 msgid "Add Attachment"
-msgstr ""
+msgstr "新增附檔"
 
 #: src/widgets/editorview.cpp:36
 #, kde-format
 msgid "Never"
-msgstr ""
+msgstr "永不"
 
 #: src/widgets/editorview.cpp:37
 #, kde-format
 msgid "Daily"
-msgstr ""
+msgstr "每天"
 
 #: src/widgets/editorview.cpp:38
 #, kde-format
 msgid "Weekly"
-msgstr ""
+msgstr "每週"
 
 #: src/widgets/editorview.cpp:39
 #, kde-format
 msgid "Monthly"
-msgstr ""
+msgstr "每個月"
 
 #: src/widgets/editorview.cpp:40
 #, kde-format
 msgid "Yearly"
-msgstr ""
+msgstr "每年"
 
 #. i18n: ectx: property (windowTitle), widget (QWidget, EditorView)
 #. i18n: ectx: property (text), widget (QListView, attachmentList)
@@ -385,31 +386,31 @@ msgstr ""
 #: src/zanshin/app/main.cpp:84
 #, kde-format
 msgid "Editor"
-msgstr ""
+msgstr "編輯器"
 
 #. i18n: ectx: property (text), widget (QLabel, dueDateLabel)
 #: src/widgets/editorview.ui:41
 #, kde-format
 msgid "D&ue Date "
-msgstr ""
+msgstr "到期日期(&U)"
 
 #. i18n: ectx: property (text), widget (QCheckBox, doneButton)
 #: src/widgets/editorview.ui:62 src/widgets/runningtaskwidget.cpp:53
 #, kde-format
 msgid "Done"
-msgstr ""
+msgstr "完成"
 
 #. i18n: ectx: property (toolTip), widget (QToolButton, addAttachmentButton)
 #: src/widgets/editorview.ui:86
 #, kde-format
 msgid "Add Attachment..."
-msgstr ""
+msgstr "新增附檔..."
 
 #. i18n: ectx: property (toolTip), widget (QToolButton, removeAttachmentButton)
 #: src/widgets/editorview.ui:100
 #, kde-format
 msgid "Remove Attachment"
-msgstr ""
+msgstr "移除附檔"
 
 #. i18n: ectx: property (text), widget (QPushButton, startTodayButton)
 #: src/widgets/editorview.ui:121
@@ -421,7 +422,7 @@ msgstr ""
 #: src/widgets/editorview.ui:130
 #, kde-format
 msgid "&Recurrence"
-msgstr ""
+msgstr "重複(&R)"
 
 #. i18n: ectx: property (text), widget (QLabel, startDateLabel)
 #: src/widgets/editorview.ui:146
@@ -432,47 +433,47 @@ msgstr ""
 #: src/widgets/filterwidget.cpp:29
 #, kde-format
 msgid "Sort by title"
-msgstr ""
+msgstr "依標題排序"
 
 #: src/widgets/filterwidget.cpp:30
 #, kde-format
 msgid "Sort by date"
-msgstr ""
+msgstr "依日期排序"
 
 #. i18n: ectx: property (placeholderText), widget (QLineEdit, filterEdit)
 #: src/widgets/filterwidget.ui:31 src/widgets/pageview.cpp:197
 #, kde-format
 msgid "Filter..."
-msgstr ""
+msgstr "篩選…"
 
 #. i18n: ectx: property (toolTip), widget (QToolButton, descendingButton)
 #: src/widgets/filterwidget.ui:65
 #, kde-format
 msgid "Sort in descending order"
-msgstr ""
+msgstr "遞減排序"
 
 #. i18n: ectx: property (toolTip), widget (QToolButton, ascendingButton)
 #: src/widgets/filterwidget.ui:88
 #, kde-format
 msgid "Sort in ascending order"
-msgstr ""
+msgstr "遞增排序"
 
 #: src/widgets/itemdelegate.cpp:141
 #, kde-format
 msgid "Project: %1"
-msgstr ""
+msgstr "專案：%1"
 
 #. i18n: ectx: property (windowTitle), widget (QDialog, NameAndDataSourceDialog)
 #: src/widgets/nameanddatasourcedialog.ui:14
 #, kde-format
 msgid "Add a project"
-msgstr ""
+msgstr "新增專案"
 
 #. i18n: ectx: property (text), widget (QLabel, nameLabel)
 #: src/widgets/nameanddatasourcedialog.ui:25
 #, kde-format
 msgid "Name"
-msgstr ""
+msgstr "名稱"
 
 #. i18n: ectx: property (text), widget (QLabel, sourceLabel)
 #: src/widgets/nameanddatasourcedialog.ui:42
@@ -488,12 +489,12 @@ msgstr ""
 #: src/widgets/pageview.cpp:170
 #, kde-format
 msgid "New Task"
-msgstr ""
+msgstr "新增工作"
 
 #: src/widgets/pageview.cpp:183
 #, kde-format
 msgid "Remove Task"
-msgstr ""
+msgstr "移除工作"
 
 #: src/widgets/pageview.cpp:191
 #, kde-format
@@ -503,17 +504,17 @@ msgstr ""
 #: src/widgets/pageview.cpp:205
 #, kde-format
 msgid "Show done tasks"
-msgstr ""
+msgstr "顯示已完成工作"
 
 #: src/widgets/pageview.cpp:213
 #, kde-format
 msgid "Show future tasks"
-msgstr ""
+msgstr "顯示未來工作"
 
 #: src/widgets/pageview.cpp:239
 #, kde-format
 msgid "Start Now"
-msgstr ""
+msgstr "現在開始"
 
 #: src/widgets/pageview.cpp:357
 #, kde-format
@@ -538,13 +539,13 @@ msgstr ""
 #: src/widgets/pageview.cpp:397
 #, kde-format
 msgid "Delete Tasks"
-msgstr ""
+msgstr "刪除工作"
 
 #: src/widgets/quickselectdialog.cpp:30
 #, kde-format
 msgctxt "@title:window"
 msgid "Quick Select Dialog"
-msgstr ""
+msgstr "快速選擇對話框"
 
 #: src/widgets/quickselectdialog.cpp:32 src/widgets/quickselectdialog.cpp:70
 #, kde-format
@@ -554,7 +555,7 @@ msgstr ""
 #: src/widgets/quickselectdialog.cpp:72
 #, kde-format
 msgid "Path: %1"
-msgstr ""
+msgstr "路徑：%1"
 
 #: src/widgets/runningtaskwidget.cpp:39
 #, kde-format
@@ -565,12 +566,12 @@ msgstr ""
 #: src/widgets/runningtaskwidget.cpp:49
 #, kde-format
 msgid "Stop"
-msgstr ""
+msgstr "停止"
 
 #: src/zanshin/app/aboutdata.cpp:14
 #, kde-format
 msgid "Zanshin Tasks"
-msgstr ""
+msgstr "Zanshin 工作"
 
 #: src/zanshin/app/aboutdata.cpp:15
 #, kde-format
@@ -581,7 +582,7 @@ msgstr ""
 #: src/zanshin/app/aboutdata.cpp:17
 #, kde-format
 msgid "Copyright 2008-2016, Kevin Ottens <ervin@kde.org>"
-msgstr ""
+msgstr "Copyright 2008-2016, Kevin Ottens <ervin@kde.org>"
 
 #: src/zanshin/app/aboutdata.cpp:19
 #, kde-format
@@ -601,12 +602,12 @@ msgstr ""
 #: src/zanshin/app/aboutdata.cpp:24 src/zanshin/app/aboutdata.cpp:28
 #, kde-format
 msgid "Developer"
-msgstr ""
+msgstr "開發者"
 
 #: src/zanshin/app/aboutdata.cpp:27
 #, kde-format
 msgid "Franck Arrecot"
-msgstr ""
+msgstr "Franck Arrecot"
 
 #: src/zanshin/app/main.cpp:76
 #, kde-format
@@ -616,19 +617,19 @@ msgstr ""
 #: src/zanshin/app/main.cpp:80
 #, kde-format
 msgid "Pages"
-msgstr ""
+msgstr "頁面"
 
 #. i18n: ectx: Menu (go)
 #: src/zanshin/app/zanshinui.rc:15 src/zanshin/kontact/zanshin_part.rc:15
 #, kde-format
 msgid "&Go"
-msgstr ""
+msgstr "跳至(&G)"
 
 #. i18n: ectx: Menu
 #: src/zanshin/app/zanshinui.rc:27
 #, kde-format
 msgid "&Panels"
-msgstr ""
+msgstr "面板(&P)"
 
 #. i18n: ectx: ToolBar (mainToolBar)
 #: src/zanshin/app/zanshinui.rc:35 src/zanshin/kontact/zanshin_part.rc:27
@@ -640,4 +641,4 @@ msgstr ""
 #: src/zanshin/runner/zanshinrunner.cpp:56
 #, kde-format
 msgid "Add \"%1\" to your todo list"
-msgstr ""
+msgstr "將 \"%1\" 加入您的待辦清單"
