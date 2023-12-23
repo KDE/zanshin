@@ -1,5 +1,6 @@
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
+add_definitions(-DTRANSLATION_DOMAIN=\"zanshin\")
 ecm_setup_version(${RELEASE_SERVICE_VERSION} VARIABLE_PREFIX ZANSHIN VERSION_HEADER zanshin_version.h)
 
 # icons
