@@ -12,7 +12,6 @@
 #include "akonadi/akonaditimestampattribute.h"
 
 #include "presentation/applicationmodel.h"
-#include "presentation/errorhandler.h"
 #include "presentation/querytreemodelbase.h"
 
 #include "testlib/akonadifakedataxmlloader.h"

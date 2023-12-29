@@ -8,7 +8,6 @@
 
 #include "akonadi/akonadicollectionfetchjobinterface.h"
 #include "akonadi/akonadiitemfetchjobinterface.h"
-#include "akonadi/akonadistorageinterface.h"
 
 #include "utils/jobhandler.h"
 

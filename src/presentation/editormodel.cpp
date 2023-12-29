@@ -17,7 +17,6 @@
 
 #include <KLocalizedString>
 
-#include "domain/task.h"
 #include "errorhandler.h"
 
 namespace Presentation {

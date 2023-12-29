@@ -11,10 +11,6 @@
 #include <KLocalizedString>
 
 #include "domain/task.h"
-#include "domain/contextqueries.h"
-#include "domain/contextrepository.h"
-#include "domain/taskqueries.h"
-#include "domain/taskrepository.h"
 
 #include "presentation/querytreemodel.h"
 

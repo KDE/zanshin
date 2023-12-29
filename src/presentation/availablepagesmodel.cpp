@@ -10,17 +10,11 @@
 
 #include <KLocalizedString>
 
-#include "domain/contextqueries.h"
-#include "domain/contextrepository.h"
-#include "domain/projectqueries.h"
-#include "domain/projectrepository.h"
-#include "domain/taskrepository.h"
 
 #include "presentation/alltaskspagemodel.h"
 #include "presentation/availablepagessortfilterproxymodel.h"
 #include "presentation/contextpagemodel.h"
 #include "presentation/inboxpagemodel.h"
-#include "presentation/metatypes.h"
 #include "presentation/projectpagemodel.h"
 #include "presentation/querytreemodel.h"
 #include "presentation/workdaypagemodel.h"

@@ -16,7 +16,6 @@
 #include <KDateComboBox>
 #include <KLocalizedString>
 
-#include "domain/task.h"
 
 #include "ui_editorview.h"
 

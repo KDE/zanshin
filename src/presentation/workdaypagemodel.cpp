@@ -10,8 +10,6 @@
 
 #include <KLocalizedString>
 
-#include "domain/taskqueries.h"
-#include "domain/taskrepository.h"
 
 #include "presentation/querytreemodel.h"
 

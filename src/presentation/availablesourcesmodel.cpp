@@ -10,8 +10,6 @@
 
 #include <KLocalizedString>
 
-#include "domain/datasourcequeries.h"
-#include "domain/datasourcerepository.h"
 
 #include "presentation/querytreemodel.h"
 
