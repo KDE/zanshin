@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zanshin\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-11-11 01:44+0000\n"
+"POT-Creation-Date: 2023-12-29 01:38+0000\n"
 "PO-Revision-Date: 2023-12-27 14:10+0300\n"
 "Last-Translator: Emir SARI <emir_sari@icloud.com>\n"
 "Language-Team: Turkish <kde-l10n-tr@kde.org>\n"
@@ -386,7 +386,7 @@ msgstr "Yıllık"
 #. i18n: ectx: property (windowTitle), widget (QWidget, EditorView)
 #. i18n: ectx: property (text), widget (QListView, attachmentList)
 #: src/widgets/editorview.ui:14 src/widgets/editorview.ui:184
-#: src/zanshin/app/main.cpp:84
+#: src/zanshin/app/main.cpp:83
 #, kde-format
 msgid "Editor"
 msgstr "Düzenleyici"
@@ -614,12 +614,12 @@ msgstr "Geliştirici"
 msgid "Franck Arrecot"
 msgstr "Franck Arrecot"
 
-#: src/zanshin/app/main.cpp:76
+#: src/zanshin/app/main.cpp:75
 #, kde-format
 msgid "Sources"
 msgstr "Kaynaklar"
 
-#: src/zanshin/app/main.cpp:80
+#: src/zanshin/app/main.cpp:79
 #, kde-format
 msgid "Pages"
 msgstr "Sayfalar"
