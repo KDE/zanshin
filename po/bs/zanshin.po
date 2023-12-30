@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: kde 49i410\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2022-12-22 00:48+0000\n"
+"POT-Creation-Date: 2023-12-30 02:38+0000\n"
 "PO-Revision-Date: 2015-02-22 15:24+0100\n"
 "Last-Translator: Samir Ribić <megaribi@epn.ba>\n"
 "Language-Team: Bosnian\n"
@@ -439,7 +439,7 @@ msgstr ""
 #. i18n: ectx: property (windowTitle), widget (QWidget, EditorView)
 #. i18n: ectx: property (text), widget (QListView, attachmentList)
 #: src/widgets/editorview.ui:14 src/widgets/editorview.ui:184
-#: src/zanshin/app/main.cpp:84
+#: src/zanshin/app/main.cpp:83
 #, fuzzy, kde-format
 #| msgid "&Editor"
 msgid "Editor"
@@ -698,13 +698,13 @@ msgstr "Programer"
 msgid "Franck Arrecot"
 msgstr ""
 
-#: src/zanshin/app/main.cpp:76
+#: src/zanshin/app/main.cpp:75
 #, fuzzy, kde-format
 #| msgid "Sources"
 msgid "Sources"
 msgstr "Izvori"
 
-#: src/zanshin/app/main.cpp:80
+#: src/zanshin/app/main.cpp:79
 #, fuzzy, kde-format
 #| msgid "Pager"
 msgid "Pages"
