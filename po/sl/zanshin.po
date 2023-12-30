@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-12-29 01:38+0000\n"
+"POT-Creation-Date: 2023-12-30 01:38+0000\n"
 "PO-Revision-Date: 2023-09-21 17:40+0200\n"
 "Last-Translator: Matjaž Jeran <matjaz.jeran@amis.net>\n"
 "Language-Team: Slovenian <lugos-slo@lugos.si>\n"
@@ -70,12 +70,12 @@ msgstr "Brisanje večkratnega agenta"
 msgid "Do you really want to delete the selected agent instances?"
 msgstr "Ali res želite izbrisati izbrane pojavke agenta?"
 
-#: src/akonadi/akonaditaskrepository.cpp:51
+#: src/akonadi/akonaditaskrepository.cpp:50
 #, kde-format
 msgid "Could not find a collection to store the task into!"
 msgstr "Ni bilo mogoče najti zbirke, kamor bi shranili nalogo!"
 
-#: src/akonadi/akonaditaskrepository.cpp:198
+#: src/akonadi/akonaditaskrepository.cpp:197
 #, kde-format
 msgid "Could not associate '%1', it is an ancestor of '%2'"
 msgstr "'%1' ni mogoče povezati, je prednik '%2'"
@@ -91,137 +91,137 @@ msgid "Cannot remove task %1"
 msgstr "Ni mogoče odstraniti naloge %1"
 
 #: src/presentation/alltaskspagemodel.cpp:56
-#: src/presentation/contextpagemodel.cpp:74
+#: src/presentation/contextpagemodel.cpp:70
 #: src/presentation/inboxpagemodel.cpp:55
 #: src/presentation/projectpagemodel.cpp:67
-#: src/presentation/workdaypagemodel.cpp:63
+#: src/presentation/workdaypagemodel.cpp:61
 #, kde-format
 msgid "Cannot promote task %1 to be a project"
 msgstr "Naloge %1 ni mogoče promovirati kot projekt"
 
 #: src/presentation/alltaskspagemodel.cpp:97
-#: src/presentation/editormodel.cpp:390
+#: src/presentation/editormodel.cpp:389
 #, kde-format
 msgid "Cannot modify task %1"
 msgstr "Ni mogoče spremeniti naloge %1"
 
 #: src/presentation/alltaskspagemodel.cpp:122
-#: src/presentation/contextpagemodel.cpp:144
+#: src/presentation/contextpagemodel.cpp:140
 #: src/presentation/inboxpagemodel.cpp:111
-#: src/presentation/workdaypagemodel.cpp:119
+#: src/presentation/workdaypagemodel.cpp:117
 #, kde-format
 msgid "Cannot move task %1 as sub-task of %2"
 msgstr "Naloge %1 ni mogoče premakniti kot podnalogo %2"
 
 #: src/presentation/alltaskspagemodel.cpp:125
 #: src/presentation/inboxpagemodel.cpp:114
-#: src/presentation/workdaypagemodel.cpp:127
+#: src/presentation/workdaypagemodel.cpp:125
 #, kde-format
 msgid "Cannot deparent task %1 from its parent"
 msgstr "Ni mogoče odstraniti naloge %1 od njene glavne naloge"
 
-#: src/presentation/availablepagesmodel.cpp:117
+#: src/presentation/availablepagesmodel.cpp:111
 #, kde-format
 msgid "Cannot add project %1 in dataSource %2"
 msgstr "Projekta %1 ni mogoče dodati v podatkovni vir %2"
 
-#: src/presentation/availablepagesmodel.cpp:125
+#: src/presentation/availablepagesmodel.cpp:119
 #, kde-format
 msgid "Cannot add context %1"
 msgstr "Ni mogoče dodati konteksta %1"
 
-#: src/presentation/availablepagesmodel.cpp:133
+#: src/presentation/availablepagesmodel.cpp:127
 #, kde-format
 msgid "Cannot remove project %1"
 msgstr "Ni mogoče odstraniti projekta %1"
 
-#: src/presentation/availablepagesmodel.cpp:136
+#: src/presentation/availablepagesmodel.cpp:130
 #, kde-format
 msgid "Cannot remove context %1"
 msgstr "Ni mogoče odstraniti konteksta %1"
 
-#: src/presentation/availablepagesmodel.cpp:145
+#: src/presentation/availablepagesmodel.cpp:139
 #: src/widgets/itemdelegate.cpp:143
 #, kde-format
 msgid "Inbox"
 msgstr "Prejeto"
 
-#: src/presentation/availablepagesmodel.cpp:147
+#: src/presentation/availablepagesmodel.cpp:141
 #, kde-format
 msgid "Workday"
 msgstr "Delovni dan"
 
-#: src/presentation/availablepagesmodel.cpp:149
+#: src/presentation/availablepagesmodel.cpp:143
 #, kde-format
 msgid "Projects"
 msgstr "Projekti"
 
-#: src/presentation/availablepagesmodel.cpp:151
+#: src/presentation/availablepagesmodel.cpp:145
 #, kde-format
 msgid "Contexts"
 msgstr "Konteksti"
 
-#: src/presentation/availablepagesmodel.cpp:153
+#: src/presentation/availablepagesmodel.cpp:147
 #, kde-format
 msgid "All Tasks"
 msgstr "Vse naloge"
 
-#: src/presentation/availablepagesmodel.cpp:252
+#: src/presentation/availablepagesmodel.cpp:246
 #, kde-format
 msgid "Cannot modify project %1"
 msgstr "Ni mogoče spremeniti projekta %1"
 
-#: src/presentation/availablepagesmodel.cpp:257
+#: src/presentation/availablepagesmodel.cpp:251
 #, kde-format
 msgid "Cannot modify context %1"
 msgstr "Ni mogoče spremeniti konteksta %1"
 
-#: src/presentation/availablepagesmodel.cpp:276
+#: src/presentation/availablepagesmodel.cpp:270
 #, kde-format
 msgid "Cannot add %1 to project %2"
 msgstr "Ni mogoče dodati %1 v projekt %2"
 
-#: src/presentation/availablepagesmodel.cpp:282
+#: src/presentation/availablepagesmodel.cpp:276
 #, kde-format
 msgid "Cannot add %1 to context %2"
 msgstr "Ni mogoče dodati %1 v kontekst %2"
 
-#: src/presentation/availablepagesmodel.cpp:288
+#: src/presentation/availablepagesmodel.cpp:282
 #, kde-format
 msgid "Cannot move %1 to Inbox"
 msgstr "Ni mogoče prenesti %1 v prejeto pošto"
 
-#: src/presentation/availablepagesmodel.cpp:292
+#: src/presentation/availablepagesmodel.cpp:286
 #, kde-format
 msgid "Cannot move task %1 to Inbox"
 msgstr "Ni mogoče prenesti naloge %1 v prejeto pošto"
 
-#: src/presentation/availablepagesmodel.cpp:301
+#: src/presentation/availablepagesmodel.cpp:295
 #, kde-format
 msgid "Cannot update task %1 to Workday"
 msgstr "Ni mogoče posodobiti naloge %1 na delovni dan"
 
-#: src/presentation/availablesourcesmodel.cpp:99
+#: src/presentation/availablesourcesmodel.cpp:97
 #, kde-format
 msgid "Cannot modify source %1"
 msgstr "Ni mogoče spremeniti vira %1"
 
-#: src/presentation/contextpagemodel.cpp:54
+#: src/presentation/contextpagemodel.cpp:50
 #, kde-format
 msgid "Cannot add task %1 in context %2"
 msgstr "Ni mogoče dodati naloge %1 v kontekst %2"
 
-#: src/presentation/contextpagemodel.cpp:65
+#: src/presentation/contextpagemodel.cpp:61
 #, kde-format
 msgid "Cannot remove task %1 from context %2"
 msgstr "Ni mogoče odstraniti naloge %1 iz konteksta %2"
 
-#: src/presentation/contextpagemodel.cpp:115
+#: src/presentation/contextpagemodel.cpp:111
 #, kde-format
 msgid "Cannot modify task %1 in context %2"
 msgstr "Ni mogoče spremeniti naloge %1 v kontekstu %2"
 
-#: src/presentation/contextpagemodel.cpp:147
+#: src/presentation/contextpagemodel.cpp:143
 #, kde-format
 msgid "Cannot dissociate task %1 from its parent"
 msgstr "Ni mogoče odstraniti povezave naloge %1 od njene glavne naloge"
@@ -271,17 +271,17 @@ msgstr "Ni mogoče posodobiti naloge %1 v 'ne poteka'"
 msgid "Cannot update task %1 to 'running'"
 msgstr "Ni mogoče posodobiti naloge %1 v 'poteka'"
 
-#: src/presentation/workdaypagemodel.cpp:42
+#: src/presentation/workdaypagemodel.cpp:40
 #, kde-format
 msgid "Cannot add task %1 in Workday"
 msgstr "Ni mogoče dodati naloge %1 na delovni dan"
 
-#: src/presentation/workdaypagemodel.cpp:53
+#: src/presentation/workdaypagemodel.cpp:51
 #, kde-format
 msgid "Cannot remove task %1 from Workday"
 msgstr "Ni mogoče odstraniti naloge %1 z delovnega dne"
 
-#: src/presentation/workdaypagemodel.cpp:104
+#: src/presentation/workdaypagemodel.cpp:102
 #, kde-format
 msgid "Cannot modify task %1 in Workday"
 msgstr "Ni mogoče spremeniti naloge %1 na delovni dan"
@@ -357,32 +357,32 @@ msgstr "Uporabi kot privzeti vir"
 msgid "Configure %1..."
 msgstr "Nastavi %1..."
 
-#: src/widgets/editorview.cpp:31
+#: src/widgets/editorview.cpp:30
 #, kde-format
 msgid "Add Attachment"
 msgstr "Dodaj prilogo"
 
-#: src/widgets/editorview.cpp:36
+#: src/widgets/editorview.cpp:35
 #, kde-format
 msgid "Never"
 msgstr "Nikoli"
 
-#: src/widgets/editorview.cpp:37
+#: src/widgets/editorview.cpp:36
 #, kde-format
 msgid "Daily"
 msgstr "Dnevno"
 
-#: src/widgets/editorview.cpp:38
+#: src/widgets/editorview.cpp:37
 #, kde-format
 msgid "Weekly"
 msgstr "Tedensko"
 
-#: src/widgets/editorview.cpp:39
+#: src/widgets/editorview.cpp:38
 #, kde-format
 msgid "Monthly"
 msgstr "Mesečno"
 
-#: src/widgets/editorview.cpp:40
+#: src/widgets/editorview.cpp:39
 #, kde-format
 msgid "Yearly"
 msgstr "Letno"

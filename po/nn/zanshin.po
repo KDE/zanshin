@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zanshin\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-12-29 01:38+0000\n"
+"POT-Creation-Date: 2023-12-30 01:38+0000\n"
 "PO-Revision-Date: 2022-06-19 14:03+0200\n"
 "Last-Translator: Karl Ove Hufthammer <karl@huftis.org>\n"
 "Language-Team: Norwegian Nynorsk <l10n-no@lister.huftis.org>\n"
@@ -68,12 +68,12 @@ msgstr "Sletting av fleire agentar"
 msgid "Do you really want to delete the selected agent instances?"
 msgstr "Er du sikker på at du vil sletta dei valde agentinstansane?"
 
-#: src/akonadi/akonaditaskrepository.cpp:51
+#: src/akonadi/akonaditaskrepository.cpp:50
 #, kde-format
 msgid "Could not find a collection to store the task into!"
 msgstr "Fann ikkje noko samling å lagra oppgåva i."
 
-#: src/akonadi/akonaditaskrepository.cpp:198
+#: src/akonadi/akonaditaskrepository.cpp:197
 #, kde-format
 msgid "Could not associate '%1', it is an ancestor of '%2'"
 msgstr "Klarte ikkje knyta til «%1». Det er ein forgjengar til «%2»."
@@ -89,137 +89,137 @@ msgid "Cannot remove task %1"
 msgstr "Klarte ikkje fjerna oppgåva %1"
 
 #: src/presentation/alltaskspagemodel.cpp:56
-#: src/presentation/contextpagemodel.cpp:74
+#: src/presentation/contextpagemodel.cpp:70
 #: src/presentation/inboxpagemodel.cpp:55
 #: src/presentation/projectpagemodel.cpp:67
-#: src/presentation/workdaypagemodel.cpp:63
+#: src/presentation/workdaypagemodel.cpp:61
 #, kde-format
 msgid "Cannot promote task %1 to be a project"
 msgstr "Klarte ikkje gjera om oppgåva %1 til eit prosjekt"
 
 #: src/presentation/alltaskspagemodel.cpp:97
-#: src/presentation/editormodel.cpp:390
+#: src/presentation/editormodel.cpp:389
 #, kde-format
 msgid "Cannot modify task %1"
 msgstr "Klarte ikkje endra oppgåva %1"
 
 #: src/presentation/alltaskspagemodel.cpp:122
-#: src/presentation/contextpagemodel.cpp:144
+#: src/presentation/contextpagemodel.cpp:140
 #: src/presentation/inboxpagemodel.cpp:111
-#: src/presentation/workdaypagemodel.cpp:119
+#: src/presentation/workdaypagemodel.cpp:117
 #, kde-format
 msgid "Cannot move task %1 as sub-task of %2"
 msgstr "Klarte ikkje flytta oppgåva %1 som deloppgåve av %2"
 
 #: src/presentation/alltaskspagemodel.cpp:125
 #: src/presentation/inboxpagemodel.cpp:114
-#: src/presentation/workdaypagemodel.cpp:127
+#: src/presentation/workdaypagemodel.cpp:125
 #, kde-format
 msgid "Cannot deparent task %1 from its parent"
 msgstr "Klarte ikkje frigjera oppgåva %1 frå forelderoppgåva"
 
-#: src/presentation/availablepagesmodel.cpp:117
+#: src/presentation/availablepagesmodel.cpp:111
 #, kde-format
 msgid "Cannot add project %1 in dataSource %2"
 msgstr "Klarte ikkje leggja prosjektet %1 i datakjelda %2"
 
-#: src/presentation/availablepagesmodel.cpp:125
+#: src/presentation/availablepagesmodel.cpp:119
 #, kde-format
 msgid "Cannot add context %1"
 msgstr "Klarte ikkje leggja til konteksten %1"
 
-#: src/presentation/availablepagesmodel.cpp:133
+#: src/presentation/availablepagesmodel.cpp:127
 #, kde-format
 msgid "Cannot remove project %1"
 msgstr "Klarte ikkje fjerna prosjektet %1"
 
-#: src/presentation/availablepagesmodel.cpp:136
+#: src/presentation/availablepagesmodel.cpp:130
 #, kde-format
 msgid "Cannot remove context %1"
 msgstr "Klarte ikkje fjerna konteksten %1"
 
-#: src/presentation/availablepagesmodel.cpp:145
+#: src/presentation/availablepagesmodel.cpp:139
 #: src/widgets/itemdelegate.cpp:143
 #, kde-format
 msgid "Inbox"
 msgstr "Innboks"
 
-#: src/presentation/availablepagesmodel.cpp:147
+#: src/presentation/availablepagesmodel.cpp:141
 #, kde-format
 msgid "Workday"
 msgstr "Arbeidsdag"
 
-#: src/presentation/availablepagesmodel.cpp:149
+#: src/presentation/availablepagesmodel.cpp:143
 #, kde-format
 msgid "Projects"
 msgstr "Prosjekt"
 
-#: src/presentation/availablepagesmodel.cpp:151
+#: src/presentation/availablepagesmodel.cpp:145
 #, kde-format
 msgid "Contexts"
 msgstr "Kontekstar"
 
-#: src/presentation/availablepagesmodel.cpp:153
+#: src/presentation/availablepagesmodel.cpp:147
 #, kde-format
 msgid "All Tasks"
 msgstr "Alle oppgåver"
 
-#: src/presentation/availablepagesmodel.cpp:252
+#: src/presentation/availablepagesmodel.cpp:246
 #, kde-format
 msgid "Cannot modify project %1"
 msgstr "Klarte ikkje endra prosjektet %1"
 
-#: src/presentation/availablepagesmodel.cpp:257
+#: src/presentation/availablepagesmodel.cpp:251
 #, kde-format
 msgid "Cannot modify context %1"
 msgstr "Klarte ikkje endra konteksten %1"
 
-#: src/presentation/availablepagesmodel.cpp:276
+#: src/presentation/availablepagesmodel.cpp:270
 #, kde-format
 msgid "Cannot add %1 to project %2"
 msgstr "Klarte ikkje leggja %1 til prosjektet %2"
 
-#: src/presentation/availablepagesmodel.cpp:282
+#: src/presentation/availablepagesmodel.cpp:276
 #, kde-format
 msgid "Cannot add %1 to context %2"
 msgstr "Klarte ikkje leggja %1 til konteksten %2"
 
-#: src/presentation/availablepagesmodel.cpp:288
+#: src/presentation/availablepagesmodel.cpp:282
 #, kde-format
 msgid "Cannot move %1 to Inbox"
 msgstr "Klarte ikkje flytta %1 til innboksen"
 
-#: src/presentation/availablepagesmodel.cpp:292
+#: src/presentation/availablepagesmodel.cpp:286
 #, kde-format
 msgid "Cannot move task %1 to Inbox"
 msgstr "Klarte ikkje flytta oppgåva %1 til innboksen"
 
-#: src/presentation/availablepagesmodel.cpp:301
+#: src/presentation/availablepagesmodel.cpp:295
 #, kde-format
 msgid "Cannot update task %1 to Workday"
 msgstr "Klarte ikkje oppdatera oppgåva %1 til arbeidsdag"
 
-#: src/presentation/availablesourcesmodel.cpp:99
+#: src/presentation/availablesourcesmodel.cpp:97
 #, kde-format
 msgid "Cannot modify source %1"
 msgstr "Klarte ikkje endra kjelda %1"
 
-#: src/presentation/contextpagemodel.cpp:54
+#: src/presentation/contextpagemodel.cpp:50
 #, kde-format
 msgid "Cannot add task %1 in context %2"
 msgstr "Klarte ikkje leggja oppgåva %1 til konteksten %2"
 
-#: src/presentation/contextpagemodel.cpp:65
+#: src/presentation/contextpagemodel.cpp:61
 #, kde-format
 msgid "Cannot remove task %1 from context %2"
 msgstr "Klarte ikkje fjerna oppgåva %1 frå konteksten %2"
 
-#: src/presentation/contextpagemodel.cpp:115
+#: src/presentation/contextpagemodel.cpp:111
 #, kde-format
 msgid "Cannot modify task %1 in context %2"
 msgstr "Klarte ikkje endra oppgåva %1 i konteksten %2"
 
-#: src/presentation/contextpagemodel.cpp:147
+#: src/presentation/contextpagemodel.cpp:143
 #, kde-format
 msgid "Cannot dissociate task %1 from its parent"
 msgstr "Klarte ikkje frigjera oppgåva %1 frå forelderoppgåva"
@@ -269,17 +269,17 @@ msgstr "Klarte ikkje oppdatera oppgåva %1 til «køyrer ikkje»"
 msgid "Cannot update task %1 to 'running'"
 msgstr "Klarte ikkje oppdatera oppgåva %1 til «køyrer»"
 
-#: src/presentation/workdaypagemodel.cpp:42
+#: src/presentation/workdaypagemodel.cpp:40
 #, kde-format
 msgid "Cannot add task %1 in Workday"
 msgstr "Klarte ikkje leggja oppgåva %1 til arbeidsdag"
 
-#: src/presentation/workdaypagemodel.cpp:53
+#: src/presentation/workdaypagemodel.cpp:51
 #, kde-format
 msgid "Cannot remove task %1 from Workday"
 msgstr "Klarte ikkje fjerna oppgåva %1 frå arbeidsdag"
 
-#: src/presentation/workdaypagemodel.cpp:104
+#: src/presentation/workdaypagemodel.cpp:102
 #, kde-format
 msgid "Cannot modify task %1 in Workday"
 msgstr "Klarte ikkje endra oppgåva %1 i arbeidsdag"
@@ -356,32 +356,32 @@ msgstr "Bruk som standardkjelde"
 msgid "Configure %1..."
 msgstr "Set opp %1 …"
 
-#: src/widgets/editorview.cpp:31
+#: src/widgets/editorview.cpp:30
 #, kde-format
 msgid "Add Attachment"
 msgstr "Legg til vedlegg"
 
-#: src/widgets/editorview.cpp:36
+#: src/widgets/editorview.cpp:35
 #, kde-format
 msgid "Never"
 msgstr "Aldri"
 
-#: src/widgets/editorview.cpp:37
+#: src/widgets/editorview.cpp:36
 #, kde-format
 msgid "Daily"
 msgstr "Dagleg"
 
-#: src/widgets/editorview.cpp:38
+#: src/widgets/editorview.cpp:37
 #, kde-format
 msgid "Weekly"
 msgstr "Vekentleg"
 
-#: src/widgets/editorview.cpp:39
+#: src/widgets/editorview.cpp:38
 #, kde-format
 msgid "Monthly"
 msgstr "Månadleg"
 
-#: src/widgets/editorview.cpp:40
+#: src/widgets/editorview.cpp:39
 #, kde-format
 msgid "Yearly"
 msgstr "Årleg"

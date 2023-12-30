@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zanshin\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-12-29 01:38+0000\n"
+"POT-Creation-Date: 2023-12-30 01:38+0000\n"
 "PO-Revision-Date: 2023-12-27 14:10+0300\n"
 "Last-Translator: Emir SARI <emir_sari@icloud.com>\n"
 "Language-Team: Turkish <kde-l10n-tr@kde.org>\n"
@@ -65,12 +65,12 @@ msgstr "Çoklu Aracı Silme"
 msgid "Do you really want to delete the selected agent instances?"
 msgstr "Seçili aracı örneklerini silmek istedeğinizden emin misiniz?"
 
-#: src/akonadi/akonaditaskrepository.cpp:51
+#: src/akonadi/akonaditaskrepository.cpp:50
 #, kde-format
 msgid "Could not find a collection to store the task into!"
 msgstr "Görevin depolanacağı koleksiyon bulunamadı!"
 
-#: src/akonadi/akonaditaskrepository.cpp:198
+#: src/akonadi/akonaditaskrepository.cpp:197
 #, kde-format
 msgid "Could not associate '%1', it is an ancestor of '%2'"
 msgstr "'%1' ilişkilendirilemedi, '%2' için üst seviyede"
@@ -86,137 +86,137 @@ msgid "Cannot remove task %1"
 msgstr "%1 görevi kaldırılamıyor"
 
 #: src/presentation/alltaskspagemodel.cpp:56
-#: src/presentation/contextpagemodel.cpp:74
+#: src/presentation/contextpagemodel.cpp:70
 #: src/presentation/inboxpagemodel.cpp:55
 #: src/presentation/projectpagemodel.cpp:67
-#: src/presentation/workdaypagemodel.cpp:63
+#: src/presentation/workdaypagemodel.cpp:61
 #, kde-format
 msgid "Cannot promote task %1 to be a project"
 msgstr "%1 görevi, bir projeye dönüştürülemiyor"
 
 #: src/presentation/alltaskspagemodel.cpp:97
-#: src/presentation/editormodel.cpp:390
+#: src/presentation/editormodel.cpp:389
 #, kde-format
 msgid "Cannot modify task %1"
 msgstr "%1 görevi, değiştirilemiyor"
 
 #: src/presentation/alltaskspagemodel.cpp:122
-#: src/presentation/contextpagemodel.cpp:144
+#: src/presentation/contextpagemodel.cpp:140
 #: src/presentation/inboxpagemodel.cpp:111
-#: src/presentation/workdaypagemodel.cpp:119
+#: src/presentation/workdaypagemodel.cpp:117
 #, kde-format
 msgid "Cannot move task %1 as sub-task of %2"
 msgstr "%1 görevi, %2 görevinin alt görevi olarak taşınamıyor"
 
 #: src/presentation/alltaskspagemodel.cpp:125
 #: src/presentation/inboxpagemodel.cpp:114
-#: src/presentation/workdaypagemodel.cpp:127
+#: src/presentation/workdaypagemodel.cpp:125
 #, kde-format
 msgid "Cannot deparent task %1 from its parent"
 msgstr "%1 görevi, üst görevinden ayrılamıyor"
 
-#: src/presentation/availablepagesmodel.cpp:117
+#: src/presentation/availablepagesmodel.cpp:111
 #, kde-format
 msgid "Cannot add project %1 in dataSource %2"
 msgstr "%1 projesi, %2 veriKaynağı'na eklenemiyor"
 
-#: src/presentation/availablepagesmodel.cpp:125
+#: src/presentation/availablepagesmodel.cpp:119
 #, kde-format
 msgid "Cannot add context %1"
 msgstr "%1 bağlamı eklenemiyor"
 
-#: src/presentation/availablepagesmodel.cpp:133
+#: src/presentation/availablepagesmodel.cpp:127
 #, kde-format
 msgid "Cannot remove project %1"
 msgstr "%1 projesi kaldırılamıyor"
 
-#: src/presentation/availablepagesmodel.cpp:136
+#: src/presentation/availablepagesmodel.cpp:130
 #, kde-format
 msgid "Cannot remove context %1"
 msgstr "%1 bağlamı kaldırılamıyor"
 
-#: src/presentation/availablepagesmodel.cpp:145
+#: src/presentation/availablepagesmodel.cpp:139
 #: src/widgets/itemdelegate.cpp:143
 #, kde-format
 msgid "Inbox"
 msgstr "Gelen Kutusu"
 
-#: src/presentation/availablepagesmodel.cpp:147
+#: src/presentation/availablepagesmodel.cpp:141
 #, kde-format
 msgid "Workday"
 msgstr "İş Günü"
 
-#: src/presentation/availablepagesmodel.cpp:149
+#: src/presentation/availablepagesmodel.cpp:143
 #, kde-format
 msgid "Projects"
 msgstr "Projeler"
 
-#: src/presentation/availablepagesmodel.cpp:151
+#: src/presentation/availablepagesmodel.cpp:145
 #, kde-format
 msgid "Contexts"
 msgstr "Bağlamlar"
 
-#: src/presentation/availablepagesmodel.cpp:153
+#: src/presentation/availablepagesmodel.cpp:147
 #, kde-format
 msgid "All Tasks"
 msgstr "Tüm Görevler"
 
-#: src/presentation/availablepagesmodel.cpp:252
+#: src/presentation/availablepagesmodel.cpp:246
 #, kde-format
 msgid "Cannot modify project %1"
 msgstr "%1 projesi değiştirilemiyor"
 
-#: src/presentation/availablepagesmodel.cpp:257
+#: src/presentation/availablepagesmodel.cpp:251
 #, kde-format
 msgid "Cannot modify context %1"
 msgstr "%1 bağlamı değiştirilemiyor"
 
-#: src/presentation/availablepagesmodel.cpp:276
+#: src/presentation/availablepagesmodel.cpp:270
 #, kde-format
 msgid "Cannot add %1 to project %2"
 msgstr "%1 ögesi, %2 projesine eklenemiyor"
 
-#: src/presentation/availablepagesmodel.cpp:282
+#: src/presentation/availablepagesmodel.cpp:276
 #, kde-format
 msgid "Cannot add %1 to context %2"
 msgstr "%1 ögesi, %2 bağlamına eklenemiyor"
 
-#: src/presentation/availablepagesmodel.cpp:288
+#: src/presentation/availablepagesmodel.cpp:282
 #, kde-format
 msgid "Cannot move %1 to Inbox"
 msgstr "%1 ögesi, Gelen Kutusuna taşınamıyor"
 
-#: src/presentation/availablepagesmodel.cpp:292
+#: src/presentation/availablepagesmodel.cpp:286
 #, kde-format
 msgid "Cannot move task %1 to Inbox"
 msgstr "%1 görevi, Gelen Kutusuna taşınamıyor"
 
-#: src/presentation/availablepagesmodel.cpp:301
+#: src/presentation/availablepagesmodel.cpp:295
 #, kde-format
 msgid "Cannot update task %1 to Workday"
 msgstr "%1 ögesi, İş Günü olarak güncellenemiyor"
 
-#: src/presentation/availablesourcesmodel.cpp:99
+#: src/presentation/availablesourcesmodel.cpp:97
 #, kde-format
 msgid "Cannot modify source %1"
 msgstr "%1 kaynağı, değiştirilemiyor"
 
-#: src/presentation/contextpagemodel.cpp:54
+#: src/presentation/contextpagemodel.cpp:50
 #, kde-format
 msgid "Cannot add task %1 in context %2"
 msgstr "%1 görevi %2 bağlamına eklenemiyor"
 
-#: src/presentation/contextpagemodel.cpp:65
+#: src/presentation/contextpagemodel.cpp:61
 #, kde-format
 msgid "Cannot remove task %1 from context %2"
 msgstr "%1 görevi, %2 bağlamından kaldırılamıyor"
 
-#: src/presentation/contextpagemodel.cpp:115
+#: src/presentation/contextpagemodel.cpp:111
 #, kde-format
 msgid "Cannot modify task %1 in context %2"
 msgstr "%1 görevi, %2 bağlamında değiştirilemiyor"
 
-#: src/presentation/contextpagemodel.cpp:147
+#: src/presentation/contextpagemodel.cpp:143
 #, kde-format
 msgid "Cannot dissociate task %1 from its parent"
 msgstr "%1 görevi, üst görevinden ayrılamıyor"
@@ -266,17 +266,17 @@ msgstr "%1 görevi, 'çalışmıyor' olarak güncellenemiyor"
 msgid "Cannot update task %1 to 'running'"
 msgstr "%1 görevi, 'çalışıyor' olarak güncellenemiyor"
 
-#: src/presentation/workdaypagemodel.cpp:42
+#: src/presentation/workdaypagemodel.cpp:40
 #, kde-format
 msgid "Cannot add task %1 in Workday"
 msgstr "%1 görevi, İş Günü olarak eklenemiyor"
 
-#: src/presentation/workdaypagemodel.cpp:53
+#: src/presentation/workdaypagemodel.cpp:51
 #, kde-format
 msgid "Cannot remove task %1 from Workday"
 msgstr "%1 görevi, İş Günü üzerinden kaldırılamıyor"
 
-#: src/presentation/workdaypagemodel.cpp:104
+#: src/presentation/workdaypagemodel.cpp:102
 #, kde-format
 msgid "Cannot modify task %1 in Workday"
 msgstr "%1 görevi, İş Günü içinde düzenlenemiyor"
@@ -353,32 +353,32 @@ msgstr "Öntanımlı Kaynak olarak Kullan"
 msgid "Configure %1..."
 msgstr "Yapılandır %1..."
 
-#: src/widgets/editorview.cpp:31
+#: src/widgets/editorview.cpp:30
 #, kde-format
 msgid "Add Attachment"
 msgstr "Ek Ekle"
 
-#: src/widgets/editorview.cpp:36
+#: src/widgets/editorview.cpp:35
 #, kde-format
 msgid "Never"
 msgstr "Asla"
 
-#: src/widgets/editorview.cpp:37
+#: src/widgets/editorview.cpp:36
 #, kde-format
 msgid "Daily"
 msgstr "Günlük"
 
-#: src/widgets/editorview.cpp:38
+#: src/widgets/editorview.cpp:37
 #, kde-format
 msgid "Weekly"
 msgstr "Haftalık"
 
-#: src/widgets/editorview.cpp:39
+#: src/widgets/editorview.cpp:38
 #, kde-format
 msgid "Monthly"
 msgstr "Aylık"
 
-#: src/widgets/editorview.cpp:40
+#: src/widgets/editorview.cpp:39
 #, kde-format
 msgid "Yearly"
 msgstr "Yıllık"

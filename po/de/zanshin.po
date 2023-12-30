@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zanshin\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-12-29 01:38+0000\n"
+"POT-Creation-Date: 2023-12-30 01:38+0000\n"
 "PO-Revision-Date: 2021-05-08 05:24+0200\n"
 "Last-Translator: Burkhard Lück <lueck@hube-lueck.de>\n"
 "Language-Team: German <kde-i18n-de@kde.org>\n"
@@ -67,12 +67,12 @@ msgstr "Löschen mehrerer Agenten"
 msgid "Do you really want to delete the selected agent instances?"
 msgstr "Möchten Sie die ausgewählten Instanzen wirklich löschen?"
 
-#: src/akonadi/akonaditaskrepository.cpp:51
+#: src/akonadi/akonaditaskrepository.cpp:50
 #, kde-format
 msgid "Could not find a collection to store the task into!"
 msgstr "Es kann keine Sammlung zum Speichern der Aufgabe gefunden werden."
 
-#: src/akonadi/akonaditaskrepository.cpp:198
+#: src/akonadi/akonaditaskrepository.cpp:197
 #, kde-format
 msgid "Could not associate '%1', it is an ancestor of '%2'"
 msgstr "„%1“ kann nicht zugeordnet werden, es enthält eine Unteraufgabe „%2“"
@@ -88,137 +88,137 @@ msgid "Cannot remove task %1"
 msgstr "Die Aufgabe „%1“ kann nicht entfernt werden"
 
 #: src/presentation/alltaskspagemodel.cpp:56
-#: src/presentation/contextpagemodel.cpp:74
+#: src/presentation/contextpagemodel.cpp:70
 #: src/presentation/inboxpagemodel.cpp:55
 #: src/presentation/projectpagemodel.cpp:67
-#: src/presentation/workdaypagemodel.cpp:63
+#: src/presentation/workdaypagemodel.cpp:61
 #, kde-format
 msgid "Cannot promote task %1 to be a project"
 msgstr "Die Aufgabe %1 kann nicht als Projekt eingesetzt werden"
 
 #: src/presentation/alltaskspagemodel.cpp:97
-#: src/presentation/editormodel.cpp:390
+#: src/presentation/editormodel.cpp:389
 #, kde-format
 msgid "Cannot modify task %1"
 msgstr "Die Aufgabe „%1“ kann nicht geändert werden"
 
 #: src/presentation/alltaskspagemodel.cpp:122
-#: src/presentation/contextpagemodel.cpp:144
+#: src/presentation/contextpagemodel.cpp:140
 #: src/presentation/inboxpagemodel.cpp:111
-#: src/presentation/workdaypagemodel.cpp:119
+#: src/presentation/workdaypagemodel.cpp:117
 #, kde-format
 msgid "Cannot move task %1 as sub-task of %2"
 msgstr "Aufgabe %1 kann nicht zu Unteraufgabe von %2 verschoben werden"
 
 #: src/presentation/alltaskspagemodel.cpp:125
 #: src/presentation/inboxpagemodel.cpp:114
-#: src/presentation/workdaypagemodel.cpp:127
+#: src/presentation/workdaypagemodel.cpp:125
 #, kde-format
 msgid "Cannot deparent task %1 from its parent"
 msgstr "Die Aufgabe %1 kann von dem übergeordneten Eintrag entfernt werden"
 
-#: src/presentation/availablepagesmodel.cpp:117
+#: src/presentation/availablepagesmodel.cpp:111
 #, kde-format
 msgid "Cannot add project %1 in dataSource %2"
 msgstr "Projekt %1 kann nicht zur Datenquelle %2 hinzugefügt werden"
 
-#: src/presentation/availablepagesmodel.cpp:125
+#: src/presentation/availablepagesmodel.cpp:119
 #, kde-format
 msgid "Cannot add context %1"
 msgstr "Der Kontext „%1“ kann nicht hinzugefügt werden"
 
-#: src/presentation/availablepagesmodel.cpp:133
+#: src/presentation/availablepagesmodel.cpp:127
 #, kde-format
 msgid "Cannot remove project %1"
 msgstr "Das Projekt %1 kann nicht entfernt werden"
 
-#: src/presentation/availablepagesmodel.cpp:136
+#: src/presentation/availablepagesmodel.cpp:130
 #, kde-format
 msgid "Cannot remove context %1"
 msgstr "Der Kontext „%1“ kann nicht entfernt werden"
 
-#: src/presentation/availablepagesmodel.cpp:145
+#: src/presentation/availablepagesmodel.cpp:139
 #: src/widgets/itemdelegate.cpp:143
 #, kde-format
 msgid "Inbox"
 msgstr "Posteingang"
 
-#: src/presentation/availablepagesmodel.cpp:147
+#: src/presentation/availablepagesmodel.cpp:141
 #, kde-format
 msgid "Workday"
 msgstr "Arbeitstag"
 
-#: src/presentation/availablepagesmodel.cpp:149
+#: src/presentation/availablepagesmodel.cpp:143
 #, kde-format
 msgid "Projects"
 msgstr "Projekte"
 
-#: src/presentation/availablepagesmodel.cpp:151
+#: src/presentation/availablepagesmodel.cpp:145
 #, kde-format
 msgid "Contexts"
 msgstr "Kontexte"
 
-#: src/presentation/availablepagesmodel.cpp:153
+#: src/presentation/availablepagesmodel.cpp:147
 #, kde-format
 msgid "All Tasks"
 msgstr "Alle Aufgaben"
 
-#: src/presentation/availablepagesmodel.cpp:252
+#: src/presentation/availablepagesmodel.cpp:246
 #, kde-format
 msgid "Cannot modify project %1"
 msgstr "Projekt %1 kann nicht geändert werden"
 
-#: src/presentation/availablepagesmodel.cpp:257
+#: src/presentation/availablepagesmodel.cpp:251
 #, kde-format
 msgid "Cannot modify context %1"
 msgstr "Der Kontext „%1“ kann nicht geändert werden"
 
-#: src/presentation/availablepagesmodel.cpp:276
+#: src/presentation/availablepagesmodel.cpp:270
 #, kde-format
 msgid "Cannot add %1 to project %2"
 msgstr "%1 kann nicht zum Projekt %2 hinzugefügt werden"
 
-#: src/presentation/availablepagesmodel.cpp:282
+#: src/presentation/availablepagesmodel.cpp:276
 #, kde-format
 msgid "Cannot add %1 to context %2"
 msgstr "%1 kann nicht zum Kontext %2 hinzugefügt werden"
 
-#: src/presentation/availablepagesmodel.cpp:288
+#: src/presentation/availablepagesmodel.cpp:282
 #, kde-format
 msgid "Cannot move %1 to Inbox"
 msgstr "%1 kann nicht in den Posteingang verschoben werden"
 
-#: src/presentation/availablepagesmodel.cpp:292
+#: src/presentation/availablepagesmodel.cpp:286
 #, kde-format
 msgid "Cannot move task %1 to Inbox"
 msgstr "Aufgabe %1 kann nicht in den Posteingang verschoben werden"
 
-#: src/presentation/availablepagesmodel.cpp:301
+#: src/presentation/availablepagesmodel.cpp:295
 #, kde-format
 msgid "Cannot update task %1 to Workday"
 msgstr "Aufgabe %1 kann nicht zum Wochentag aktualisiert werden"
 
-#: src/presentation/availablesourcesmodel.cpp:99
+#: src/presentation/availablesourcesmodel.cpp:97
 #, kde-format
 msgid "Cannot modify source %1"
 msgstr "Die Quelle „%1“ kann nicht geändert werden"
 
-#: src/presentation/contextpagemodel.cpp:54
+#: src/presentation/contextpagemodel.cpp:50
 #, kde-format
 msgid "Cannot add task %1 in context %2"
 msgstr "Die Aufgabe %1 kann nicht zum Kontext %2 hinzugefügt werden"
 
-#: src/presentation/contextpagemodel.cpp:65
+#: src/presentation/contextpagemodel.cpp:61
 #, kde-format
 msgid "Cannot remove task %1 from context %2"
 msgstr "Die Aufgabe %1 kann nicht vom Kontext %2 entfernt werden"
 
-#: src/presentation/contextpagemodel.cpp:115
+#: src/presentation/contextpagemodel.cpp:111
 #, kde-format
 msgid "Cannot modify task %1 in context %2"
 msgstr "Die Aufgabe %1 in Kontext %2 kann nicht geändert werden"
 
-#: src/presentation/contextpagemodel.cpp:147
+#: src/presentation/contextpagemodel.cpp:143
 #, kde-format
 msgid "Cannot dissociate task %1 from its parent"
 msgstr "Die Aufgabe %1 kann nicht übergeordneten Eintrag gelöst werden"
@@ -268,17 +268,17 @@ msgstr "Aufgabe %1 kann nicht zu „nicht ausgeführt“ aktualisiert werden"
 msgid "Cannot update task %1 to 'running'"
 msgstr "Aufgabe %1 kann nicht zu „ausgeführt“ aktualisiert werden"
 
-#: src/presentation/workdaypagemodel.cpp:42
+#: src/presentation/workdaypagemodel.cpp:40
 #, kde-format
 msgid "Cannot add task %1 in Workday"
 msgstr "Aufgabe %1 kann nicht zum Wochentag hinzugefügt werden"
 
-#: src/presentation/workdaypagemodel.cpp:53
+#: src/presentation/workdaypagemodel.cpp:51
 #, kde-format
 msgid "Cannot remove task %1 from Workday"
 msgstr "Aufgabe %1 kann nicht vom Wochentag entfernt werden"
 
-#: src/presentation/workdaypagemodel.cpp:104
+#: src/presentation/workdaypagemodel.cpp:102
 #, kde-format
 msgid "Cannot modify task %1 in Workday"
 msgstr "Aufgabe %1 im Wochentag kann nicht geändert werden"
@@ -356,32 +356,32 @@ msgstr "Als Standardquelle verwenden"
 msgid "Configure %1..."
 msgstr "%1 einrichten ..."
 
-#: src/widgets/editorview.cpp:31
+#: src/widgets/editorview.cpp:30
 #, kde-format
 msgid "Add Attachment"
 msgstr "Anhang hinzufügen "
 
-#: src/widgets/editorview.cpp:36
+#: src/widgets/editorview.cpp:35
 #, kde-format
 msgid "Never"
 msgstr "Niemals"
 
-#: src/widgets/editorview.cpp:37
+#: src/widgets/editorview.cpp:36
 #, kde-format
 msgid "Daily"
 msgstr "Täglich"
 
-#: src/widgets/editorview.cpp:38
+#: src/widgets/editorview.cpp:37
 #, kde-format
 msgid "Weekly"
 msgstr "Wöchentlich"
 
-#: src/widgets/editorview.cpp:39
+#: src/widgets/editorview.cpp:38
 #, kde-format
 msgid "Monthly"
 msgstr "Monatlich"
 
-#: src/widgets/editorview.cpp:40
+#: src/widgets/editorview.cpp:39
 #, kde-format
 msgid "Yearly"
 msgstr "Jährlich"

@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zanshin\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-12-29 01:38+0000\n"
+"POT-Creation-Date: 2023-12-30 01:38+0000\n"
 "PO-Revision-Date: 2023-09-21 10:57+0200\n"
 "Last-Translator: giovanni <g.sora@tiscali.it>\n"
 "Language-Team: Interlingua <kde-i18n-doc@kde.org>\n"
@@ -67,12 +67,12 @@ msgstr "Deletion multiple de agente"
 msgid "Do you really want to delete the selected agent instances?"
 msgstr "Tu vermente vole deler le instantias de agente seligite?"
 
-#: src/akonadi/akonaditaskrepository.cpp:51
+#: src/akonadi/akonaditaskrepository.cpp:50
 #, kde-format
 msgid "Could not find a collection to store the task into!"
 msgstr "Non poteva trovar un collection ubi immagazinar le carga!"
 
-#: src/akonadi/akonaditaskrepository.cpp:198
+#: src/akonadi/akonaditaskrepository.cpp:197
 #, kde-format
 msgid "Could not associate '%1', it is an ancestor of '%2'"
 msgstr "Non poteva associar '%1', il es un ancestre de '%2'"
@@ -88,137 +88,137 @@ msgid "Cannot remove task %1"
 msgstr "Il non pote remover carga %1"
 
 #: src/presentation/alltaskspagemodel.cpp:56
-#: src/presentation/contextpagemodel.cpp:74
+#: src/presentation/contextpagemodel.cpp:70
 #: src/presentation/inboxpagemodel.cpp:55
 #: src/presentation/projectpagemodel.cpp:67
-#: src/presentation/workdaypagemodel.cpp:63
+#: src/presentation/workdaypagemodel.cpp:61
 #, kde-format
 msgid "Cannot promote task %1 to be a project"
 msgstr "Non pote promover carga %1 a esser un projecto"
 
 #: src/presentation/alltaskspagemodel.cpp:97
-#: src/presentation/editormodel.cpp:390
+#: src/presentation/editormodel.cpp:389
 #, kde-format
 msgid "Cannot modify task %1"
 msgstr "Non pote modificar carga %1"
 
 #: src/presentation/alltaskspagemodel.cpp:122
-#: src/presentation/contextpagemodel.cpp:144
+#: src/presentation/contextpagemodel.cpp:140
 #: src/presentation/inboxpagemodel.cpp:111
-#: src/presentation/workdaypagemodel.cpp:119
+#: src/presentation/workdaypagemodel.cpp:117
 #, kde-format
 msgid "Cannot move task %1 as sub-task of %2"
 msgstr "Non pote mover carga %1 a sub-carga de %2"
 
 #: src/presentation/alltaskspagemodel.cpp:125
 #: src/presentation/inboxpagemodel.cpp:114
-#: src/presentation/workdaypagemodel.cpp:127
+#: src/presentation/workdaypagemodel.cpp:125
 #, kde-format
 msgid "Cannot deparent task %1 from its parent"
 msgstr "Non pote distaccar carga %1 ex su genitor"
 
-#: src/presentation/availablepagesmodel.cpp:117
+#: src/presentation/availablepagesmodel.cpp:111
 #, kde-format
 msgid "Cannot add project %1 in dataSource %2"
 msgstr "Non pote adder projecto %1 in dataSource (fonte da datos) %2"
 
-#: src/presentation/availablepagesmodel.cpp:125
+#: src/presentation/availablepagesmodel.cpp:119
 #, kde-format
 msgid "Cannot add context %1"
 msgstr "Non pote adder contexto %1"
 
-#: src/presentation/availablepagesmodel.cpp:133
+#: src/presentation/availablepagesmodel.cpp:127
 #, kde-format
 msgid "Cannot remove project %1"
 msgstr "Non pote remover projecto %1"
 
-#: src/presentation/availablepagesmodel.cpp:136
+#: src/presentation/availablepagesmodel.cpp:130
 #, kde-format
 msgid "Cannot remove context %1"
 msgstr "Non pote remover contexto %1"
 
-#: src/presentation/availablepagesmodel.cpp:145
+#: src/presentation/availablepagesmodel.cpp:139
 #: src/widgets/itemdelegate.cpp:143
 #, kde-format
 msgid "Inbox"
 msgstr "Cassa de ingresso"
 
-#: src/presentation/availablepagesmodel.cpp:147
+#: src/presentation/availablepagesmodel.cpp:141
 #, kde-format
 msgid "Workday"
 msgstr "Die de labor"
 
-#: src/presentation/availablepagesmodel.cpp:149
+#: src/presentation/availablepagesmodel.cpp:143
 #, kde-format
 msgid "Projects"
 msgstr "Projectos"
 
-#: src/presentation/availablepagesmodel.cpp:151
+#: src/presentation/availablepagesmodel.cpp:145
 #, kde-format
 msgid "Contexts"
 msgstr "Contextos"
 
-#: src/presentation/availablepagesmodel.cpp:153
+#: src/presentation/availablepagesmodel.cpp:147
 #, kde-format
 msgid "All Tasks"
 msgstr "Omne cargas"
 
-#: src/presentation/availablepagesmodel.cpp:252
+#: src/presentation/availablepagesmodel.cpp:246
 #, kde-format
 msgid "Cannot modify project %1"
 msgstr "Non pote modificar projecto %1"
 
-#: src/presentation/availablepagesmodel.cpp:257
+#: src/presentation/availablepagesmodel.cpp:251
 #, kde-format
 msgid "Cannot modify context %1"
 msgstr "Non pote modificar contexto %1"
 
-#: src/presentation/availablepagesmodel.cpp:276
+#: src/presentation/availablepagesmodel.cpp:270
 #, kde-format
 msgid "Cannot add %1 to project %2"
 msgstr "Non pote adder %1 a projecto %2"
 
-#: src/presentation/availablepagesmodel.cpp:282
+#: src/presentation/availablepagesmodel.cpp:276
 #, kde-format
 msgid "Cannot add %1 to context %2"
 msgstr "Non pote adder %1 a contexto %2"
 
-#: src/presentation/availablepagesmodel.cpp:288
+#: src/presentation/availablepagesmodel.cpp:282
 #, kde-format
 msgid "Cannot move %1 to Inbox"
 msgstr "Non pote mover %1 a cassa de entrata"
 
-#: src/presentation/availablepagesmodel.cpp:292
+#: src/presentation/availablepagesmodel.cpp:286
 #, kde-format
 msgid "Cannot move task %1 to Inbox"
 msgstr "Non pote mover carga %1 a cassa de entrata"
 
-#: src/presentation/availablepagesmodel.cpp:301
+#: src/presentation/availablepagesmodel.cpp:295
 #, kde-format
 msgid "Cannot update task %1 to Workday"
 msgstr "Non pote actualisar carga %1 a  Die de Labor"
 
-#: src/presentation/availablesourcesmodel.cpp:99
+#: src/presentation/availablesourcesmodel.cpp:97
 #, kde-format
 msgid "Cannot modify source %1"
 msgstr "Non pote modificar fonte %1"
 
-#: src/presentation/contextpagemodel.cpp:54
+#: src/presentation/contextpagemodel.cpp:50
 #, kde-format
 msgid "Cannot add task %1 in context %2"
 msgstr "Non pote adder carga %1 in contexto %2"
 
-#: src/presentation/contextpagemodel.cpp:65
+#: src/presentation/contextpagemodel.cpp:61
 #, kde-format
 msgid "Cannot remove task %1 from context %2"
 msgstr "Non pote remover carga %1 ex contexto %2"
 
-#: src/presentation/contextpagemodel.cpp:115
+#: src/presentation/contextpagemodel.cpp:111
 #, kde-format
 msgid "Cannot modify task %1 in context %2"
 msgstr "Non pote modificar carga %1 in contexto %2"
 
-#: src/presentation/contextpagemodel.cpp:147
+#: src/presentation/contextpagemodel.cpp:143
 #, kde-format
 msgid "Cannot dissociate task %1 from its parent"
 msgstr "Non pote disassociar carga %1 ex su genitor"
@@ -268,17 +268,17 @@ msgstr "Non pote actualisar carga %1 a 'non executante'"
 msgid "Cannot update task %1 to 'running'"
 msgstr "Non pote actualisar carga %1 a 'executante'"
 
-#: src/presentation/workdaypagemodel.cpp:42
+#: src/presentation/workdaypagemodel.cpp:40
 #, kde-format
 msgid "Cannot add task %1 in Workday"
 msgstr "Non pote cargar %1 in Die de Labor"
 
-#: src/presentation/workdaypagemodel.cpp:53
+#: src/presentation/workdaypagemodel.cpp:51
 #, kde-format
 msgid "Cannot remove task %1 from Workday"
 msgstr "Non pote remover carga %1 ex Die de Labor"
 
-#: src/presentation/workdaypagemodel.cpp:104
+#: src/presentation/workdaypagemodel.cpp:102
 #, kde-format
 msgid "Cannot modify task %1 in Workday"
 msgstr "Non pote modificar carga %1 in Die de Labor"
@@ -354,32 +354,32 @@ msgstr "Usa como fonte predefinite"
 msgid "Configure %1..."
 msgstr "Configura %1..."
 
-#: src/widgets/editorview.cpp:31
+#: src/widgets/editorview.cpp:30
 #, kde-format
 msgid "Add Attachment"
 msgstr "Adde attachamento"
 
-#: src/widgets/editorview.cpp:36
+#: src/widgets/editorview.cpp:35
 #, kde-format
 msgid "Never"
 msgstr "Jammais"
 
-#: src/widgets/editorview.cpp:37
+#: src/widgets/editorview.cpp:36
 #, kde-format
 msgid "Daily"
 msgstr "Cata die"
 
-#: src/widgets/editorview.cpp:38
+#: src/widgets/editorview.cpp:37
 #, kde-format
 msgid "Weekly"
 msgstr "Cata septimana"
 
-#: src/widgets/editorview.cpp:39
+#: src/widgets/editorview.cpp:38
 #, kde-format
 msgid "Monthly"
 msgstr "Cata mense"
 
-#: src/widgets/editorview.cpp:40
+#: src/widgets/editorview.cpp:39
 #, kde-format
 msgid "Yearly"
 msgstr "Cata anno"

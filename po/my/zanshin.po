@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zanshin\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-12-29 01:38+0000\n"
+"POT-Creation-Date: 2023-12-30 01:38+0000\n"
 "PO-Revision-Date: 2021-09-21 12:51+0630\n"
 "Last-Translator: ဇေယျာလွင် <lw1nzayar@yandex.com>\n"
 "Language-Team: Burmese <kde-i18n-doc@kde.org>\n"
@@ -69,12 +69,12 @@ msgstr "အေးဂျင့်အမြောက်အများဖျက်
 msgid "Do you really want to delete the selected agent instances?"
 msgstr "ရွေးထားသော အေးဂျင့်အင်းစတမ့်များကို တကယ်ဖျက်တော့မှာလား။"
 
-#: src/akonadi/akonaditaskrepository.cpp:51
+#: src/akonadi/akonaditaskrepository.cpp:50
 #, kde-format
 msgid "Could not find a collection to store the task into!"
 msgstr "အလုပ်သိမ်းဆည်းရမည့် စုစည်းမှု ရှာမတွေ့ခဲ့ပါ"
 
-#: src/akonadi/akonaditaskrepository.cpp:198
+#: src/akonadi/akonaditaskrepository.cpp:197
 #, kde-format
 msgid "Could not associate '%1', it is an ancestor of '%2'"
 msgstr "%1' ကို မသက်ဆိုင်နိုင်ခဲ့ပါ၊ ၎င်းသည် '%2' ၏ ဘိုးဘေးဖြစ်နေသည်"
@@ -90,137 +90,137 @@ msgid "Cannot remove task %1"
 msgstr "အလုပ် %1 ကိုမဖယ်ရှားနိုင်ပါ"
 
 #: src/presentation/alltaskspagemodel.cpp:56
-#: src/presentation/contextpagemodel.cpp:74
+#: src/presentation/contextpagemodel.cpp:70
 #: src/presentation/inboxpagemodel.cpp:55
 #: src/presentation/projectpagemodel.cpp:67
-#: src/presentation/workdaypagemodel.cpp:63
+#: src/presentation/workdaypagemodel.cpp:61
 #, kde-format
 msgid "Cannot promote task %1 to be a project"
 msgstr "အလုပ် %1 ကို ပရောဂျက်တစ်ခုဖြစ်အောင် အဆင့်တင်မရပါ"
 
 #: src/presentation/alltaskspagemodel.cpp:97
-#: src/presentation/editormodel.cpp:390
+#: src/presentation/editormodel.cpp:389
 #, kde-format
 msgid "Cannot modify task %1"
 msgstr "အလုပ် %1 ကိုမမွမ်းမံနိုင်ပါ"
 
 #: src/presentation/alltaskspagemodel.cpp:122
-#: src/presentation/contextpagemodel.cpp:144
+#: src/presentation/contextpagemodel.cpp:140
 #: src/presentation/inboxpagemodel.cpp:111
-#: src/presentation/workdaypagemodel.cpp:119
+#: src/presentation/workdaypagemodel.cpp:117
 #, kde-format
 msgid "Cannot move task %1 as sub-task of %2"
 msgstr "အလုပ် %1 ကို %2 ၏လက်အောက်ခံအလုပ်အဖြစ် မရွေ့နိုင်ပါ"
 
 #: src/presentation/alltaskspagemodel.cpp:125
 #: src/presentation/inboxpagemodel.cpp:114
-#: src/presentation/workdaypagemodel.cpp:127
+#: src/presentation/workdaypagemodel.cpp:125
 #, kde-format
 msgid "Cannot deparent task %1 from its parent"
 msgstr "အလုပ် %1 ၏မိဘကို ဖျောက်ပစ်လို့မရပါ"
 
-#: src/presentation/availablepagesmodel.cpp:117
+#: src/presentation/availablepagesmodel.cpp:111
 #, kde-format
 msgid "Cannot add project %1 in dataSource %2"
 msgstr "ပရောဂျက် %1 ကို ဒေတာဇစ်မြစ် %2 တွင် မထည့်နိုင်ပါ"
 
-#: src/presentation/availablepagesmodel.cpp:125
+#: src/presentation/availablepagesmodel.cpp:119
 #, kde-format
 msgid "Cannot add context %1"
 msgstr "ဆက်စပ်အကြောင်းအရာ %1 မထည့်နိုင်ပါ"
 
-#: src/presentation/availablepagesmodel.cpp:133
+#: src/presentation/availablepagesmodel.cpp:127
 #, kde-format
 msgid "Cannot remove project %1"
 msgstr "ပရောဂျက် %1 ကိုမဖယ်ရှားနိုင်ပါ"
 
-#: src/presentation/availablepagesmodel.cpp:136
+#: src/presentation/availablepagesmodel.cpp:130
 #, kde-format
 msgid "Cannot remove context %1"
 msgstr "ဆက်စပ်အကြောင်းအရာ %1 ကိုမဖယ်ရှားနိုင်ပါ"
 
-#: src/presentation/availablepagesmodel.cpp:145
+#: src/presentation/availablepagesmodel.cpp:139
 #: src/widgets/itemdelegate.cpp:143
 #, kde-format
 msgid "Inbox"
 msgstr "စာဝင်ပုံး"
 
-#: src/presentation/availablepagesmodel.cpp:147
+#: src/presentation/availablepagesmodel.cpp:141
 #, kde-format
 msgid "Workday"
 msgstr "အလုပ်နေ့"
 
-#: src/presentation/availablepagesmodel.cpp:149
+#: src/presentation/availablepagesmodel.cpp:143
 #, kde-format
 msgid "Projects"
 msgstr "ပရောဂျက်များ"
 
-#: src/presentation/availablepagesmodel.cpp:151
+#: src/presentation/availablepagesmodel.cpp:145
 #, kde-format
 msgid "Contexts"
 msgstr "ဆက်စပ်အကြောင်းအရာများ"
 
-#: src/presentation/availablepagesmodel.cpp:153
+#: src/presentation/availablepagesmodel.cpp:147
 #, kde-format
 msgid "All Tasks"
 msgstr "အလုပ်များအားလုံး"
 
-#: src/presentation/availablepagesmodel.cpp:252
+#: src/presentation/availablepagesmodel.cpp:246
 #, kde-format
 msgid "Cannot modify project %1"
 msgstr "ပရောဂျက် %1 ကိုမမွမ်းမံနိုင်ပါ"
 
-#: src/presentation/availablepagesmodel.cpp:257
+#: src/presentation/availablepagesmodel.cpp:251
 #, kde-format
 msgid "Cannot modify context %1"
 msgstr "ဆက်စပ်အကြောင်းအရာ %1 ကိုမမွမ်းမံနိုင်ပါ"
 
-#: src/presentation/availablepagesmodel.cpp:276
+#: src/presentation/availablepagesmodel.cpp:270
 #, kde-format
 msgid "Cannot add %1 to project %2"
 msgstr "%1 ကို ပရောဂျက် %2 သို့ မထည့်နိုင်ပါ"
 
-#: src/presentation/availablepagesmodel.cpp:282
+#: src/presentation/availablepagesmodel.cpp:276
 #, kde-format
 msgid "Cannot add %1 to context %2"
 msgstr "%1 ကို ဆက်စပ်အကြောင်းအရာ %2 သို့ မထည့်နိုင်ပါ"
 
-#: src/presentation/availablepagesmodel.cpp:288
+#: src/presentation/availablepagesmodel.cpp:282
 #, kde-format
 msgid "Cannot move %1 to Inbox"
 msgstr "%1 ကို စာဝင်ပုံးတွင် မရွေ့နိုင်ပါ"
 
-#: src/presentation/availablepagesmodel.cpp:292
+#: src/presentation/availablepagesmodel.cpp:286
 #, kde-format
 msgid "Cannot move task %1 to Inbox"
 msgstr "အလုပ် %1 ကို စာဝင်ပုံးတွင် မရွေ့နိုင်ပါ"
 
-#: src/presentation/availablepagesmodel.cpp:301
+#: src/presentation/availablepagesmodel.cpp:295
 #, kde-format
 msgid "Cannot update task %1 to Workday"
 msgstr "အလုပ် %1 ကို အလုပ်နေ့များသို့ အပ်ဒိတ်မတင်နိုင်ပါ"
 
-#: src/presentation/availablesourcesmodel.cpp:99
+#: src/presentation/availablesourcesmodel.cpp:97
 #, kde-format
 msgid "Cannot modify source %1"
 msgstr "ဇစ်မြစ် %1 ကိုမမွမ်းမံနိုင်ပါ"
 
-#: src/presentation/contextpagemodel.cpp:54
+#: src/presentation/contextpagemodel.cpp:50
 #, kde-format
 msgid "Cannot add task %1 in context %2"
 msgstr "အလုပ် %1 ကို ဆက်စပ်အကြောင်းအရာ %2 သို့ မထည့်နိုင်ပါ"
 
-#: src/presentation/contextpagemodel.cpp:65
+#: src/presentation/contextpagemodel.cpp:61
 #, kde-format
 msgid "Cannot remove task %1 from context %2"
 msgstr "အလုပ် %1 ကို ဆက်စပ်အကြောင်းအရာ %2 မှမဖယ်ရှားနိုင်ပါ"
 
-#: src/presentation/contextpagemodel.cpp:115
+#: src/presentation/contextpagemodel.cpp:111
 #, kde-format
 msgid "Cannot modify task %1 in context %2"
 msgstr "အလုပ် %1 ကို ဆက်စပ်အကြောင်းအရာ %2 တွင် မမွမ်းမံနိုင်ပါ"
 
-#: src/presentation/contextpagemodel.cpp:147
+#: src/presentation/contextpagemodel.cpp:143
 #, kde-format
 msgid "Cannot dissociate task %1 from its parent"
 msgstr "အလုပ် %1 ကို ယင်း၏မိဘမှ ခွဲမရပါ"
@@ -270,17 +270,17 @@ msgstr "အလုပ် %1 ကို 'မလုပ်ဆောင်နေပါ
 msgid "Cannot update task %1 to 'running'"
 msgstr "အလုပ် %1 ကို 'လုပ်ဆောင်နေသည်' သို့ အပ်ဒိတ်မတင်နိုင်ပါ"
 
-#: src/presentation/workdaypagemodel.cpp:42
+#: src/presentation/workdaypagemodel.cpp:40
 #, kde-format
 msgid "Cannot add task %1 in Workday"
 msgstr "အလုပ် %1 ကို အလုပ်နေ့များတွင် မထည့်နိုင်ပါ"
 
-#: src/presentation/workdaypagemodel.cpp:53
+#: src/presentation/workdaypagemodel.cpp:51
 #, kde-format
 msgid "Cannot remove task %1 from Workday"
 msgstr "အလုပ် %1 ကို အလုပ်နေ့များ မှမဖယ်ရှားနိုင်ပါ"
 
-#: src/presentation/workdaypagemodel.cpp:104
+#: src/presentation/workdaypagemodel.cpp:102
 #, kde-format
 msgid "Cannot modify task %1 in Workday"
 msgstr "အလုပ် %1 ကို အလုပ်နေ့များတွင် မမွမ်းမံနိုင်ပါ"
@@ -357,32 +357,32 @@ msgstr "ဒီဖော့ဇစ်မြစ်အဖြစ်သုံးမည
 msgid "Configure %1..."
 msgstr "%1 ပြင်ဆင်မည်..."
 
-#: src/widgets/editorview.cpp:31
+#: src/widgets/editorview.cpp:30
 #, kde-format
 msgid "Add Attachment"
 msgstr "တွဲဖက်ဒေတာထည့်ပါ"
 
-#: src/widgets/editorview.cpp:36
+#: src/widgets/editorview.cpp:35
 #, kde-format
 msgid "Never"
 msgstr "ဘယ်တော့မှ"
 
-#: src/widgets/editorview.cpp:37
+#: src/widgets/editorview.cpp:36
 #, kde-format
 msgid "Daily"
 msgstr "နေ့စဥ်"
 
-#: src/widgets/editorview.cpp:38
+#: src/widgets/editorview.cpp:37
 #, kde-format
 msgid "Weekly"
 msgstr "အပတ်စဥ်"
 
-#: src/widgets/editorview.cpp:39
+#: src/widgets/editorview.cpp:38
 #, kde-format
 msgid "Monthly"
 msgstr "လစဥ်"
 
-#: src/widgets/editorview.cpp:40
+#: src/widgets/editorview.cpp:39
 #, kde-format
 msgid "Yearly"
 msgstr "နှစ်စဥ်"
