@@ -47,6 +47,8 @@ int main(int argc, char **argv)
     parser.process(app);
     aboutData.processCommandLine(&parser);
 
+    QApplication::setWindowIcon(QIcon::fromTheme(QStringLiteral("zanshin")));
+
     KSharedConfig::Ptr config = KSharedConfig::openConfig(QStringLiteral("zanshin-migratorrc"));
     KConfigGroup group = config->group("Migrations");
     if (!group.readEntry("MigratedTags", false)) {
