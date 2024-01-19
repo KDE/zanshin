@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zanshin\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-12-30 01:38+0000\n"
+"POT-Creation-Date: 2024-01-19 02:28+0000\n"
 "PO-Revision-Date: 2021-07-31 23:37+0200\n"
 "Last-Translator: Shinjo Park <kde@peremen.name>\n"
 "Language-Team: Korean <kde-kr@kde.org>\n"
@@ -387,7 +387,7 @@ msgstr "년간"
 #. i18n: ectx: property (windowTitle), widget (QWidget, EditorView)
 #. i18n: ectx: property (text), widget (QListView, attachmentList)
 #: src/widgets/editorview.ui:14 src/widgets/editorview.ui:184
-#: src/zanshin/app/main.cpp:83
+#: src/zanshin/app/main.cpp:85
 #, kde-format
 msgid "Editor"
 msgstr "편집기"
@@ -615,12 +615,12 @@ msgstr "개발자"
 msgid "Franck Arrecot"
 msgstr "Franck Arrecot"
 
-#: src/zanshin/app/main.cpp:75
+#: src/zanshin/app/main.cpp:77
 #, kde-format
 msgid "Sources"
 msgstr "원본"
 
-#: src/zanshin/app/main.cpp:79
+#: src/zanshin/app/main.cpp:81
 #, kde-format
 msgid "Pages"
 msgstr "페이지"

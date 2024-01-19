@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zanshin\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-12-30 01:38+0000\n"
+"POT-Creation-Date: 2024-01-19 02:28+0000\n"
 "PO-Revision-Date: 2021-06-15 22:40+0300\n"
 "Last-Translator: Moo\n"
 "Language-Team: lt\n"
@@ -392,7 +392,7 @@ msgstr "Kas metus"
 #. i18n: ectx: property (windowTitle), widget (QWidget, EditorView)
 #. i18n: ectx: property (text), widget (QListView, attachmentList)
 #: src/widgets/editorview.ui:14 src/widgets/editorview.ui:184
-#: src/zanshin/app/main.cpp:83
+#: src/zanshin/app/main.cpp:85
 #, kde-format
 msgid "Editor"
 msgstr "Redaktorius"
@@ -626,12 +626,12 @@ msgstr "Programuotojas"
 msgid "Franck Arrecot"
 msgstr "Franck Arrecot"
 
-#: src/zanshin/app/main.cpp:75
+#: src/zanshin/app/main.cpp:77
 #, kde-format
 msgid "Sources"
 msgstr "Šaltiniai"
 
-#: src/zanshin/app/main.cpp:79
+#: src/zanshin/app/main.cpp:81
 #, kde-format
 msgid "Pages"
 msgstr "Puslapiai"
