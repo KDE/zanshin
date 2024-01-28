@@ -22,6 +22,7 @@ include(ECMMarkAsTest)
 include(ECMPoQmTools)
 include(ECMSetupVersion)
 include(ECMDeprecationSettings)
+include(ECMFeatureSummary)
 
 set(REQUIRED_QT_VERSION "6.5.0")
 find_package(Qt6 ${QT_REQUIRED_VERSION} CONFIG REQUIRED Core Gui Widgets Test)
