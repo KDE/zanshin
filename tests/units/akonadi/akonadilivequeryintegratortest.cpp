@@ -132,7 +132,7 @@ private slots:
         };
         auto predicate = [] (const Akonadi::Item &contextItem) {
             auto todo = contextItem.payload<KCalendarCore::Todo::Ptr>();
-            return todo->summary().endsWith(QLatin1String("-in"));
+            return todo->summary().endsWith(QLatin1StringView("-in"));
         };
 
         // Initial listing
@@ -247,11 +247,11 @@ private slots:
         };
         auto inPredicate = [] (const Akonadi::Item &contextItem) {
             auto todo = contextItem.payload<KCalendarCore::Todo::Ptr>();
-            return todo->summary().endsWith(QLatin1String("-in"));
+            return todo->summary().endsWith(QLatin1StringView("-in"));
         };
         auto exPredicate = [] (const Akonadi::Item &contextItem) {
             auto todo = contextItem.payload<KCalendarCore::Todo::Ptr>();
-            return todo->summary().endsWith(QLatin1String("-ex"));
+            return todo->summary().endsWith(QLatin1StringView("-ex"));
         };
 
         integrator->bind("context-in", inQuery, fetch, inPredicate);
@@ -292,7 +292,7 @@ private slots:
         auto query = Domain::LiveQueryOutput<Domain::DataSource::Ptr>::Ptr();
         auto fetch = fetchCollectionsFunction(storage, nullptr);
         auto predicate = [] (const Akonadi::Collection &collection) {
-            return collection.name().endsWith(QLatin1String("-in"));
+            return collection.name().endsWith(QLatin1StringView("-in"));
         };
 
         // Initial listing
@@ -395,10 +395,10 @@ private slots:
         auto exQuery = Domain::LiveQueryOutput<Domain::DataSource::Ptr>::Ptr();
         auto fetch = fetchCollectionsFunction(storage, nullptr);
         auto inPredicate = [] (const Akonadi::Collection &collection) {
-            return collection.name().endsWith(QLatin1String("-in"));
+            return collection.name().endsWith(QLatin1StringView("-in"));
         };
         auto exPredicate = [] (const Akonadi::Collection &collection) {
-            return collection.name().endsWith(QLatin1String("-ex"));
+            return collection.name().endsWith(QLatin1StringView("-ex"));
         };
 
         integrator->bind("ds-in", inQuery, fetch, inPredicate);
@@ -446,7 +446,7 @@ private slots:
         auto query = Domain::LiveQueryOutput<Domain::Project::Ptr>::Ptr();
         auto fetch = fetchItemsInAllCollectionsFunction(storage, nullptr);
         auto predicate = [] (const Akonadi::Item &item) {
-            return titleFromItem(item).endsWith(QLatin1String("-in"));
+            return titleFromItem(item).endsWith(QLatin1StringView("-in"));
         };
 
         // Initial listing
@@ -557,10 +557,10 @@ private slots:
         auto exQuery = Domain::LiveQueryOutput<Domain::Project::Ptr>::Ptr();
         auto fetch = fetchItemsInAllCollectionsFunction(storage, nullptr);
         auto inPredicate = [] (const Akonadi::Item &item) {
-            return titleFromItem(item).endsWith(QLatin1String("-in"));
+            return titleFromItem(item).endsWith(QLatin1StringView("-in"));
         };
         auto exPredicate = [] (const Akonadi::Item &item) {
-            return titleFromItem(item).endsWith(QLatin1String("-ex"));
+            return titleFromItem(item).endsWith(QLatin1StringView("-ex"));
         };
 
         integrator->bind("project-in", inQuery, fetch, inPredicate);
@@ -650,7 +650,7 @@ private slots:
         auto query = Domain::LiveQueryOutput<Domain::Task::Ptr>::Ptr();
         auto fetch = fetchItemsInAllCollectionsFunction(storage, nullptr);
         auto predicate = [] (const Akonadi::Item &item) {
-            return titleFromItem(item).endsWith(QLatin1String("-in"));
+            return titleFromItem(item).endsWith(QLatin1StringView("-in"));
         };
 
         // Initial listing
@@ -756,10 +756,10 @@ private slots:
         auto exQuery = Domain::LiveQueryOutput<Domain::Task::Ptr>::Ptr();
         auto fetch = fetchItemsInAllCollectionsFunction(storage, nullptr);
         auto inPredicate = [] (const Akonadi::Item &item) {
-            return titleFromItem(item).endsWith(QLatin1String("-in"));
+            return titleFromItem(item).endsWith(QLatin1StringView("-in"));
         };
         auto exPredicate = [] (const Akonadi::Item &item) {
-            return titleFromItem(item).endsWith(QLatin1String("-ex"));
+            return titleFromItem(item).endsWith(QLatin1StringView("-ex"));
         };
 
         integrator->bind("task-in", inQuery, fetch, inPredicate);

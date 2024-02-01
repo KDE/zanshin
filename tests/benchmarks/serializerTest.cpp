@@ -61,7 +61,7 @@ void SerializerBenchmark::checkPayloadAndDeserialize()
             return;
 
         auto todoCheck = item.payload<KCalendarCore::Todo::Ptr>();
-        if (todoCheck->relatedTo() != QLatin1String("5")) {
+        if (todoCheck->relatedTo() != QLatin1StringView("5")) {
             return;
         }
 
@@ -87,7 +87,7 @@ void SerializerBenchmark::checkPayload()
             return;
 
         auto todoCheck = item.payload<KCalendarCore::Todo::Ptr>();
-        if (todoCheck->relatedTo() != QLatin1String("5")) {
+        if (todoCheck->relatedTo() != QLatin1StringView("5")) {
             return;
         }
     }

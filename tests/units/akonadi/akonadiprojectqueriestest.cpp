@@ -389,7 +389,7 @@ private slots:
         QCOMPARE(result->data().size(), 2);
 
         // WHEN
-        data.modifyItem(GenTodo(data.item(43)).withParentUid(QLatin1String("")));
+        data.modifyItem(GenTodo(data.item(43)).withParentUid(QLatin1StringView("")));
 
         // THEN
         QCOMPARE(result->data().size(), 1);

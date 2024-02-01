@@ -167,7 +167,7 @@ void Serializer::updateTaskFromItem(Domain::Task::Ptr task, Item item)
     task->setProperty("parentCollectionId", item.parentCollection().id());
     task->setProperty("todoUid", todo->uid());
     task->setProperty("relatedUid", todo->relatedTo());
-    task->setRunning(todo->customProperty(Serializer::customPropertyAppName(), Serializer::customPropertyIsRunning()) == QLatin1String("1"));
+    task->setRunning(todo->customProperty(Serializer::customPropertyAppName(), Serializer::customPropertyIsRunning()) == QLatin1StringView("1"));
     const auto contextUids = todo->customProperty(Serializer::customPropertyAppName(),
                                                   Serializer::customPropertyContextList()).split(',', Qt::SkipEmptyParts);
     task->setProperty("contextUids", contextUids);

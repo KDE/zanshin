@@ -859,9 +859,9 @@ private slots:
         auto queryGenerator = [&] (const QString &string) {
             if (string.isEmpty())
                 return Domain::QueryResult<QString>::create(topProvider);
-            else if (string == QLatin1String("2"))
+            else if (string == QLatin1StringView("2"))
                 return Domain::QueryResult<QString>::create(firstLevelProvider);
-            else if (string == QLatin1String("2.1"))
+            else if (string == QLatin1StringView("2.1"))
                 return Domain::QueryResult<QString>::create(secondLevelProvider);
             else
                 return Domain::QueryResult<QString>::Ptr();

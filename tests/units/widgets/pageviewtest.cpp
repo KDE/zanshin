@@ -718,7 +718,7 @@ private slots:
         proxyModel.setFilterRegularExpression(QStringLiteral("B"));
 
         QPersistentModelIndex index = stubPageModel.centralListModel()->index(0, 0);
-        QCOMPARE(index.data().toString(), QLatin1String("B"));
+        QCOMPARE(index.data().toString(), QLatin1StringView("B"));
         Widgets::PageView page;
         page.setModel(&stubPageModel);
         auto msgbox = MessageBoxStub::Ptr::create();

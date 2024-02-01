@@ -38,7 +38,7 @@ private:
 
     static bool isProject(QObject *obj)
     {
-        return obj->objectName().startsWith(QLatin1String("Project"));
+        return obj->objectName().startsWith(QLatin1StringView("Project"));
     }
 
     static QPair<int, QString> convertToPair(QObject *object)
@@ -433,9 +433,9 @@ private slots:
         query.setConvertFunction(convertToPair);
         query.setPredicateFunction([&afterReset] (QObject *object) {
             if (afterReset)
-                return object->objectName().startsWith(QLatin1String("Item"));
+                return object->objectName().startsWith(QLatin1StringView("Item"));
             else
-                return object->objectName().startsWith(QLatin1String("Project"));
+                return object->objectName().startsWith(QLatin1StringView("Project"));
         });
         query.setCompareFunction(compareObjectIds);
 
