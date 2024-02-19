@@ -22,6 +22,8 @@
 #include "akonadi/akonadiserializer.h"
 #include "akonadi/akonadistorageinterface.h"
 
+#include <QSignalSpy>
+
 using namespace mockitopp;
 using namespace mockitopp::matcher;
 using namespace Testlib;

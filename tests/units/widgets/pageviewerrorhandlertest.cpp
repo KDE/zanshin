@@ -13,6 +13,8 @@
 
 #include "testlib/fakejob.h"
 
+#include <QSignalSpy>
+
 class PageViewErrorHandlerTest : public QObject
 {
     Q_OBJECT

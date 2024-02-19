@@ -10,6 +10,8 @@
 
 #include "testlib/fakejob.h"
 
+#include <QSignalSpy>
+
 using namespace Utils;
 
 namespace

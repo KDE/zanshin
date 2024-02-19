@@ -7,6 +7,7 @@
 #include <testlib/qtest_zanshin.h>
 
 #include "domain/context.h"
+#include <QSignalSpy>
 
 using namespace Domain;
 

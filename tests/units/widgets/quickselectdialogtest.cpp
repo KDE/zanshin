@@ -9,7 +9,6 @@
 
 #include <QHeaderView>
 #include <QLabel>
-#include <QSignalSpy>
 #include <QStandardItem>
 #include <QStandardItemModel>
 #include <QTestEventList>

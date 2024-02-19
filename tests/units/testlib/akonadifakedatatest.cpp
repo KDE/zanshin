@@ -12,6 +12,8 @@
 
 #include <akonadiserializer.h>
 
+#include <QSignalSpy>
+
 namespace QTest {
 
 template<typename T>

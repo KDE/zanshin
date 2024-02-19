@@ -20,6 +20,8 @@
 
 #include "testlib/fakejob.h"
 
+#include <QSignalSpy>
+
 using namespace mockitopp;
 using namespace mockitopp::matcher;
 

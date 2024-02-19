@@ -19,6 +19,8 @@
 
 #include "testlib/fakejob.h"
 
+#include <QSignalSpy>
+
 Q_DECLARE_METATYPE(QModelIndex);
 
 using namespace mockitopp;

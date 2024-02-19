@@ -18,6 +18,8 @@
 #include "testlib/gentodo.h"
 #include "testlib/testhelpers.h"
 
+#include <QSignalSpy>
+
 using namespace Testlib;
 
 typedef std::function<Domain::QueryResult<Domain::DataSource::Ptr>::Ptr(Domain::DataSourceQueries*)> QueryFunction;

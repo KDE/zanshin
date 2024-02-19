@@ -8,6 +8,8 @@
 
 #include "domain/project.h"
 
+#include <QSignalSpy>
+
 using namespace Domain;
 
 class ProjectTest : public QObject

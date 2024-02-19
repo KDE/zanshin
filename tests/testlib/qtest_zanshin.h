@@ -7,7 +7,7 @@
 #ifndef QTEST_ZANSHIN_H
 #define QTEST_ZANSHIN_H
 
-#include <QtTest>
+#include <QTest>
 #include <QDebug>
 
 // We have our own test macro in order to:

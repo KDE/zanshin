@@ -12,6 +12,8 @@
 
 #include "akonadi/akonadistoragesettings.h"
 
+#include <QSignalSpy>
+
 using namespace Akonadi;
 
 Q_DECLARE_METATYPE(QSet<Akonadi::Collection::Id>)

@@ -13,6 +13,8 @@
 
 #include "testhelpers.h"
 
+#include <QSignalSpy>
+
 using namespace mockitopp;
 using namespace mockitopp::matcher;
 

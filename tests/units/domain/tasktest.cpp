@@ -10,6 +10,8 @@
 
 #include "utils/datetime.h"
 
+#include <QSignalSpy>
+
 using namespace Domain;
 
 class TaskTest : public QObject

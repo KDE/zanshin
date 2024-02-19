@@ -19,6 +19,8 @@
 #include "domain/taskrepository.h"
 #include "presentation/querytreemodel.h"
 
+#include <QSignalSpy>
+
 using namespace mockitopp;
 
 Q_DECLARE_METATYPE(QModelIndex)

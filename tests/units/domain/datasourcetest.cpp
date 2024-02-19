@@ -8,6 +8,8 @@
 
 #include "domain/datasource.h"
 
+#include <QSignalSpy>
+
 using namespace Domain;
 
 class DataSourceTest : public QObject
