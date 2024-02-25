@@ -2,13 +2,13 @@
 # Author: Artnay
 # Author: Lliehu
 # Lasse Liehu <lasse.liehu@gmail.com>, 2013, 2014, 2015, 2016, 2019.
-# Tommi Nieminen <translator@legisign.org>, 2015, 2018, 2019, 2021.
+# Tommi Nieminen <translator@legisign.org>, 2015, 2018, 2019, 2021, 2024.
 msgid ""
 msgstr ""
 "Project-Id-Version: zanshin\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2024-01-19 02:28+0000\n"
-"PO-Revision-Date: 2021-06-17 11:36+0300\n"
+"PO-Revision-Date: 2024-02-14 20:12+0200\n"
 "Last-Translator: Tommi Nieminen <translator@legisign.org>\n"
 "Language-Team: Finnish <kde-i18n-doc@kde.org>\n"
 "Language: fi\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-POT-Import-Date: 2012-12-01 22:27:31+0000\n"
-"X-Generator: Lokalize 20.04.2\n"
+"X-Generator: Lokalize 22.12.3\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #, kde-format
@@ -30,8 +30,7 @@ msgid "Your emails"
 msgstr "jiri.gronroos+kde@iki.fi,lasse.liehu@gmail.com,translator@legisign.org"
 
 #: src/akonadi/akonadiconfigdialog.cpp:35
-#, fuzzy, kde-format
-#| msgid "Configure"
+#, kde-format
 msgctxt "@title:window"
 msgid "Configure"
 msgstr "Asetukset"
@@ -322,8 +321,7 @@ msgid "Go to Page..."
 msgstr "Siirry sivulle…"
 
 #: src/widgets/availablepagesview.cpp:240
-#, fuzzy, kde-format
-#| msgid "Add a context"
+#, kde-format
 msgctxt "@title:window"
 msgid "Add a context"
 msgstr "Lisää konteksti"
@@ -550,8 +548,7 @@ msgid "Delete Tasks"
 msgstr "Poista tehtävät"
 
 #: src/widgets/quickselectdialog.cpp:30
-#, fuzzy, kde-format
-#| msgid "Quick Select Dialog"
+#, kde-format
 msgctxt "@title:window"
 msgid "Quick Select Dialog"
 msgstr "Pikavalintaikkuna"
@@ -567,8 +564,7 @@ msgid "Path: %1"
 msgstr "Sijainti: %1"
 
 #: src/widgets/runningtaskwidget.cpp:39
-#, fuzzy, kde-format
-#| msgid "Zanshin Running Task Banner"
+#, kde-format
 msgctxt "@title:window"
 msgid "Zanshin Running Task Banner"
 msgstr "Zanshin suorittamassa tehtäväpalkkia"
