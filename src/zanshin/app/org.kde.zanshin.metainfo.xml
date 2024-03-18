@@ -348,6 +348,7 @@
   </description>
   <url type="homepage">https://apps.kde.org/zanshin</url>
   <url type="bugtracker">https://bugs.kde.org/enter_bug.cgi?format=guided&amp;product=zanshin</url>
+  <url type="vcs-browser">https://invent.kde.org/pim/zanshin</url>
   <screenshots>
     <screenshot type="default">
       <caption>Zanshin main window</caption>
