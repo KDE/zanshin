@@ -58,9 +58,9 @@ private slots:
         Given(c.I_display_the_page("Inbox"));
         And(c.there_is_an_item_in_the_central_list("Buy cheese"));
         When(c.I_open_the_item_in_the_editor());
-        And(c.I_change_the_editor_field("start date", "2014-06-20"));
+        And(c.I_change_the_editor_field("start date", QDate(2014, 6, 20)));
         And(c.I_open_the_item_in_the_editor_again());
-        Then(c.the_editor_shows_the_field("start date", "2014-06-20"));
+        Then(c.the_editor_shows_the_field("start date", QDate(2014, 6, 20)));
     }
 
     void Editing_a_task_due_date()
@@ -69,9 +69,9 @@ private slots:
         Given(c.I_display_the_page("Inbox"));
         And(c.there_is_an_item_in_the_central_list("Buy cheese"));
         When(c.I_open_the_item_in_the_editor());
-        And(c.I_change_the_editor_field("due date", "2014-07-20"));
+        And(c.I_change_the_editor_field("due date", QDate(2014, 7, 20)));
         And(c.I_open_the_item_in_the_editor_again());
-        Then(c.the_editor_shows_the_field("due date", "2014-07-20"));
+        Then(c.the_editor_shows_the_field("due date", QDate(2014, 7, 20)));
     }
 
     void Editing_a_task_in_the_central_list_of_a_context_page()
