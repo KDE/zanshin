@@ -14,7 +14,7 @@ MACRO(ZANSHIN_AKONADI_AUTO_TESTS)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${KDE4_ENABLE_EXCEPTIONS}")
     target_link_libraries(${_prefixed_testname} Qt::Test akonadi domain utils)
 
-    set(_location "${CMAKE_CURRENT_BINARY_DIR}/${_prefixed_testname}")
+    set(_location "${CMAKE_BINARY_DIR}/bin/${_prefixed_testname}")
     if (WIN32)
       set(_executable "${_location}.exe")
     else (WIN32)

@@ -16,7 +16,7 @@ echo
 # It wasn't necessary until the big code style change in akonadiserver
 # Not so innocuous heh ;-)
 KNUT_RESOURCE="org.freedesktop.Akonadi.Resource.akonadi_knut_resource_0.$AKONADI_INSTANCE"
-qdbus $KNUT_RESOURCE / org.freedesktop.Akonadi.Resource.synchronize
+qdbus6 $KNUT_RESOURCE / org.freedesktop.Akonadi.Resource.synchronize
 
 cd "@AKONADITEST_CWD@"
 "@zanshin-testcommand@" 2>&1
