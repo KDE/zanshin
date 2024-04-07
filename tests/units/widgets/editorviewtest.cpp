@@ -288,15 +288,20 @@ private slots:
         QVERIFY(QTest::qWaitForWindowExposed(&editor));
         editor.activateWindow();
         textEdit->setFocus();
+        QTest::qWait(50);
         model.setTitle("New title");
         model.setText("New text");
         startDateEdit->setFocus();
+        QTest::qWait(50);
         model.setStartDate(QDate::currentDate().addDays(1));
         dueDateEdit->setFocus();
+        QTest::qWait(50);
         model.setDueDate(QDate::currentDate().addDays(3));
         recurrenceCombo->setFocus();
+        QTest::qWait(50);
         model.setRecurrence(Domain::Task::RecursDaily);
         doneButton->setFocus();
+        QTest::qWait(50);
         model.setDone(false);
 
         // THEN (nothing changed)

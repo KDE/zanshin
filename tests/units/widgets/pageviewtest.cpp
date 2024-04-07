@@ -267,6 +267,7 @@ private slots:
         QVERIFY(QTest::qWaitForWindowExposed(&page));
 
         centralView->setFocus();
+        QTest::qWait(50);
         QVERIFY(centralView->hasFocus());
         QVERIFY(!quickAddEdit->hasFocus());
         QVERIFY(!filter->isVisibleTo(&page));
@@ -326,6 +327,7 @@ private slots:
         QVERIFY(QTest::qWaitForWindowExposed(&page));
 
         centralView->setFocus();
+        QTest::qWait(50);
         QVERIFY(centralView->hasFocus());
         QVERIFY(!filter->isVisibleTo(&page));
         QVERIFY(!filterEdit->hasFocus());
