@@ -637,6 +637,7 @@ private slots:
         page.show();
         page.activateWindow();
         QVERIFY(QTest::qWaitForWindowExposed(&page));
+        QTest::qWait(50);
 
         // WHEN
         QTest::keyPress(centralView, Qt::Key_Delete);
@@ -664,6 +665,7 @@ private slots:
         page.show();
         page.activateWindow();
         QVERIFY(QTest::qWaitForWindowExposed(&page));
+        QTest::qWait(50);
 
         // WHEN
         QTest::keyPress(centralView, Qt::Key_Delete);
@@ -696,6 +698,7 @@ private slots:
         page.show();
         page.activateWindow();
         QVERIFY(QTest::qWaitForWindowExposed(&page));
+        QTest::qWait(50);
 
         // WHEN
         QTest::keyPress(centralView, Qt::Key_Delete);
@@ -735,6 +738,7 @@ private slots:
         page.show();
         page.activateWindow();
         QVERIFY(QTest::qWaitForWindowExposed(&page));
+        QTest::qWait(50);
 
         // WHEN
         QTest::keyPress(centralView, Qt::Key_Delete);
@@ -768,6 +772,7 @@ private slots:
         page.show();
         page.activateWindow();
         QVERIFY(QTest::qWaitForWindowExposed(&page));
+        QTest::qWait(50);
 
         // WHEN
         QTest::keyPress(centralView, Qt::Key_Delete);
