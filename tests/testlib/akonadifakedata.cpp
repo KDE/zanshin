@@ -102,7 +102,9 @@ AkonadiFakeData &AkonadiFakeData::operator=(const AkonadiFakeData &other)
 
 Akonadi::Collection::List AkonadiFakeData::collections() const
 {
-    return m_collections.values().toVector();
+    auto result = m_collections.values();
+    std::sort(result.begin(), result.end());
+    return result;
 }
 
 Akonadi::Collection::List AkonadiFakeData::childCollections(Akonadi::Collection::Id parentId) const
@@ -208,7 +210,9 @@ QStringList AkonadiFakeData::contextsUids() const
 
 Akonadi::Item::List AkonadiFakeData::contexts() const
 {
-    return m_contexts.values().toVector();
+    auto result = m_contexts.values();
+    std::sort(result.begin(), result.end());
+    return result;
 }
 
 Akonadi::Item AkonadiFakeData::contextItem(const QString &uid) const
@@ -257,7 +261,9 @@ void AkonadiFakeData::removeContext(const Akonadi::Item &contextItem)
 
 Akonadi::Item::List AkonadiFakeData::items() const
 {
-    return m_items.values().toVector();
+    auto result = m_items.values();
+    std::sort(result.begin(), result.end());
+    return result;
 }
 
 Akonadi::Item::List AkonadiFakeData::childItems(Akonadi::Collection::Id parentId) const

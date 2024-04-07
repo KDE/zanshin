@@ -66,10 +66,10 @@ private slots:
         QCOMPARE(children.at(4).remoteId(), QStringLiteral("{28ef9f03-4ebc-4e33-970f-f379775894f9}"));
 
         const auto firstContext = data.contexts().at(0);
-        QCOMPARE(firstContext.remoteId(), "rid-online-context");
+        QCOMPARE(firstContext.remoteId(), "rid-errands-context");
         const auto contextAsTodo = firstContext.payload<KCalendarCore::Todo::Ptr>();
-        QCOMPARE(contextAsTodo->uid(), "online-context");
-        QCOMPARE(contextAsTodo->summary(), "Online");
+        QCOMPARE(contextAsTodo->uid(), "errands-context");
+        QCOMPARE(contextAsTodo->summary(), "Errands");
         QCOMPARE(contextAsTodo->customProperty(Serializer::customPropertyAppName(), Serializer::customPropertyIsContext()), "1");
     }
 };
