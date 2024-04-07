@@ -264,7 +264,7 @@ private slots:
         QVERIFY(filterEdit);
         page.show();
         page.activateWindow();
-        QVERIFY(QTest::qWaitForWindowActive(&page));
+        QVERIFY(QTest::qWaitForWindowExposed(&page));
 
         centralView->setFocus();
         QVERIFY(centralView->hasFocus());
@@ -323,7 +323,7 @@ private slots:
         QVERIFY(filterEdit);
         page.show();
         page.activateWindow();
-        QVERIFY(QTest::qWaitForWindowActive(&page));
+        QVERIFY(QTest::qWaitForWindowExposed(&page));
 
         centralView->setFocus();
         QVERIFY(centralView->hasFocus());
@@ -634,7 +634,7 @@ private slots:
         // Needed for shortcuts to work
         page.show();
         page.activateWindow();
-        QVERIFY(QTest::qWaitForWindowActive(&page));
+        QVERIFY(QTest::qWaitForWindowExposed(&page));
 
         // WHEN
         QTest::keyPress(centralView, Qt::Key_Delete);
@@ -661,7 +661,7 @@ private slots:
         // Needed for shortcuts to work
         page.show();
         page.activateWindow();
-        QVERIFY(QTest::qWaitForWindowActive(&page));
+        QVERIFY(QTest::qWaitForWindowExposed(&page));
 
         // WHEN
         QTest::keyPress(centralView, Qt::Key_Delete);
@@ -693,7 +693,7 @@ private slots:
         // Needed for shortcuts to work
         page.show();
         page.activateWindow();
-        QVERIFY(QTest::qWaitForWindowActive(&page));
+        QVERIFY(QTest::qWaitForWindowExposed(&page));
 
         // WHEN
         QTest::keyPress(centralView, Qt::Key_Delete);
@@ -732,7 +732,7 @@ private slots:
         // Needed for shortcuts to work
         page.show();
         page.activateWindow();
-        QVERIFY(QTest::qWaitForWindowActive(&page));
+        QVERIFY(QTest::qWaitForWindowExposed(&page));
 
         // WHEN
         QTest::keyPress(centralView, Qt::Key_Delete);
@@ -765,7 +765,7 @@ private slots:
         // Needed for shortcuts to work
         page.show();
         page.activateWindow();
-        QVERIFY(QTest::qWaitForWindowActive(&page));
+        QVERIFY(QTest::qWaitForWindowExposed(&page));
 
         // WHEN
         QTest::keyPress(centralView, Qt::Key_Delete);
