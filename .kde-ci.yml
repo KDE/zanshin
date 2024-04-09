@@ -17,4 +17,5 @@ Options:
   ctest-arguments: '--repeat until-pass:3'
   use-ccache: True
   require-passing-tests-on: [Linux']
+  gcovr-arguments: '--filter src/'
 
