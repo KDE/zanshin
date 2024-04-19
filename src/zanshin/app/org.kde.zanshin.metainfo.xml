@@ -20,6 +20,7 @@
   <name xml:lang="fi">Zanshin</name>
   <name xml:lang="fr">Zanshin</name>
   <name xml:lang="gl">Zanshin</name>
+  <name xml:lang="he">Zanshin</name>
   <name xml:lang="hu">Zanshin</name>
   <name xml:lang="ia">Zanshin</name>
   <name xml:lang="id">Zanshin</name>
@@ -57,6 +58,7 @@
   <summary xml:lang="fi">Tehtävänhallintasovellus</summary>
   <summary xml:lang="fr">Application de gestion des tâches à faire</summary>
   <summary xml:lang="gl">Aplicación de xestión de tarefas.</summary>
+  <summary xml:lang="he">יישום לניהול מטלות</summary>
   <summary xml:lang="hu">Tennivaló-kezelő alkalmazás</summary>
   <summary xml:lang="ia">Application per gerer agenda (actiones de facer)</summary>
   <summary xml:lang="id">Aplikasi Pengelolaan Hal Melakukan</summary>
@@ -132,6 +134,7 @@
     <p subtitle="true" xml:lang="fi">Kokoa</p>
     <p subtitle="true" xml:lang="fr">Collecter</p>
     <p subtitle="true" xml:lang="gl">Apunta.</p>
+    <p subtitle="true" xml:lang="he">איסוף</p>
     <p subtitle="true" xml:lang="hu">Gyűjtés</p>
     <p subtitle="true" xml:lang="ia">Collige</p>
     <p subtitle="true" xml:lang="it">Raccogli</p>
@@ -189,6 +192,7 @@
     <p subtitle="true" xml:lang="fi">Järjestä</p>
     <p subtitle="true" xml:lang="fr">Organiser</p>
     <p subtitle="true" xml:lang="gl">Organiza.</p>
+    <p subtitle="true" xml:lang="he">סידור</p>
     <p subtitle="true" xml:lang="hu">Szervezés</p>
     <p subtitle="true" xml:lang="ia">Organisa</p>
     <p subtitle="true" xml:lang="it">Organizza</p>
@@ -246,6 +250,7 @@
     <p subtitle="true" xml:lang="fi">Optimoi</p>
     <p subtitle="true" xml:lang="fr">Optimiser</p>
     <p subtitle="true" xml:lang="gl">Optimiza.</p>
+    <p subtitle="true" xml:lang="he">מיטוב</p>
     <p subtitle="true" xml:lang="hu">Optimalizálás</p>
     <p subtitle="true" xml:lang="ia">Optimisa</p>
     <p subtitle="true" xml:lang="it">Ottimizza</p>
@@ -303,6 +308,7 @@
     <p subtitle="true" xml:lang="fi">Eheytä</p>
     <p subtitle="true" xml:lang="fr">Intégrer</p>
     <p subtitle="true" xml:lang="gl">Integra.</p>
+    <p subtitle="true" xml:lang="he">שילוב</p>
     <p subtitle="true" xml:lang="hu">Integrálás</p>
     <p subtitle="true" xml:lang="ia">Integrar</p>
     <p subtitle="true" xml:lang="it">Integra</p>
@@ -366,6 +372,7 @@
       <caption xml:lang="fi">Zanshinin pääikkuna</caption>
       <caption xml:lang="fr">Fenêtre principale de Zanshin</caption>
       <caption xml:lang="gl">Xanela principal de Zanshin.</caption>
+      <caption xml:lang="he">החלון הראשי של Zanshin</caption>
       <caption xml:lang="hu">A Zanshin főablaka</caption>
       <caption xml:lang="ia">Fenestra principal de Zanshin</caption>
       <caption xml:lang="id">Jendela utama Zanshin</caption>
