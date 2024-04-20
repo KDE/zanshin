@@ -1,0 +1,646 @@
+# Copyright (C) 2024 This file is copyright:
+# This file is distributed under the same license as the zanshin package.
+#
+# SPDX-FileCopyrightText: 2024 Yaron Shahrabani <sh.yaron@gmail.com>
+msgid ""
+msgstr ""
+"Project-Id-Version: zanshin\n"
+"Report-Msgid-Bugs-To: https://bugs.kde.org\n"
+"POT-Creation-Date: 2024-01-19 00:38+0000\n"
+"PO-Revision-Date: 2024-04-19 09:37+0300\n"
+"Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
+"Language-Team: צוות התרגום של KDE ישראל\n"
+"Language: he\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Lokalize 23.08.5\n"
+
+#, kde-format
+msgctxt "NAME OF TRANSLATORS"
+msgid "Your names"
+msgstr "צוות התרגום של KDE ישראל"
+
+#, kde-format
+msgctxt "EMAIL OF TRANSLATORS"
+msgid "Your emails"
+msgstr "kde-l10n-he@kde.org"
+
+#: src/akonadi/akonadiconfigdialog.cpp:35
+#, kde-format
+msgctxt "@title:window"
+msgid "Configure"
+msgstr "הגדרה"
+
+#: src/akonadi/akonadiconfigdialog.cpp:39
+#, kde-format
+msgid ""
+"Please select or create a resource which will be used by the application to "
+"store and query its TODOs."
+msgstr "נא לבחור או ליצור משאב בו ישתמש היישום לאחסן ולתשאל את המטלות שלו."
+
+#: src/akonadi/akonadiconfigdialog.cpp:49
+#, kde-format
+msgid "Add resource"
+msgstr "הוספת משאב"
+
+#: src/akonadi/akonadiconfigdialog.cpp:56
+#, kde-format
+msgid "Remove resource"
+msgstr "הסרת משאב"
+
+#: src/akonadi/akonadiconfigdialog.cpp:63
+#, kde-format
+msgid "Configure resource..."
+msgstr "הגדרת משאב…"
+
+#: src/akonadi/akonadiconfigdialog.cpp:111
+#, kde-format
+msgid "Multiple Agent Deletion"
+msgstr "מחיקת מספר סוכנים"
+
+#: src/akonadi/akonadiconfigdialog.cpp:112
+#, kde-format
+msgid "Do you really want to delete the selected agent instances?"
+msgstr "למחוק את מופעי הסוכנים הנבחרים?"
+
+#: src/akonadi/akonaditaskrepository.cpp:50
+#, kde-format
+msgid "Could not find a collection to store the task into!"
+msgstr "לא ניתן למצוא אוסף לאחסון המשימה!"
+
+#: src/akonadi/akonaditaskrepository.cpp:197
+#, kde-format
+msgid "Could not associate '%1', it is an ancestor of '%2'"
+msgstr "לא ניתן לשייך את ‚%1’, זה צאצא של ‚%2’"
+
+#: src/presentation/alltaskspagemodel.cpp:35
+#, kde-format
+msgid "Cannot add task %1"
+msgstr "לא ניתן להוסיף את המשימה %1"
+
+#: src/presentation/alltaskspagemodel.cpp:46
+#, kde-format
+msgid "Cannot remove task %1"
+msgstr "לא ניתן להסיר את המשימה %1"
+
+#: src/presentation/alltaskspagemodel.cpp:56
+#: src/presentation/contextpagemodel.cpp:70
+#: src/presentation/inboxpagemodel.cpp:55
+#: src/presentation/projectpagemodel.cpp:67
+#: src/presentation/workdaypagemodel.cpp:61
+#, kde-format
+msgid "Cannot promote task %1 to be a project"
+msgstr "לא ניתן לקדם את המשימה %1 להיות מיזם"
+
+#: src/presentation/alltaskspagemodel.cpp:97
+#: src/presentation/editormodel.cpp:389
+#, kde-format
+msgid "Cannot modify task %1"
+msgstr "לא ניתן לערוך את המשימה %1"
+
+#: src/presentation/alltaskspagemodel.cpp:122
+#: src/presentation/contextpagemodel.cpp:140
+#: src/presentation/inboxpagemodel.cpp:111
+#: src/presentation/workdaypagemodel.cpp:117
+#, kde-format
+msgid "Cannot move task %1 as sub-task of %2"
+msgstr "לא ניתן להעביר את המשימה %1 להיות תת־משימה של %2"
+
+#: src/presentation/alltaskspagemodel.cpp:125
+#: src/presentation/inboxpagemodel.cpp:114
+#: src/presentation/workdaypagemodel.cpp:125
+#, kde-format
+msgid "Cannot deparent task %1 from its parent"
+msgstr "לא ניתן לנשל את המשימה %1 מההורה שלה"
+
+#: src/presentation/availablepagesmodel.cpp:111
+#, kde-format
+msgid "Cannot add project %1 in dataSource %2"
+msgstr "לא ניתן להוסיף את המיזם %1 במקור הנתונים %2"
+
+#: src/presentation/availablepagesmodel.cpp:119
+#, kde-format
+msgid "Cannot add context %1"
+msgstr "לא ניתן להוסיף את ההקשר %1"
+
+#: src/presentation/availablepagesmodel.cpp:127
+#, kde-format
+msgid "Cannot remove project %1"
+msgstr "לא ניתן להסיר את המיזם %1"
+
+#: src/presentation/availablepagesmodel.cpp:130
+#, kde-format
+msgid "Cannot remove context %1"
+msgstr "לא ניתן להסיר את ההקשר %1"
+
+#: src/presentation/availablepagesmodel.cpp:139
+#: src/widgets/itemdelegate.cpp:143
+#, kde-format
+msgid "Inbox"
+msgstr "דואר נכנס"
+
+#: src/presentation/availablepagesmodel.cpp:141
+#, kde-format
+msgid "Workday"
+msgstr "יום עבודה"
+
+#: src/presentation/availablepagesmodel.cpp:143
+#, kde-format
+msgid "Projects"
+msgstr "מיזמים"
+
+#: src/presentation/availablepagesmodel.cpp:145
+#, kde-format
+msgid "Contexts"
+msgstr "הקשרים"
+
+#: src/presentation/availablepagesmodel.cpp:147
+#, kde-format
+msgid "All Tasks"
+msgstr "כל המשימות"
+
+#: src/presentation/availablepagesmodel.cpp:246
+#, kde-format
+msgid "Cannot modify project %1"
+msgstr "לא ניתן לערוך את המיזם %1"
+
+#: src/presentation/availablepagesmodel.cpp:251
+#, kde-format
+msgid "Cannot modify context %1"
+msgstr "לא ניתן לערוך את ההקשר %1"
+
+#: src/presentation/availablepagesmodel.cpp:270
+#, kde-format
+msgid "Cannot add %1 to project %2"
+msgstr "לא ניתן להוסיף את %1 למיזם %2"
+
+#: src/presentation/availablepagesmodel.cpp:276
+#, kde-format
+msgid "Cannot add %1 to context %2"
+msgstr "לא ניתן להוסיף את %1 להקשר %2"
+
+#: src/presentation/availablepagesmodel.cpp:282
+#, kde-format
+msgid "Cannot move %1 to Inbox"
+msgstr "לא ניתן להעביר את %1 לדואר הנכנס"
+
+#: src/presentation/availablepagesmodel.cpp:286
+#, kde-format
+msgid "Cannot move task %1 to Inbox"
+msgstr "לא ניתן להעביר את %1 לדואר הנכנס"
+
+#: src/presentation/availablepagesmodel.cpp:295
+#, kde-format
+msgid "Cannot update task %1 to Workday"
+msgstr "לא ניתן לעדכן את המשימה %1 ליום העבודה"
+
+#: src/presentation/availablesourcesmodel.cpp:97
+#, kde-format
+msgid "Cannot modify source %1"
+msgstr "לא ניתן לערוך את המשאב %1"
+
+#: src/presentation/contextpagemodel.cpp:50
+#, kde-format
+msgid "Cannot add task %1 in context %2"
+msgstr "לא ניתן להוסיף את המשימה %1 בהקשר %2"
+
+#: src/presentation/contextpagemodel.cpp:61
+#, kde-format
+msgid "Cannot remove task %1 from context %2"
+msgstr "לא ניתן להסיר את המשימה %1 מההקשר %2"
+
+#: src/presentation/contextpagemodel.cpp:111
+#, kde-format
+msgid "Cannot modify task %1 in context %2"
+msgstr "לא ניתן לשנות את המשימה %1 בהקשר %2"
+
+#: src/presentation/contextpagemodel.cpp:143
+#, kde-format
+msgid "Cannot dissociate task %1 from its parent"
+msgstr "לא ניתן לנתק את המשימה %1 מההורה שלה"
+
+#: src/presentation/inboxpagemodel.cpp:35
+#, kde-format
+msgid "Cannot add task %1 in Inbox"
+msgstr "לא ניתן להוסיף את המשימה %1 לדואר הנכנס"
+
+#: src/presentation/inboxpagemodel.cpp:46
+#, kde-format
+msgid "Cannot remove task %1 from Inbox"
+msgstr "לא ניתן להסיר את המשימה %1 מהדואר הנכנס"
+
+#: src/presentation/inboxpagemodel.cpp:96
+#, kde-format
+msgid "Cannot modify task %1 in Inbox"
+msgstr "לא ניתן לערוך את המשימה %1 בדואר הנכנס"
+
+#: src/presentation/projectpagemodel.cpp:47
+#, kde-format
+msgid "Cannot add task %1 in project %2"
+msgstr "לא ניתן להוסיף את המשימה %1 במיזם %2"
+
+#: src/presentation/projectpagemodel.cpp:58
+#, kde-format
+msgid "Cannot remove task %1 from project %2"
+msgstr "לא ניתן להסיר את המשימה %1 מהמיזם %2"
+
+#: src/presentation/projectpagemodel.cpp:104
+#, kde-format
+msgid "Cannot modify task %1 in project %2"
+msgstr "לא ניתן לערוך את המשימה %1 במיזם %2"
+
+#: src/presentation/projectpagemodel.cpp:130
+#, kde-format
+msgid "Cannot move task %1 as a sub-task of %2"
+msgstr "לא ניתן להעביר את המשימה %1 להיות תת־משימה של %2"
+
+#: src/presentation/runningtaskmodel.cpp:46
+#, kde-format
+msgid "Cannot update task %1 to 'not running'"
+msgstr "לא ניתן לעדכן את המשימה %1 כך שתהיה ‚לא פעילה’"
+
+#: src/presentation/runningtaskmodel.cpp:54
+#, kde-format
+msgid "Cannot update task %1 to 'running'"
+msgstr "לא ניתן לעדכן את המשימה %1 כך שתהיה ‚פעילה’"
+
+#: src/presentation/workdaypagemodel.cpp:40
+#, kde-format
+msgid "Cannot add task %1 in Workday"
+msgstr "לא ניתן להוסיף את המשימה %1 ביום העבודה"
+
+#: src/presentation/workdaypagemodel.cpp:51
+#, kde-format
+msgid "Cannot remove task %1 from Workday"
+msgstr "לא ניתן להסיר את המשימה %1 מיום העבודה"
+
+#: src/presentation/workdaypagemodel.cpp:102
+#, kde-format
+msgid "Cannot modify task %1 in Workday"
+msgstr "לא ניתן לערוך את המשימה %1 ביום העבודה"
+
+#: src/widgets/applicationcomponents.cpp:48
+#, kde-format
+msgid "Move Task"
+msgstr "העברת משימה"
+
+#: src/widgets/availablepagesview.cpp:50
+#, kde-format
+msgid "New Project"
+msgstr "מיזם חדש"
+
+#: src/widgets/availablepagesview.cpp:56
+#, kde-format
+msgid "New Context"
+msgstr "הקשר חדש"
+
+#: src/widgets/availablepagesview.cpp:62
+#, kde-format
+msgid "Remove Page"
+msgstr "הסרת עמוד"
+
+#: src/widgets/availablepagesview.cpp:91
+#, kde-format
+msgid "Previous Page"
+msgstr "העמוד הקודם"
+
+#: src/widgets/availablepagesview.cpp:98
+#, kde-format
+msgid "Next Page"
+msgstr "העמוד הבא"
+
+#: src/widgets/availablepagesview.cpp:105
+#, kde-format
+msgid "Go to Page..."
+msgstr "מעבר לעמוד..."
+
+#: src/widgets/availablepagesview.cpp:240
+#, kde-format
+msgctxt "@title:window"
+msgid "Add a context"
+msgstr "הוספת הקשר"
+
+#: src/widgets/availablepagesview.cpp:265
+#, kde-format
+msgid "Delete Project"
+msgstr "מחיקת מיזם"
+
+#: src/widgets/availablepagesview.cpp:266
+#, kde-format
+msgid "Do you really want to delete the project '%1', with all its actions?"
+msgstr "למחוק את המיזם ‚%1’ על כל פעולותיו?"
+
+#: src/widgets/availablepagesview.cpp:268
+#, kde-format
+msgid "Delete Context"
+msgstr "מחיקת הקשר"
+
+#: src/widgets/availablepagesview.cpp:269
+#, kde-format
+msgid "Do you really want to delete the context '%1'?"
+msgstr "למחוק את ההקשר ‚%1’?"
+
+#: src/widgets/availablesourcesview.cpp:55
+#, kde-format
+msgid "Use as Default Source"
+msgstr "להשתמש כמקור ברירת מחדל"
+
+#: src/widgets/availablesourcesview.cpp:76
+#, kde-format
+msgid "Configure %1..."
+msgstr "הגדרת %1…"
+
+#: src/widgets/editorview.cpp:30
+#, kde-format
+msgid "Add Attachment"
+msgstr "הוספת קובץ מצורף"
+
+#: src/widgets/editorview.cpp:35
+#, kde-format
+msgid "Never"
+msgstr "אף פעם לא"
+
+#: src/widgets/editorview.cpp:36
+#, kde-format
+msgid "Daily"
+msgstr "יומי"
+
+#: src/widgets/editorview.cpp:37
+#, kde-format
+msgid "Weekly"
+msgstr "שבועי"
+
+#: src/widgets/editorview.cpp:38
+#, kde-format
+msgid "Monthly"
+msgstr "חודשי"
+
+#: src/widgets/editorview.cpp:39
+#, kde-format
+msgid "Yearly"
+msgstr "שנתי"
+
+#. i18n: ectx: property (windowTitle), widget (QWidget, EditorView)
+#. i18n: ectx: property (text), widget (QListView, attachmentList)
+#: src/widgets/editorview.ui:14 src/widgets/editorview.ui:184
+#: src/zanshin/app/main.cpp:85
+#, kde-format
+msgid "Editor"
+msgstr "עורך"
+
+#. i18n: ectx: property (text), widget (QLabel, dueDateLabel)
+#: src/widgets/editorview.ui:41
+#, kde-format
+msgid "D&ue Date "
+msgstr "ת&אריך יעד"
+
+#. i18n: ectx: property (text), widget (QCheckBox, doneButton)
+#: src/widgets/editorview.ui:62 src/widgets/runningtaskwidget.cpp:53
+#, kde-format
+msgid "Done"
+msgstr "הסתיים"
+
+#. i18n: ectx: property (toolTip), widget (QToolButton, addAttachmentButton)
+#: src/widgets/editorview.ui:86
+#, kde-format
+msgid "Add Attachment..."
+msgstr "הוספת קובץ מצורף…"
+
+#. i18n: ectx: property (toolTip), widget (QToolButton, removeAttachmentButton)
+#: src/widgets/editorview.ui:100
+#, kde-format
+msgid "Remove Attachment"
+msgstr "הסרת קובץ מצורף"
+
+#. i18n: ectx: property (text), widget (QPushButton, startTodayButton)
+#: src/widgets/editorview.ui:121
+#, kde-format
+msgid "Select for &Today"
+msgstr "בחירה ל&היום"
+
+#. i18n: ectx: property (text), widget (QLabel, recurrenceLabel)
+#: src/widgets/editorview.ui:130
+#, kde-format
+msgid "&Recurrence"
+msgstr "ח&זרתיות"
+
+#. i18n: ectx: property (text), widget (QLabel, startDateLabel)
+#: src/widgets/editorview.ui:146
+#, kde-format
+msgid "St&art Date"
+msgstr "תאריך ה&תחלה"
+
+#: src/widgets/filterwidget.cpp:29
+#, kde-format
+msgid "Sort by title"
+msgstr "סידור לפי כותרת"
+
+#: src/widgets/filterwidget.cpp:30
+#, kde-format
+msgid "Sort by date"
+msgstr "סידור לפי תאריך"
+
+#. i18n: ectx: property (placeholderText), widget (QLineEdit, filterEdit)
+#: src/widgets/filterwidget.ui:31 src/widgets/pageview.cpp:197
+#, kde-format
+msgid "Filter..."
+msgstr "סינון…"
+
+#. i18n: ectx: property (toolTip), widget (QToolButton, descendingButton)
+#: src/widgets/filterwidget.ui:65
+#, kde-format
+msgid "Sort in descending order"
+msgstr "סידור בסדר יורד"
+
+#. i18n: ectx: property (toolTip), widget (QToolButton, ascendingButton)
+#: src/widgets/filterwidget.ui:88
+#, kde-format
+msgid "Sort in ascending order"
+msgstr "סידור בסדר עולה"
+
+#: src/widgets/itemdelegate.cpp:141
+#, kde-format
+msgid "Project: %1"
+msgstr "מיזם: %1"
+
+#. i18n: ectx: property (windowTitle), widget (QDialog, NameAndDataSourceDialog)
+#: src/widgets/nameanddatasourcedialog.ui:14
+#, kde-format
+msgid "Add a project"
+msgstr "הוספת מיזם"
+
+#. i18n: ectx: property (text), widget (QLabel, nameLabel)
+#: src/widgets/nameanddatasourcedialog.ui:25
+#, kde-format
+msgid "Name"
+msgstr "שם"
+
+#. i18n: ectx: property (text), widget (QLabel, sourceLabel)
+#: src/widgets/nameanddatasourcedialog.ui:42
+#, kde-format
+msgid "Source"
+msgstr "מקור"
+
+#: src/widgets/pageview.cpp:155
+#, kde-format
+msgid "Type and press enter to add a task"
+msgstr "יש להקליד וללחוץ על Enter כדי להוסיף משימה"
+
+#: src/widgets/pageview.cpp:170
+#, kde-format
+msgid "New Task"
+msgstr "משימה חדשה"
+
+#: src/widgets/pageview.cpp:183
+#, kde-format
+msgid "Remove Task"
+msgstr "הסרת משימה"
+
+#: src/widgets/pageview.cpp:191
+#, kde-format
+msgid "Promote Task as Project"
+msgstr "קידום משימה למיזם"
+
+#: src/widgets/pageview.cpp:205
+#, kde-format
+msgid "Show done tasks"
+msgstr "הצגת משימות שהסתיימו"
+
+#: src/widgets/pageview.cpp:213
+#, kde-format
+msgid "Show future tasks"
+msgstr "הצגת משימות עתידיות"
+
+#: src/widgets/pageview.cpp:239
+#, kde-format
+msgid "Start Now"
+msgstr "להתחיל עכשיו"
+
+#: src/widgets/pageview.cpp:357
+#, kde-format
+msgid "Type and press enter to add an item"
+msgstr "יש להקליד וללחוץ על Enter כדי להוסיף פריט"
+
+#: src/widgets/pageview.cpp:383
+#, kde-format
+msgid "Do you really want to delete the selected items and their children?"
+msgstr "למחוק את הפריטים הנבחרים על צאצאיהם?"
+
+#: src/widgets/pageview.cpp:385
+#, kde-format
+msgid "Do you really want to delete the selected items?"
+msgstr "למחוק את הפריטים הנבחרים?"
+
+#: src/widgets/pageview.cpp:393
+#, kde-format
+msgid "Do you really want to delete the selected task and all its children?"
+msgstr "למחוק את המשימה הנבחרת על כל צאצאיה?"
+
+#: src/widgets/pageview.cpp:397
+#, kde-format
+msgid "Delete Tasks"
+msgstr "מחיקת משימות"
+
+#: src/widgets/quickselectdialog.cpp:30
+#, kde-format
+msgctxt "@title:window"
+msgid "Quick Select Dialog"
+msgstr "חלונית בחירה מהירה"
+
+#: src/widgets/quickselectdialog.cpp:32 src/widgets/quickselectdialog.cpp:70
+#, kde-format
+msgid "You can start typing to filter the list of available pages"
+msgstr "אפשר להתחיל להקליד כדי לסנן את רשימת העמודים הזמינים"
+
+#: src/widgets/quickselectdialog.cpp:72
+#, kde-format
+msgid "Path: %1"
+msgstr "נתיב: %1"
+
+#: src/widgets/runningtaskwidget.cpp:39
+#, kde-format
+msgctxt "@title:window"
+msgid "Zanshin Running Task Banner"
+msgstr "כרזת משימות פעילות של Zanshin"
+
+#: src/widgets/runningtaskwidget.cpp:49
+#, kde-format
+msgid "Stop"
+msgstr "עצירה"
+
+#: src/zanshin/app/aboutdata.cpp:14
+#, kde-format
+msgid "Zanshin Tasks"
+msgstr "משימות Zanshin"
+
+#: src/zanshin/app/aboutdata.cpp:15
+#, kde-format
+msgid ""
+"A Getting Things Done application which aims at getting your mind like water"
+msgstr "יישום תכל׳ס שמיועד לפנות לך את הראש מדאגות"
+
+#: src/zanshin/app/aboutdata.cpp:17
+#, kde-format
+msgid "Copyright 2008-2016, Kevin Ottens <ervin@kde.org>"
+msgstr "כל הזכויות שמורות 2008‏-2016, קווין אוטנס <ervin@kde.org>"
+
+#: src/zanshin/app/aboutdata.cpp:19
+#, kde-format
+msgid "Kevin Ottens"
+msgstr "קווין אוטנס"
+
+#: src/zanshin/app/aboutdata.cpp:20
+#, kde-format
+msgid "Lead Developer"
+msgstr "מפתח ראשי"
+
+#: src/zanshin/app/aboutdata.cpp:23
+#, kde-format
+msgid "Mario Bensi"
+msgstr "מריו בנסי"
+
+#: src/zanshin/app/aboutdata.cpp:24 src/zanshin/app/aboutdata.cpp:28
+#, kde-format
+msgid "Developer"
+msgstr "מפתח"
+
+#: src/zanshin/app/aboutdata.cpp:27
+#, kde-format
+msgid "Franck Arrecot"
+msgstr "פרנק ארקוט"
+
+#: src/zanshin/app/main.cpp:77
+#, kde-format
+msgid "Sources"
+msgstr "מקורות"
+
+#: src/zanshin/app/main.cpp:81
+#, kde-format
+msgid "Pages"
+msgstr "עמודים"
+
+#. i18n: ectx: Menu (go)
+#: src/zanshin/app/zanshinui.rc:15 src/zanshin/kontact/zanshin_part.rc:15
+#, kde-format
+msgid "&Go"
+msgstr "מ&עבר"
+
+#. i18n: ectx: Menu
+#: src/zanshin/app/zanshinui.rc:27
+#, kde-format
+msgid "&Panels"
+msgstr "&לוחות"
+
+#. i18n: ectx: ToolBar (mainToolBar)
+#: src/zanshin/app/zanshinui.rc:35 src/zanshin/kontact/zanshin_part.rc:27
+#, kde-format
+msgctxt "@title:menu"
+msgid "Main Toolbar"
+msgstr "סרגל כלים ראשי"
+
+#: src/zanshin/runner/zanshinrunner.cpp:56
+#, kde-format
+msgid "Add \"%1\" to your todo list"
+msgstr "הוספת „%1” לרשימות המטלות שלך"
