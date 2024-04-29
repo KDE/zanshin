@@ -38,7 +38,7 @@
         qputenv("KDE_DEBUG", "1"); \
         qunsetenv("LANG"); \
         qunsetenv("LANGUAGE"); \
-        qputenv("LC_ALL", "en_US"); \
+        qputenv("LC_ALL", "en_US.UTF-8"); \
         return true; \
     } \
     Q_CONSTRUCTOR_FUNCTION(_zanshin_testlib_internal_forceEnvironment) \
