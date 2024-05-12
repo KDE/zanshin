@@ -60,12 +60,12 @@ msgstr "Elimina el recurs"
 #: src/akonadi/akonadiconfigdialog.cpp:63
 #, kde-format
 msgid "Configure resource..."
-msgstr "Configura el recurs..."
+msgstr "Configura el recurs…"
 
 #: src/akonadi/akonadiconfigdialog.cpp:111
 #, kde-format
 msgid "Multiple Agent Deletion"
-msgstr "Supressió múltiple d'agents"
+msgstr "Suprimiu múltiples agents"
 
 #: src/akonadi/akonadiconfigdialog.cpp:112
 #, kde-format
@@ -321,7 +321,7 @@ msgstr "Pàgina següent"
 #: src/widgets/availablepagesview.cpp:105
 #, kde-format
 msgid "Go to Page..."
-msgstr "Ves fins a la pàgina..."
+msgstr "Ves fins a la pàgina…"
 
 #: src/widgets/availablepagesview.cpp:240
 #, kde-format
@@ -358,7 +358,7 @@ msgstr "Utilitza com a origen predeterminat"
 #: src/widgets/availablesourcesview.cpp:76
 #, kde-format
 msgid "Configure %1..."
-msgstr "Configura %1..."
+msgstr "Configura %1…"
 
 #: src/widgets/editorview.cpp:30
 #, kde-format
@@ -414,7 +414,7 @@ msgstr "Fet"
 #: src/widgets/editorview.ui:86
 #, kde-format
 msgid "Add Attachment..."
-msgstr "Afig un adjunt..."
+msgstr "Afig un adjunt…"
 
 #. i18n: ectx: property (toolTip), widget (QToolButton, removeAttachmentButton)
 #: src/widgets/editorview.ui:100
@@ -454,7 +454,7 @@ msgstr "Ordena per data"
 #: src/widgets/filterwidget.ui:31 src/widgets/pageview.cpp:197
 #, kde-format
 msgid "Filter..."
-msgstr "Filtre..."
+msgstr "Filtre…"
 
 #. i18n: ectx: property (toolTip), widget (QToolButton, descendingButton)
 #: src/widgets/filterwidget.ui:65
