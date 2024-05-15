@@ -16,15 +16,15 @@ KAboutData App::getAboutData()
                      KAboutLicense::GPL_V3,
                      i18n("Copyright 2008-2016, Kevin Ottens <ervin@kde.org>"));
 
-    about.addAuthor(i18n("Kevin Ottens"),
+    about.addAuthor(i18nc("@info:credit", "Kevin Ottens"),
                     i18n("Lead Developer"),
                     QStringLiteral("ervin@kde.org"));
 
-    about.addAuthor(i18n("Mario Bensi"),
+    about.addAuthor(i18nc("@info:credit", "Mario Bensi"),
                     i18n("Developer"),
                     QStringLiteral("nef@ipsquad.net"));
 
-    about.addAuthor(i18n("Franck Arrecot"),
+    about.addAuthor(i18nc("@info:credit", "Franck Arrecot"),
                     i18n("Developer"),
                     QStringLiteral("franck.arrecot@gmail.com"));
 
