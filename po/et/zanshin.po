@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-01-19 00:38+0000\n"
+"POT-Creation-Date: 2024-05-16 00:39+0000\n"
 "PO-Revision-Date: 2020-02-13 15:08+0200\n"
 "Last-Translator: Marek Laane <qiilaq69@gmail.com>\n"
 "Language-Team: Estonian <kde-et@lists.linux.ee>\n"
@@ -598,7 +598,9 @@ msgid "Copyright 2008-2016, Kevin Ottens <ervin@kde.org>"
 msgstr "Autoriõigus 2008-2016: Kevin Ottens <ervin@kde.org>"
 
 #: src/zanshin/app/aboutdata.cpp:19
-#, kde-format
+#, fuzzy, kde-format
+#| msgid "Kevin Ottens"
+msgctxt "@info:credit"
 msgid "Kevin Ottens"
 msgstr "Kevin Ottens"
 
@@ -608,7 +610,9 @@ msgid "Lead Developer"
 msgstr "Juhtiv arendaja"
 
 #: src/zanshin/app/aboutdata.cpp:23
-#, kde-format
+#, fuzzy, kde-format
+#| msgid "Mario Bensi"
+msgctxt "@info:credit"
 msgid "Mario Bensi"
 msgstr "Mario Bensi"
 
@@ -618,7 +622,9 @@ msgid "Developer"
 msgstr "Arendaja"
 
 #: src/zanshin/app/aboutdata.cpp:27
-#, kde-format
+#, fuzzy, kde-format
+#| msgid "Franck Arrecot"
+msgctxt "@info:credit"
 msgid "Franck Arrecot"
 msgstr "Franck Arrecot"
 

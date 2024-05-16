@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zanshin\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-01-19 00:38+0000\n"
+"POT-Creation-Date: 2024-05-16 00:39+0000\n"
 "PO-Revision-Date: 2011-06-16 17:24+0200\n"
 "Last-Translator: Manfred Wiese <m.j.wiese@web.de>\n"
 "Language-Team: Low Saxon <kde-i18n-nds@kde.org>\n"
@@ -640,6 +640,7 @@ msgstr "Copyright 2008-2010, Kevin Ottens <ervin@kde.org>"
 #: src/zanshin/app/aboutdata.cpp:19
 #, fuzzy, kde-format
 #| msgid "Kevin Ottens"
+msgctxt "@info:credit"
 msgid "Kevin Ottens"
 msgstr "Kevin Ottens"
 
@@ -652,6 +653,7 @@ msgstr "Hööft-Programmschriever"
 #: src/zanshin/app/aboutdata.cpp:23
 #, fuzzy, kde-format
 #| msgid "Mario Bensi"
+msgctxt "@info:credit"
 msgid "Mario Bensi"
 msgstr "Mario Bensi"
 
@@ -663,6 +665,7 @@ msgstr "Schriever"
 
 #: src/zanshin/app/aboutdata.cpp:27
 #, kde-format
+msgctxt "@info:credit"
 msgid "Franck Arrecot"
 msgstr ""
 

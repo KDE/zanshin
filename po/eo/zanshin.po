@@ -1,15 +1,15 @@
 # translation of zanshin.pot to esperanto
 # Copyright (C) 2016 Free Software Foundation, Inc.
 # This file is distributed under the same license as the zanshin package.
-# Oliver Kellogg <okellogg@users.sourceforge.net, 2023.
+# Oliver Kellogg <olivermkellogg@gmail.com, 2023.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: zanshin\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-01-19 00:38+0000\n"
+"POT-Creation-Date: 2024-05-16 00:39+0000\n"
 "PO-Revision-Date: 2023-10-02 09:09+0100\n"
-"Last-Translator: Oliver Kellogg <okellogg@users.sourceforge.net>\n"
+"Last-Translator: Oliver Kellogg <olivermkellogg@gmail.com>\n"
 "Language-Team: Esperanto <kde-i18n-eo@kde.org>\n"
 "Language: eo\n"
 "MIME-Version: 1.0\n"
@@ -26,7 +26,7 @@ msgstr "Oliver Kellogg"
 #, kde-format
 msgctxt "EMAIL OF TRANSLATORS"
 msgid "Your emails"
-msgstr "okellogg@users.sourceforge.net"
+msgstr "olivermkellogg@gmail.com"
 
 #: src/akonadi/akonadiconfigdialog.cpp:35
 #, kde-format
@@ -590,7 +590,9 @@ msgid "Copyright 2008-2016, Kevin Ottens <ervin@kde.org>"
 msgstr "Kopirajto 2008-2016, Kevin Ottens <ervin@kde.org>"
 
 #: src/zanshin/app/aboutdata.cpp:19
-#, kde-format
+#, fuzzy, kde-format
+#| msgid "Kevin Ottens"
+msgctxt "@info:credit"
 msgid "Kevin Ottens"
 msgstr "Kevin Ottens"
 
@@ -600,7 +602,9 @@ msgid "Lead Developer"
 msgstr "Ĉefa Programisto"
 
 #: src/zanshin/app/aboutdata.cpp:23
-#, kde-format
+#, fuzzy, kde-format
+#| msgid "Mario Bensi"
+msgctxt "@info:credit"
 msgid "Mario Bensi"
 msgstr "Mario Bensi"
 
@@ -610,7 +614,9 @@ msgid "Developer"
 msgstr "Ellaboranto"
 
 #: src/zanshin/app/aboutdata.cpp:27
-#, kde-format
+#, fuzzy, kde-format
+#| msgid "Franck Arrecot"
+msgctxt "@info:credit"
 msgid "Franck Arrecot"
 msgstr "Franck Arrecot"
 

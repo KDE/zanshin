@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zanshin\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-01-19 00:38+0000\n"
+"POT-Creation-Date: 2024-05-16 00:39+0000\n"
 "PO-Revision-Date: 2021-09-21 12:51+0630\n"
 "Last-Translator: ဇေယျာလွင် <lw1nzayar@yandex.com>\n"
 "Language-Team: Burmese <kde-i18n-doc@kde.org>\n"
@@ -594,7 +594,9 @@ msgid "Copyright 2008-2016, Kevin Ottens <ervin@kde.org>"
 msgstr "မူပိုင်ခွင့် ၂၀၀၈-၂၀၁၆၊ ကယ်ဗင်အောက်တန် <ervin@kde.org>"
 
 #: src/zanshin/app/aboutdata.cpp:19
-#, kde-format
+#, fuzzy, kde-format
+#| msgid "Kevin Ottens"
+msgctxt "@info:credit"
 msgid "Kevin Ottens"
 msgstr "ကယ်ဗင်အောက်တန်"
 
@@ -604,7 +606,9 @@ msgid "Lead Developer"
 msgstr "ပရိုဂရမ်မာခေါင်းဆောင်"
 
 #: src/zanshin/app/aboutdata.cpp:23
-#, kde-format
+#, fuzzy, kde-format
+#| msgid "Mario Bensi"
+msgctxt "@info:credit"
 msgid "Mario Bensi"
 msgstr "မာရီယိုဘန်ဆီ"
 
@@ -614,7 +618,9 @@ msgid "Developer"
 msgstr "ပရိုဂရမ်မာ"
 
 #: src/zanshin/app/aboutdata.cpp:27
-#, kde-format
+#, fuzzy, kde-format
+#| msgid "Franck Arrecot"
+msgctxt "@info:credit"
 msgid "Franck Arrecot"
 msgstr "ဖရန့်အာရီကော့"
 

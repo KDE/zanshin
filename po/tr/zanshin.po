@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zanshin\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-01-19 00:38+0000\n"
+"POT-Creation-Date: 2024-05-16 00:39+0000\n"
 "PO-Revision-Date: 2024-02-09 17:39+0300\n"
 "Last-Translator: Emir SARI <emir_sari@icloud.com>\n"
 "Language-Team: Turkish <kde-l10n-tr@kde.org>\n"
@@ -590,7 +590,9 @@ msgid "Copyright 2008-2016, Kevin Ottens <ervin@kde.org>"
 msgstr "Telif Hakkı 2008-2016, Kevin Ottens <ervin@kde.org>"
 
 #: src/zanshin/app/aboutdata.cpp:19
-#, kde-format
+#, fuzzy, kde-format
+#| msgid "Kevin Ottens"
+msgctxt "@info:credit"
 msgid "Kevin Ottens"
 msgstr "Kevin Ottens"
 
@@ -600,7 +602,9 @@ msgid "Lead Developer"
 msgstr "Ana Geliştirici"
 
 #: src/zanshin/app/aboutdata.cpp:23
-#, kde-format
+#, fuzzy, kde-format
+#| msgid "Mario Bensi"
+msgctxt "@info:credit"
 msgid "Mario Bensi"
 msgstr "Mario Bensi"
 
@@ -610,7 +614,9 @@ msgid "Developer"
 msgstr "Geliştirici"
 
 #: src/zanshin/app/aboutdata.cpp:27
-#, kde-format
+#, fuzzy, kde-format
+#| msgid "Franck Arrecot"
+msgctxt "@info:credit"
 msgid "Franck Arrecot"
 msgstr "Franck Arrecot"
 
