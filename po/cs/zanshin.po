@@ -2,21 +2,21 @@
 # This file is distributed under the same license as the PACKAGE package.
 # SPDX-FileCopyrightText: 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2019, 2023 Vít Pelčák <vit@pelcak.org>
 # Tomáš Chvátal <tomas.chvatal@gmail.com>, 2012.
-# Vit Pelcak <vit@pelcak.org>, 2021, 2023.
+# SPDX-FileCopyrightText: 2021, 2023, 2024 Vit Pelcak <vit@pelcak.org>
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2024-05-16 00:39+0000\n"
-"PO-Revision-Date: 2023-10-19 14:39+0200\n"
-"Last-Translator: Vit Pelcak <vit@pelcak.org>\n"
+"PO-Revision-Date: 2024-05-29 11:29+0200\n"
+"Last-Translator: Vit Pelcak <vpelcak@suse.cz>\n"
 "Language-Team: Czech <kde-i18n-doc@kde.org>\n"
 "Language: cs\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Lokalize 23.08.2\n"
+"X-Generator: Lokalize 24.02.2\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
 
 #, kde-format
@@ -606,7 +606,7 @@ msgstr "Hlavní vývojář"
 #, kde-format
 msgctxt "@info:credit"
 msgid "Mario Bensi"
-msgstr ""
+msgstr "Mario Bensi"
 
 #: src/zanshin/app/aboutdata.cpp:24 src/zanshin/app/aboutdata.cpp:28
 #, kde-format
@@ -617,7 +617,7 @@ msgstr "Vývojář"
 #, kde-format
 msgctxt "@info:credit"
 msgid "Franck Arrecot"
-msgstr ""
+msgstr "Franck Arrecot"
 
 #: src/zanshin/app/main.cpp:77
 #, kde-format
