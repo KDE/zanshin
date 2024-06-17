@@ -130,6 +130,7 @@ PageView::PageView(QWidget *parent)
     m_messageWidget->setCloseButtonVisible(true);
     m_messageWidget->setMessageType(KMessageWidget::Error);
     m_messageWidget->setWordWrap(true);
+    m_messageWidget->setPosition(KMessageWidget::Header);
     m_messageWidget->hide();
 
     m_filterWidget->setObjectName(QLatin1StringView("filterWidget"));
@@ -153,10 +154,12 @@ PageView::PageView(QWidget *parent)
 
     m_quickAddEdit->setObjectName(QLatin1StringView("quickAddEdit"));
     m_quickAddEdit->setPlaceholderText(i18n("Type and press enter to add a task"));
+    m_quickAddEdit->setProperty("_breeze_borders_sides", QVariant::fromValue(QFlags{Qt::TopEdge}));
     connect(m_quickAddEdit, &QLineEdit::returnPressed, this, &PageView::onReturnPressed);
 
     auto layout = new QVBoxLayout;
-    layout->setContentsMargins(0, 0, 0, 3);
+    layout->setContentsMargins({});
+    layout->setSpacing({});
     layout->addWidget(m_messageWidget);
     layout->addWidget(m_filterWidget);
     layout->addWidget(m_centralView);
