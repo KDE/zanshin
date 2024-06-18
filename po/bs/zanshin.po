@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: kde 49i410\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-05-16 00:39+0000\n"
+"POT-Creation-Date: 2024-06-18 00:40+0000\n"
 "PO-Revision-Date: 2015-02-22 15:24+0100\n"
 "Last-Translator: Samir Ribić <megaribi@epn.ba>\n"
 "Language-Team: Bosnian\n"
@@ -504,7 +504,7 @@ msgid "Sort by date"
 msgstr ""
 
 #. i18n: ectx: property (placeholderText), widget (QLineEdit, filterEdit)
-#: src/widgets/filterwidget.ui:31 src/widgets/pageview.cpp:197
+#: src/widgets/filterwidget.ui:31 src/widgets/pageview.cpp:200
 #, kde-format
 msgid "Filter..."
 msgstr ""
@@ -549,74 +549,74 @@ msgstr "Ime"
 msgid "Source"
 msgstr "Izvori"
 
-#: src/widgets/pageview.cpp:155
+#: src/widgets/pageview.cpp:156
 #, fuzzy, kde-format
 #| msgid "Type and press enter to add a note"
 msgid "Type and press enter to add a task"
 msgstr "Utipkaj i pritisni enter da dodaš novu bilješku"
 
-#: src/widgets/pageview.cpp:170
+#: src/widgets/pageview.cpp:173
 #, fuzzy, kde-format
 #| msgid "New Topic"
 msgid "New Task"
 msgstr "Nova tema"
 
-#: src/widgets/pageview.cpp:183
+#: src/widgets/pageview.cpp:186
 #, fuzzy, kde-format
 #| msgid "&Remove Host"
 msgid "Remove Task"
 msgstr "&Ukloni domaćina"
 
-#: src/widgets/pageview.cpp:191
+#: src/widgets/pageview.cpp:194
 #, fuzzy, kde-format
 #| msgid "Promote Action as Project"
 msgid "Promote Task as Project"
 msgstr "Unaprijedi aktivnost u projekat"
 
-#: src/widgets/pageview.cpp:205
+#: src/widgets/pageview.cpp:208
 #, kde-format
 msgid "Show done tasks"
 msgstr ""
 
-#: src/widgets/pageview.cpp:213
+#: src/widgets/pageview.cpp:216
 #, kde-format
 msgid "Show future tasks"
 msgstr ""
 
-#: src/widgets/pageview.cpp:239
+#: src/widgets/pageview.cpp:242
 #, fuzzy, kde-format
 #| msgid "Starts With"
 msgid "Start Now"
 msgstr "Počinje sa"
 
-#: src/widgets/pageview.cpp:357
+#: src/widgets/pageview.cpp:360
 #, fuzzy, kde-format
 #| msgid "Type and press enter to add a note"
 msgid "Type and press enter to add an item"
 msgstr "Utipkaj i pritisni enter da dodaš novu bilješku"
 
-#: src/widgets/pageview.cpp:383
+#: src/widgets/pageview.cpp:386
 #, fuzzy, kde-format
 #| msgid "Do you really want to delete the selected agent instance?"
 #| msgid_plural "Do you really want to delete these %1 agent instances?"
 msgid "Do you really want to delete the selected items and their children?"
 msgstr "Želite li zaista da obrišete %1 izabrani primjerak agenta?"
 
-#: src/widgets/pageview.cpp:385
+#: src/widgets/pageview.cpp:388
 #, fuzzy, kde-format
 #| msgid "Do you really want to delete the selected agent instance?"
 #| msgid_plural "Do you really want to delete these %1 agent instances?"
 msgid "Do you really want to delete the selected items?"
 msgstr "Želite li zaista da obrišete %1 izabrani primjerak agenta?"
 
-#: src/widgets/pageview.cpp:393
+#: src/widgets/pageview.cpp:396
 #, fuzzy, kde-format
 #| msgid "Do you really want to delete the selected agent instance?"
 #| msgid_plural "Do you really want to delete these %1 agent instances?"
 msgid "Do you really want to delete the selected task and all its children?"
 msgstr "Želite li zaista da obrišete %1 izabrani primjerak agenta?"
 
-#: src/widgets/pageview.cpp:397
+#: src/widgets/pageview.cpp:400
 #, kde-format
 msgid "Delete Tasks"
 msgstr ""

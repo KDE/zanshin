@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-05-16 00:39+0000\n"
+"POT-Creation-Date: 2024-06-18 00:40+0000\n"
 "PO-Revision-Date: 2024-05-16 09:32+0200\n"
 "Last-Translator: Freek de Kruijf <freekdekruijf@kde.nl>\n"
 "Language-Team: \n"
@@ -447,7 +447,7 @@ msgid "Sort by date"
 msgstr "Sorteer op datum"
 
 #. i18n: ectx: property (placeholderText), widget (QLineEdit, filterEdit)
-#: src/widgets/filterwidget.ui:31 src/widgets/pageview.cpp:197
+#: src/widgets/filterwidget.ui:31 src/widgets/pageview.cpp:200
 #, kde-format
 msgid "Filter..."
 msgstr "Filter..."
@@ -487,62 +487,62 @@ msgstr "Naam"
 msgid "Source"
 msgstr "Bron"
 
-#: src/widgets/pageview.cpp:155
+#: src/widgets/pageview.cpp:156
 #, kde-format
 msgid "Type and press enter to add a task"
 msgstr "Typ en druk op Return om een taak toe te voegen"
 
-#: src/widgets/pageview.cpp:170
+#: src/widgets/pageview.cpp:173
 #, kde-format
 msgid "New Task"
 msgstr "Nieuwe taak"
 
-#: src/widgets/pageview.cpp:183
+#: src/widgets/pageview.cpp:186
 #, kde-format
 msgid "Remove Task"
 msgstr "Taak verwijderen"
 
-#: src/widgets/pageview.cpp:191
+#: src/widgets/pageview.cpp:194
 #, kde-format
 msgid "Promote Task as Project"
 msgstr "Taak tot project promoveren"
 
-#: src/widgets/pageview.cpp:205
+#: src/widgets/pageview.cpp:208
 #, kde-format
 msgid "Show done tasks"
 msgstr "Voltooide taken tonen"
 
-#: src/widgets/pageview.cpp:213
+#: src/widgets/pageview.cpp:216
 #, kde-format
 msgid "Show future tasks"
 msgstr "Toekomstige taken tonen"
 
-#: src/widgets/pageview.cpp:239
+#: src/widgets/pageview.cpp:242
 #, kde-format
 msgid "Start Now"
 msgstr "Nu starten"
 
-#: src/widgets/pageview.cpp:357
+#: src/widgets/pageview.cpp:360
 #, kde-format
 msgid "Type and press enter to add an item"
 msgstr "Typ en druk op Return om een item in te voeren"
 
-#: src/widgets/pageview.cpp:383
+#: src/widgets/pageview.cpp:386
 #, kde-format
 msgid "Do you really want to delete the selected items and their children?"
 msgstr "Wilt u de geselecteerde items en hun afgeleiden verwijderen?"
 
-#: src/widgets/pageview.cpp:385
+#: src/widgets/pageview.cpp:388
 #, kde-format
 msgid "Do you really want to delete the selected items?"
 msgstr "Wilt u het geselecteerde item verwijderen?"
 
-#: src/widgets/pageview.cpp:393
+#: src/widgets/pageview.cpp:396
 #, kde-format
 msgid "Do you really want to delete the selected task and all its children?"
 msgstr "Wilt u de geselecteerde taak en alle zijn afgeleiden verwijderen?"
 
-#: src/widgets/pageview.cpp:397
+#: src/widgets/pageview.cpp:400
 #, kde-format
 msgid "Delete Tasks"
 msgstr "Taken verwijderen"

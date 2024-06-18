@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zanshin\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-05-16 00:39+0000\n"
+"POT-Creation-Date: 2024-06-18 00:40+0000\n"
 "PO-Revision-Date: 2022-04-07 18:16+0200\n"
 "Last-Translator: Roman Paholik <wizzardsk@gmail.com>\n"
 "Language-Team: Slovak <kde-sk@linux.sk>\n"
@@ -490,7 +490,7 @@ msgid "Sort by date"
 msgstr "Triediť podľa dátumu"
 
 #. i18n: ectx: property (placeholderText), widget (QLineEdit, filterEdit)
-#: src/widgets/filterwidget.ui:31 src/widgets/pageview.cpp:197
+#: src/widgets/filterwidget.ui:31 src/widgets/pageview.cpp:200
 #, fuzzy, kde-format
 msgid "Filter..."
 msgstr "Filtrovať..."
@@ -534,73 +534,73 @@ msgstr "Názov"
 msgid "Source"
 msgstr "Zdroj"
 
-#: src/widgets/pageview.cpp:155
+#: src/widgets/pageview.cpp:156
 #, fuzzy, kde-format
 #| msgid "Type and press enter to add a note"
 msgid "Type and press enter to add a task"
 msgstr "Píšte a stlačte enter na pridanie poznámky"
 
-#: src/widgets/pageview.cpp:170
+#: src/widgets/pageview.cpp:173
 #, kde-format
 msgid "New Task"
 msgstr "Nová úloha"
 
-#: src/widgets/pageview.cpp:183
+#: src/widgets/pageview.cpp:186
 #, fuzzy, kde-format
 #| msgid "&Remove Host"
 msgid "Remove Task"
 msgstr "Odstrániť hostiteľa"
 
-#: src/widgets/pageview.cpp:191
+#: src/widgets/pageview.cpp:194
 #, fuzzy, kde-format
 #| msgid "Promote Action as Project"
 msgid "Promote Task as Project"
 msgstr "Povýšiť akciu ako projekt"
 
-#: src/widgets/pageview.cpp:205
+#: src/widgets/pageview.cpp:208
 #, kde-format
 msgid "Show done tasks"
 msgstr ""
 
-#: src/widgets/pageview.cpp:213
+#: src/widgets/pageview.cpp:216
 #, kde-format
 msgid "Show future tasks"
 msgstr ""
 
-#: src/widgets/pageview.cpp:239
+#: src/widgets/pageview.cpp:242
 #, fuzzy, kde-format
 #| msgid "Starts With"
 msgid "Start Now"
 msgstr "Spustiť teraz!"
 
-#: src/widgets/pageview.cpp:357
+#: src/widgets/pageview.cpp:360
 #, fuzzy, kde-format
 #| msgid "Type and press enter to add a note"
 msgid "Type and press enter to add an item"
 msgstr "Píšte a stlačte enter na pridanie poznámky"
 
-#: src/widgets/pageview.cpp:383
+#: src/widgets/pageview.cpp:386
 #, fuzzy, kde-format
 #| msgid "Do you really want to delete the selected agent instance?"
 #| msgid_plural "Do you really want to delete these %1 agent instances?"
 msgid "Do you really want to delete the selected items and their children?"
 msgstr "Naozaj chcete vymazať vybranú inštanciu agenta?"
 
-#: src/widgets/pageview.cpp:385
+#: src/widgets/pageview.cpp:388
 #, fuzzy, kde-format
 #| msgid "Do you really want to delete the selected agent instance?"
 #| msgid_plural "Do you really want to delete these %1 agent instances?"
 msgid "Do you really want to delete the selected items?"
 msgstr "Naozaj chcete vymazať vybranú inštanciu agenta?"
 
-#: src/widgets/pageview.cpp:393
+#: src/widgets/pageview.cpp:396
 #, fuzzy, kde-format
 #| msgid "Do you really want to delete the selected agent instance?"
 #| msgid_plural "Do you really want to delete these %1 agent instances?"
 msgid "Do you really want to delete the selected task and all its children?"
 msgstr "Naozaj chcete vymazať vybranú inštanciu agenta?"
 
-#: src/widgets/pageview.cpp:397
+#: src/widgets/pageview.cpp:400
 #, fuzzy, kde-format
 msgid "Delete Tasks"
 msgstr "Odstrániť úlohy"
