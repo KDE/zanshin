@@ -153,7 +153,7 @@ PageView::PageView(QWidget *parent)
     m_centralView->setStyle(new TreeProxyStyle);
 
     m_quickAddEdit->setObjectName(QLatin1StringView("quickAddEdit"));
-    m_quickAddEdit->setPlaceholderText(i18n("Type and press enter to add a task"));
+    m_quickAddEdit->setPlaceholderText(i18nc("@info:placeholder", "Type and press enter to add a task"));
     m_quickAddEdit->setProperty("_breeze_borders_sides", QVariant::fromValue(QFlags{Qt::TopEdge}));
     connect(m_quickAddEdit, &QLineEdit::returnPressed, this, &PageView::onReturnPressed);
 
