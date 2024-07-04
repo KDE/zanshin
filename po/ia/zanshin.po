@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zanshin\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-06-18 00:40+0000\n"
+"POT-Creation-Date: 2024-07-04 00:39+0000\n"
 "PO-Revision-Date: 2024-05-16 10:44+0200\n"
 "Last-Translator: giovanni <g.sora@tiscali.it>\n"
 "Language-Team: Interlingua <kde-i18n-doc@kde.org>\n"
@@ -486,7 +486,9 @@ msgid "Source"
 msgstr "Fonte"
 
 #: src/widgets/pageview.cpp:156
-#, kde-format
+#, fuzzy, kde-format
+#| msgid "Type and press enter to add a task"
+msgctxt "@info:placeholder"
 msgid "Type and press enter to add a task"
 msgstr "Typa e pressa clave de 'enter' pro adder un carga"
 

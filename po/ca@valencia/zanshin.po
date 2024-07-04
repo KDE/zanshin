@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zanshin\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-06-18 00:40+0000\n"
+"POT-Creation-Date: 2024-07-04 00:39+0000\n"
 "PO-Revision-Date: 2024-05-16 15:55+0200\n"
 "Last-Translator: Josep M. Ferrer <txemaq@gmail.com>\n"
 "Language-Team: Catalan <kde-i18n-ca@kde.org>\n"
@@ -492,7 +492,9 @@ msgid "Source"
 msgstr "Origen"
 
 #: src/widgets/pageview.cpp:156
-#, kde-format
+#, fuzzy, kde-format
+#| msgid "Type and press enter to add a task"
+msgctxt "@info:placeholder"
 msgid "Type and press enter to add a task"
 msgstr "Escriure i prémer «Retorn» per a afegir una tasca"
 

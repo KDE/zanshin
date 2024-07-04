@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zanshin\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-06-18 00:40+0000\n"
+"POT-Creation-Date: 2024-07-04 00:39+0000\n"
 "PO-Revision-Date: 2024-05-16 09:04+0300\n"
 "Last-Translator: Yuri Chornoivan <yurchor@ukr.net>\n"
 "Language-Team: Ukrainian\n"
@@ -494,7 +494,9 @@ msgid "Source"
 msgstr "Джерело"
 
 #: src/widgets/pageview.cpp:156
-#, kde-format
+#, fuzzy, kde-format
+#| msgid "Type and press enter to add a task"
+msgctxt "@info:placeholder"
 msgid "Type and press enter to add a task"
 msgstr "Введіть назву і натисніть Enter, щоб додати завдання"
 

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zanshin\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-06-18 00:40+0000\n"
+"POT-Creation-Date: 2024-07-04 00:39+0000\n"
 "PO-Revision-Date: 2024-01-26 17:58+0200\n"
 "Last-Translator: Moo\n"
 "Language-Team: lt\n"
@@ -489,7 +489,9 @@ msgid "Source"
 msgstr "Šaltinis"
 
 #: src/widgets/pageview.cpp:156
-#, kde-format
+#, fuzzy, kde-format
+#| msgid "Type and press enter to add a task"
+msgctxt "@info:placeholder"
 msgid "Type and press enter to add a task"
 msgstr "Norėdami pridėti užduotį, parašykite ir paspauskite Įvedimo klavišą"
 

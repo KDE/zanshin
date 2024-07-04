@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-06-18 00:40+0000\n"
+"POT-Creation-Date: 2024-07-04 00:39+0000\n"
 "PO-Revision-Date: 2024-05-16 11:10+0200\n"
 "Last-Translator: Kristof Kiszel <ulysses@fsf.hu>\n"
 "Language-Team: Hungarian <kde-l10n-hu@kde.org>\n"
@@ -490,7 +490,9 @@ msgid "Source"
 msgstr "Forrás"
 
 #: src/widgets/pageview.cpp:156
-#, kde-format
+#, fuzzy, kde-format
+#| msgid "Type and press enter to add a task"
+msgctxt "@info:placeholder"
 msgid "Type and press enter to add a task"
 msgstr "Feladat hozzáadásához gépelje be, majd nyomjon entert"
 
