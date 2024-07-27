@@ -1,12 +1,11 @@
 # Translation of zanshin to Norwegian Nynorsk
 #
-# Karl Ove Hufthammer <karl@huftis.org>, 2021, 2022.
 msgid ""
 msgstr ""
 "Project-Id-Version: zanshin\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2024-07-04 00:39+0000\n"
-"PO-Revision-Date: 2022-06-19 14:03+0200\n"
+"PO-Revision-Date: 2024-07-26 14:58+0200\n"
 "Last-Translator: Karl Ove Hufthammer <karl@huftis.org>\n"
 "Language-Team: Norwegian Nynorsk <l10n-no@lister.huftis.org>\n"
 "Language: nn\n"
@@ -14,7 +13,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Lokalize 22.04.2\n"
+"X-Generator: Lokalize 24.11.70\n"
 "X-Environment: kde\n"
 "X-Accelerator-Marker: &\n"
 "X-Text-Markup: kde4\n"
@@ -30,8 +29,7 @@ msgid "Your emails"
 msgstr "karl@huftis.org"
 
 #: src/akonadi/akonadiconfigdialog.cpp:35
-#, fuzzy, kde-format
-#| msgid "Configure"
+#, kde-format
 msgctxt "@title:window"
 msgid "Configure"
 msgstr "Set opp"
@@ -320,8 +318,7 @@ msgid "Go to Page..."
 msgstr "Gå til side …"
 
 #: src/widgets/availablepagesview.cpp:240
-#, fuzzy, kde-format
-#| msgid "Add a context"
+#, kde-format
 msgctxt "@title:window"
 msgid "Add a context"
 msgstr "Legg til kontekst"
@@ -488,8 +485,7 @@ msgid "Source"
 msgstr "Kjelde"
 
 #: src/widgets/pageview.cpp:156
-#, fuzzy, kde-format
-#| msgid "Type and press enter to add a task"
+#, kde-format
 msgctxt "@info:placeholder"
 msgid "Type and press enter to add a task"
 msgstr "Skriv tekst og trykk «Enter» for å leggja til ei oppgåve"
@@ -571,8 +567,7 @@ msgid "Path: %1"
 msgstr "Adresse: %1"
 
 #: src/widgets/runningtaskwidget.cpp:39
-#, fuzzy, kde-format
-#| msgid "Zanshin Running Task Banner"
+#, kde-format
 msgctxt "@title:window"
 msgid "Zanshin Running Task Banner"
 msgstr "Zanshin køyrer oppgåvebanner"
@@ -600,8 +595,7 @@ msgid "Copyright 2008-2016, Kevin Ottens <ervin@kde.org>"
 msgstr "© 2008–2016 Kevin Ottens <ervin@kde.org>"
 
 #: src/zanshin/app/aboutdata.cpp:19
-#, fuzzy, kde-format
-#| msgid "Kevin Ottens"
+#, kde-format
 msgctxt "@info:credit"
 msgid "Kevin Ottens"
 msgstr "Kevin Ottens"
@@ -612,8 +606,7 @@ msgid "Lead Developer"
 msgstr "Hovudutviklar"
 
 #: src/zanshin/app/aboutdata.cpp:23
-#, fuzzy, kde-format
-#| msgid "Mario Bensi"
+#, kde-format
 msgctxt "@info:credit"
 msgid "Mario Bensi"
 msgstr "Mario Bensi"
@@ -624,8 +617,7 @@ msgid "Developer"
 msgstr "Utviklar"
 
 #: src/zanshin/app/aboutdata.cpp:27
-#, fuzzy, kde-format
-#| msgid "Franck Arrecot"
+#, kde-format
 msgctxt "@info:credit"
 msgid "Franck Arrecot"
 msgstr "Franck Arrecot"
