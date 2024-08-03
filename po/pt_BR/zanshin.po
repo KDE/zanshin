@@ -6,31 +6,32 @@
 # Marcus Vinícius de Andrade Gama <marcus.gama@gmail.com>, 2010.
 # Marcus Gama <marcus.gama@gmail.com>, 2011.
 # Luiz Fernando Ranghetti <elchevive@opensuse.org>, 2018, 2019, 2021, 2023.
+# SPDX-FileCopyrightText: 2024 Geraldo Simiao <geraldosimiao@fedoraproject.org>
 msgid ""
 msgstr ""
 "Project-Id-Version: zanshin\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2024-07-04 00:39+0000\n"
-"PO-Revision-Date: 2023-10-17 19:53-0300\n"
-"Last-Translator: Luiz Fernando Ranghetti <elchevive@opensuse.org>\n"
+"PO-Revision-Date: 2024-08-02 00:59-0300\n"
+"Last-Translator: Geraldo Simiao <geraldosimiao@fedoraproject.org>\n"
 "Language-Team: Brazilian Portuguese <kde-i18n-pt_BR@kde.org>\n"
 "Language: pt_BR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Lokalize 22.12.3\n"
+"X-Generator: Lokalize 24.05.2\n"
 "X-Qt-Contexts: true\n"
 
 #, kde-format
 msgctxt "NAME OF TRANSLATORS"
 msgid "Your names"
-msgstr "André Marcelo Alvarenga"
+msgstr "André Marcelo Alvarenga, Geraldo Simião"
 
 #, kde-format
 msgctxt "EMAIL OF TRANSLATORS"
 msgid "Your emails"
-msgstr "alvarenga@kde.org"
+msgstr "alvarenga@kde.org, geraldosimiao@fedoraproject.org"
 
 #: src/akonadi/akonadiconfigdialog.cpp:35
 #, kde-format
@@ -491,8 +492,7 @@ msgid "Source"
 msgstr "Origem"
 
 #: src/widgets/pageview.cpp:156
-#, fuzzy, kde-format
-#| msgid "Type and press enter to add a task"
+#, kde-format
 msgctxt "@info:placeholder"
 msgid "Type and press enter to add a task"
 msgstr "Digite e pressione ENTER para adicionar uma tarefa"
@@ -598,8 +598,7 @@ msgid "Copyright 2008-2016, Kevin Ottens <ervin@kde.org>"
 msgstr "Copyright 2008-2016, Kevin Ottens <ervin@kde.org>"
 
 #: src/zanshin/app/aboutdata.cpp:19
-#, fuzzy, kde-format
-#| msgid "Kevin Ottens"
+#, kde-format
 msgctxt "@info:credit"
 msgid "Kevin Ottens"
 msgstr "Kevin Ottens"
@@ -610,8 +609,7 @@ msgid "Lead Developer"
 msgstr "Desenvolvedor principal"
 
 #: src/zanshin/app/aboutdata.cpp:23
-#, fuzzy, kde-format
-#| msgid "Mario Bensi"
+#, kde-format
 msgctxt "@info:credit"
 msgid "Mario Bensi"
 msgstr "Mario Bensi"
@@ -622,8 +620,7 @@ msgid "Developer"
 msgstr "Desenvolvedor"
 
 #: src/zanshin/app/aboutdata.cpp:27
-#, fuzzy, kde-format
-#| msgid "Franck Arrecot"
+#, kde-format
 msgctxt "@info:credit"
 msgid "Franck Arrecot"
 msgstr "Franck Arrecot"
