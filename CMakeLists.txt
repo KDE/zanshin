@@ -87,7 +87,7 @@ find_package(KPim6KontactInterface "6.2.40" REQUIRED)
 
 add_definitions(-DQT_NO_CONTEXTLESS_CONNECT)
 ecm_set_disabled_deprecation_versions(QT 6.3.0
-     KF 6.4.0
+     KF 6.5.0
     )
 
 add_subdirectory(src)
