@@ -16,6 +16,7 @@
 
 #include <KConfigGroup>
 #include <KSharedConfig>
+#include <KCrash>
 
 #include "widgets/applicationcomponents.h"
 #include "widgets/availablepagesview.h"

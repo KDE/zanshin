@@ -79,6 +79,7 @@ find_package(KF6 ${KF_MIN_VERSION} REQUIRED COMPONENTS
     I18n
     CalendarCore
     Parts
+    Crash
 )
 
 find_package(KPim6Akonadi "6.2.40" REQUIRED)

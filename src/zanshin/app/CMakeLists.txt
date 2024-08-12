@@ -10,6 +10,7 @@ add_executable(zanshin ${app_SRCS})
 kde_enable_exceptions()
 target_link_libraries(zanshin
     KF6::XmlGui
+    KF6::Crash
     integration
     widgets
 )
