@@ -18,7 +18,7 @@ public:
     ~Part();
 
 protected:
-    virtual bool openFile() override;
+    bool openFile() override;
 };
 
 #endif

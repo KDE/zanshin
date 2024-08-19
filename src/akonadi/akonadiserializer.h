@@ -27,9 +27,9 @@ public:
 
     Domain::DataSource::Ptr createDataSourceFromCollection(Akonadi::Collection collection, DataSourceNameScheme naming) override;
     void updateDataSourceFromCollection(Domain::DataSource::Ptr dataSource, Akonadi::Collection collection, DataSourceNameScheme naming) override;
-    virtual Akonadi::Collection createCollectionFromDataSource(Domain::DataSource::Ptr dataSource) override;
-    virtual bool isSelectedCollection(Akonadi::Collection collection) override;
-    virtual bool isTaskCollection(Akonadi::Collection collection) override;
+    Akonadi::Collection createCollectionFromDataSource(Domain::DataSource::Ptr dataSource) override;
+    bool isSelectedCollection(Akonadi::Collection collection) override;
+    bool isTaskCollection(Akonadi::Collection collection) override;
 
     bool isTaskItem(Akonadi::Item item) override;
     Domain::Task::Ptr createTaskFromItem(Akonadi::Item item) override;

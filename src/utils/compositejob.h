@@ -20,14 +20,14 @@ public:
 
     using KCompositeJob::addSubjob;
 
-    virtual void start() override;
+    void start() override;
     virtual bool install(KJob *job, const JobHandler::ResultHandlerWithJob &handler);
     virtual bool install(KJob *job, const JobHandler::ResultHandler &handler);
 
     void emitError(const QString &errorText);
 
 private slots:
-    virtual void slotResult(KJob *job) override;
+    void slotResult(KJob *job) override;
 };
 
 }
