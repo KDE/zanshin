@@ -48,6 +48,8 @@ int main(int argc, char **argv)
     parser.process(app);
     aboutData.processCommandLine(&parser);
 
+    KCrash::initialize();
+
     QApplication::setWindowIcon(QIcon::fromTheme(QStringLiteral("zanshin")));
 
     KSharedConfig::Ptr config = KSharedConfig::openConfig(QStringLiteral("zanshin-migratorrc"));
