@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: kdeorg\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-08-13 00:40+0000\n"
+"POT-Creation-Date: 2024-08-30 00:40+0000\n"
 "PO-Revision-Date: 2024-04-22 15:58\n"
 "Last-Translator: \n"
 "Language-Team: Chinese Simplified\n"
@@ -385,7 +385,7 @@ msgstr ""
 #. i18n: ectx: property (windowTitle), widget (QWidget, EditorView)
 #. i18n: ectx: property (text), widget (QListView, attachmentList)
 #: src/widgets/editorview.ui:14 src/widgets/editorview.ui:184
-#: src/zanshin/app/main.cpp:86
+#: src/zanshin/app/main.cpp:88
 #, kde-format
 msgid "Editor"
 msgstr "编辑"
@@ -615,12 +615,12 @@ msgctxt "@info:credit"
 msgid "Franck Arrecot"
 msgstr ""
 
-#: src/zanshin/app/main.cpp:78
+#: src/zanshin/app/main.cpp:80
 #, kde-format
 msgid "Sources"
 msgstr "源代码"
 
-#: src/zanshin/app/main.cpp:82
+#: src/zanshin/app/main.cpp:84
 #, kde-format
 msgid "Pages"
 msgstr "页"

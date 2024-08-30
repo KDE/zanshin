@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zanshin\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-08-13 00:40+0000\n"
+"POT-Creation-Date: 2024-08-30 00:40+0000\n"
 "PO-Revision-Date: 2013-09-08 07:05+0900\n"
 "Last-Translator: Gheyret Kenji <gheyret@gmail.com>\n"
 "Language-Team: Uyghur Computer Science Association <UKIJ@yahoogroups.com>\n"
@@ -402,7 +402,7 @@ msgstr ""
 #. i18n: ectx: property (windowTitle), widget (QWidget, EditorView)
 #. i18n: ectx: property (text), widget (QListView, attachmentList)
 #: src/widgets/editorview.ui:14 src/widgets/editorview.ui:184
-#: src/zanshin/app/main.cpp:86
+#: src/zanshin/app/main.cpp:88
 #, fuzzy, kde-format
 #| msgid "&Editor"
 msgid "Editor"
@@ -645,13 +645,13 @@ msgctxt "@info:credit"
 msgid "Franck Arrecot"
 msgstr ""
 
-#: src/zanshin/app/main.cpp:78
+#: src/zanshin/app/main.cpp:80
 #, fuzzy, kde-format
 #| msgid "Sources"
 msgid "Sources"
 msgstr "مەنبەلەر"
 
-#: src/zanshin/app/main.cpp:82
+#: src/zanshin/app/main.cpp:84
 #, kde-format
 msgid "Pages"
 msgstr ""
