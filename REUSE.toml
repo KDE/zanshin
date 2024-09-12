@@ -4,4 +4,4 @@ SPDX-License-Identifier = "CC0-1.0"
 SPDX-PackageName = "zanshin"
 SPDX-PackageSupplier = "Kevin Ottens <ervin@kde.org>"
 SPDX-PackageDownloadLocation = "https://zanshin.kde.org/"
-annotations = []
+annotations = ["REUSE.toml"]
