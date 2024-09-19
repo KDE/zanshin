@@ -3,6 +3,7 @@
         "Authors": [
             {
                 "Name": "Zanshin Team",
+                "Name[ar]": "فريق زانشين",
                 "Name[bg]": "Екип на Zanshin",
                 "Name[ca@valencia]": "Equip de Zanshin",
                 "Name[ca]": "Equip del Zanshin",
@@ -76,6 +77,7 @@
         "Icon": "zanshin",
         "License": "LGPL",
         "Name": "Zanshin Tasks",
+        "Name[ar]": "مهام زانشين",
         "Name[bg]": "Управление на задачи Zanshin",
         "Name[ca@valencia]": "Tasques de Zanshin",
         "Name[ca]": "Tasques del Zanshin",
