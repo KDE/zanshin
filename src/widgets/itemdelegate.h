@@ -35,6 +35,10 @@ public:
 private:
     enum class EditingState { NotEditing, JustCreatedEditor, Editing };
     mutable EditingState m_editingState = EditingState::NotEditing;
+
+    struct Layout;
+    Layout doLayout(const QStyleOptionViewItem &option,
+                  const QModelIndex &index) const;
 };
 
 }

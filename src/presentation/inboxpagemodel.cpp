@@ -78,7 +78,7 @@ QAbstractItemModel *InboxPageModel::createCentralListModel()
     };
 
     auto fetchAdditionalInfo = [this](const QModelIndex &index, const Domain::Task::Ptr &task) {
-        return fetchTaskExtraData(m_taskQueries, TaskExtraPart::DataSource, index, task);
+        return fetchTaskExtraData(m_taskQueries, TaskExtraPart::DataSource | TaskExtraPart::Contexts, index, task);
     };
 
     auto setData = [this](const Domain::Task::Ptr &task, const QVariant &value, int role) {

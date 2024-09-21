@@ -85,8 +85,12 @@ QAbstractItemModel *ProjectPageModel::createCentralListModel()
              | Qt::ItemIsDropEnabled;
     };
 
-    auto data = [](const Domain::Task::Ptr &task, int role, int) -> QVariant {
-        return defaultTaskData(task, role, TaskExtraDataPtr());
+    auto data = [](const Domain::Task::Ptr &task, int role, const TaskExtraDataPtr &info) -> QVariant {
+        return defaultTaskData(task, role, info);
+    };
+
+    auto fetchAdditionalInfo = [this](const QModelIndex &index, const Domain::Task::Ptr &task) {
+        return fetchTaskExtraData(m_taskQueries, TaskExtraPart::Contexts, index, task);
     };
 
     auto setData = [this](const Domain::Task::Ptr &task, const QVariant &value, int role) {
@@ -143,7 +147,7 @@ QAbstractItemModel *ProjectPageModel::createCentralListModel()
         return data;
     };
 
-    return new QueryTreeModel<Domain::Task::Ptr>(query, flags, data, setData, drop, drag, nullptr, this);
+    return new QueryTreeModel<Domain::Task::Ptr, TaskExtraDataPtr>(query, flags, data, setData, drop, drag, fetchAdditionalInfo, this);
 }
 
 #include "moc_projectpagemodel.cpp"

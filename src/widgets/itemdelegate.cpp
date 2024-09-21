@@ -18,9 +18,58 @@
 
 using namespace Widgets;
 
+namespace {
+    // For the round rect around contexts
+    constexpr int s_xMargin = 5;
+    constexpr int s_yMargin = 2;
+    constexpr int s_xSpacingAfterInfoText = 10;
+    constexpr int s_xSpacingBetweenRoundRects = 5;
+    constexpr int s_radius = 5;
+}
+
 ItemDelegate::ItemDelegate(QObject *parent)
     : QStyledItemDelegate(parent)
 {
+}
+
+// Shared data between sizeHint() and paint()
+struct ItemDelegate::Layout {
+    QVariant projectInfo;
+    QVariant dataSourceInfo;
+    QStringList contexts;
+    int additionalInfoHeight = 0;
+    QFont additionalInfoFont = {};
+
+    bool showContexts() const { return !contexts.isEmpty(); }
+    bool hasAdditionalInfo() const { return projectInfo.isValid() || dataSourceInfo.isValid() || showContexts(); }
+    QString additionalInfoText() const {
+        if (projectInfo.isValid() && !projectInfo.toString().isEmpty())
+            return i18n("Project: %1", projectInfo.toString());
+        if (dataSourceInfo.isValid())
+            return dataSourceInfo.toString();
+        return {};
+    }
+};
+
+// Shared code between sizeHint() and paint()
+ItemDelegate::Layout ItemDelegate::doLayout(const QStyleOptionViewItem &option,
+                                            const QModelIndex &index) const
+{
+    Layout layout {
+        .projectInfo = index.data(Presentation::QueryTreeModelBase::ProjectRole),
+        .dataSourceInfo = index.data(Presentation::QueryTreeModelBase::DataSourceRole),
+        .contexts = index.data(Presentation::QueryTreeModelBase::ContextListRole).toStringList()
+    };
+    if (layout.hasAdditionalInfo()) {
+        layout.additionalInfoFont = option.font;
+        layout.additionalInfoFont.setItalic(true);
+        layout.additionalInfoFont.setPointSize(layout.additionalInfoFont.pointSize() - 1);
+        layout.additionalInfoHeight = QFontMetrics(layout.additionalInfoFont).height();
+        if (layout.showContexts()) {
+            layout.additionalInfoHeight += s_yMargin * 2;
+        }
+    }
+    return layout;
 }
 
 QSize ItemDelegate::sizeHint(const QStyleOptionViewItem &option,
@@ -33,12 +82,8 @@ QSize ItemDelegate::sizeHint(const QStyleOptionViewItem &option,
     // and for a date on the right
     opt.text += ' ' + QLocale().dateFormat(QLocale::ShortFormat).toUpper() + ' ';
     QSize sz = QStyledItemDelegate::sizeHint(opt, index);
-    const auto projectInfo = index.data(Presentation::QueryTreeModelBase::ProjectRole);
-    const auto dataSourceInfo = index.data(Presentation::QueryTreeModelBase::DataSourceRole);
-    const auto contextListInfo = index.data(Presentation::QueryTreeModelBase::ContextListRole);
-    const auto hasAdditionalInfo = projectInfo.isValid() || dataSourceInfo.isValid() || contextListInfo.isValid();
-    if (hasAdditionalInfo)
-        sz.rheight() += opt.fontMetrics.height();
+    Layout layout = doLayout(option, index);
+    sz.rheight() += layout.additionalInfoHeight;
     return sz;
 }
 
@@ -51,6 +96,7 @@ void ItemDelegate::paint(QPainter *painter,
 
     auto opt = QStyleOptionViewItem(option);
     initStyleOption(&opt, index);
+    Layout layout = doLayout(option, index);
     const auto widget = opt.widget;
     const auto style = widget ? widget->style() : QApplication::style();
 
@@ -62,10 +108,6 @@ void ItemDelegate::paint(QPainter *painter,
 
     const auto startDate = task ? task->startDate() : QDate();
     const auto dueDate = task ? task->dueDate() : QDate();
-    const auto projectInfo = index.data(Presentation::QueryTreeModelBase::ProjectRole);
-    const auto dataSourceInfo = index.data(Presentation::QueryTreeModelBase::DataSourceRole);
-    const auto contextListInfo = index.data(Presentation::QueryTreeModelBase::ContextListRole);
-    const auto hasAdditionalInfo = projectInfo.isValid() || dataSourceInfo.isValid() || contextListInfo.isValid();
 
     const auto currentDate = Utils::DateTime::currentDate();
     const auto onStartDate = startDate.isValid() && startDate <= currentDate;
@@ -103,13 +145,9 @@ void ItemDelegate::paint(QPainter *painter,
     const auto checkRect = style->subElementRect(QStyle::SE_ItemViewItemCheckIndicator, &opt, widget);
     const auto textRect = style->subElementRect(QStyle::SE_ItemViewItemText, &opt, widget)
                              .adjusted(textMargin, 0, - textMargin, 0);
-    auto summaryRect = textRect.adjusted(0, 0, -dueDateWidth, 0);
-    if (hasAdditionalInfo)
-        summaryRect.setHeight(summaryRect.height() - opt.fontMetrics.height());
-    auto dueDateRect = textRect.adjusted(textRect.width() - dueDateWidth, 0, 0, 0);
-    dueDateRect.setHeight(summaryRect.height());
-
-    const auto additionalInfoRect = QRect(textRect.x(), summaryRect.bottom(), textRect.width(), textRect.height() - summaryRect.height());
+    const auto summaryRect = textRect.adjusted(0, 0, -dueDateWidth, -layout.additionalInfoHeight);
+    const auto dueDateRect = textRect.adjusted(textRect.width() - dueDateWidth, 0, 0, -layout.additionalInfoHeight);
+    const auto additionalInfoRect = QRect(textRect.x(), summaryRect.bottom(), textRect.width(), layout.additionalInfoHeight);
 
     // Draw background
     style->drawPrimitive(QStyle::PE_PanelItemViewItem, &opt, painter, widget);
@@ -137,16 +175,34 @@ void ItemDelegate::paint(QPainter *painter,
     }
 
     // Draw the second line
-    if (hasAdditionalInfo) {
-        const auto additionalInfo = projectInfo.isValid() && !projectInfo.toString().isEmpty() ? i18n("Project: %1", projectInfo.toString())
-                                  : dataSourceInfo.isValid() ? dataSourceInfo.toString()
-                                  : i18n("Inbox");
+    if (layout.hasAdditionalInfo()) {
+        const auto additionalInfoText = layout.additionalInfoText();
 
-        QFont additionalInfoFont = baseFont;
-        additionalInfoFont.setItalic(true);
-        additionalInfoFont.setPointSize(additionalInfoFont.pointSize() - 1);
-        painter->setFont(additionalInfoFont);
-        painter->drawText(additionalInfoRect, Qt::AlignLeft, additionalInfo);
+        int x = additionalInfoRect.left();
+        if (!additionalInfoText.isEmpty()) {
+            painter->setFont(layout.additionalInfoFont);
+            QRect textBoundingRect;
+            painter->drawText(additionalInfoRect, Qt::AlignLeft, additionalInfoText, &textBoundingRect);
+            x = textBoundingRect.right() + s_xSpacingAfterInfoText;
+        }   
+
+        x += s_xMargin;
+        QFont contextFont = baseFont;
+        contextFont.setPointSize(contextFont.pointSize() - 1);
+        QFontMetrics contextFontMetrics(contextFont);
+        painter->setFont(contextFont);
+        painter->setRenderHint(QPainter::Antialiasing);
+        painter->setOpacity(0.8);
+        QRect contextRect = additionalInfoRect;
+        for (const QString &context : layout.contexts) {
+            contextRect.setLeft(x);
+            const auto boundingRect = contextFontMetrics.boundingRect(contextRect, Qt::AlignLeft | Qt::TextSingleLine, context);
+            const auto roundRect = boundingRect.adjusted(-s_xMargin, -s_yMargin, s_xMargin, s_yMargin);
+            painter->drawRoundedRect(roundRect, s_radius, s_radius);
+            painter->drawText(boundingRect, Qt::AlignCenter, context);
+            x += roundRect.width() + s_xSpacingBetweenRoundRects;
+        }
+        painter->setOpacity(1);
     }
 }
 
