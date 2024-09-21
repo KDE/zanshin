@@ -137,7 +137,7 @@ private slots:
     {
         Widgets::PageView page;
         QCOMPARE(page.contentsMargins(), QMargins(0, 0, 0, 0));
-        QCOMPARE(page.layout()->contentsMargins(), QMargins(0, 0, 0, 3));
+        QCOMPARE(page.layout()->contentsMargins(), QMargins(0, 0, 0, 0));
 
         auto messageWidget = page.findChild<KMessageWidget*>(QStringLiteral("messageWidget"));
         QVERIFY(messageWidget);
