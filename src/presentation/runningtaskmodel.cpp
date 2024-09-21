@@ -44,7 +44,7 @@ void RunningTaskModel::setRunningTask(const Domain::Task::Ptr &runningTask)
         m_runningTask->setRunning(false);
         KJob *job = m_taskRepository->update(m_runningTask);
         installHandler(job, i18n("Cannot update task %1 to 'not running'", m_runningTask->title()));
-        disconnect(runningTask.data(), &Domain::Task::titleChanged,
+        disconnect(m_runningTask.data(), &Domain::Task::titleChanged,
                 this, &RunningTaskModel::taskTitleChanged);
     }
     m_runningTask = runningTask;
