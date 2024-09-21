@@ -817,7 +817,7 @@ private slots:
         originalTodo->setSummary(summary);
         originalTodo->setDescription(content);
 
-        if (originalTodo)
+        if (isDone)
             originalTodo->setCompleted(doneDate.startOfDay());
         else
             originalTodo->setCompleted(isDone);
@@ -863,7 +863,7 @@ private slots:
         originalTodo->setSummary(summary);
         originalTodo->setDescription(content);
 
-        if (originalTodo)
+        if (isDone)
             originalTodo->setCompleted(doneDate.startOfDay());
         else
             originalTodo->setCompleted(isDone);
