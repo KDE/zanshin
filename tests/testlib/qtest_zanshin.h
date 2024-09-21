@@ -34,7 +34,7 @@
     \
     bool _zanshin_testlib_internal_forceEnvironment() \
     { \
-        qSetGlobalQHashSeed(0); \
+        QHashSeed::setDeterministicGlobalSeed(); \
         qputenv("KDE_DEBUG", "1"); \
         qunsetenv("LANG"); \
         qunsetenv("LANGUAGE"); \
