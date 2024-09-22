@@ -75,4 +75,19 @@ void DataSource::setSelected(bool selected)
     emit selectedChanged(selected);
 }
 
+QDebug operator<<(QDebug dbg, const Domain::DataSource &dataSource)
+{
+    dbg << "DataSource" << dataSource.name();
+    return dbg;
+}
+
+QDebug operator<<(QDebug dbg, const Domain::DataSource::Ptr &dataSource)
+{
+    if (!dataSource)
+        dbg << "Ptr to null dataSource";
+    else
+        dbg << "Ptr to" << *dataSource;
+    return dbg;
+}
+
 #include "moc_datasource.cpp"

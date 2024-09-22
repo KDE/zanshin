@@ -8,6 +8,7 @@
 #ifndef DOMAIN_DATASOURCE_H
 #define DOMAIN_DATASOURCE_H
 
+#include <QDebug>
 #include <QMetaType>
 #include <QObject>
 #include <QSharedPointer>
@@ -67,5 +68,7 @@ private:
 Q_DECLARE_METATYPE(Domain::DataSource::Ptr)
 Q_DECLARE_METATYPE(Domain::DataSource::ContentTypes)
 Q_DECLARE_OPERATORS_FOR_FLAGS(Domain::DataSource::ContentTypes)
+QDebug operator<<(QDebug dbg, const Domain::DataSource &dataSource);
+QDebug operator<<(QDebug dbg, const Domain::DataSource::Ptr &dataSource);
 
 #endif // DOMAIN_DATASOURCE_H

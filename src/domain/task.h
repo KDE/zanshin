@@ -9,6 +9,7 @@
 #define DOMAIN_TASK_H
 
 #include <QDate>
+#include <QDebug>
 #include <QMetaType>
 #include <QSharedPointer>
 #include <QString>
@@ -133,5 +134,7 @@ Q_DECLARE_METATYPE(Domain::Task::Ptr)
 Q_DECLARE_METATYPE(Domain::Task::List)
 Q_DECLARE_METATYPE(Domain::Task::Attachment)
 Q_DECLARE_METATYPE(Domain::Task::Attachments)
+QDebug operator<<(QDebug dbg, const Domain::Task &task);
+QDebug operator<<(QDebug dbg, const Domain::Task::Ptr &task);
 
 #endif // DOMAIN_TASK_H

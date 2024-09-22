@@ -31,4 +31,19 @@ void Project::setName(const QString &name)
     emit nameChanged(name);
 }
 
+QDebug operator<<(QDebug dbg, const Domain::Project &project)
+{
+    dbg << "Project" << project.name();
+    return dbg;
+}
+
+QDebug operator<<(QDebug dbg, const Domain::Project::Ptr &project)
+{
+    if (!project)
+        dbg << "Ptr to null project";
+    else
+        dbg << "Ptr to" << *project;
+    return dbg;
+}
+
 #include "moc_project.cpp"

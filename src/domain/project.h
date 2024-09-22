@@ -8,6 +8,7 @@
 #ifndef DOMAIN_PROJECT_H
 #define DOMAIN_PROJECT_H
 
+#include <QDebug>
 #include <QMetaType>
 #include <QObject>
 #include <QSharedPointer>
@@ -42,5 +43,7 @@ private:
 }
 
 Q_DECLARE_METATYPE(Domain::Project::Ptr)
+QDebug operator<<(QDebug dbg, const Domain::Project &project);
+QDebug operator<<(QDebug dbg, const Domain::Project::Ptr &project);
 
 #endif // DOMAIN_PROJECT_H

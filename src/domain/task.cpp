@@ -262,4 +262,19 @@ void Task::Attachment::setIconName(const QString &iconName)
     m_iconName = iconName;
 }
 
+QDebug operator<<(QDebug dbg, const Domain::Task &task)
+{
+    dbg << "Task" << task.title();
+    return dbg;
+}
+
+QDebug operator<<(QDebug dbg, const Domain::Task::Ptr &task)
+{
+    if (!task)
+        dbg << "Ptr to null task";
+    else
+        dbg << "Ptr to" << *task;
+    return dbg;
+}
+
 #include "moc_task.cpp"

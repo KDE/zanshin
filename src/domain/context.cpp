@@ -31,4 +31,19 @@ void Context::setName(const QString &name)
     emit nameChanged(name);
 }
 
+QDebug operator<<(QDebug dbg, const Domain::Context &context)
+{
+    dbg << "Context" << context.name();
+    return dbg;
+}
+
+QDebug operator<<(QDebug dbg, const Domain::Context::Ptr &context)
+{
+    if (!context)
+        dbg << "Ptr to null context";
+    else
+        dbg << "Ptr to" << *context;
+    return dbg;
+}
+
 #include "moc_context.cpp"
