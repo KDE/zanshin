@@ -10,10 +10,6 @@
 
 #include <QObject>
 
-#include "domain/datasourcerepository.h"
-#include "domain/datasourcequeries.h"
-#include "domain/taskrepository.h"
-
 #include "presentation/metatypes.h"
 #include "presentation/errorhandler.h"
 #include "presentation/runningtaskmodelinterface.h"

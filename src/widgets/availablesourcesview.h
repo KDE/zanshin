@@ -12,8 +12,6 @@
 
 #include <QHash>
 
-#include "domain/datasource.h"
-
 class QSortFilterProxyModel;
 class QTreeView;
 

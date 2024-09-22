@@ -11,8 +11,6 @@
 
 #include <functional>
 
-#include "domain/task.h"
-
 #include "domain/queryresultinterface.h"
 
 #include "querytreemodelbase.h"

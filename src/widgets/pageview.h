@@ -14,8 +14,6 @@
 #include <QModelIndexList>
 #include <QSharedPointer>
 
-#include <functional>
-
 #include "domain/task.h"
 #include "messageboxinterface.h"
 

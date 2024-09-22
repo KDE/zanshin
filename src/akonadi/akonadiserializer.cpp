@@ -20,8 +20,6 @@
 
 #include <numeric>
 
-#include "utils/mem_fn.h"
-
 #include "akonadi/akonadiapplicationselectedattribute.h"
 #include "akonadi/akonaditimestampattribute.h"
 

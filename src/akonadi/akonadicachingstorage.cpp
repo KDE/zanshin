@@ -6,7 +6,6 @@
 
 
 #include "akonadicachingstorage.h"
-#include "akonadistorage.h"
 
 #include "akonadicollectionfetchjobinterface.h"
 #include "akonadiitemfetchjobinterface.h"

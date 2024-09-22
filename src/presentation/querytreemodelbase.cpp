@@ -10,8 +10,6 @@
 #include <QMimeData>
 #include <QStringList>
 
-#include <algorithm>
-
 using namespace Presentation;
 
 QueryTreeNodeBase::QueryTreeNodeBase(QueryTreeNodeBase *parent, QueryTreeModelBase *model)

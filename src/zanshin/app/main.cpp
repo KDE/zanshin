@@ -25,6 +25,7 @@
 #include "widgets/pageview.h"
 
 #include "presentation/applicationmodel.h"
+#include "domain/datasourcerepository.h"
 
 #include "utils/dependencymanager.h"
 #include "integration/dependencies.h"

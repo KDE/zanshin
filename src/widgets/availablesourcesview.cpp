@@ -18,7 +18,6 @@
 
 #include <KLocalizedString>
 
-#include "presentation/metatypes.h"
 #include "presentation/querytreemodelbase.h"
 
 #include "widgets/datasourcedelegate.h"
