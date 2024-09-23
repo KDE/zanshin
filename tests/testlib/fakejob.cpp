@@ -59,4 +59,11 @@ QString FakeJob::expectedErrorText() const
     return m_errorText;
 }
 
+bool FakeJob::doKill()
+{
+    setError(KJob::KilledJobError);
+    emitResult();
+    return true;
+}
+
 #include "moc_fakejob.cpp"

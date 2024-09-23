@@ -31,6 +31,8 @@ public:
     QString expectedErrorText() const;
 
 private:
+    bool doKill() override;
+
     QTimer *m_timer;
     bool m_done;
     bool m_launched;

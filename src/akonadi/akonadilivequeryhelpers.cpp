@@ -91,14 +91,21 @@ LiveQueryHelpers::ItemFetchFunction LiveQueryHelpers::fetchItems(QObject *parent
 LiveQueryHelpers::ItemFetchFunction LiveQueryHelpers::fetchItems(const Collection &collection, QObject *parent) const
 {
     auto storage = m_storage;
-    return [storage, collection, parent] (const Domain::LiveQueryInput<Item>::AddFunction &add) {
-        auto job = storage->fetchItems(collection, parent);
-        Utils::JobHandler::install(job->kjob(), [job, add] {
-            if (job->kjob()->error() != KJob::NoError)
-                return;
-
-            foreach (const auto &item, job->items())
-                add(item);
+    return [storage, collection, parent, job = static_cast<ItemFetchJobInterface *>(nullptr)](const Domain::LiveQueryInput<Item>::AddFunction &add) mutable {
+        // Called by LiveQuery::doFetch() / LiveRelationshipQuery::doFetch()
+        if (job) {
+            // Cancel on-going job, so that only the latest list of items is returned
+            // This prevents a race where we'd return items twice
+            job->kjob()->kill();
+        }
+        job = storage->fetchItems(collection, parent);
+        Utils::JobHandler::install(job->kjob(), [&job, add] {
+            if (job->kjob()->error() == KJob::NoError) {
+                const auto items = job->items();
+                for(const auto &item : items)
+                    add(item);
+            }
+            job = nullptr;
         });
     };
 }
