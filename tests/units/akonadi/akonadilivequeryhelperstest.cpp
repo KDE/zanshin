@@ -298,6 +298,15 @@ private slots:
         expected.sort();
         QCOMPARE(titlesFromItems(items), expected);
 
+        // WHEN (fetching twice in a row)
+        items.clear();
+        fetch(add);
+        fetch(add);
+        TestHelpers::waitForEmptyJobQueue();
+
+        // THEN (the list shouldn't be duplicated)
+        QCOMPARE(titlesFromItems(items), expected);
+
         // WHEN (should not crash when the helpers object is deleted)
         helpers.clear();
         items.clear();
