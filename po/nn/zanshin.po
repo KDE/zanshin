@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zanshin\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-08-30 00:40+0000\n"
+"POT-Creation-Date: 2024-09-23 00:40+0000\n"
 "PO-Revision-Date: 2024-07-28 00:33+0200\n"
 "Last-Translator: Karl Ove Hufthammer <karl@huftis.org>\n"
 "Language-Team: Norwegian Nynorsk <l10n-no@lister.huftis.org>\n"
@@ -137,7 +137,6 @@ msgid "Cannot remove context %1"
 msgstr "Klarte ikkje fjerna konteksten %1"
 
 #: src/presentation/availablepagesmodel.cpp:139
-#: src/widgets/itemdelegate.cpp:143
 #, kde-format
 msgid "Inbox"
 msgstr "Innboks"
@@ -247,12 +246,12 @@ msgstr "Klarte ikkje leggja oppgåva %1 i prosjektet %2"
 msgid "Cannot remove task %1 from project %2"
 msgstr "Klarte ikkje fjerna oppgåva %1 frå prosjektet %2"
 
-#: src/presentation/projectpagemodel.cpp:104
+#: src/presentation/projectpagemodel.cpp:108
 #, kde-format
 msgid "Cannot modify task %1 in project %2"
 msgstr "Klarte ikkje endra oppgåva %1 i prosjektet %2"
 
-#: src/presentation/projectpagemodel.cpp:130
+#: src/presentation/projectpagemodel.cpp:134
 #, kde-format
 msgid "Cannot move task %1 as a sub-task of %2"
 msgstr "Klarte ikkje flytta oppgåva %1 som deloppgåve av %2"
@@ -343,12 +342,12 @@ msgstr "Slett kontekst"
 msgid "Do you really want to delete the context '%1'?"
 msgstr "Er du sikker på at du vil sletta konteksten «%1»?"
 
-#: src/widgets/availablesourcesview.cpp:55
+#: src/widgets/availablesourcesview.cpp:54
 #, kde-format
 msgid "Use as Default Source"
 msgstr "Bruk som standardkjelde"
 
-#: src/widgets/availablesourcesview.cpp:76
+#: src/widgets/availablesourcesview.cpp:75
 #, kde-format
 msgid "Configure %1..."
 msgstr "Set opp %1 …"
@@ -386,7 +385,7 @@ msgstr "Årleg"
 #. i18n: ectx: property (windowTitle), widget (QWidget, EditorView)
 #. i18n: ectx: property (text), widget (QListView, attachmentList)
 #: src/widgets/editorview.ui:14 src/widgets/editorview.ui:184
-#: src/zanshin/app/main.cpp:88
+#: src/zanshin/app/main.cpp:89
 #, kde-format
 msgid "Editor"
 msgstr "Skriveprogram"
@@ -461,7 +460,7 @@ msgstr "Sorter fallande"
 msgid "Sort in ascending order"
 msgstr "Sorter stigande"
 
-#: src/widgets/itemdelegate.cpp:141
+#: src/widgets/itemdelegate.cpp:47
 #, kde-format
 msgid "Project: %1"
 msgstr "Prosjekt: %1"
@@ -621,12 +620,12 @@ msgctxt "@info:credit"
 msgid "Franck Arrecot"
 msgstr "Franck Arrecot"
 
-#: src/zanshin/app/main.cpp:80
+#: src/zanshin/app/main.cpp:81
 #, kde-format
 msgid "Sources"
 msgstr "Kjelder"
 
-#: src/zanshin/app/main.cpp:84
+#: src/zanshin/app/main.cpp:85
 #, kde-format
 msgid "Pages"
 msgstr "Sider"

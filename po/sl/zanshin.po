@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-08-30 00:40+0000\n"
+"POT-Creation-Date: 2024-09-23 00:40+0000\n"
 "PO-Revision-Date: 2024-07-04 10:37+0200\n"
 "Last-Translator: Matjaž Jeran <matjaz.jeran@amis.net>\n"
 "Language-Team: Slovenian <lugos-slo@lugos.si>\n"
@@ -141,7 +141,6 @@ msgid "Cannot remove context %1"
 msgstr "Ni mogoče odstraniti konteksta %1"
 
 #: src/presentation/availablepagesmodel.cpp:139
-#: src/widgets/itemdelegate.cpp:143
 #, kde-format
 msgid "Inbox"
 msgstr "Prejeto"
@@ -251,12 +250,12 @@ msgstr "Ni mogoče dodati naloge %1 v projekt %2"
 msgid "Cannot remove task %1 from project %2"
 msgstr "Ni mogoče odstraniti naloge %1 iz projekta %2"
 
-#: src/presentation/projectpagemodel.cpp:104
+#: src/presentation/projectpagemodel.cpp:108
 #, kde-format
 msgid "Cannot modify task %1 in project %2"
 msgstr "Ni mogoče spremeniti naloge %1 v projektu %2"
 
-#: src/presentation/projectpagemodel.cpp:130
+#: src/presentation/projectpagemodel.cpp:134
 #, kde-format
 msgid "Cannot move task %1 as a sub-task of %2"
 msgstr "Ni mogoče prenesti naloge %1 kot podnalogo %2"
@@ -347,12 +346,12 @@ msgstr "Izbriši kontekst"
 msgid "Do you really want to delete the context '%1'?"
 msgstr "Ali res želite zbrisati kontekst '%1'?"
 
-#: src/widgets/availablesourcesview.cpp:55
+#: src/widgets/availablesourcesview.cpp:54
 #, kde-format
 msgid "Use as Default Source"
 msgstr "Uporabi kot privzeti vir"
 
-#: src/widgets/availablesourcesview.cpp:76
+#: src/widgets/availablesourcesview.cpp:75
 #, kde-format
 msgid "Configure %1..."
 msgstr "Nastavi %1..."
@@ -390,7 +389,7 @@ msgstr "Letno"
 #. i18n: ectx: property (windowTitle), widget (QWidget, EditorView)
 #. i18n: ectx: property (text), widget (QListView, attachmentList)
 #: src/widgets/editorview.ui:14 src/widgets/editorview.ui:184
-#: src/zanshin/app/main.cpp:88
+#: src/zanshin/app/main.cpp:89
 #, kde-format
 msgid "Editor"
 msgstr "Urejevalnik"
@@ -465,7 +464,7 @@ msgstr "Razvrsti v padajočem redu"
 msgid "Sort in ascending order"
 msgstr "Razvrsti v naraščajočem redu"
 
-#: src/widgets/itemdelegate.cpp:141
+#: src/widgets/itemdelegate.cpp:47
 #, kde-format
 msgid "Project: %1"
 msgstr "Projekt: %1"
@@ -622,12 +621,12 @@ msgctxt "@info:credit"
 msgid "Franck Arrecot"
 msgstr "Franck Arrecot"
 
-#: src/zanshin/app/main.cpp:80
+#: src/zanshin/app/main.cpp:81
 #, kde-format
 msgid "Sources"
 msgstr "Viri"
 
-#: src/zanshin/app/main.cpp:84
+#: src/zanshin/app/main.cpp:85
 #, kde-format
 msgid "Pages"
 msgstr "Strani"

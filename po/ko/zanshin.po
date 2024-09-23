@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zanshin\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-08-30 00:40+0000\n"
+"POT-Creation-Date: 2024-09-23 00:40+0000\n"
 "PO-Revision-Date: 2024-08-21 00:08+0200\n"
 "Last-Translator: Shinjo Park <kde@peremen.name>\n"
 "Language-Team: Korean <kde-kr@kde.org>\n"
@@ -136,7 +136,6 @@ msgid "Cannot remove context %1"
 msgstr "콘텍스트 %1을(를) 삭제할 수 없음"
 
 #: src/presentation/availablepagesmodel.cpp:139
-#: src/widgets/itemdelegate.cpp:143
 #, kde-format
 msgid "Inbox"
 msgstr "받은 편지함"
@@ -246,12 +245,12 @@ msgstr "할 일 %1을(를) 프로젝트 %2에 추가할 수 없음"
 msgid "Cannot remove task %1 from project %2"
 msgstr "할 일 %1을(를) 프로젝트 %2에서 삭제할 수 없음"
 
-#: src/presentation/projectpagemodel.cpp:104
+#: src/presentation/projectpagemodel.cpp:108
 #, kde-format
 msgid "Cannot modify task %1 in project %2"
 msgstr "프로젝트 %2의 할 일 %1을(를) 수정할 수 없음"
 
-#: src/presentation/projectpagemodel.cpp:130
+#: src/presentation/projectpagemodel.cpp:134
 #, kde-format
 msgid "Cannot move task %1 as a sub-task of %2"
 msgstr "할 일 %1을(를) 할 일 %2의 하위 할 일로 이동할 수 없음"
@@ -342,12 +341,12 @@ msgstr "문맥 삭제"
 msgid "Do you really want to delete the context '%1'?"
 msgstr "문맥 '%1'을(를) 삭제하시겠습니까?"
 
-#: src/widgets/availablesourcesview.cpp:55
+#: src/widgets/availablesourcesview.cpp:54
 #, kde-format
 msgid "Use as Default Source"
 msgstr "기본 원본으로 사용"
 
-#: src/widgets/availablesourcesview.cpp:76
+#: src/widgets/availablesourcesview.cpp:75
 #, kde-format
 msgid "Configure %1..."
 msgstr "%1 설정..."
@@ -385,7 +384,7 @@ msgstr "년간"
 #. i18n: ectx: property (windowTitle), widget (QWidget, EditorView)
 #. i18n: ectx: property (text), widget (QListView, attachmentList)
 #: src/widgets/editorview.ui:14 src/widgets/editorview.ui:184
-#: src/zanshin/app/main.cpp:88
+#: src/zanshin/app/main.cpp:89
 #, kde-format
 msgid "Editor"
 msgstr "편집기"
@@ -460,7 +459,7 @@ msgstr "내림차순으로 정렬"
 msgid "Sort in ascending order"
 msgstr "오름차순으로 정렬"
 
-#: src/widgets/itemdelegate.cpp:141
+#: src/widgets/itemdelegate.cpp:47
 #, kde-format
 msgid "Project: %1"
 msgstr "프로젝트: %1"
@@ -615,12 +614,12 @@ msgctxt "@info:credit"
 msgid "Franck Arrecot"
 msgstr "Franck Arrecot"
 
-#: src/zanshin/app/main.cpp:80
+#: src/zanshin/app/main.cpp:81
 #, kde-format
 msgid "Sources"
 msgstr "원본"
 
-#: src/zanshin/app/main.cpp:84
+#: src/zanshin/app/main.cpp:85
 #, kde-format
 msgid "Pages"
 msgstr "페이지"

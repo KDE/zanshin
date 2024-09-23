@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zanshin\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-08-30 00:40+0000\n"
+"POT-Creation-Date: 2024-09-23 00:40+0000\n"
 "PO-Revision-Date: 2021-09-21 12:51+0630\n"
 "Last-Translator: ဇေယျာလွင် <lw1nzayar@yandex.com>\n"
 "Language-Team: Burmese <kde-i18n-doc@kde.org>\n"
@@ -140,7 +140,6 @@ msgid "Cannot remove context %1"
 msgstr "ဆက်စပ်အကြောင်းအရာ %1 ကိုမဖယ်ရှားနိုင်ပါ"
 
 #: src/presentation/availablepagesmodel.cpp:139
-#: src/widgets/itemdelegate.cpp:143
 #, kde-format
 msgid "Inbox"
 msgstr "စာဝင်ပုံး"
@@ -250,12 +249,12 @@ msgstr "အလုပ် %1 ကို ပရောဂျက် %2 သို့ �
 msgid "Cannot remove task %1 from project %2"
 msgstr "အလုပ် %1 ကို ပရောဂျက် %2 မှမဖယ်ရှားနိုင်ပါ"
 
-#: src/presentation/projectpagemodel.cpp:104
+#: src/presentation/projectpagemodel.cpp:108
 #, kde-format
 msgid "Cannot modify task %1 in project %2"
 msgstr "အလုပ် %1 ကို ပရောဂျက် %2 တွင် မမွမ်းမံနိုင်ပါ"
 
-#: src/presentation/projectpagemodel.cpp:130
+#: src/presentation/projectpagemodel.cpp:134
 #, kde-format
 msgid "Cannot move task %1 as a sub-task of %2"
 msgstr "အလုပ် %1 ကို %2 ၏လက်အောက်ခံအလုပ်တစ်ခုအဖြစ် မရွေ့နိုင်ပါ"
@@ -347,12 +346,12 @@ msgstr "ဆက်စပ်အကြောင်းအရာ ဖျက်မည�
 msgid "Do you really want to delete the context '%1'?"
 msgstr "ဆက်စပ်အကြောင်းအရာ '%1' ကို သင်တကယ်ဖျက်မှာလား။"
 
-#: src/widgets/availablesourcesview.cpp:55
+#: src/widgets/availablesourcesview.cpp:54
 #, kde-format
 msgid "Use as Default Source"
 msgstr "ဒီဖော့ဇစ်မြစ်အဖြစ်သုံးမည်"
 
-#: src/widgets/availablesourcesview.cpp:76
+#: src/widgets/availablesourcesview.cpp:75
 #, kde-format
 msgid "Configure %1..."
 msgstr "%1 ပြင်ဆင်မည်..."
@@ -390,7 +389,7 @@ msgstr "နှစ်စဥ်"
 #. i18n: ectx: property (windowTitle), widget (QWidget, EditorView)
 #. i18n: ectx: property (text), widget (QListView, attachmentList)
 #: src/widgets/editorview.ui:14 src/widgets/editorview.ui:184
-#: src/zanshin/app/main.cpp:88
+#: src/zanshin/app/main.cpp:89
 #, kde-format
 msgid "Editor"
 msgstr "အယ်ဒီတာ"
@@ -465,7 +464,7 @@ msgstr "ဆင်းသွားသည်အစဥ်ဖြင့်စီမည
 msgid "Sort in ascending order"
 msgstr "တက်သွားသည်အစဥ်ဖြင့်စီမည်"
 
-#: src/widgets/itemdelegate.cpp:141
+#: src/widgets/itemdelegate.cpp:47
 #, kde-format
 msgid "Project: %1"
 msgstr "ပရောဂျက် - %1"
@@ -626,12 +625,12 @@ msgctxt "@info:credit"
 msgid "Franck Arrecot"
 msgstr "ဖရန့်အာရီကော့"
 
-#: src/zanshin/app/main.cpp:80
+#: src/zanshin/app/main.cpp:81
 #, kde-format
 msgid "Sources"
 msgstr "ဇစ်မြစ်များ"
 
-#: src/zanshin/app/main.cpp:84
+#: src/zanshin/app/main.cpp:85
 #, kde-format
 msgid "Pages"
 msgstr "စာမျက်နှာများ"

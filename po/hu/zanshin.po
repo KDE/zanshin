@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-08-30 00:40+0000\n"
+"POT-Creation-Date: 2024-09-23 00:40+0000\n"
 "PO-Revision-Date: 2024-07-07 14:34+0200\n"
 "Last-Translator: Kristof Kiszel <ulysses@fsf.hu>\n"
 "Language-Team: Hungarian <kde-l10n-hu@kde.org>\n"
@@ -141,7 +141,6 @@ msgid "Cannot remove context %1"
 msgstr "A(z) %1 környezet nem távolítható el"
 
 #: src/presentation/availablepagesmodel.cpp:139
-#: src/widgets/itemdelegate.cpp:143
 #, kde-format
 msgid "Inbox"
 msgstr "Beérkezett üzenetek"
@@ -251,12 +250,12 @@ msgstr "A(z) %1 feladat nem adható hozzá a(z) %2 projekthez"
 msgid "Cannot remove task %1 from project %2"
 msgstr "A(z) %1 feladat nem távolítható el a(z) %2 projektből"
 
-#: src/presentation/projectpagemodel.cpp:104
+#: src/presentation/projectpagemodel.cpp:108
 #, kde-format
 msgid "Cannot modify task %1 in project %2"
 msgstr "A(z) %1 feladat nem módosítható a(z) %2 projektben"
 
-#: src/presentation/projectpagemodel.cpp:130
+#: src/presentation/projectpagemodel.cpp:134
 #, kde-format
 msgid "Cannot move task %1 as a sub-task of %2"
 msgstr "A(z) %1 feladat nem helyezhető át a(z) %2 alfeladataként"
@@ -348,12 +347,12 @@ msgstr "Környezet törlése"
 msgid "Do you really want to delete the context '%1'?"
 msgstr "Biztosan törölni szeretné a(z) „%1” környezetet?"
 
-#: src/widgets/availablesourcesview.cpp:55
+#: src/widgets/availablesourcesview.cpp:54
 #, kde-format
 msgid "Use as Default Source"
 msgstr "Legyen ez az alapértelmezett forrás"
 
-#: src/widgets/availablesourcesview.cpp:76
+#: src/widgets/availablesourcesview.cpp:75
 #, kde-format
 msgid "Configure %1..."
 msgstr "A(z) %1 beállításai…"
@@ -391,7 +390,7 @@ msgstr "Évi"
 #. i18n: ectx: property (windowTitle), widget (QWidget, EditorView)
 #. i18n: ectx: property (text), widget (QListView, attachmentList)
 #: src/widgets/editorview.ui:14 src/widgets/editorview.ui:184
-#: src/zanshin/app/main.cpp:88
+#: src/zanshin/app/main.cpp:89
 #, kde-format
 msgid "Editor"
 msgstr "Szerkesztő"
@@ -466,7 +465,7 @@ msgstr "Rendezés csökkenő sorrendbe"
 msgid "Sort in ascending order"
 msgstr "Rendezés növekvő sorrendbe"
 
-#: src/widgets/itemdelegate.cpp:141
+#: src/widgets/itemdelegate.cpp:47
 #, kde-format
 msgid "Project: %1"
 msgstr "Projekt: %1"
@@ -622,12 +621,12 @@ msgctxt "@info:credit"
 msgid "Franck Arrecot"
 msgstr "Franck Arrecot"
 
-#: src/zanshin/app/main.cpp:80
+#: src/zanshin/app/main.cpp:81
 #, kde-format
 msgid "Sources"
 msgstr "Források"
 
-#: src/zanshin/app/main.cpp:84
+#: src/zanshin/app/main.cpp:85
 #, kde-format
 msgid "Pages"
 msgstr "Oldalak"

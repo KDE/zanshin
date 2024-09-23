@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zanshin\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-08-30 00:40+0000\n"
+"POT-Creation-Date: 2024-09-23 00:40+0000\n"
 "PO-Revision-Date: 2021-05-08 05:24+0200\n"
 "Last-Translator: Burkhard Lück <lueck@hube-lueck.de>\n"
 "Language-Team: German <kde-i18n-de@kde.org>\n"
@@ -138,7 +138,6 @@ msgid "Cannot remove context %1"
 msgstr "Der Kontext „%1“ kann nicht entfernt werden"
 
 #: src/presentation/availablepagesmodel.cpp:139
-#: src/widgets/itemdelegate.cpp:143
 #, kde-format
 msgid "Inbox"
 msgstr "Posteingang"
@@ -248,12 +247,12 @@ msgstr "Die Aufgabe %1 kann nicht zum Projekt %2 hinzugefügt werden"
 msgid "Cannot remove task %1 from project %2"
 msgstr "Die Aufgabe %1 kann nicht aus dem Projekt %2 entfernt werden"
 
-#: src/presentation/projectpagemodel.cpp:104
+#: src/presentation/projectpagemodel.cpp:108
 #, kde-format
 msgid "Cannot modify task %1 in project %2"
 msgstr "Die Aufgabe %1 in Projekt %2 kann nicht geändert werden"
 
-#: src/presentation/projectpagemodel.cpp:130
+#: src/presentation/projectpagemodel.cpp:134
 #, kde-format
 msgid "Cannot move task %1 as a sub-task of %2"
 msgstr "Aufgabe %1 kann nicht zu Unteraufgabe von %2 verschoben werden"
@@ -346,12 +345,12 @@ msgstr "Kontext löschen"
 msgid "Do you really want to delete the context '%1'?"
 msgstr "Möchten Sie den ausgewählten Kontext „%1“ wirklich löschen?"
 
-#: src/widgets/availablesourcesview.cpp:55
+#: src/widgets/availablesourcesview.cpp:54
 #, kde-format
 msgid "Use as Default Source"
 msgstr "Als Standardquelle verwenden"
 
-#: src/widgets/availablesourcesview.cpp:76
+#: src/widgets/availablesourcesview.cpp:75
 #, kde-format
 msgid "Configure %1..."
 msgstr "%1 einrichten ..."
@@ -389,7 +388,7 @@ msgstr "Jährlich"
 #. i18n: ectx: property (windowTitle), widget (QWidget, EditorView)
 #. i18n: ectx: property (text), widget (QListView, attachmentList)
 #: src/widgets/editorview.ui:14 src/widgets/editorview.ui:184
-#: src/zanshin/app/main.cpp:88
+#: src/zanshin/app/main.cpp:89
 #, kde-format
 msgid "Editor"
 msgstr "Editor"
@@ -464,7 +463,7 @@ msgstr "Absteigend sortieren"
 msgid "Sort in ascending order"
 msgstr "Aufsteigend sortieren"
 
-#: src/widgets/itemdelegate.cpp:141
+#: src/widgets/itemdelegate.cpp:47
 #, kde-format
 msgid "Project: %1"
 msgstr "Projekt: %1"
@@ -633,12 +632,12 @@ msgctxt "@info:credit"
 msgid "Franck Arrecot"
 msgstr "Franck Arrecot"
 
-#: src/zanshin/app/main.cpp:80
+#: src/zanshin/app/main.cpp:81
 #, kde-format
 msgid "Sources"
 msgstr "Quellen"
 
-#: src/zanshin/app/main.cpp:84
+#: src/zanshin/app/main.cpp:85
 #, kde-format
 msgid "Pages"
 msgstr "Seiten"
