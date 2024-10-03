@@ -23,7 +23,6 @@ public:
     explicit TaskSourceProxy(QObject *parent = nullptr)
         : QSortFilterProxyModel(parent)
     {
-        setDynamicSortFilter(true);
     }
 
 protected:

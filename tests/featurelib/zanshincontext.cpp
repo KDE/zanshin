@@ -92,7 +92,6 @@ ZanshinContext::ZanshinContext(QObject *parent)
     );
 
     using namespace Presentation;
-    m_proxyModel->setDynamicSortFilter(true);
 
     auto appModel = ApplicationModel::Ptr::create();
 

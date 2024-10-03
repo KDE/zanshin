@@ -22,7 +22,6 @@ TaskFilterProxyModel::TaskFilterProxyModel(QObject *parent)
       m_showDone(false),
       m_showFuture(false)
 {
-    setDynamicSortFilter(true);
     setSortCaseSensitivity(Qt::CaseInsensitive);
     setSortOrder(Qt::AscendingOrder);
 }

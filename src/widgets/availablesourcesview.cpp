@@ -31,7 +31,6 @@ AvailableSourcesView::AvailableSourcesView(QWidget *parent)
       m_sortProxy(new QSortFilterProxyModel(this)),
       m_sourcesView(new QTreeView(this))
 {
-    m_sortProxy->setDynamicSortFilter(true);
     m_sortProxy->sort(0);
 
     m_sourcesView->setObjectName(QLatin1StringView("sourcesView"));
