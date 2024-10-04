@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zanshin\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-09-23 00:40+0000\n"
+"POT-Creation-Date: 2024-10-04 00:40+0000\n"
 "PO-Revision-Date: 2024-07-04 21:35+0200\n"
 "Last-Translator: Oliver Kellogg <olivermkellogg@gmail.com>\n"
 "Language-Team: Esperanto <kde-i18n-eo@kde.org>\n"
@@ -344,12 +344,12 @@ msgstr "Forigi Kuntekston"
 msgid "Do you really want to delete the context '%1'?"
 msgstr "Ĉu vi vere volas forigi la kuntekston '%1'?"
 
-#: src/widgets/availablesourcesview.cpp:54
+#: src/widgets/availablesourcesview.cpp:53
 #, kde-format
 msgid "Use as Default Source"
 msgstr "Uzi kiel Defaŭlta Fonto"
 
-#: src/widgets/availablesourcesview.cpp:75
+#: src/widgets/availablesourcesview.cpp:74
 #, kde-format
 msgid "Configure %1..."
 msgstr "Agordi %1..."

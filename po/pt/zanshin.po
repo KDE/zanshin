@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libkdepim\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-09-23 00:40+0000\n"
+"POT-Creation-Date: 2024-10-04 00:40+0000\n"
 "PO-Revision-Date: 2023-05-22 22:21+0100\n"
 "Last-Translator: José Nuno Pires <zepires@gmail.com>\n"
 "Language-Team: pt <kde-i18n-pt@kde.org>\n"
@@ -349,12 +349,12 @@ msgstr "Apagar o Contexto"
 msgid "Do you really want to delete the context '%1'?"
 msgstr "Deseja realmente apagar o contexto '%1'?"
 
-#: src/widgets/availablesourcesview.cpp:54
+#: src/widgets/availablesourcesview.cpp:53
 #, kde-format
 msgid "Use as Default Source"
 msgstr "Usar como Fonte Predefinida"
 
-#: src/widgets/availablesourcesview.cpp:75
+#: src/widgets/availablesourcesview.cpp:74
 #, kde-format
 msgid "Configure %1..."
 msgstr "Configurar o %1..."

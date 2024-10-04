@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zanshin\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-09-23 00:40+0000\n"
+"POT-Creation-Date: 2024-10-04 00:40+0000\n"
 "PO-Revision-Date: 2021-09-21 12:51+0630\n"
 "Last-Translator: ဇေယျာလွင် <lw1nzayar@yandex.com>\n"
 "Language-Team: Burmese <kde-i18n-doc@kde.org>\n"
@@ -346,12 +346,12 @@ msgstr "ဆက်စပ်အကြောင်းအရာ ဖျက်မည�
 msgid "Do you really want to delete the context '%1'?"
 msgstr "ဆက်စပ်အကြောင်းအရာ '%1' ကို သင်တကယ်ဖျက်မှာလား။"
 
-#: src/widgets/availablesourcesview.cpp:54
+#: src/widgets/availablesourcesview.cpp:53
 #, kde-format
 msgid "Use as Default Source"
 msgstr "ဒီဖော့ဇစ်မြစ်အဖြစ်သုံးမည်"
 
-#: src/widgets/availablesourcesview.cpp:75
+#: src/widgets/availablesourcesview.cpp:74
 #, kde-format
 msgid "Configure %1..."
 msgstr "%1 ပြင်ဆင်မည်..."

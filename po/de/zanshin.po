@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zanshin\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-09-23 00:40+0000\n"
+"POT-Creation-Date: 2024-10-04 00:40+0000\n"
 "PO-Revision-Date: 2021-05-08 05:24+0200\n"
 "Last-Translator: Burkhard Lück <lueck@hube-lueck.de>\n"
 "Language-Team: German <kde-i18n-de@kde.org>\n"
@@ -345,12 +345,12 @@ msgstr "Kontext löschen"
 msgid "Do you really want to delete the context '%1'?"
 msgstr "Möchten Sie den ausgewählten Kontext „%1“ wirklich löschen?"
 
-#: src/widgets/availablesourcesview.cpp:54
+#: src/widgets/availablesourcesview.cpp:53
 #, kde-format
 msgid "Use as Default Source"
 msgstr "Als Standardquelle verwenden"
 
-#: src/widgets/availablesourcesview.cpp:75
+#: src/widgets/availablesourcesview.cpp:74
 #, kde-format
 msgid "Configure %1..."
 msgstr "%1 einrichten ..."

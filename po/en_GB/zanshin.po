@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-09-23 00:40+0000\n"
+"POT-Creation-Date: 2024-10-04 00:40+0000\n"
 "PO-Revision-Date: 2024-07-05 14:00+0100\n"
 "Last-Translator: Steve Allewell <steve.allewell@gmail.com>\n"
 "Language-Team: British English\n"
@@ -341,12 +341,12 @@ msgstr "Delete Context"
 msgid "Do you really want to delete the context '%1'?"
 msgstr "Do you really want to delete the context '%1'?"
 
-#: src/widgets/availablesourcesview.cpp:54
+#: src/widgets/availablesourcesview.cpp:53
 #, kde-format
 msgid "Use as Default Source"
 msgstr "Use as Default Source"
 
-#: src/widgets/availablesourcesview.cpp:75
+#: src/widgets/availablesourcesview.cpp:74
 #, kde-format
 msgid "Configure %1..."
 msgstr "Configure %1..."
