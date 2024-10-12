@@ -16,13 +16,14 @@
 
 #include <KLocalizedString>
 
-#include <Akonadi/AgentFilterProxyModel>
+#include <Akonadi/AgentInstanceFilterProxyModel>
 #include <Akonadi/AgentInstance>
 #include <Akonadi/AgentConfigurationDialog>
 #include <Akonadi/AgentInstanceWidget>
 #include <Akonadi/AgentInstanceCreateJob>
 #include <Akonadi/AgentManager>
 #include <Akonadi/AgentTypeDialog>
+#include <Akonadi/AgentFilterProxyModel>
 
 #include <KCalendarCore/Todo>
 
@@ -38,7 +39,7 @@ ConfigDialog::ConfigDialog(QWidget *parent)
     description->setWordWrap(true);
     description->setText(i18n("Please select or create a resource which will be used by the application to store and query its TODOs."));
 
-    applyContentTypes(m_agentInstanceWidget->agentFilterProxyModel());
+    applyContentTypes(m_agentInstanceWidget->agentInstanceFilterProxyModel());
 
     auto toolBar = new QToolBar(this);
     toolBar->setIconSize(QSize(16, 16));
@@ -127,6 +128,11 @@ void ConfigDialog::onConfigureTriggered()
         AgentConfigurationDialog dialog(agent, this);
         dialog.exec();
     }
+}
+
+void ConfigDialog::applyContentTypes(AgentInstanceFilterProxyModel *model)
+{
+    model->addMimeTypeFilter(KCalendarCore::Todo::todoMimeType());
 }
 
 void ConfigDialog::applyContentTypes(AgentFilterProxyModel *model)

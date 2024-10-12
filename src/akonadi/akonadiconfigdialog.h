@@ -14,8 +14,9 @@
 namespace Akonadi
 {
 
-class AgentFilterProxyModel;
+class AgentInstanceFilterProxyModel;
 class AgentInstanceWidget;
+class AgentFilterProxyModel;
 
 class ConfigDialog : public QDialog
 {
@@ -29,6 +30,7 @@ private slots:
     void onConfigureTriggered();
 
 private:
+    void applyContentTypes(Akonadi::AgentInstanceFilterProxyModel *model);
     void applyContentTypes(AgentFilterProxyModel *model);
 
     Akonadi::AgentInstanceWidget *m_agentInstanceWidget;

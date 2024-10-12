@@ -82,7 +82,7 @@ find_package(KF6 ${KF_MIN_VERSION} REQUIRED COMPONENTS
     Crash
 )
 
-find_package(KPim6Akonadi "6.2.40" REQUIRED)
+find_package(KPim6Akonadi "6.2.45" REQUIRED)
 find_package(KPim6AkonadiCalendar "6.2.40" REQUIRED)
 find_package(KPim6KontactInterface "6.2.40" REQUIRED)
 
