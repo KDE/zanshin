@@ -33,7 +33,7 @@ private:
     void applyContentTypes(Akonadi::AgentInstanceFilterProxyModel *model);
     void applyContentTypes(AgentFilterProxyModel *model);
 
-    Akonadi::AgentInstanceWidget *m_agentInstanceWidget;
+    Akonadi::AgentInstanceWidget *const m_agentInstanceWidget;
 };
 
 }
