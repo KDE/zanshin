@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zanshin\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-10-04 00:40+0000\n"
+"POT-Creation-Date: 2024-10-13 00:40+0000\n"
 "PO-Revision-Date: 2024-07-04 06:00+0200\n"
 "Last-Translator: Temuri Doghonadze <temuri.doghonadze@gmail.com>\n"
 "Language-Team: Georgian <kde-i18n-doc@kde.org>\n"
@@ -28,13 +28,13 @@ msgctxt "EMAIL OF TRANSLATORS"
 msgid "Your emails"
 msgstr "Temuri.doghonadze@gmail.com"
 
-#: src/akonadi/akonadiconfigdialog.cpp:35
+#: src/akonadi/akonadiconfigdialog.cpp:36
 #, kde-format
 msgctxt "@title:window"
 msgid "Configure"
 msgstr "მორგება"
 
-#: src/akonadi/akonadiconfigdialog.cpp:39
+#: src/akonadi/akonadiconfigdialog.cpp:40
 #, kde-format
 msgid ""
 "Please select or create a resource which will be used by the application to "
@@ -43,27 +43,27 @@ msgstr ""
 "შექმენით ან აირჩიეთ რესურსი, რომელიც გამოყენებული იქნება აპლიკაციის მიერ "
 "მისი განრიგის შესანახად და წასაკითხად."
 
-#: src/akonadi/akonadiconfigdialog.cpp:49
+#: src/akonadi/akonadiconfigdialog.cpp:50
 #, kde-format
 msgid "Add resource"
 msgstr "რესურსის დამატება"
 
-#: src/akonadi/akonadiconfigdialog.cpp:56
+#: src/akonadi/akonadiconfigdialog.cpp:57
 #, kde-format
 msgid "Remove resource"
 msgstr "რესურსის წაშლა"
 
-#: src/akonadi/akonadiconfigdialog.cpp:63
+#: src/akonadi/akonadiconfigdialog.cpp:64
 #, kde-format
 msgid "Configure resource..."
 msgstr "რესურსის მორგება..."
 
-#: src/akonadi/akonadiconfigdialog.cpp:111
+#: src/akonadi/akonadiconfigdialog.cpp:112
 #, kde-format
 msgid "Multiple Agent Deletion"
 msgstr "მრავალი აგენტის წაშლა"
 
-#: src/akonadi/akonadiconfigdialog.cpp:112
+#: src/akonadi/akonadiconfigdialog.cpp:113
 #, kde-format
 msgid "Do you really want to delete the selected agent instances?"
 msgstr "მართლა გნებავთ მონიშნული აგენტის გაშვებული ასლების წაშლა?"

@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zanshin_qt\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-10-04 00:40+0000\n"
+"POT-Creation-Date: 2024-10-13 00:40+0000\n"
 "PO-Revision-Date: 2024-07-05 15:34+0900\n"
 "Last-Translator: Kisaragi Hiu <mail@kisaragi-hiu.com>\n"
 "Language-Team: Traditional Chinese <zh-l10n@lists.slat.org>\n"
@@ -25,40 +25,40 @@ msgctxt "EMAIL OF TRANSLATORS"
 msgid "Your emails"
 msgstr "mail@kisaragi-hiu.com"
 
-#: src/akonadi/akonadiconfigdialog.cpp:35
+#: src/akonadi/akonadiconfigdialog.cpp:36
 #, kde-format
 msgctxt "@title:window"
 msgid "Configure"
 msgstr "設定"
 
-#: src/akonadi/akonadiconfigdialog.cpp:39
+#: src/akonadi/akonadiconfigdialog.cpp:40
 #, kde-format
 msgid ""
 "Please select or create a resource which will be used by the application to "
 "store and query its TODOs."
 msgstr "請選取或建立一個應用程式用來儲存或查詢待辦事項的資源"
 
-#: src/akonadi/akonadiconfigdialog.cpp:49
+#: src/akonadi/akonadiconfigdialog.cpp:50
 #, kde-format
 msgid "Add resource"
 msgstr "新增資源"
 
-#: src/akonadi/akonadiconfigdialog.cpp:56
+#: src/akonadi/akonadiconfigdialog.cpp:57
 #, kde-format
 msgid "Remove resource"
 msgstr "移除資源"
 
-#: src/akonadi/akonadiconfigdialog.cpp:63
+#: src/akonadi/akonadiconfigdialog.cpp:64
 #, kde-format
 msgid "Configure resource..."
 msgstr "設定資源..."
 
-#: src/akonadi/akonadiconfigdialog.cpp:111
+#: src/akonadi/akonadiconfigdialog.cpp:112
 #, kde-format
 msgid "Multiple Agent Deletion"
 msgstr "代理程式刪除"
 
-#: src/akonadi/akonadiconfigdialog.cpp:112
+#: src/akonadi/akonadiconfigdialog.cpp:113
 #, kde-format
 msgid "Do you really want to delete the selected agent instances?"
 msgstr "您確定要刪除所有選取的代理程式實體嗎？"

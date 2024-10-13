@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zanshin\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-10-04 00:40+0000\n"
+"POT-Creation-Date: 2024-10-13 00:40+0000\n"
 "PO-Revision-Date: 2024-08-21 00:08+0200\n"
 "Last-Translator: Shinjo Park <kde@peremen.name>\n"
 "Language-Team: Korean <kde-kr@kde.org>\n"
@@ -27,40 +27,40 @@ msgctxt "EMAIL OF TRANSLATORS"
 msgid "Your emails"
 msgstr "kde@peremen.name"
 
-#: src/akonadi/akonadiconfigdialog.cpp:35
+#: src/akonadi/akonadiconfigdialog.cpp:36
 #, kde-format
 msgctxt "@title:window"
 msgid "Configure"
 msgstr "설정"
 
-#: src/akonadi/akonadiconfigdialog.cpp:39
+#: src/akonadi/akonadiconfigdialog.cpp:40
 #, kde-format
 msgid ""
 "Please select or create a resource which will be used by the application to "
 "store and query its TODOs."
 msgstr "앱에서 할 일을 저장하고 질의할 리소스를 만들거나 선택하십시오."
 
-#: src/akonadi/akonadiconfigdialog.cpp:49
+#: src/akonadi/akonadiconfigdialog.cpp:50
 #, kde-format
 msgid "Add resource"
 msgstr "리소스 추가"
 
-#: src/akonadi/akonadiconfigdialog.cpp:56
+#: src/akonadi/akonadiconfigdialog.cpp:57
 #, kde-format
 msgid "Remove resource"
 msgstr "리소스 삭제"
 
-#: src/akonadi/akonadiconfigdialog.cpp:63
+#: src/akonadi/akonadiconfigdialog.cpp:64
 #, kde-format
 msgid "Configure resource..."
 msgstr "리소스 설정..."
 
-#: src/akonadi/akonadiconfigdialog.cpp:111
+#: src/akonadi/akonadiconfigdialog.cpp:112
 #, kde-format
 msgid "Multiple Agent Deletion"
 msgstr "다중 에이전트 삭제"
 
-#: src/akonadi/akonadiconfigdialog.cpp:112
+#: src/akonadi/akonadiconfigdialog.cpp:113
 #, kde-format
 msgid "Do you really want to delete the selected agent instances?"
 msgstr "선택한 에이전트 인스턴스를 삭제하시겠습니까?"

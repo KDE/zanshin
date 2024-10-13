@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zanshin\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-10-04 00:40+0000\n"
+"POT-Creation-Date: 2024-10-13 00:40+0000\n"
 "PO-Revision-Date: 2024-07-05 22:28+0200\n"
 "Last-Translator: Iñigo Salvador Azurmendi <xalba@ni.eus>\n"
 "Language-Team: Basque <kde-i18n-eu@kde.org>\n"
@@ -30,13 +30,13 @@ msgctxt "EMAIL OF TRANSLATORS"
 msgid "Your emails"
 msgstr "xalba@ni.eus"
 
-#: src/akonadi/akonadiconfigdialog.cpp:35
+#: src/akonadi/akonadiconfigdialog.cpp:36
 #, kde-format
 msgctxt "@title:window"
 msgid "Configure"
 msgstr "Konfiguratu"
 
-#: src/akonadi/akonadiconfigdialog.cpp:39
+#: src/akonadi/akonadiconfigdialog.cpp:40
 #, kde-format
 msgid ""
 "Please select or create a resource which will be used by the application to "
@@ -45,27 +45,27 @@ msgstr ""
 "Hautatu edo sortu aplikazioek bere eginkizunak gorde eta itauntzeko "
 "baliabide bat."
 
-#: src/akonadi/akonadiconfigdialog.cpp:49
+#: src/akonadi/akonadiconfigdialog.cpp:50
 #, kde-format
 msgid "Add resource"
 msgstr "Gehitu baliabidea"
 
-#: src/akonadi/akonadiconfigdialog.cpp:56
+#: src/akonadi/akonadiconfigdialog.cpp:57
 #, kde-format
 msgid "Remove resource"
 msgstr "Kendu baliabidea"
 
-#: src/akonadi/akonadiconfigdialog.cpp:63
+#: src/akonadi/akonadiconfigdialog.cpp:64
 #, kde-format
 msgid "Configure resource..."
 msgstr "Konfiguratu baliabidea..."
 
-#: src/akonadi/akonadiconfigdialog.cpp:111
+#: src/akonadi/akonadiconfigdialog.cpp:112
 #, kde-format
 msgid "Multiple Agent Deletion"
 msgstr "Agenteen ezabatze anizkoitza"
 
-#: src/akonadi/akonadiconfigdialog.cpp:112
+#: src/akonadi/akonadiconfigdialog.cpp:113
 #, kde-format
 msgid "Do you really want to delete the selected agent instances?"
 msgstr "Benetan ezabatu nahi duzu hautatutako agentearen instantzia?"

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: kde 49i410\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-10-04 00:40+0000\n"
+"POT-Creation-Date: 2024-10-13 00:40+0000\n"
 "PO-Revision-Date: 2015-02-22 15:24+0100\n"
 "Last-Translator: Samir Ribić <megaribi@epn.ba>\n"
 "Language-Team: Bosnian\n"
@@ -31,14 +31,14 @@ msgctxt "EMAIL OF TRANSLATORS"
 msgid "Your emails"
 msgstr "Samir.ribic@etf.unsa.ba,adautbegov1@etf.unsa.ba"
 
-#: src/akonadi/akonadiconfigdialog.cpp:35
+#: src/akonadi/akonadiconfigdialog.cpp:36
 #, fuzzy, kde-format
 #| msgid "Configure Zanshin"
 msgctxt "@title:window"
 msgid "Configure"
 msgstr "Konfiguriši  Zanshin"
 
-#: src/akonadi/akonadiconfigdialog.cpp:39
+#: src/akonadi/akonadiconfigdialog.cpp:40
 #, fuzzy, kde-format
 #| msgid ""
 #| "Please select or create a resource which will be used by the application "
@@ -50,31 +50,31 @@ msgstr ""
 "Molim odaberite ili kreirajte izvor koji će biti korišten od strane "
 "aplikacije za spremanje i ispitivanje obaveza."
 
-#: src/akonadi/akonadiconfigdialog.cpp:49
+#: src/akonadi/akonadiconfigdialog.cpp:50
 #, fuzzy, kde-format
 #| msgid "Remove Project"
 msgid "Add resource"
 msgstr "Ukloni projekat"
 
-#: src/akonadi/akonadiconfigdialog.cpp:56
+#: src/akonadi/akonadiconfigdialog.cpp:57
 #, fuzzy, kde-format
 #| msgid "Remove Project"
 msgid "Remove resource"
 msgstr "Ukloni projekat"
 
-#: src/akonadi/akonadiconfigdialog.cpp:63
+#: src/akonadi/akonadiconfigdialog.cpp:64
 #, fuzzy, kde-format
 #| msgid "Configure LDAP Servers..."
 msgid "Configure resource..."
 msgstr "Konfigurišite LDAP servere..."
 
-#: src/akonadi/akonadiconfigdialog.cpp:111
+#: src/akonadi/akonadiconfigdialog.cpp:112
 #, fuzzy, kde-format
 #| msgid "Multiple Agent Deletion"
 msgid "Multiple Agent Deletion"
 msgstr "Višestruko brisanje agenata"
 
-#: src/akonadi/akonadiconfigdialog.cpp:112
+#: src/akonadi/akonadiconfigdialog.cpp:113
 #, fuzzy, kde-format
 #| msgid "Do you really want to delete the selected agent instance?"
 #| msgid_plural "Do you really want to delete these %1 agent instances?"
