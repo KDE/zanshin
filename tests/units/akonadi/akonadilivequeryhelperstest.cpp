@@ -110,6 +110,15 @@ private slots:
         expected.sort();
         QCOMPARE(displayNamesFromCollections(collections), expected);
 
+        // WHEN (fetching twice in a row)
+        collections.clear();
+        fetch(add);
+        fetch(add);
+        TestHelpers::waitForEmptyJobQueue();
+
+        // THEN (the list shouldn't be duplicated)
+        QCOMPARE(displayNamesFromCollections(collections), expected);
+
         // WHEN (should not crash when the helpers object is deleted)
         helpers.clear();
         collections.clear();
@@ -182,6 +191,15 @@ private slots:
         expected.sort();
         QCOMPARE(displayNamesFromCollections(collections), expected);
 
+        // WHEN (fetching twice in a row)
+        collections.clear();
+        fetch(add);
+        fetch(add);
+        TestHelpers::waitForEmptyJobQueue();
+
+        // THEN (the list shouldn't be duplicated)
+        QCOMPARE(displayNamesFromCollections(collections), expected);
+
         // WHEN (should not crash when the helpers object is deleted)
         helpers.clear();
         collections.clear();
@@ -243,6 +261,16 @@ private slots:
         TestHelpers::waitForEmptyJobQueue();
 
         // THEN
+        QCOMPARE(titlesFromItems(items), expected);
+
+        // WHEN (fetching twice in a row)
+        helpers = createHelpers(data);
+        items.clear();
+        fetch(add);
+        fetch(add);
+        TestHelpers::waitForEmptyJobQueue();
+
+        // THEN (the list shouldn't be duplicated)
         QCOMPARE(titlesFromItems(items), expected);
     }
 
@@ -379,6 +407,15 @@ private slots:
         expected.sort();
         QCOMPARE(titlesFromItems(items), expected);
 
+        // WHEN (fetching twice in a row)
+        items.clear();
+        fetch(add);
+        fetch(add);
+        TestHelpers::waitForEmptyJobQueue();
+
+        // THEN (the list shouldn't be duplicated)
+        QCOMPARE(titlesFromItems(items), expected);
+
         // WHEN (should not crash when the helpers object is deleted)
         helpers.clear();
         items.clear();
@@ -445,6 +482,15 @@ private slots:
         expected.sort();
         QCOMPARE(titlesFromItems(items), expected);
 
+        // WHEN (fetching twice in a row)
+        items.clear();
+        fetch(add);
+        fetch(add);
+        TestHelpers::waitForEmptyJobQueue();
+
+        // THEN (the list shouldn't be duplicated)
+        QCOMPARE(titlesFromItems(items), expected);
+
         // WHEN (should not crash when the helpers object is deleted)
         helpers.clear();
         items.clear();
@@ -455,6 +501,8 @@ private slots:
         QCOMPARE(titlesFromItems(items), expected);
     }
 };
+
+// TODO: missing a test for LiveQueryHelpers::fetchTaskAndAncestors
 
 ZANSHIN_TEST_MAIN(AkonadiLiveQueryHelpersTest)
 

@@ -95,6 +95,18 @@ public:
     }
 
 private:
+    // same impl as in KIO::Job, not sure why this isn't in KCompositeJob
+    bool doKill() override
+    {
+        // kill all subjobs, without triggering their result slot
+        for (KJob *job : subjobs()) {
+            job->kill(KJob::Quietly);
+        }
+        clearSubjobs();
+
+        return true;
+    }
+
     void slotResult(KJob *kjob) override
     {
         if (kjob->error()) {
@@ -265,6 +277,19 @@ public:
     }
 
 private:
+    // same impl as in KIO::Job, not sure why this isn't in KCompositeJob
+    bool doKill() override
+    {
+        // kill all subjobs, without triggering their result slot
+        for (KJob *job : subjobs()) {
+            job->kill(KJob::Quietly);
+        }
+        clearSubjobs();
+
+        return true;
+    }
+
+
     void slotResult(KJob *kjob) override
     {
         if (kjob->error()) {
