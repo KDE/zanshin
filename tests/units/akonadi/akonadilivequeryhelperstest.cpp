@@ -33,6 +33,22 @@ static QString titleFromItem(const Akonadi::Item &item)
     }
 }
 
+static QStringList titlesFromItems(const QList<Akonadi::Item> &items)
+{
+    auto result = QStringList();
+    std::transform(items.constBegin(), items.constEnd(), std::back_inserter(result), titleFromItem);
+    result.sort();
+    return result;
+}
+
+static QStringList displayNamesFromCollections(const QList<Akonadi::Collection> &collections)
+{
+    auto result = QStringList();
+    std::transform(collections.constBegin(), collections.constEnd(), std::back_inserter(result), std::bind(&Akonadi::Collection::displayName, _1));
+    result.sort();
+    return result;
+}
+
 class AkonadiLiveQueryHelpersTest : public QObject
 {
     Q_OBJECT
@@ -87,18 +103,12 @@ private slots:
         fetch(add);
         TestHelpers::waitForEmptyJobQueue();
 
-        auto result = QStringList();
-        std::transform(collections.constBegin(), collections.constEnd(),
-                       std::back_inserter(result),
-                       std::bind(&Akonadi::Collection::displayName, _1));
-        result.sort();
-
         // THEN
         auto expected = QStringList();
         expected << QStringLiteral("43") << QStringLiteral("46") << QStringLiteral("49") << QStringLiteral("52");
 
         expected.sort();
-        QCOMPARE(result, expected);
+        QCOMPARE(displayNamesFromCollections(collections), expected);
 
         // WHEN (should not crash when the helpers object is deleted)
         helpers.clear();
@@ -107,12 +117,7 @@ private slots:
         TestHelpers::waitForEmptyJobQueue();
 
         // THEN
-        result.clear();
-        std::transform(collections.constBegin(), collections.constEnd(),
-                       std::back_inserter(result),
-                       std::bind(&Akonadi::Collection::displayName, _1));
-        result.sort();
-        QCOMPARE(result, expected);
+        QCOMPARE(displayNamesFromCollections(collections), expected);
     }
 
     void shouldFetchCollectionsForRoot_data()
@@ -159,12 +164,6 @@ private slots:
         fetch(add);
         TestHelpers::waitForEmptyJobQueue();
 
-        auto result = QStringList();
-        std::transform(collections.constBegin(), collections.constEnd(),
-                       std::back_inserter(result),
-                       std::bind(&Akonadi::Collection::displayName, _1));
-        result.sort();
-
         // THEN
         auto expected = QStringList();
 
@@ -181,7 +180,7 @@ private slots:
         }
 
         expected.sort();
-        QCOMPARE(result, expected);
+        QCOMPARE(displayNamesFromCollections(collections), expected);
 
         // WHEN (should not crash when the helpers object is deleted)
         helpers.clear();
@@ -190,12 +189,7 @@ private slots:
         TestHelpers::waitForEmptyJobQueue();
 
         // THEN
-        result.clear();
-        std::transform(collections.constBegin(), collections.constEnd(),
-                       std::back_inserter(result),
-                       std::bind(&Akonadi::Collection::displayName, _1));
-        result.sort();
-        QCOMPARE(result, expected);
+        QCOMPARE(displayNamesFromCollections(collections), expected);
     }
 
     void shouldFetchItems()
@@ -236,17 +230,11 @@ private slots:
         fetch(add);
         TestHelpers::waitForEmptyJobQueue();
 
-        auto result = QStringList();
-        std::transform(items.constBegin(), items.constEnd(),
-                       std::back_inserter(result),
-                       titleFromItem);
-        result.sort();
-
         // THEN
         auto expected = QStringList();
         expected << QStringLiteral("43") << QStringLiteral("44") << QStringLiteral("47") << QStringLiteral("48");
         expected.sort();
-        QCOMPARE(result, expected);
+        QCOMPARE(titlesFromItems(items), expected);
 
         // WHEN (should not crash when the helpers object is deleted)
         helpers.clear();
@@ -255,12 +243,7 @@ private slots:
         TestHelpers::waitForEmptyJobQueue();
 
         // THEN
-        result.clear();
-        std::transform(items.constBegin(), items.constEnd(),
-                       std::back_inserter(result),
-                       titleFromItem);
-        result.sort();
-        QCOMPARE(result, expected);
+        QCOMPARE(titlesFromItems(items), expected);
     }
 
     void shouldFetchItemsByCollection_data()
@@ -299,12 +282,6 @@ private slots:
         fetch(add);
         TestHelpers::waitForEmptyJobQueue();
 
-        auto result = QStringList();
-        std::transform(items.constBegin(), items.constEnd(),
-                       std::back_inserter(result),
-                       titleFromItem);
-        result.sort();
-
         // THEN
         auto expected = QStringList();
 
@@ -319,7 +296,7 @@ private slots:
         QVERIFY(!expected.isEmpty());
 
         expected.sort();
-        QCOMPARE(result, expected);
+        QCOMPARE(titlesFromItems(items), expected);
 
         // WHEN (should not crash when the helpers object is deleted)
         helpers.clear();
@@ -328,12 +305,7 @@ private slots:
         TestHelpers::waitForEmptyJobQueue();
 
         // THEN
-        result.clear();
-        std::transform(items.constBegin(), items.constEnd(),
-                       std::back_inserter(result),
-                       titleFromItem);
-        result.sort();
-        QCOMPARE(result, expected);
+        QCOMPARE(titlesFromItems(items), expected);
     }
 
     void shouldFetchItemsForContext_data()
@@ -386,12 +358,6 @@ private slots:
         fetch(add);
         TestHelpers::waitForEmptyJobQueue();
 
-        auto result = QStringList();
-        std::transform(items.constBegin(), items.constEnd(),
-                       std::back_inserter(result),
-                       titleFromItem);
-        result.sort();
-
         // THEN
         auto expected = QStringList();
 
@@ -402,7 +368,7 @@ private slots:
         QVERIFY(!expected.isEmpty());
 
         expected.sort();
-        QCOMPARE(result, expected);
+        QCOMPARE(titlesFromItems(items), expected);
 
         // WHEN (should not crash when the helpers object is deleted)
         helpers.clear();
@@ -411,12 +377,7 @@ private slots:
         TestHelpers::waitForEmptyJobQueue();
 
         // THEN
-        result.clear();
-        std::transform(items.constBegin(), items.constEnd(),
-                       std::back_inserter(result),
-                       titleFromItem);
-        result.sort();
-        QCOMPARE(result, expected);
+        QCOMPARE(titlesFromItems(items), expected);
     }
 
     void shouldFetchSiblings_data()
@@ -459,12 +420,6 @@ private slots:
         fetch(add);
         TestHelpers::waitForEmptyJobQueue();
 
-        auto result = QStringList();
-        std::transform(items.constBegin(), items.constEnd(),
-                       std::back_inserter(result),
-                       titleFromItem);
-        result.sort();
-
         // THEN
         auto expected = QStringList();
 
@@ -479,7 +434,7 @@ private slots:
         QVERIFY(!expected.isEmpty());
 
         expected.sort();
-        QCOMPARE(result, expected);
+        QCOMPARE(titlesFromItems(items), expected);
 
         // WHEN (should not crash when the helpers object is deleted)
         helpers.clear();
@@ -488,12 +443,7 @@ private slots:
         TestHelpers::waitForEmptyJobQueue();
 
         // THEN
-        result.clear();
-        std::transform(items.constBegin(), items.constEnd(),
-                       std::back_inserter(result),
-                       titleFromItem);
-        result.sort();
-        QCOMPARE(result, expected);
+        QCOMPARE(titlesFromItems(items), expected);
     }
 };
 
