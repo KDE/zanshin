@@ -23,14 +23,20 @@ LiveQueryHelpers::LiveQueryHelpers(const SerializerInterface::Ptr &serializer,
 LiveQueryHelpers::CollectionFetchFunction LiveQueryHelpers::fetchAllCollections(QObject *parent) const
 {
     auto storage = m_storage;
-    return [storage, parent] (const Domain::LiveQueryInput<Collection>::AddFunction &add) {
-        auto job = storage->fetchCollections(Collection::root(), StorageInterface::Recursive, parent);
-        Utils::JobHandler::install(job->kjob(), [job, add] {
-            if (job->kjob()->error())
-                return;
+    return [storage, parent, job = static_cast<CollectionFetchJobInterface *>(nullptr)] (const Domain::LiveQueryInput<Collection>::AddFunction &add) mutable {
+        if (job) {
+            // Cancel on-going job, so that only the latest list of items is returned
+            // This prevents a race where we'd return items twice
+            job->kjob()->kill();
+        }
+        job = storage->fetchCollections(Collection::root(), StorageInterface::Recursive, parent);
+        Utils::JobHandler::install(job->kjob(), [&job, add] {
+            if (job->kjob()->error() == KJob::NoError) {
+                foreach (const auto &collection, job->collections())
+                    add(collection);
 
-            foreach (const auto &collection, job->collections())
-                add(collection);
+                job = nullptr;
+            }
         });
     };
 }
@@ -38,23 +44,28 @@ LiveQueryHelpers::CollectionFetchFunction LiveQueryHelpers::fetchAllCollections(
 LiveQueryHelpers::CollectionFetchFunction LiveQueryHelpers::fetchCollections(const Collection &root, QObject *parent) const
 {
     auto storage = m_storage;
-    return [storage, root, parent] (const Domain::LiveQueryInput<Collection>::AddFunction &add) {
-        auto job = storage->fetchCollections(root, StorageInterface::Recursive, parent);
-        Utils::JobHandler::install(job->kjob(), [root, job, add] {
-            if (job->kjob()->error())
-                return;
+    return [storage, root, parent, job = static_cast<CollectionFetchJobInterface *>(nullptr)] (const Domain::LiveQueryInput<Collection>::AddFunction &add) mutable {
+        if (job) {
+            // Cancel on-going job, so that only the latest list of items is returned
+            // This prevents a race where we'd return items twice
+            job->kjob()->kill();
+        }
+        job = storage->fetchCollections(root, StorageInterface::Recursive, parent);
+        Utils::JobHandler::install(job->kjob(), [root, &job, add] {
+            if (job->kjob()->error() == KJob::NoError) {
+                auto directChildren = QHash<Collection::Id, Collection>();
+                foreach (const auto &collection, job->collections()) {
+                    auto directChild = collection;
+                    while (directChild.parentCollection() != root)
+                        directChild = directChild.parentCollection();
+                    if (!directChildren.contains(directChild.id()))
+                        directChildren[directChild.id()] = directChild;
+                }
 
-            auto directChildren = QHash<Collection::Id, Collection>();
-            foreach (const auto &collection, job->collections()) {
-                auto directChild = collection;
-                while (directChild.parentCollection() != root)
-                    directChild = directChild.parentCollection();
-                if (!directChildren.contains(directChild.id()))
-                    directChildren[directChild.id()] = directChild;
+                foreach (const auto &directChild, directChildren)
+                    add(directChild);
             }
-
-            foreach (const auto &directChild, directChildren)
-                add(directChild);
+            job = nullptr;
         });
     };
 }
@@ -63,27 +74,32 @@ LiveQueryHelpers::ItemFetchFunction LiveQueryHelpers::fetchItems(QObject *parent
 {
     auto serializer = m_serializer;
     auto storage = m_storage;
-    return [serializer, storage, parent] (const Domain::LiveQueryInput<Item>::AddFunction &add) {
-        auto job = storage->fetchCollections(Akonadi::Collection::root(),
+    return [serializer, storage, parent, job = static_cast<CollectionFetchJobInterface *>(nullptr)] (const Domain::LiveQueryInput<Item>::AddFunction &add) mutable {
+        if (job) {
+            // Cancel on-going job, so that only the latest list of items is returned
+            // This prevents a race where we'd return items twice
+            job->kjob()->kill();
+        }
+        job = storage->fetchCollections(Akonadi::Collection::root(),
                                              StorageInterface::Recursive,
                                              parent);
-        Utils::JobHandler::install(job->kjob(), [serializer, storage, job, add, parent] {
-            if (job->kjob()->error() != KJob::NoError)
-                return;
+        Utils::JobHandler::install(job->kjob(), [serializer, storage, &job, add, parent] {
+            if (job->kjob()->error() == KJob::NoError) {
+                foreach (const auto &collection, job->collections()) {
+                    if (!serializer->isSelectedCollection(collection))
+                        continue;
 
-            foreach (const auto &collection, job->collections()) {
-                if (!serializer->isSelectedCollection(collection))
-                    continue;
+                    auto itemsJob = storage->fetchItems(collection, parent);
+                    Utils::JobHandler::install(itemsJob->kjob(), [itemsJob, add] {
+                        if (itemsJob->kjob()->error() != KJob::NoError)
+                            return;
 
-                auto job = storage->fetchItems(collection, parent);
-                Utils::JobHandler::install(job->kjob(), [job, add] {
-                    if (job->kjob()->error() != KJob::NoError)
-                        return;
-
-                    foreach (const auto &item, job->items())
-                        add(item);
-                });
+                        foreach (const auto &item, itemsJob->items())
+                            add(item);
+                    });
+                }
             }
+            job = nullptr;
         });
     };
 }
@@ -124,6 +140,7 @@ LiveQueryHelpers::ItemFetchFunction LiveQueryHelpers::fetchItemsForContext(const
     };
 }
 
+// TODO: missing a unittest in AkonadiLiveQueryHelpersTest
 LiveQueryHelpers::ItemFetchFunction LiveQueryHelpers::fetchTaskAndAncestors(Domain::Task::Ptr task, QObject *parent) const
 {
     Akonadi::Item childItem = m_serializer->createItemFromTask(task);
@@ -133,36 +150,33 @@ LiveQueryHelpers::ItemFetchFunction LiveQueryHelpers::fetchTaskAndAncestors(Doma
     const Akonadi::Item::Id childId = childItem.id();
     auto storage = m_storage;
     auto serializer = m_serializer;
-    return [storage, serializer, childItem, childId, parent] (const Domain::LiveQueryInput<Item>::AddFunction &add) {
-        auto job = storage->fetchItems(childItem.parentCollection(), parent);
-        Utils::JobHandler::install(job->kjob(), [job, add, serializer, childId] {
-            if (job->kjob()->error() != KJob::NoError)
-                return;
-
-            const auto items = job->items();
-            // The item itself is part of the result, we need that in findProject, to react on changes of the item itself
-            // To return a correct child item in case it got updated, we can't use childItem, we need to find it in the list.
-            const auto myself = std::find_if(items.cbegin(), items.cend(),
-                                             [childId] (const Akonadi::Item &item) {
-                                                 return childId == item.id();
-                                             });
-            if (myself == items.cend()) {
-                qWarning() << "Did not find item in the listing for its parent collection. Item ID:" << childId;
-                return;
-            }
-            add(*myself);
-            auto parentUid = serializer->relatedUidFromItem(*myself);
-            while (!parentUid.isEmpty()) {
-                const auto parent = std::find_if(items.cbegin(), items.cend(),
-                                                 [serializer, parentUid] (const Akonadi::Item &item) {
-                                                     return serializer->itemUid(item) == parentUid;
-                                                 });
-                if (parent == items.cend()) {
-                    break;
+    return [storage, serializer, childItem, childId, parent, job = static_cast<ItemFetchJobInterface *>(nullptr)](const Domain::LiveQueryInput<Item>::AddFunction &add) mutable {
+        if (job) {
+            job->kjob()->kill();
+        }
+        job = storage->fetchItems(childItem.parentCollection(), parent);
+        Utils::JobHandler::install(job->kjob(), [&job, add, serializer, childId] {
+            if (job->kjob()->error() == KJob::NoError) {
+                const auto items = job->items();
+                // The item itself is part of the result, we need that in findProject, to react on changes of the item itself
+                // To return a correct child item in case it got updated, we can't use childItem, we need to find it in the list.
+                const auto myself = std::find_if(items.cbegin(), items.cend(), [childId](const Akonadi::Item &item) { return childId == item.id(); });
+                if (myself == items.cend()) {
+                    qWarning() << "Did not find item in the listing for its parent collection. Item ID:" << childId;
+                    return;
                 }
-                add(*parent);
-                parentUid = serializer->relatedUidFromItem(*parent);
+                add(*myself);
+                auto parentUid = serializer->relatedUidFromItem(*myself);
+                while (!parentUid.isEmpty()) {
+                    const auto parent = std::find_if(items.cbegin(), items.cend(), [serializer, parentUid](const Akonadi::Item &item) { return serializer->itemUid(item) == parentUid; });
+                    if (parent == items.cend()) {
+                        break;
+                    }
+                    add(*parent);
+                    parentUid = serializer->relatedUidFromItem(*parent);
+                }
             }
+            job = nullptr;
         });
     };
 }
@@ -185,23 +199,29 @@ LiveQueryHelpers::CollectionFetchFunction LiveQueryHelpers::fetchItemCollection(
 LiveQueryHelpers::ItemFetchFunction LiveQueryHelpers::fetchSiblings(const Item &item, QObject *parent) const
 {
     auto storage = m_storage;
-    return [storage, item, parent] (const Domain::LiveQueryInput<Item>::AddFunction &add) {
-        auto job = storage->fetchItem(item, parent);
-        Utils::JobHandler::install(job->kjob(), [storage, job, add, parent] {
-            if (job->kjob()->error() != KJob::NoError)
-                return;
+    return [storage, item, parent, job = static_cast<ItemFetchJobInterface *>(nullptr)](const Domain::LiveQueryInput<Item>::AddFunction &add) mutable {
+        // Called by LiveQuery::doFetch() / LiveRelationshipQuery::doFetch()
+        if (job) {
+            // Cancel on-going job, so that only the latest list of items is returned
+            // This prevents a race where we'd return items twice
+            job->kjob()->kill();
+        }
+        job = storage->fetchItem(item, parent);
+        Utils::JobHandler::install(job->kjob(), [storage, &job, add, parent] {
+            if (job->kjob()->error() == KJob::NoError) {
+                Q_ASSERT(job->items().size() == 1);
+                auto item = job->items().at(0);
+                Q_ASSERT(item.parentCollection().isValid());
+                auto itemsJob = storage->fetchItems(item.parentCollection(), parent);
+                Utils::JobHandler::install(itemsJob->kjob(), [itemsJob, add] {
+                    if (itemsJob->kjob()->error() != KJob::NoError)
+                        return;
 
-            Q_ASSERT(job->items().size() == 1);
-            auto item = job->items().at(0);
-            Q_ASSERT(item.parentCollection().isValid());
-            auto job = storage->fetchItems(item.parentCollection(), parent);
-            Utils::JobHandler::install(job->kjob(), [job, add] {
-                if (job->kjob()->error() != KJob::NoError)
-                    return;
-
-                foreach (const auto &item, job->items())
-                    add(item);
-            });
+                    foreach (const auto &item, itemsJob->items())
+                        add(item);
+                });
+            }
+            job = nullptr;
         });
     };
 }
