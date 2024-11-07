@@ -74,13 +74,16 @@ include_directories (
 )
 
 find_package(KF6 ${KF_MIN_VERSION} REQUIRED COMPONENTS
-    Runner
     WindowSystem
     I18n
     CalendarCore
     Parts
     Crash
 )
+
+if(NOT WIN32)
+   find_package(KF6 ${KF_MIN_VERSION} REQUIRED COMPONENTS Runner)
+endif()
 
 find_package(KPim6Akonadi "6.2.45" REQUIRED)
 find_package(KPim6AkonadiCalendar "6.2.40" REQUIRED)

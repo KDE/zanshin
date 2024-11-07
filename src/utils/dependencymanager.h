@@ -130,7 +130,7 @@ namespace Internal {
         template<class Iface>
         static typename Provider<Iface>::PolicyType function(Iface *)
         {
-            return create<Iface>;
+            return &create<Iface>;
         }
 
         template<class Iface>
