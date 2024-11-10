@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: zanshin\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2024-10-13 00:40+0000\n"
-"PO-Revision-Date: 2024-07-05 15:55+0200\n"
+"PO-Revision-Date: 2024-11-09 20:09+0100\n"
 "Last-Translator: Mincho Kondarev <mkondarev@yahoo.de>\n"
 "Language-Team: Bulgarian <kde-i18n-doc@kde.org>\n"
 "Language: bg\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Lokalize 24.05.1\n"
+"X-Generator: Lokalize 24.08.2\n"
 
 #, kde-format
 msgctxt "NAME OF TRANSLATORS"
@@ -75,7 +75,7 @@ msgstr "Не можа да се намери колекция, в която д�
 #: src/akonadi/akonaditaskrepository.cpp:197
 #, kde-format
 msgid "Could not associate '%1', it is an ancestor of '%2'"
-msgstr "Не може да се асоциира \"%1\", тя е предшественик на \"%2\""
+msgstr "Не може да се асоциира „%1“, тя е предшественик на „%2“"
 
 #: src/presentation/alltaskspagemodel.cpp:35
 #, kde-format
@@ -651,4 +651,4 @@ msgstr "Главна лента с инструменти"
 #: src/zanshin/runner/zanshinrunner.cpp:56
 #, kde-format
 msgid "Add \"%1\" to your todo list"
-msgstr "Добавяне на \"%1\" в списъка със задачи"
+msgstr "Добавяне на „%1“ в списъка със задачи"
