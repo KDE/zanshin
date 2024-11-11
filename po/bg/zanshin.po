@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: zanshin\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2024-10-13 00:40+0000\n"
-"PO-Revision-Date: 2024-07-05 15:55+0200\n"
+"PO-Revision-Date: 2024-11-10 11:43+0100\n"
 "Last-Translator: Mincho Kondarev <mkondarev@yahoo.de>\n"
 "Language-Team: Bulgarian <kde-i18n-doc@kde.org>\n"
 "Language: bg\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Lokalize 24.05.1\n"
+"X-Generator: Lokalize 24.11.70\n"
 
 #, kde-format
 msgctxt "NAME OF TRANSLATORS"
@@ -539,7 +539,7 @@ msgstr "Наистина ли искате да изтриете избрани�
 #, kde-format
 msgid "Do you really want to delete the selected task and all its children?"
 msgstr ""
-"Наистина ли искате да изтриете избраната задачи и вскички нейни подзадачи?"
+"Наистина ли искате да изтриете избраната задачи и всички нейни подзадачи?"
 
 #: src/widgets/pageview.cpp:400
 #, kde-format
