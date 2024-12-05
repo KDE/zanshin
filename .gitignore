@@ -28,3 +28,4 @@ CMakeLists.txt.user*
 .cache
 /.vscode/
 CMakeUserPresets.json
+.qtcreator/
