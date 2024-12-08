@@ -24,7 +24,7 @@ include(ECMSetupVersion)
 include(ECMDeprecationSettings)
 include(ECMFeatureSummary)
 
-set(REQUIRED_QT_VERSION "6.5.0")
+set(QT_REQUIRED_VERSION "6.5.0")
 find_package(Qt6 ${QT_REQUIRED_VERSION} CONFIG REQUIRED Core Gui Widgets Test)
 find_package(Boost REQUIRED)
 find_package(Threads REQUIRED)
