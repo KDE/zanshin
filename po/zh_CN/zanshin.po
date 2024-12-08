@@ -38,7 +38,7 @@ msgstr "配置"
 msgid ""
 "Please select or create a resource which will be used by the application to "
 "store and query its TODOs."
-msgstr ""
+msgstr "请选择或创建一个资源，供应用程序用于存储和查询其 TODO。"
 
 #: src/akonadi/akonadiconfigdialog.cpp:50
 #, kde-format
@@ -48,12 +48,12 @@ msgstr "添加资源"
 #: src/akonadi/akonadiconfigdialog.cpp:57
 #, kde-format
 msgid "Remove resource"
-msgstr ""
+msgstr "删除资源"
 
 #: src/akonadi/akonadiconfigdialog.cpp:64
 #, kde-format
 msgid "Configure resource..."
-msgstr ""
+msgstr "配置资源..."
 
 #: src/akonadi/akonadiconfigdialog.cpp:112
 #, kde-format
@@ -63,7 +63,7 @@ msgstr ""
 #: src/akonadi/akonadiconfigdialog.cpp:113
 #, kde-format
 msgid "Do you really want to delete the selected agent instances?"
-msgstr ""
+msgstr "您真的想删除选定的代理实例吗？"
 
 #: src/akonadi/akonaditaskrepository.cpp:50
 #, kde-format
@@ -334,7 +334,7 @@ msgstr ""
 #: src/widgets/availablepagesview.cpp:268
 #, kde-format
 msgid "Delete Context"
-msgstr ""
+msgstr "删除上下文"
 
 #: src/widgets/availablepagesview.cpp:269
 #, kde-format
