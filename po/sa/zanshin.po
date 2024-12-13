@@ -1,0 +1,752 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR This file is copyright:
+# This file is distributed under the same license as the zanshin package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Report-Msgid-Bugs-To: https://bugs.kde.org\n"
+"POT-Creation-Date: 2024-10-13 00:40+0000\n"
+"Language: sa\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+
+#, kde-format
+msgctxt "NAME OF TRANSLATORS"
+msgid "Your names"
+msgstr ""
+
+#, kde-format
+msgctxt "EMAIL OF TRANSLATORS"
+msgid "Your emails"
+msgstr ""
+
+#: src/akonadi/akonadiconfigdialog.cpp:36
+#, kde-format
+msgctxt "@title:window"
+msgid "Configure"
+msgstr ""
+
+# automatic translation
+#: src/akonadi/akonadiconfigdialog.cpp:40
+#, kde-format
+msgid ""
+"Please select or create a resource which will be used by the application to "
+"store and query its TODOs."
+msgstr ""
+"कृपया एकं संसाधनं चिनुत अथवा रचयन्तु यस्य उपयोगः अनुप्रयोगेन स्वस्य TODOs संग्रहणार्थं "
+"प्रश्नार्थं च भविष्यति ।"
+
+# automatic translation
+#: src/akonadi/akonadiconfigdialog.cpp:50
+#, kde-format
+msgid "Add resource"
+msgstr "संसाधनं योजयन्तु"
+
+# automatic translation
+#: src/akonadi/akonadiconfigdialog.cpp:57
+#, kde-format
+msgid "Remove resource"
+msgstr "संसाधनं निष्कासयन्तु"
+
+# automatic translation
+#: src/akonadi/akonadiconfigdialog.cpp:64
+#, kde-format
+msgid "Configure resource..."
+msgstr "संसाधनं विन्यस्तं कुर्वन्तु..."
+
+# automatic translation
+#: src/akonadi/akonadiconfigdialog.cpp:112
+#, kde-format
+msgid "Multiple Agent Deletion"
+msgstr "बहुविध एजेण्ट् विलोपनम्"
+
+# automatic translation
+#: src/akonadi/akonadiconfigdialog.cpp:113
+#, kde-format
+msgid "Do you really want to delete the selected agent instances?"
+msgstr "किं भवान् वास्तवमेव चयनित-एजेण्ट्-दृष्टान्तान् विलोपयितुम् इच्छति?"
+
+# automatic translation
+#: src/akonadi/akonaditaskrepository.cpp:50
+#, kde-format
+msgid "Could not find a collection to store the task into!"
+msgstr "कार्यं संग्रहीतुं संग्रहं न प्राप्नोत्!"
+
+# automatic translation
+#: src/akonadi/akonaditaskrepository.cpp:197
+#, kde-format
+msgid "Could not associate '%1', it is an ancestor of '%2'"
+msgstr "'%1' इत्यस्य सङ्गतिं कर्तुं न शक्तवान्, '%2' इत्यस्य पूर्वजः अस्ति ।"
+
+# automatic translation
+#: src/presentation/alltaskspagemodel.cpp:35
+#, kde-format
+msgid "Cannot add task %1"
+msgstr "कार्यं %1 योजयितुं न शक्यते"
+
+# automatic translation
+#: src/presentation/alltaskspagemodel.cpp:46
+#, kde-format
+msgid "Cannot remove task %1"
+msgstr "कार्यं %1 निष्कासयितुं न शक्यते"
+
+# automatic translation
+#: src/presentation/alltaskspagemodel.cpp:56
+#: src/presentation/contextpagemodel.cpp:70
+#: src/presentation/inboxpagemodel.cpp:55
+#: src/presentation/projectpagemodel.cpp:67
+#: src/presentation/workdaypagemodel.cpp:61
+#, kde-format
+msgid "Cannot promote task %1 to be a project"
+msgstr "कार्यं %1 परियोजनारूपेण प्रवर्तयितुं न शक्यते"
+
+# automatic translation
+#: src/presentation/alltaskspagemodel.cpp:97
+#: src/presentation/editormodel.cpp:389
+#, kde-format
+msgid "Cannot modify task %1"
+msgstr "कार्यं %1 परिवर्तयितुं न शक्यते"
+
+# automatic translation
+#: src/presentation/alltaskspagemodel.cpp:122
+#: src/presentation/contextpagemodel.cpp:140
+#: src/presentation/inboxpagemodel.cpp:111
+#: src/presentation/workdaypagemodel.cpp:117
+#, kde-format
+msgid "Cannot move task %1 as sub-task of %2"
+msgstr "%1 कार्यं %2 इत्यस्य उपकार्यरूपेण चालयितुं न शक्यते"
+
+# automatic translation
+#: src/presentation/alltaskspagemodel.cpp:125
+#: src/presentation/inboxpagemodel.cpp:114
+#: src/presentation/workdaypagemodel.cpp:125
+#, kde-format
+msgid "Cannot deparent task %1 from its parent"
+msgstr "तस्य मातापितृतः कार्यं %1 deparent कर्तुं न शक्नोति"
+
+# automatic translation
+#: src/presentation/availablepagesmodel.cpp:111
+#, kde-format
+msgid "Cannot add project %1 in dataSource %2"
+msgstr "dataSource %2 मध्ये project %1 योजयितुं न शक्यते"
+
+# automatic translation
+#: src/presentation/availablepagesmodel.cpp:119
+#, kde-format
+msgid "Cannot add context %1"
+msgstr "%1 सन्दर्भं योजयितुं न शक्यते"
+
+# automatic translation
+#: src/presentation/availablepagesmodel.cpp:127
+#, kde-format
+msgid "Cannot remove project %1"
+msgstr "परियोजना %1 निष्कासयितुं न शक्यते"
+
+# automatic translation
+#: src/presentation/availablepagesmodel.cpp:130
+#, kde-format
+msgid "Cannot remove context %1"
+msgstr "%1 सन्दर्भं हर्तुं न शक्यते"
+
+# automatic translation
+#: src/presentation/availablepagesmodel.cpp:139
+#, kde-format
+msgid "Inbox"
+msgstr "इनबॉक्स"
+
+# automatic translation
+#: src/presentation/availablepagesmodel.cpp:141
+#, kde-format
+msgid "Workday"
+msgstr "कार्यदिवसः"
+
+# automatic translation
+#: src/presentation/availablepagesmodel.cpp:143
+#, kde-format
+msgid "Projects"
+msgstr "परियोजनाएँ"
+
+# automatic translation
+#: src/presentation/availablepagesmodel.cpp:145
+#, kde-format
+msgid "Contexts"
+msgstr "सन्दर्भाः"
+
+# automatic translation
+#: src/presentation/availablepagesmodel.cpp:147
+#, kde-format
+msgid "All Tasks"
+msgstr "सर्वाणि कार्याणि"
+
+# automatic translation
+#: src/presentation/availablepagesmodel.cpp:246
+#, kde-format
+msgid "Cannot modify project %1"
+msgstr "परियोजना %1 परिवर्तयितुं न शक्यते"
+
+# automatic translation
+#: src/presentation/availablepagesmodel.cpp:251
+#, kde-format
+msgid "Cannot modify context %1"
+msgstr "%1 सन्दर्भं परिवर्तयितुं न शक्यते"
+
+# automatic translation
+#: src/presentation/availablepagesmodel.cpp:270
+#, kde-format
+msgid "Cannot add %1 to project %2"
+msgstr "%2 परियोजनायां %1 योजयितुं न शक्यते"
+
+# automatic translation
+#: src/presentation/availablepagesmodel.cpp:276
+#, kde-format
+msgid "Cannot add %1 to context %2"
+msgstr "%1 सन्दर्भे %2 योजयितुं न शक्यते"
+
+# automatic translation
+#: src/presentation/availablepagesmodel.cpp:282
+#, kde-format
+msgid "Cannot move %1 to Inbox"
+msgstr "%1 इत्येतत् Inbox - मध्ये स्थानान्तरयितुं न शक्यते"
+
+# automatic translation
+#: src/presentation/availablepagesmodel.cpp:286
+#, kde-format
+msgid "Cannot move task %1 to Inbox"
+msgstr "कार्यं %1 Inbox मध्ये स्थानान्तरयितुं न शक्यते"
+
+# automatic translation
+#: src/presentation/availablepagesmodel.cpp:295
+#, kde-format
+msgid "Cannot update task %1 to Workday"
+msgstr "कार्यं %1 कार्यदिवसं प्रति अद्यतनं कर्तुं न शक्यते"
+
+# automatic translation
+#: src/presentation/availablesourcesmodel.cpp:97
+#, kde-format
+msgid "Cannot modify source %1"
+msgstr "स्रोतः %1 परिवर्तयितुं न शक्यते"
+
+# automatic translation
+#: src/presentation/contextpagemodel.cpp:50
+#, kde-format
+msgid "Cannot add task %1 in context %2"
+msgstr "%2 सन्दर्भे %1 कार्यं योजयितुं न शक्यते"
+
+# automatic translation
+#: src/presentation/contextpagemodel.cpp:61
+#, kde-format
+msgid "Cannot remove task %1 from context %2"
+msgstr "%2 सन्दर्भात् %1 कार्यं हर्तुं न शक्यते"
+
+# automatic translation
+#: src/presentation/contextpagemodel.cpp:111
+#, kde-format
+msgid "Cannot modify task %1 in context %2"
+msgstr "%2 सन्दर्भे %1 कार्यं परिवर्तयितुं न शक्यते"
+
+# automatic translation
+#: src/presentation/contextpagemodel.cpp:143
+#, kde-format
+msgid "Cannot dissociate task %1 from its parent"
+msgstr "कार्यं %1 तस्य मातापितृभ्यः विच्छेदयितुं न शक्यते"
+
+# automatic translation
+#: src/presentation/inboxpagemodel.cpp:35
+#, kde-format
+msgid "Cannot add task %1 in Inbox"
+msgstr "Inbox मध्ये %1 कार्यं योजयितुं न शक्यते"
+
+# automatic translation
+#: src/presentation/inboxpagemodel.cpp:46
+#, kde-format
+msgid "Cannot remove task %1 from Inbox"
+msgstr "Inbox तः %1 कार्यं हर्तुं न शक्यते"
+
+# automatic translation
+#: src/presentation/inboxpagemodel.cpp:96
+#, kde-format
+msgid "Cannot modify task %1 in Inbox"
+msgstr "Inbox मध्ये %1 कार्यं परिवर्तयितुं न शक्यते"
+
+# automatic translation
+#: src/presentation/projectpagemodel.cpp:47
+#, kde-format
+msgid "Cannot add task %1 in project %2"
+msgstr "परियोजना %2 मध्ये कार्यं %1 योजयितुं न शक्यते"
+
+# automatic translation
+#: src/presentation/projectpagemodel.cpp:58
+#, kde-format
+msgid "Cannot remove task %1 from project %2"
+msgstr "परियोजना %2 तः %1 कार्यं हर्तुं न शक्यते"
+
+# automatic translation
+#: src/presentation/projectpagemodel.cpp:108
+#, kde-format
+msgid "Cannot modify task %1 in project %2"
+msgstr "परियोजना %2 मध्ये कार्यं %1 परिवर्तयितुं न शक्यते"
+
+# automatic translation
+#: src/presentation/projectpagemodel.cpp:134
+#, kde-format
+msgid "Cannot move task %1 as a sub-task of %2"
+msgstr "%1 कार्यं %2 इत्यस्य उपकार्यरूपेण चालयितुं न शक्यते"
+
+# automatic translation
+#: src/presentation/runningtaskmodel.cpp:46
+#, kde-format
+msgid "Cannot update task %1 to 'not running'"
+msgstr "कार्यम् %1 'न चालयति' इति अद्यतनं कर्तुं न शक्यते ।"
+
+# automatic translation
+#: src/presentation/runningtaskmodel.cpp:54
+#, kde-format
+msgid "Cannot update task %1 to 'running'"
+msgstr "कार्यम् %1 'चालनम्' इति अद्यतनं कर्तुं न शक्यते ।"
+
+# automatic translation
+#: src/presentation/workdaypagemodel.cpp:40
+#, kde-format
+msgid "Cannot add task %1 in Workday"
+msgstr "कार्यदिने %1 कार्यं योजयितुं न शक्यते"
+
+# automatic translation
+#: src/presentation/workdaypagemodel.cpp:51
+#, kde-format
+msgid "Cannot remove task %1 from Workday"
+msgstr "कार्यदिवसात् %1 कार्यं हर्तुं न शक्यते"
+
+# automatic translation
+#: src/presentation/workdaypagemodel.cpp:102
+#, kde-format
+msgid "Cannot modify task %1 in Workday"
+msgstr "कार्यदिने %1 कार्यं परिवर्तयितुं न शक्यते"
+
+# automatic translation
+#: src/widgets/applicationcomponents.cpp:48
+#, kde-format
+msgid "Move Task"
+msgstr "Move Task इति"
+
+# automatic translation
+#: src/widgets/availablepagesview.cpp:50
+#, kde-format
+msgid "New Project"
+msgstr "नवीन परियोजना"
+
+# automatic translation
+#: src/widgets/availablepagesview.cpp:56
+#, kde-format
+msgid "New Context"
+msgstr "नवीन सन्दर्भ"
+
+# automatic translation
+#: src/widgets/availablepagesview.cpp:62
+#, kde-format
+msgid "Remove Page"
+msgstr "पृष्ठं निष्कासयन्तु"
+
+# automatic translation
+#: src/widgets/availablepagesview.cpp:91
+#, kde-format
+msgid "Previous Page"
+msgstr "पूर्व पृष्ठ"
+
+# automatic translation
+#: src/widgets/availablepagesview.cpp:98
+#, kde-format
+msgid "Next Page"
+msgstr "अग्रिमः पृष्ठः"
+
+# automatic translation
+#: src/widgets/availablepagesview.cpp:105
+#, kde-format
+msgid "Go to Page..."
+msgstr "पृष्ठं गच्छन्तु..."
+
+#: src/widgets/availablepagesview.cpp:240
+#, kde-format
+msgctxt "@title:window"
+msgid "Add a context"
+msgstr ""
+
+# automatic translation
+#: src/widgets/availablepagesview.cpp:265
+#, kde-format
+msgid "Delete Project"
+msgstr "परियोजनां विलोपयन्तु"
+
+# automatic translation
+#: src/widgets/availablepagesview.cpp:266
+#, kde-format
+msgid "Do you really want to delete the project '%1', with all its actions?"
+msgstr "किं भवान् वास्तवमेव '%1' परियोजनां विलोपयितुम् इच्छति, तस्य सर्वैः क्रियाभिः सह?"
+
+# automatic translation
+#: src/widgets/availablepagesview.cpp:268
+#, kde-format
+msgid "Delete Context"
+msgstr "सन्दर्भं विलोपयन्तु"
+
+# automatic translation
+#: src/widgets/availablepagesview.cpp:269
+#, kde-format
+msgid "Do you really want to delete the context '%1'?"
+msgstr "किं भवान् वास्तवमेव '%1' इति सन्दर्भं विलोपयितुम् इच्छति?"
+
+# automatic translation
+#: src/widgets/availablesourcesview.cpp:53
+#, kde-format
+msgid "Use as Default Source"
+msgstr "पूर्वनिर्धारितस्रोतरूपेण उपयोगं कुर्वन्तु"
+
+# automatic translation
+#: src/widgets/availablesourcesview.cpp:74
+#, kde-format
+msgid "Configure %1..."
+msgstr "%1 विन्यस्यताम्..."
+
+# automatic translation
+#: src/widgets/editorview.cpp:30
+#, kde-format
+msgid "Add Attachment"
+msgstr "संलग्नकं योजयतु"
+
+# automatic translation
+#: src/widgets/editorview.cpp:35
+#, kde-format
+msgid "Never"
+msgstr "कदापि न"
+
+# automatic translation
+#: src/widgets/editorview.cpp:36
+#, kde-format
+msgid "Daily"
+msgstr "प्रतिदिन"
+
+# automatic translation
+#: src/widgets/editorview.cpp:37
+#, kde-format
+msgid "Weekly"
+msgstr "साप्ताहिकम्"
+
+# automatic translation
+#: src/widgets/editorview.cpp:38
+#, kde-format
+msgid "Monthly"
+msgstr "मासिकम्"
+
+# automatic translation
+#: src/widgets/editorview.cpp:39
+#, kde-format
+msgid "Yearly"
+msgstr "वार्षिकम्"
+
+# automatic translation
+#. i18n: ectx: property (windowTitle), widget (QWidget, EditorView)
+#. i18n: ectx: property (text), widget (QListView, attachmentList)
+#: src/widgets/editorview.ui:14 src/widgets/editorview.ui:184
+#: src/zanshin/app/main.cpp:89
+#, kde-format
+msgid "Editor"
+msgstr "सम्पादक"
+
+# automatic translation
+#. i18n: ectx: property (text), widget (QLabel, dueDateLabel)
+#: src/widgets/editorview.ui:41
+#, kde-format
+msgid "D&ue Date "
+msgstr "D&ue Date "
+
+# automatic translation
+#. i18n: ectx: property (text), widget (QCheckBox, doneButton)
+#: src/widgets/editorview.ui:62 src/widgets/runningtaskwidget.cpp:53
+#, kde-format
+msgid "Done"
+msgstr "कृतम्‌"
+
+# automatic translation
+#. i18n: ectx: property (toolTip), widget (QToolButton, addAttachmentButton)
+#: src/widgets/editorview.ui:86
+#, kde-format
+msgid "Add Attachment..."
+msgstr "संलग्नकं योजयतु..."
+
+# automatic translation
+#. i18n: ectx: property (toolTip), widget (QToolButton, removeAttachmentButton)
+#: src/widgets/editorview.ui:100
+#, kde-format
+msgid "Remove Attachment"
+msgstr "आसक्तिं निष्कासयतु"
+
+# automatic translation
+#. i18n: ectx: property (text), widget (QPushButton, startTodayButton)
+#: src/widgets/editorview.ui:121
+#, kde-format
+msgid "Select for &Today"
+msgstr "&Today कृते चयनं कुर्वन्तु"
+
+# automatic translation
+#. i18n: ectx: property (text), widget (QLabel, recurrenceLabel)
+#: src/widgets/editorview.ui:130
+#, kde-format
+msgid "&Recurrence"
+msgstr "&पुनरावृत्ति"
+
+# automatic translation
+#. i18n: ectx: property (text), widget (QLabel, startDateLabel)
+#: src/widgets/editorview.ui:146
+#, kde-format
+msgid "St&art Date"
+msgstr "St&art Date"
+
+# automatic translation
+#: src/widgets/filterwidget.cpp:29
+#, kde-format
+msgid "Sort by title"
+msgstr "शीर्षकानुसार क्रमबद्ध करें"
+
+# automatic translation
+#: src/widgets/filterwidget.cpp:30
+#, kde-format
+msgid "Sort by date"
+msgstr "तिथ्यानुसारं क्रमयन्तु"
+
+# automatic translation
+#. i18n: ectx: property (placeholderText), widget (QLineEdit, filterEdit)
+#: src/widgets/filterwidget.ui:31 src/widgets/pageview.cpp:200
+#, kde-format
+msgid "Filter..."
+msgstr "फ़िल्टर..."
+
+# automatic translation
+#. i18n: ectx: property (toolTip), widget (QToolButton, descendingButton)
+#: src/widgets/filterwidget.ui:65
+#, kde-format
+msgid "Sort in descending order"
+msgstr "अवरोहणक्रमेण क्रमणं कुर्वन्तु"
+
+# automatic translation
+#. i18n: ectx: property (toolTip), widget (QToolButton, ascendingButton)
+#: src/widgets/filterwidget.ui:88
+#, kde-format
+msgid "Sort in ascending order"
+msgstr "आरोहणक्रमेण क्रमणं कुर्वन्तु"
+
+# automatic translation
+#: src/widgets/itemdelegate.cpp:47
+#, kde-format
+msgid "Project: %1"
+msgstr "परियोजना: %1"
+
+# automatic translation
+#. i18n: ectx: property (windowTitle), widget (QDialog, NameAndDataSourceDialog)
+#: src/widgets/nameanddatasourcedialog.ui:14
+#, kde-format
+msgid "Add a project"
+msgstr "परियोजनां योजयन्तु"
+
+# automatic translation
+#. i18n: ectx: property (text), widget (QLabel, nameLabel)
+#: src/widgets/nameanddatasourcedialog.ui:25
+#, kde-format
+msgid "Name"
+msgstr "नामः"
+
+# automatic translation
+#. i18n: ectx: property (text), widget (QLabel, sourceLabel)
+#: src/widgets/nameanddatasourcedialog.ui:42
+#, kde-format
+msgid "Source"
+msgstr "स्रोतः"
+
+#: src/widgets/pageview.cpp:156
+#, kde-format
+msgctxt "@info:placeholder"
+msgid "Type and press enter to add a task"
+msgstr ""
+
+# automatic translation
+#: src/widgets/pageview.cpp:173
+#, kde-format
+msgid "New Task"
+msgstr "नवीनं कार्यम्"
+
+# automatic translation
+#: src/widgets/pageview.cpp:186
+#, kde-format
+msgid "Remove Task"
+msgstr "कार्यम् अपसारयतु"
+
+# automatic translation
+#: src/widgets/pageview.cpp:194
+#, kde-format
+msgid "Promote Task as Project"
+msgstr "परियोजनारूपेण कार्यस्य प्रचारं कुर्वन्तु"
+
+# automatic translation
+#: src/widgets/pageview.cpp:208
+#, kde-format
+msgid "Show done tasks"
+msgstr "कृतानि कार्याणि दर्शयतु"
+
+# automatic translation
+#: src/widgets/pageview.cpp:216
+#, kde-format
+msgid "Show future tasks"
+msgstr "भविष्यत्कार्यं दर्शयतु"
+
+# automatic translation
+#: src/widgets/pageview.cpp:242
+#, kde-format
+msgid "Start Now"
+msgstr "अधुना आरभत"
+
+# automatic translation
+#: src/widgets/pageview.cpp:360
+#, kde-format
+msgid "Type and press enter to add an item"
+msgstr "एकं द्रव्यं योजयितुं enter टङ्कयित्वा नुदन्तु"
+
+# automatic translation
+#: src/widgets/pageview.cpp:386
+#, kde-format
+msgid "Do you really want to delete the selected items and their children?"
+msgstr "किं भवन्तः वास्तवमेव चयनितवस्तूनि तेषां बालकान् च विलोपयितुम् इच्छन्ति?"
+
+# automatic translation
+#: src/widgets/pageview.cpp:388
+#, kde-format
+msgid "Do you really want to delete the selected items?"
+msgstr "किं भवन्तः वास्तवमेव चयनितवस्तूनि विलोपयितुम् इच्छन्ति?"
+
+# automatic translation
+#: src/widgets/pageview.cpp:396
+#, kde-format
+msgid "Do you really want to delete the selected task and all its children?"
+msgstr "किं भवन्तः वास्तवमेव चयनितं कार्यं तस्य सर्वान् बालकान् च विलोपयितुम् इच्छन्ति?"
+
+# automatic translation
+#: src/widgets/pageview.cpp:400
+#, kde-format
+msgid "Delete Tasks"
+msgstr "कार्याणि विलोपयन्तु"
+
+#: src/widgets/quickselectdialog.cpp:30
+#, kde-format
+msgctxt "@title:window"
+msgid "Quick Select Dialog"
+msgstr ""
+
+# automatic translation
+#: src/widgets/quickselectdialog.cpp:32 src/widgets/quickselectdialog.cpp:70
+#, kde-format
+msgid "You can start typing to filter the list of available pages"
+msgstr "उपलब्धपृष्ठानां सूचीं छानयितुं टङ्कनं आरभुं शक्नुवन्ति"
+
+# automatic translation
+#: src/widgets/quickselectdialog.cpp:72
+#, kde-format
+msgid "Path: %1"
+msgstr "मार्गः %1"
+
+#: src/widgets/runningtaskwidget.cpp:39
+#, kde-format
+msgctxt "@title:window"
+msgid "Zanshin Running Task Banner"
+msgstr ""
+
+# automatic translation
+#: src/widgets/runningtaskwidget.cpp:49
+#, kde-format
+msgid "Stop"
+msgstr "विरमतु"
+
+# automatic translation
+#: src/zanshin/app/aboutdata.cpp:14
+#, kde-format
+msgid "Zanshin Tasks"
+msgstr "ज़ान्शिन् कार्यम्"
+
+# automatic translation
+#: src/zanshin/app/aboutdata.cpp:15
+#, kde-format
+msgid ""
+"A Getting Things Done application which aims at getting your mind like water"
+msgstr "एकः Getting Things Done अनुप्रयोगः यस्य उद्देश्यं भवतः मनः जलवत् प्राप्तुं भवति"
+
+# automatic translation
+#: src/zanshin/app/aboutdata.cpp:17
+#, kde-format
+msgid "Copyright 2008-2016, Kevin Ottens <ervin@kde.org>"
+msgstr "प्रतिलिपिधर्मः २००८-२०१६, केविन् ओटेन्स <ervin@kde.org>"
+
+#: src/zanshin/app/aboutdata.cpp:19
+#, kde-format
+msgctxt "@info:credit"
+msgid "Kevin Ottens"
+msgstr ""
+
+# automatic translation
+#: src/zanshin/app/aboutdata.cpp:20
+#, kde-format
+msgid "Lead Developer"
+msgstr "लीड डेवलपर"
+
+#: src/zanshin/app/aboutdata.cpp:23
+#, kde-format
+msgctxt "@info:credit"
+msgid "Mario Bensi"
+msgstr ""
+
+# automatic translation
+#: src/zanshin/app/aboutdata.cpp:24 src/zanshin/app/aboutdata.cpp:28
+#, kde-format
+msgid "Developer"
+msgstr "विकासकः"
+
+#: src/zanshin/app/aboutdata.cpp:27
+#, kde-format
+msgctxt "@info:credit"
+msgid "Franck Arrecot"
+msgstr ""
+
+# automatic translation
+#: src/zanshin/app/main.cpp:81
+#, kde-format
+msgid "Sources"
+msgstr "स्रोतः"
+
+# automatic translation
+#: src/zanshin/app/main.cpp:85
+#, kde-format
+msgid "Pages"
+msgstr "पृष्ठहरू"
+
+# automatic translation
+#. i18n: ectx: Menu (go)
+#: src/zanshin/app/zanshinui.rc:15 src/zanshin/kontact/zanshin_part.rc:15
+#, kde-format
+msgid "&Go"
+msgstr "&गच्छ"
+
+# automatic translation
+#. i18n: ectx: Menu
+#: src/zanshin/app/zanshinui.rc:27
+#, kde-format
+msgid "&Panels"
+msgstr "&पैनल"
+
+#. i18n: ectx: ToolBar (mainToolBar)
+#: src/zanshin/app/zanshinui.rc:35 src/zanshin/kontact/zanshin_part.rc:27
+#, kde-format
+msgctxt "@title:menu"
+msgid "Main Toolbar"
+msgstr ""
+
+# automatic translation
+#: src/zanshin/runner/zanshinrunner.cpp:56
+#, kde-format
+msgid "Add \"%1\" to your todo list"
+msgstr "स्वस्य todo सूचीयां \"%1\" योजयन्तु"
