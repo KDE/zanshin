@@ -16,18 +16,18 @@ msgstr ""
 #, kde-format
 msgctxt "NAME OF TRANSLATORS"
 msgid "Your names"
-msgstr ""
+msgstr "भवतः नामानि"
 
 #, kde-format
 msgctxt "EMAIL OF TRANSLATORS"
 msgid "Your emails"
-msgstr ""
+msgstr "भवतः ईमेलपत्राणि"
 
 #: src/akonadi/akonadiconfigdialog.cpp:36
 #, kde-format
 msgctxt "@title:window"
 msgid "Configure"
-msgstr ""
+msgstr "विन्यस्तं कुर्वन्तु"
 
 # automatic translation
 #: src/akonadi/akonadiconfigdialog.cpp:40
@@ -371,7 +371,7 @@ msgstr "पृष्ठं गच्छन्तु..."
 #, kde-format
 msgctxt "@title:window"
 msgid "Add a context"
-msgstr ""
+msgstr "सन्दर्भं योजयन्तु"
 
 # automatic translation
 #: src/widgets/availablepagesview.cpp:265
@@ -567,7 +567,7 @@ msgstr "स्रोतः"
 #, kde-format
 msgctxt "@info:placeholder"
 msgid "Type and press enter to add a task"
-msgstr ""
+msgstr "कार्यं योजयितुं enter टङ्कयित्वा नुदन्तु"
 
 # automatic translation
 #: src/widgets/pageview.cpp:173
@@ -639,7 +639,7 @@ msgstr "कार्याणि विलोपयन्तु"
 #, kde-format
 msgctxt "@title:window"
 msgid "Quick Select Dialog"
-msgstr ""
+msgstr "त्वरित चयन संवाद"
 
 # automatic translation
 #: src/widgets/quickselectdialog.cpp:32 src/widgets/quickselectdialog.cpp:70
@@ -657,7 +657,7 @@ msgstr "मार्गः %1"
 #, kde-format
 msgctxt "@title:window"
 msgid "Zanshin Running Task Banner"
-msgstr ""
+msgstr "ज़नशिन रनिंग टास्क बैनर"
 
 # automatic translation
 #: src/widgets/runningtaskwidget.cpp:49
@@ -688,7 +688,7 @@ msgstr "प्रतिलिपिधर्मः २००८-२०१६, �
 #, kde-format
 msgctxt "@info:credit"
 msgid "Kevin Ottens"
-msgstr ""
+msgstr "केविन् ओटेन्स्"
 
 # automatic translation
 #: src/zanshin/app/aboutdata.cpp:20
@@ -700,7 +700,7 @@ msgstr "लीड डेवलपर"
 #, kde-format
 msgctxt "@info:credit"
 msgid "Mario Bensi"
-msgstr ""
+msgstr "मारियो बेन्सी"
 
 # automatic translation
 #: src/zanshin/app/aboutdata.cpp:24 src/zanshin/app/aboutdata.cpp:28
@@ -712,7 +712,7 @@ msgstr "विकासकः"
 #, kde-format
 msgctxt "@info:credit"
 msgid "Franck Arrecot"
-msgstr ""
+msgstr "फ्रैङ्क अरेकोट्"
 
 # automatic translation
 #: src/zanshin/app/main.cpp:81
@@ -745,7 +745,7 @@ msgstr "&पैनल"
 #, kde-format
 msgctxt "@title:menu"
 msgid "Main Toolbar"
-msgstr ""
+msgstr "मुख्य साधनपट्टी"
 
 # automatic translation
 #: src/zanshin/runner/zanshinrunner.cpp:56
