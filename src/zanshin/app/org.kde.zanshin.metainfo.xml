@@ -8,6 +8,7 @@
   </developer>
   <launchable type="desktop-id">org.kde.zanshin.desktop</launchable>
   <name>Zanshin</name>
+  <name xml:lang="ar">زانشين</name>
   <name xml:lang="ast">Zanshin</name>
   <name xml:lang="bg">Zanshin</name>
   <name xml:lang="bs">Zanshin</name>
@@ -50,6 +51,7 @@
   <name xml:lang="zh-CN">Zanshin</name>
   <name xml:lang="zh-TW">Zanshin</name>
   <summary>To Do Management Application</summary>
+  <summary xml:lang="ar">تطبيق إدارة المهام</summary>
   <summary xml:lang="bg">Приложение за управление на задачи</summary>
   <summary xml:lang="ca">Aplicació de gestió de tasques pendents</summary>
   <summary xml:lang="ca-valencia">Aplicació de gestió de tasques pendents</summary>
@@ -95,6 +97,7 @@
       It helps you organize and reduce the cognitive pressure of what one has to do in his job and personal life.
       You'll never forget anything anymore, getting your mind like water.
     </p>
+    <p xml:lang="ar">زانشين هو تطبيق قوي وبسيط لإدارة أنشطتك اليومية. يساعدك على تنظيم وتقليل الضغط المعرفي الناتج عن ما يتعين على المرء القيام به في عمله وحياته الشخصية. لن تنسى أي شيء بعد الآن، حيث يجعل عقلك مثل الماء.</p>
     <p xml:lang="bg">Zanshin е мощно, но просто приложение за управление на ежедневните ви действия. То ви помага да организирате и да намалите умственото напрежение от задачите, които трябва да направите в работата и личния си живот. Вече никога няма да забравяте нищо, запазвайки мисълта си ясна.</p>
     <p xml:lang="ca">El Zanshin és una aplicació potent i senzilla per a la gestió de les accions del vostre dia a dia. Us ajudarà a organitzar i reduir la pressió cognitiva del que un ha de fer en el seu treball i vida personal. Mai oblidareu res més, fareu que la vostra ment sigui com l'aigua.</p>
     <p xml:lang="ca-valencia">Zanshin és una aplicació potent i senzilla per a la gestió de les accions del vostre dia a dia. Vos ajudarà a organitzar i reduir la pressió cognitiva del que un ha de fer en el seu treball i vida personal. Mai oblidareu res més, fareu que la vostra ment siga com l'aigua.</p>
@@ -133,6 +136,7 @@
     <p xml:lang="x-test">xxZanshin is a powerful yet simple application for managing your day to day actions. It helps you organize and reduce the cognitive pressure of what one has to do in his job and personal life. You'll never forget anything anymore, getting your mind like water.xx</p>
     <p xml:lang="zh-TW">Zanshin 是一個功能強大但又簡潔的日常活動管理應用程式。它幫助您管理工作與個人生活中需要做的事，降低它們對您的心理壓力。您不再需要擔心忘記事情，讓您的思緒可以如流水般。</p>
     <p subtitle="true">Collect</p>
+    <p subtitle="true" xml:lang="ar">اجمع</p>
     <p subtitle="true" xml:lang="bg">Събиране</p>
     <p subtitle="true" xml:lang="ca">Recull</p>
     <p subtitle="true" xml:lang="ca-valencia">Arreplega</p>
@@ -167,6 +171,7 @@
     <p subtitle="true" xml:lang="zh-CN">收集</p>
     <p subtitle="true" xml:lang="zh-TW">收集</p>
     <p>Worried about forgetting something? Unexpected memory losses? Zanshin is here to help you. You can collect your tasks and free your mind. You will soon stop hearing this voice nagging you about what you probably forgot, or what you should do. Just fire up Zanshin, once something is collected, you are sure to find it there.</p>
+    <p xml:lang="ar">هل تشعر بالقلق من نسيان شيء ما؟ هل تعاني من فقدان الذاكرة بشكل غير متوقع؟ زانشين هنا لمساعدتك. يمكنك جمع مهامك وتحرير عقلك. ستتوقف قريبًا عن سماع هذا الصوت الذي يزعجك بشأن ما ربما نسيته، أو ما يجب عليك فعله. ما عليك سوى تشغيل زانشين وبمجرد جمع شيء ما، من المؤكد أنك ستجده هناك.</p>
     <p xml:lang="bg">Притеснявате се, че ще забравите нещо? Неочаквани загуби на памет? Zanshin е тук, за да ви помогне. Можете да съберете задачите си и да освободите ума си. Вие  скоро ще престанете да се притеснявате за това, което вероятно сте забравили, или какво трябва да направите. Просто стартирайте Zanshin, и след като нещо е събрано, вие със сигурност ще го намерите там.</p>
     <p xml:lang="ca">Esteu amoïnat/da per si heu oblidat alguna cosa? Teniu pèrdues inesperades de memòria? El Zanshin és aquí per a ajudar-vos. Podeu recollir les vostres tasques i alliberar la ment. Aviat deixarà de sentir aquesta veu queixant-se del que probablement vàreu oblidar o del que haurien de fer. Només activeu el Zanshin, sempre que es reculli quelcom, segur que ho trobareu aquí.</p>
     <p xml:lang="ca-valencia">Esteu amoïnat/da per si heu oblidat alguna cosa? Teniu pèrdues inesperades de memòria? Zanshin és ací per a ajudar-vos. Podeu arreplegar les vostres tasques i alliberar la ment. Prompte deixareu de queixar-vos del que probablement vàreu oblidar o del que s'ha de fer. Només activeu Zanshin, sempre que s'arreplegue alguna cosa, segur que ho trobareu ací.</p>
@@ -198,6 +203,7 @@
     <p xml:lang="x-test">xxWorried about forgetting something? Unexpected memory losses? Zanshin is here to help you. You can collect your tasks and free your mind. You will soon stop hearing this voice nagging you about what you probably forgot, or what you should do. Just fire up Zanshin, once something is collected, you are sure to find it there.xx</p>
     <p xml:lang="zh-TW">擔心忘記東西？或是平常會忘東忘西的？Zanshin 可以幫助您。透過 Zanshin 您可以把要做的事情收集起來，不用再費力記住它們。不用多久您便不再需要擔心可能有忘記什麼或是您應該做什麼。只需要開啟 Zanshin，所有東西都收集在這裡的時候，您一定會在這裡找到它。</p>
     <p subtitle="true">Organize</p>
+    <p subtitle="true" xml:lang="ar">نظّم</p>
     <p subtitle="true" xml:lang="bg">Организиране</p>
     <p subtitle="true" xml:lang="ca">Organitza</p>
     <p subtitle="true" xml:lang="ca-valencia">Organitza</p>
@@ -232,6 +238,7 @@
     <p subtitle="true" xml:lang="zh-CN">整理</p>
     <p subtitle="true" xml:lang="zh-TW">組織</p>
     <p>Zanshin makes it simple to put your daily life in order. Just create a few projects, a few contexts and start filling them with tasks. You can simply do this using drag and drop. Something has to be done before a given day? Just set a due date and it'll stand out from your other items. You need to work on a project? Focus on it and you will see all the related tasks. Feeling like dealing with your phone calls? Focus on your phone context to find all the pending calls you have to give.</p>
+    <p xml:lang="ar">يجعل زانشين من السهل تنظيم حياتك اليومية. ما عليك سوى إنشاء عدد قليل من المشاريع، وعدد قليل من السياقات والبدء في ملئها بالمهام. يمكنك ببساطة القيام بذلك باستخدام السحب والإفلات. هل يجب إنجاز شيء ما قبل يوم معين؟ ما عليك سوى تحديد تاريخ استحقاق وسيبرز هذا من بين العناصر الأخرى. هل تحتاج إلى العمل على مشروع؟ ركز عليه وسترى جميع المهام ذات الصلة. هل تشعر بالرغبة في التعامل مع مكالماتك الهاتفية؟ ركز على سياق هاتفك للعثور على جميع المكالمات المعلقة التي يجب عليك إجراؤها.</p>
     <p xml:lang="bg">Zanshin улеснява въвеждането на ред в ежедневието ви. Просто създайте няколко проекта, няколко контекста и започнете да ги запълвате със задачи. Можете просто да направите това със завличане с мишката. Нещо трябва да се свърши преди даден ден? Просто задайте срок за изпълнение и то ще се отличава от останалите ви елементи. Трябва да да работите по даден проект? Фокусирайте се върху него и ще видите всички свързани с него задачи. Не ви се иска да се занимавате с телефонните си обаждания? Фокусирайте се върху контекста на телефона си, за да намерите всички чакащи обаждания, които трябва да извършите.</p>
     <p xml:lang="ca">El Zanshin fa que sigui fàcil posar ordre a la vostra vida diària. Només cal crear alguns projectes, uns pocs contextos i començar a omplir-los de tasques. Podeu fer-ho senzillament arrossegant i deixant anar. Cal fer alguna cosa abans d'un dia determinat? Només establiu una data de venciment i es destacarà dels altres elements. Heu de treballar en un projecte? Centreu-vos en això i veureu totes les tasques relacionades. Us afecten les trucades telefòniques? Centreu-vos en el context del telèfon per a trobar totes les trucades pendents que hàgiu de fer.</p>
     <p xml:lang="ca-valencia">Zanshin fa que siga fàcil posar ordre a la vostra vida diària. Només cal crear alguns projectes, uns pocs contextos i començar a omplir-los de tasques. Podeu fer-ho senzillament arrossegant i deixant anar. Cal fer alguna cosa abans d'un dia determinat? Només establiu una data de venciment i es destacarà dels altres elements. Heu de treballar en un projecte? Centreu-vos en açò i veureu totes les tasques relacionades. Us afecten les tocades telefòniques? Centreu-vos en el context del telèfon per a trobar totes les tocades pendents que hàgeu de fer.</p>
@@ -263,6 +270,7 @@
     <p xml:lang="x-test">xxZanshin makes it simple to put your daily life in order. Just create a few projects, a few contexts and start filling them with tasks. You can simply do this using drag and drop. Something has to be done before a given day? Just set a due date and it'll stand out from your other items. You need to work on a project? Focus on it and you will see all the related tasks. Feeling like dealing with your phone calls? Focus on your phone context to find all the pending calls you have to give.xx</p>
     <p xml:lang="zh-TW">Zanshin 讓規律的日常生活變得簡單。建立一些專案、一些場景，然後開始把工作項目填進去。這可以透過滑鼠拖放簡單搭乘。某天前必須做好某件事？設定一個到期日，然後該項目就會被突出顯示。需要在某個專案上進行工作？聚焦它然後您就會看到所有相關的工作項目。覺得要來處理您該打的電話？聚焦在電話場景來看您所有還沒打的電話。</p>
     <p subtitle="true">Optimize</p>
+    <p subtitle="true" xml:lang="ar">حسِّن</p>
     <p subtitle="true" xml:lang="bg">Оптимизиране</p>
     <p subtitle="true" xml:lang="ca">Optimitza</p>
     <p subtitle="true" xml:lang="ca-valencia">Optimitza</p>
@@ -297,6 +305,7 @@
     <p subtitle="true" xml:lang="zh-CN">优化</p>
     <p subtitle="true" xml:lang="zh-TW">最佳化</p>
     <p>We hackers love our keyboards, and you probably find yourself more efficient with your hands on the keyboard as much as possible. That's why we crafted Zanshin carefully to be completely drivable from the keyboard. We added shortcuts to add tasks, move them to a project or a context, navigate, etc.</p>
+    <p xml:lang="ar">نحن المخترقون نحب لوحات المفاتيح، وربما تجد نفسك أكثر كفاءة عندما تستخدم يديك على لوحة المفاتيح قدر الإمكان. ولهذا السبب صممنا زانشين بعناية بحيث يمكن تشغيله بالكامل من لوحة المفاتيح. لقد أضفنا اختصارات لإضافة المهام ونقلها إلى مشروع أو سياق، والتنقل، وما إلى ذلك.</p>
     <p xml:lang="bg">Ние, хакерите, обичаме клавиатурите си и вероятно сте по-ефективни с ръце върху клавиатурата, доколкото е възможно. Ето защо ние създадохме Zanshin внимателно, за да може да се управлява изцяло от клавиатурата. Добавихме клавишни комбинации за добавяне на задачи, преместването им в проект или контекст, навигация и т.н.</p>
     <p xml:lang="ca">Als hackers ens encanten els nostres teclats, i probablement sereu més eficient amb les mans al teclat sempre que es pugui. És per això que hem fet el Zanshin amb cura per a ser completament gestionable amb el teclat. S'han afegit dreceres per a afegir tasques, moure-les a un projecte o context, navegar, etc.</p>
     <p xml:lang="ca-valencia">Als hackers ens encanten els nostres teclats, i probablement sereu més eficient amb les mans al teclat sempre que es puga. És per açò que hem fet Zanshin amb cura per a ser completament gestionable amb el teclat. S'han afegit dreceres per a afegir tasques, moure-les a un projecte o context, navegar, etc.</p>
@@ -328,6 +337,7 @@
     <p xml:lang="x-test">xxWe hackers love our keyboards, and you probably find yourself more efficient with your hands on the keyboard as much as possible. That's why we crafted Zanshin carefully to be completely drivable from the keyboard. We added shortcuts to add tasks, move them to a project or a context, navigate, etc.xx</p>
     <p xml:lang="zh-TW">我們這些黑客都愛用鍵盤，您可能也是手儘量在鍵盤上的時候效率會比較高。這就是為什麼我們仔細製作 Zanshin，確保它是完全可以透過鍵盤使用的。我們有為新增工作、移動工作到專案或場景、導覽等等動作加上鍵盤快捷鍵。</p>
     <p subtitle="true">Integrate</p>
+    <p subtitle="true" xml:lang="ar">كامل</p>
     <p subtitle="true" xml:lang="bg">Интегриране</p>
     <p subtitle="true" xml:lang="ca">Integra</p>
     <p subtitle="true" xml:lang="ca-valencia">Integra</p>
@@ -361,6 +371,7 @@
     <p subtitle="true" xml:lang="x-test">xxIntegratexx</p>
     <p subtitle="true" xml:lang="zh-TW">整合</p>
     <p>Zanshin is an application of the KDE community, as such it unleashes even more power when used with other KDE Applications or within KDE Plasma Desktop. Using KMail? You can create a task right from an email you received and it'll appear in Zanshin's Inbox. Using KOrganizer? All your overdue and coming task will appear in the calendar view. Using Plasma Desktop? Then you can collect from anywhere using KRunner, just type in "todo: Buy apples", and you will find that tasks in Zanshin's Inbox, even if it wasn't running!</p>
+    <p xml:lang="ar">زانشين هو تطبيق من تطبيقات مجتمع كيدي، وبالتالي فهو يطلق العنان لمزيد من القوة عند استخدامه مع تطبيقات كيدي الأخرى أو داخل سطح مكتب بلازما من كيدي. هل تستخدم "بريدك"؟ يمكنك إنشاء مهمة مباشرة من رسالة بريد إلكتروني تلقيتها وستظهر في صندوق الوارد الخاص بزانشين. هل تستخدم "منظمك"؟ ستظهر جميع مهامك المتأخرة والمقبلة في عرض التقويم. هل تستخدم سطح مكتب بلازما؟ بعد ذلك يمكنك جمعها من أي مكان باستخدام "مشغل ك"  فقط اكتب "todo: Buy apples"، وستجد تلك المهام في صندوق الوارد الخاص بزانشين، حتى لو لم تكن قيد التشغيل!</p>
     <p xml:lang="bg">Zanshin е приложение на общността на KDE и като такова разгръща дори повече мощ, когато се използва с други приложения на KDE или в рамките на KDE Plasma . Използвате KMail? Можете да създадете задача директно от получен имейл и тя ще се появи във входящата поща на Zanshin. Използвате KOrganizer? Всички ваши просрочени и предстоящи задачи ще се появят в изгледа на календара. Използвате Plasma Desktop? Тогава вие можете да събирате отвсякъде с помощта на KRunner, просто въведете "todo: Buy apples", и ще откриете тази задача във входящата поща на Zanshin, дори и да не е била пусната!</p>
     <p xml:lang="ca">El Zanshin és una aplicació de la comunitat KDE, i com a tal, desenvolupa encara més potència quan s'utilitza amb altres aplicacions de KDE o dins de l'escriptori Plasma de KDE. Useu el KMail? Podeu crear una tasca des d'un correu electrònic que heu rebut i apareixerà a la safata d'entrada del Zanshin. Useu el KOrganizer? Totes les vostres tasques pendents i futures apareixeran a la vista del calendari. Useu l'escriptori Plasma? Llavors podreu recollir des de qualsevol lloc utilitzant el KRunner, escriviu «todo: Compra pomes», i trobareu aquestes tasques a la safata d'entrada del Zanshin, fins i tot si no s'estava executant!</p>
     <p xml:lang="ca-valencia">Zanshin és una aplicació de la comunitat KDE, i com a tal, desenvolupa encara més potència quan s'utilitza amb altres aplicacions de KDE o dins de l'escriptori Plasma de KDE. Utilitzeu KMail? Podeu crear una tasca des d'un correu electrònic que heu rebut i apareixerà a la safata d'entrada de Zanshin. Utilitzeu KOrganizer? Totes les vostres tasques pendents i futures apareixeran a la vista del calendari. Utilitzeu l'escriptori Plasma? Llavors podreu arreplegar des de qualsevol lloc utilitzant KRunner, escriviu «todo: Compra pomes», i trobareu estes tasques a la safata d'entrada de Zanshin, fins i tot si no s'estava executant!</p>
@@ -398,6 +409,7 @@
   <screenshots>
     <screenshot type="default">
       <caption>Zanshin main window</caption>
+      <caption xml:lang="ar">نافذة زاشين الرئيسة</caption>
       <caption xml:lang="bg">Главния прозорец на Zanshin</caption>
       <caption xml:lang="ca">Finestra principal del Zanshin</caption>
       <caption xml:lang="ca-valencia">Finestra principal de Zanshin</caption>
