@@ -1,13 +1,13 @@
 # Copyright (C) 2024 This file is copyright:
 # This file is distributed under the same license as the zanshin package.
-# SPDX-FileCopyrightText: 2024 Zayed Al-Saidi <zayed.alsaidi@gmail.com>
+# SPDX-FileCopyrightText: 2024, 2025 Zayed Al-Saidi <zayed.alsaidi@gmail.com>
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: zanshin\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2024-10-13 00:40+0000\n"
-"PO-Revision-Date: 2024-09-12 13:11+0400\n"
+"PO-Revision-Date: 2025-01-04 17:26+0400\n"
 "Last-Translator: Zayed Al-Saidi <zayed.alsaidi@gmail.com>\n"
 "Language-Team: ar\n"
 "Language: ar\n"
@@ -40,6 +40,8 @@ msgid ""
 "Please select or create a resource which will be used by the application to "
 "store and query its TODOs."
 msgstr ""
+"الرجاء تحديد أو إنشاء مورد سيتم استخدامه بواسطة التطبيق لتخزين واستعلام "
+"المهام المطلوب تنفيذها."
 
 #: src/akonadi/akonadiconfigdialog.cpp:50
 #, kde-format
@@ -49,42 +51,42 @@ msgstr "أضف مورد"
 #: src/akonadi/akonadiconfigdialog.cpp:57
 #, kde-format
 msgid "Remove resource"
-msgstr ""
+msgstr "أزل المورد"
 
 #: src/akonadi/akonadiconfigdialog.cpp:64
 #, kde-format
 msgid "Configure resource..."
-msgstr ""
+msgstr "اضبط مورد..."
 
 #: src/akonadi/akonadiconfigdialog.cpp:112
 #, kde-format
 msgid "Multiple Agent Deletion"
-msgstr ""
+msgstr "حذف الوكيل المتعدد"
 
 #: src/akonadi/akonadiconfigdialog.cpp:113
 #, kde-format
 msgid "Do you really want to delete the selected agent instances?"
-msgstr ""
+msgstr "هل تريد حقًا حذف حالات الوكيل المحددة؟"
 
 #: src/akonadi/akonaditaskrepository.cpp:50
 #, kde-format
 msgid "Could not find a collection to store the task into!"
-msgstr ""
+msgstr "لا يمكن العثور على مجموعة لتخزين المهمة فيها!"
 
 #: src/akonadi/akonaditaskrepository.cpp:197
 #, kde-format
 msgid "Could not associate '%1', it is an ancestor of '%2'"
-msgstr ""
+msgstr "لم نتمكن من ربط '%1'، فهو أحد أسلاف '%2'"
 
 #: src/presentation/alltaskspagemodel.cpp:35
 #, kde-format
 msgid "Cannot add task %1"
-msgstr ""
+msgstr "يتعذر إضافة المهمة %1"
 
 #: src/presentation/alltaskspagemodel.cpp:46
 #, kde-format
 msgid "Cannot remove task %1"
-msgstr ""
+msgstr "لا يمكن إزالة المهمة %1"
 
 #: src/presentation/alltaskspagemodel.cpp:56
 #: src/presentation/contextpagemodel.cpp:70
@@ -93,13 +95,13 @@ msgstr ""
 #: src/presentation/workdaypagemodel.cpp:61
 #, kde-format
 msgid "Cannot promote task %1 to be a project"
-msgstr ""
+msgstr "لا يمكن ترقية المهمة %1 لتصبح مشروعًا"
 
 #: src/presentation/alltaskspagemodel.cpp:97
 #: src/presentation/editormodel.cpp:389
 #, kde-format
 msgid "Cannot modify task %1"
-msgstr ""
+msgstr "لا يمكن تعديل المهمة %1"
 
 #: src/presentation/alltaskspagemodel.cpp:122
 #: src/presentation/contextpagemodel.cpp:140
@@ -107,34 +109,34 @@ msgstr ""
 #: src/presentation/workdaypagemodel.cpp:117
 #, kde-format
 msgid "Cannot move task %1 as sub-task of %2"
-msgstr ""
+msgstr "لا يمكن نقل المهمة %1 كمهمة فرعية لـ %2"
 
 #: src/presentation/alltaskspagemodel.cpp:125
 #: src/presentation/inboxpagemodel.cpp:114
 #: src/presentation/workdaypagemodel.cpp:125
 #, kde-format
 msgid "Cannot deparent task %1 from its parent"
-msgstr ""
+msgstr "لا يمكن فصل المهمة %1 عن المهمة الأصلية"
 
 #: src/presentation/availablepagesmodel.cpp:111
 #, kde-format
 msgid "Cannot add project %1 in dataSource %2"
-msgstr ""
+msgstr "لا يمكن إضافة المشروع %1 في مصدر البيانات %2"
 
 #: src/presentation/availablepagesmodel.cpp:119
 #, kde-format
 msgid "Cannot add context %1"
-msgstr ""
+msgstr "لا يمكن إضافة السياق %1"
 
 #: src/presentation/availablepagesmodel.cpp:127
 #, kde-format
 msgid "Cannot remove project %1"
-msgstr ""
+msgstr "لا يمكن إزالة المشروع %1"
 
 #: src/presentation/availablepagesmodel.cpp:130
 #, kde-format
 msgid "Cannot remove context %1"
-msgstr ""
+msgstr "لا يمكن إزالة السياق %1"
 
 #: src/presentation/availablepagesmodel.cpp:139
 #, kde-format
@@ -164,122 +166,122 @@ msgstr "كل المهام"
 #: src/presentation/availablepagesmodel.cpp:246
 #, kde-format
 msgid "Cannot modify project %1"
-msgstr ""
+msgstr "لا يمكن تعديل المشروع %1"
 
 #: src/presentation/availablepagesmodel.cpp:251
 #, kde-format
 msgid "Cannot modify context %1"
-msgstr ""
+msgstr "لا يمكن تعديل السياق %1"
 
 #: src/presentation/availablepagesmodel.cpp:270
 #, kde-format
 msgid "Cannot add %1 to project %2"
-msgstr ""
+msgstr "لا يمكن إضافة %1 إلى المشروع %2"
 
 #: src/presentation/availablepagesmodel.cpp:276
 #, kde-format
 msgid "Cannot add %1 to context %2"
-msgstr ""
+msgstr "لا يمكن إضافة %1 إلى السياق %2"
 
 #: src/presentation/availablepagesmodel.cpp:282
 #, kde-format
 msgid "Cannot move %1 to Inbox"
-msgstr ""
+msgstr "لا يمكن نقل %1 إلى البريد الوارد"
 
 #: src/presentation/availablepagesmodel.cpp:286
 #, kde-format
 msgid "Cannot move task %1 to Inbox"
-msgstr ""
+msgstr "لا يمكن نقل المهمة %1 إلى البريد الوارد"
 
 #: src/presentation/availablepagesmodel.cpp:295
 #, kde-format
 msgid "Cannot update task %1 to Workday"
-msgstr ""
+msgstr "لا يمكن تحديث المهمة %1 إلى يوم العمل"
 
 #: src/presentation/availablesourcesmodel.cpp:97
 #, kde-format
 msgid "Cannot modify source %1"
-msgstr ""
+msgstr "لا يمكن تعديل المصدر %1"
 
 #: src/presentation/contextpagemodel.cpp:50
 #, kde-format
 msgid "Cannot add task %1 in context %2"
-msgstr ""
+msgstr "لا يمكن إضافة المهمة %1 في السياق %2"
 
 #: src/presentation/contextpagemodel.cpp:61
 #, kde-format
 msgid "Cannot remove task %1 from context %2"
-msgstr ""
+msgstr "لا يمكن إزالة المهمة %1 من السياق %2"
 
 #: src/presentation/contextpagemodel.cpp:111
 #, kde-format
 msgid "Cannot modify task %1 in context %2"
-msgstr ""
+msgstr "لا يمكن تعديل المهمة %1 في السياق %2"
 
 #: src/presentation/contextpagemodel.cpp:143
 #, kde-format
 msgid "Cannot dissociate task %1 from its parent"
-msgstr ""
+msgstr "لا يمكن فصل المهمة %1 عن المهمة الأصلية"
 
 #: src/presentation/inboxpagemodel.cpp:35
 #, kde-format
 msgid "Cannot add task %1 in Inbox"
-msgstr ""
+msgstr "لا يمكن إضافة المهمة %1 في البريد الوارد"
 
 #: src/presentation/inboxpagemodel.cpp:46
 #, kde-format
 msgid "Cannot remove task %1 from Inbox"
-msgstr ""
+msgstr "لا يمكن إزالة المهمة %1 من البريد الوارد"
 
 #: src/presentation/inboxpagemodel.cpp:96
 #, kde-format
 msgid "Cannot modify task %1 in Inbox"
-msgstr ""
+msgstr "لا يمكن تعديل المهمة %1 في البريد الوارد"
 
 #: src/presentation/projectpagemodel.cpp:47
 #, kde-format
 msgid "Cannot add task %1 in project %2"
-msgstr ""
+msgstr "لا يمكن إضافة المهمة %1 في المشروع %2"
 
 #: src/presentation/projectpagemodel.cpp:58
 #, kde-format
 msgid "Cannot remove task %1 from project %2"
-msgstr ""
+msgstr "لا يمكن إزالة المهمة %1 من المشروع %2"
 
 #: src/presentation/projectpagemodel.cpp:108
 #, kde-format
 msgid "Cannot modify task %1 in project %2"
-msgstr ""
+msgstr "لا يمكن تعديل المهمة %1 في المشروع %2"
 
 #: src/presentation/projectpagemodel.cpp:134
 #, kde-format
 msgid "Cannot move task %1 as a sub-task of %2"
-msgstr ""
+msgstr "لا يمكن نقل المهمة %1 كمهمة فرعية لـ %2"
 
 #: src/presentation/runningtaskmodel.cpp:46
 #, kde-format
 msgid "Cannot update task %1 to 'not running'"
-msgstr ""
+msgstr "لا يمكن تحديث المهمة %1 إلى \"لا تعمل\""
 
 #: src/presentation/runningtaskmodel.cpp:54
 #, kde-format
 msgid "Cannot update task %1 to 'running'"
-msgstr ""
+msgstr "لا يمكن تحديث المهمة %1 إلى \"قيد التشغيل\""
 
 #: src/presentation/workdaypagemodel.cpp:40
 #, kde-format
 msgid "Cannot add task %1 in Workday"
-msgstr ""
+msgstr "لا يمكن إضافة المهمة %1 في يوم العمل"
 
 #: src/presentation/workdaypagemodel.cpp:51
 #, kde-format
 msgid "Cannot remove task %1 from Workday"
-msgstr ""
+msgstr "لا يمكن إزالة المهمة %1 من يوم العمل"
 
 #: src/presentation/workdaypagemodel.cpp:102
 #, kde-format
 msgid "Cannot modify task %1 in Workday"
-msgstr ""
+msgstr "لا يمكن تعديل المهمة %1 في يوم العمل"
 
 #: src/widgets/applicationcomponents.cpp:48
 #, kde-format
@@ -320,32 +322,32 @@ msgstr "اذهب إلى صفحة..."
 #, kde-format
 msgctxt "@title:window"
 msgid "Add a context"
-msgstr ""
+msgstr "أضف سياقًا"
 
 #: src/widgets/availablepagesview.cpp:265
 #, kde-format
 msgid "Delete Project"
-msgstr ""
+msgstr "احذف المشروع"
 
 #: src/widgets/availablepagesview.cpp:266
 #, kde-format
 msgid "Do you really want to delete the project '%1', with all its actions?"
-msgstr ""
+msgstr "هل تريد حقًا حذف المشروع '%1' مع ​​جميع إجراءاته؟"
 
 #: src/widgets/availablepagesview.cpp:268
 #, kde-format
 msgid "Delete Context"
-msgstr ""
+msgstr "احذف السياق"
 
 #: src/widgets/availablepagesview.cpp:269
 #, kde-format
 msgid "Do you really want to delete the context '%1'?"
-msgstr ""
+msgstr "هل تريد حقًا حذف السياق '%1'؟"
 
 #: src/widgets/availablesourcesview.cpp:53
 #, kde-format
 msgid "Use as Default Source"
-msgstr ""
+msgstr "استخدم كمصدر مبدئي"
 
 #: src/widgets/availablesourcesview.cpp:74
 #, kde-format
@@ -418,7 +420,7 @@ msgstr "أزل المرفق"
 #: src/widgets/editorview.ui:121
 #, kde-format
 msgid "Select for &Today"
-msgstr ""
+msgstr "اختر &لليوم"
 
 #. i18n: ectx: property (text), widget (QLabel, recurrenceLabel)
 #: src/widgets/editorview.ui:130
@@ -487,7 +489,7 @@ msgstr "المصدر"
 #, kde-format
 msgctxt "@info:placeholder"
 msgid "Type and press enter to add a task"
-msgstr ""
+msgstr "اكتب واضغط على زر الإدخال لإضافة مهمة"
 
 #: src/widgets/pageview.cpp:173
 #, kde-format
@@ -502,17 +504,17 @@ msgstr "أزل مهمة"
 #: src/widgets/pageview.cpp:194
 #, kde-format
 msgid "Promote Task as Project"
-msgstr ""
+msgstr "ترقية المهمة كمشروع"
 
 #: src/widgets/pageview.cpp:208
 #, kde-format
 msgid "Show done tasks"
-msgstr ""
+msgstr "أظهر المهام المنتهية"
 
 #: src/widgets/pageview.cpp:216
 #, kde-format
 msgid "Show future tasks"
-msgstr ""
+msgstr "أظهر الماهم المستقبلية"
 
 #: src/widgets/pageview.cpp:242
 #, kde-format
@@ -522,22 +524,22 @@ msgstr "ابدأ الآن"
 #: src/widgets/pageview.cpp:360
 #, kde-format
 msgid "Type and press enter to add an item"
-msgstr ""
+msgstr "اكتب واضغط على مفتاح الإدخال لإضافة عنصر"
 
 #: src/widgets/pageview.cpp:386
 #, kde-format
 msgid "Do you really want to delete the selected items and their children?"
-msgstr ""
+msgstr "هل تريد حقًا حذف العناصر المحددة وعناصرها الفرعية؟"
 
 #: src/widgets/pageview.cpp:388
 #, kde-format
 msgid "Do you really want to delete the selected items?"
-msgstr ""
+msgstr "هل تريد حقًا حذف العناصر المحددة؟"
 
 #: src/widgets/pageview.cpp:396
 #, kde-format
 msgid "Do you really want to delete the selected task and all its children?"
-msgstr ""
+msgstr "هل تريد حقًا حذف المهمة المحددة وكل أبنائها؟"
 
 #: src/widgets/pageview.cpp:400
 #, kde-format
@@ -548,12 +550,12 @@ msgstr "احذف المهام"
 #, kde-format
 msgctxt "@title:window"
 msgid "Quick Select Dialog"
-msgstr ""
+msgstr "حواري التحديد السريع"
 
 #: src/widgets/quickselectdialog.cpp:32 src/widgets/quickselectdialog.cpp:70
 #, kde-format
 msgid "You can start typing to filter the list of available pages"
-msgstr ""
+msgstr "يمكنك البدء في الكتابة لتصفية قائمة الصفحات المتاحة"
 
 #: src/widgets/quickselectdialog.cpp:72
 #, kde-format
@@ -564,7 +566,7 @@ msgstr "المسار: %1"
 #, kde-format
 msgctxt "@title:window"
 msgid "Zanshin Running Task Banner"
-msgstr ""
+msgstr "لافتة مهمة تشغيل زانشين"
 
 #: src/widgets/runningtaskwidget.cpp:49
 #, kde-format
@@ -580,12 +582,12 @@ msgstr "مهام زانشين"
 #, kde-format
 msgid ""
 "A Getting Things Done application which aims at getting your mind like water"
-msgstr ""
+msgstr "تطبيق إنجاز المهام الذي يهدف إلى جعل عقلك مثل الماء"
 
 #: src/zanshin/app/aboutdata.cpp:17
 #, kde-format
 msgid "Copyright 2008-2016, Kevin Ottens <ervin@kde.org>"
-msgstr ""
+msgstr "حقوق الطبع والنشر 2008-2016، كيفن أوتينز <ervin@kde.org>"
 
 #: src/zanshin/app/aboutdata.cpp:19
 #, kde-format
@@ -647,4 +649,4 @@ msgstr "شريط الأدوات الرئيسي"
 #: src/zanshin/runner/zanshinrunner.cpp:56
 #, kde-format
 msgid "Add \"%1\" to your todo list"
-msgstr ""
+msgstr "أضف \"%1\" إلى قائمة مهامك"
