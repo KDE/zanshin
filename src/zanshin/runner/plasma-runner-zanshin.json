@@ -42,6 +42,7 @@
             }
         ],
         "Description": "Add tasks to your todo list",
+        "Description[ar]": "أضف المهام إلى قائمة مهامك",
         "Description[bg]": "Добавяне на задачи във вашия списък със задачи",
         "Description[ca@valencia]": "Afig tasques a la vostra llista de tasques pendents",
         "Description[ca]": "Afegeix tasques a la vostra llista de tasques pendents",
