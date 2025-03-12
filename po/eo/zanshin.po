@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zanshin\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-10-13 00:40+0000\n"
+"POT-Creation-Date: 2025-03-12 00:43+0000\n"
 "PO-Revision-Date: 2024-07-04 21:35+0200\n"
 "Last-Translator: Oliver Kellogg <olivermkellogg@gmail.com>\n"
 "Language-Team: Esperanto <kde-i18n-eo@kde.org>\n"
@@ -58,12 +58,12 @@ msgstr "Forigi rimedon"
 msgid "Configure resource..."
 msgstr "Agordi rimedon..."
 
-#: src/akonadi/akonadiconfigdialog.cpp:112
+#: src/akonadi/akonadiconfigdialog.cpp:122
 #, kde-format
 msgid "Multiple Agent Deletion"
 msgstr "Multobla Agentoforigo"
 
-#: src/akonadi/akonadiconfigdialog.cpp:113
+#: src/akonadi/akonadiconfigdialog.cpp:123
 #, kde-format
 msgid "Do you really want to delete the selected agent instances?"
 msgstr "Ĉu vi vere volas forigi la elektitajn agentinstancojn?"

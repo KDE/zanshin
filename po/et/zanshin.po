@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-10-13 00:40+0000\n"
+"POT-Creation-Date: 2025-03-12 00:43+0000\n"
 "PO-Revision-Date: 2020-02-13 15:08+0200\n"
 "Last-Translator: Marek Laane <qiilaq69@gmail.com>\n"
 "Language-Team: Estonian <kde-et@lists.linux.ee>\n"
@@ -59,12 +59,12 @@ msgstr "Eemalda ressurss"
 msgid "Configure resource..."
 msgstr "Seadista ressurssi ..."
 
-#: src/akonadi/akonadiconfigdialog.cpp:112
+#: src/akonadi/akonadiconfigdialog.cpp:122
 #, kde-format
 msgid "Multiple Agent Deletion"
 msgstr "Mitme agendi kustutamine"
 
-#: src/akonadi/akonadiconfigdialog.cpp:113
+#: src/akonadi/akonadiconfigdialog.cpp:123
 #, kde-format
 msgid "Do you really want to delete the selected agent instances?"
 msgstr "Kas tõesti kustutada valitud agentide isendid?"

@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-10-13 00:40+0000\n"
+"POT-Creation-Date: 2025-03-12 00:43+0000\n"
 "PO-Revision-Date: 2024-07-05 03:56+0200\n"
 "Last-Translator: Stefan Asserhäll <stefan.asserhall@gmail.com>\n"
 "Language-Team: Swedish <kde-i18n-doc@kde.org>\n"
@@ -58,12 +58,12 @@ msgstr "Ta bort resurs"
 msgid "Configure resource..."
 msgstr "Anpassa resurs..."
 
-#: src/akonadi/akonadiconfigdialog.cpp:112
+#: src/akonadi/akonadiconfigdialog.cpp:122
 #, kde-format
 msgid "Multiple Agent Deletion"
 msgstr "Borttagning av flera moduler"
 
-#: src/akonadi/akonadiconfigdialog.cpp:113
+#: src/akonadi/akonadiconfigdialog.cpp:123
 #, kde-format
 msgid "Do you really want to delete the selected agent instances?"
 msgstr "Vill du verkligen ta bort de markerade instanserna av moduler?"

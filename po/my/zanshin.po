@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zanshin\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-10-13 00:40+0000\n"
+"POT-Creation-Date: 2025-03-12 00:43+0000\n"
 "PO-Revision-Date: 2021-09-21 12:51+0630\n"
 "Last-Translator: ဇေယျာလွင် <lw1nzayar@yandex.com>\n"
 "Language-Team: Burmese <kde-i18n-doc@kde.org>\n"
@@ -59,12 +59,12 @@ msgstr "ရင်းမြစ်ဖယ်ရှားမည်"
 msgid "Configure resource..."
 msgstr "ရင်းမြစ် ပြင်ဆင်မည်..."
 
-#: src/akonadi/akonadiconfigdialog.cpp:112
+#: src/akonadi/akonadiconfigdialog.cpp:122
 #, kde-format
 msgid "Multiple Agent Deletion"
 msgstr "အေးဂျင့်အမြောက်အများဖျက်ခြင်း"
 
-#: src/akonadi/akonadiconfigdialog.cpp:113
+#: src/akonadi/akonadiconfigdialog.cpp:123
 #, kde-format
 msgid "Do you really want to delete the selected agent instances?"
 msgstr "ရွေးထားသော အေးဂျင့်အင်းစတမ့်များကို တကယ်ဖျက်တော့မှာလား။"

@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zanshin\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-10-13 00:40+0000\n"
+"POT-Creation-Date: 2025-03-12 00:43+0000\n"
 "PO-Revision-Date: 2024-07-04 09:43+0200\n"
 "Last-Translator: Josep M. Ferrer <txemaq@gmail.com>\n"
 "Language-Team: Catalan <kde-i18n-ca@kde.org>\n"
@@ -62,12 +62,12 @@ msgstr "Elimina el recurs"
 msgid "Configure resource..."
 msgstr "Configura el recurs…"
 
-#: src/akonadi/akonadiconfigdialog.cpp:112
+#: src/akonadi/akonadiconfigdialog.cpp:122
 #, kde-format
 msgid "Multiple Agent Deletion"
 msgstr "Suprimiu múltiples agents"
 
-#: src/akonadi/akonadiconfigdialog.cpp:113
+#: src/akonadi/akonadiconfigdialog.cpp:123
 #, kde-format
 msgid "Do you really want to delete the selected agent instances?"
 msgstr "Segur que voleu suprimir la instància seleccionada de l'agent?"

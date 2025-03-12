@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zanshin\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-10-13 00:40+0000\n"
+"POT-Creation-Date: 2025-03-12 00:43+0000\n"
 "PO-Revision-Date: 2022-04-07 18:16+0200\n"
 "Last-Translator: Roman Paholik <wizzardsk@gmail.com>\n"
 "Language-Team: Slovak <kde-sk@linux.sk>\n"
@@ -63,14 +63,14 @@ msgstr "Odstrániť projekt"
 msgid "Configure resource..."
 msgstr "Nastaviť servery LDAP..."
 
-#: src/akonadi/akonadiconfigdialog.cpp:112
+#: src/akonadi/akonadiconfigdialog.cpp:122
 #, fuzzy, kde-format
 #| msgctxt "Akonadi::ConfigDialog|"
 #| msgid "Multiple Agent Deletion"
 msgid "Multiple Agent Deletion"
 msgstr "Mazanie viacerých agentov"
 
-#: src/akonadi/akonadiconfigdialog.cpp:113
+#: src/akonadi/akonadiconfigdialog.cpp:123
 #, fuzzy, kde-format
 #| msgid "Do you really want to delete the selected agent instance?"
 #| msgid_plural "Do you really want to delete these %1 agent instances?"

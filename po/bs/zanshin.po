@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: kde 49i410\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2024-10-13 00:40+0000\n"
+"POT-Creation-Date: 2025-03-12 00:43+0000\n"
 "PO-Revision-Date: 2015-02-22 15:24+0100\n"
 "Last-Translator: Samir Ribić <megaribi@epn.ba>\n"
 "Language-Team: Bosnian\n"
@@ -68,13 +68,13 @@ msgstr "Ukloni projekat"
 msgid "Configure resource..."
 msgstr "Konfigurišite LDAP servere..."
 
-#: src/akonadi/akonadiconfigdialog.cpp:112
+#: src/akonadi/akonadiconfigdialog.cpp:122
 #, fuzzy, kde-format
 #| msgid "Multiple Agent Deletion"
 msgid "Multiple Agent Deletion"
 msgstr "Višestruko brisanje agenata"
 
-#: src/akonadi/akonadiconfigdialog.cpp:113
+#: src/akonadi/akonadiconfigdialog.cpp:123
 #, fuzzy, kde-format
 #| msgid "Do you really want to delete the selected agent instance?"
 #| msgid_plural "Do you really want to delete these %1 agent instances?"
