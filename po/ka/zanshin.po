@@ -347,7 +347,7 @@ msgstr "მართლა გნებავთ კონტექსტის 
 #: src/widgets/availablesourcesview.cpp:53
 #, kde-format
 msgid "Use as Default Source"
-msgstr "ნაგულისხმებ წყაროდ გამოყენება"
+msgstr "ნაგულისხმევ წყაროდ გამოყენება"
 
 #: src/widgets/availablesourcesview.cpp:74
 #, kde-format
