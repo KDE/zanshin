@@ -42,8 +42,6 @@ private slots:
     void onUserInputChanged();
 
 private:
-    void applyDefaultSource(const QModelIndex &root);
-
     Ui::NameAndDataSourceDialog *ui;
     KDescendantsProxyModel *m_flattenProxy;
     QString m_name;
