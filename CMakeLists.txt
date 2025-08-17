@@ -23,7 +23,7 @@ include(ECMSetupVersion)
 include(ECMDeprecationSettings)
 include(ECMFeatureSummary)
 
-set(QT_REQUIRED_VERSION "6.5.0")
+set(QT_REQUIRED_VERSION "6.5.1")
 find_package(Qt6 ${QT_REQUIRED_VERSION} CONFIG REQUIRED Core Gui Widgets Test)
 find_package(Boost REQUIRED)
 find_package(Threads REQUIRED)
@@ -81,9 +81,9 @@ find_package(KF6 ${KF_MIN_VERSION} REQUIRED COMPONENTS
     Crash
 )
 
-find_package(KPim6Akonadi "6.5.0" REQUIRED)
-find_package(KPim6AkonadiCalendar "6.5.0" REQUIRED)
-find_package(KPim6KontactInterface "6.5.0" REQUIRED)
+find_package(KPim6Akonadi "6.5.1" REQUIRED)
+find_package(KPim6AkonadiCalendar "6.5.1" REQUIRED)
+find_package(KPim6KontactInterface "6.5.1" REQUIRED)
 
 add_definitions(-DQT_NO_CONTEXTLESS_CONNECT)
 ecm_set_disabled_deprecation_versions(QT 6.3.0
