@@ -44,7 +44,7 @@ msgid ""
 "Please select or create a resource which will be used by the application to "
 "store and query its TODOs."
 msgstr ""
-"Seleccioneu o creeu un recurs que utilitze l'aplicació per a emmagatzemar i "
+"Trieu o creeu un recurs que utilitze l'aplicació per a emmagatzemar i "
 "consultar les tasques pendents."
 
 #: src/akonadi/akonadiconfigdialog.cpp:50
@@ -425,7 +425,7 @@ msgstr "Elimina l'adjunt"
 #: src/widgets/editorview.ui:121
 #, kde-format
 msgid "Select for &Today"
-msgstr "Selecciona per av&ui"
+msgstr "Tria per av&ui"
 
 #. i18n: ectx: property (text), widget (QLabel, recurrenceLabel)
 #: src/widgets/editorview.ui:130
