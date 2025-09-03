@@ -193,7 +193,7 @@ private slots:
         auto object = deps.create<Interface0>();
         QVERIFY(object.dynamicCast<FirstImplementation0>());
         QVERIFY(s_firstImplFactoryCalled);
-        QVERIFY(s_manager == &deps);
+        QCOMPARE(s_manager, &deps);
     }
 
     void shouldAllowUniqueInstances()
@@ -204,7 +204,7 @@ private slots:
         QVERIFY(object1.dynamicCast<FirstImplementation0>());
         auto object2 = deps.create<Interface0>();
         QVERIFY(object2.dynamicCast<FirstImplementation0>());
-        QVERIFY(object1 == object2);
+        QCOMPARE(object1, object2);
     }
 
     void shouldAllowUniqueInstancesWithOurOwnFactory()
@@ -218,8 +218,8 @@ private slots:
         auto object2 = deps.create<Interface0>();
         QVERIFY(object2.dynamicCast<FirstImplementation0>());
         QVERIFY(s_firstImplFactoryCalled);
-        QVERIFY(s_manager == &deps);
-        QVERIFY(object1 == object2);
+        QCOMPARE(s_manager, &deps);
+        QCOMPARE(object1, object2);
     }
 
     void shouldAllowOurOwnFactoryAsLambda()
@@ -237,7 +237,7 @@ private slots:
         auto object = deps.create<Interface0>();
         QVERIFY(object.dynamicCast<FirstImplementation0>());
         QVERIFY(ownFactoryCalled);
-        QVERIFY(managerCalled == &deps);
+        QCOMPARE(managerCalled, &deps);
 #endif
     }
 

@@ -186,7 +186,7 @@ private slots:
         QVERIFY(!recurrenceCombo->isVisibleTo(&editor));
         QVERIFY(!doneButton->isVisibleTo(&editor));
         QVERIFY(!attachmentList->isVisibleTo(&editor));
-        QVERIFY(attachmentList->model() == nullptr);
+        QCOMPARE(attachmentList->model(), nullptr);
         QVERIFY(!addAttachmentButton->isVisibleTo(&editor));
         QVERIFY(!removeAttachmentButton->isVisibleTo(&editor));
     }
