@@ -36,7 +36,6 @@
                 "Name[sv]": "Zanshin-gruppen",
                 "Name[tr]": "Zanşin Takımı",
                 "Name[uk]": "Команда Zanshin",
-                "Name[x-test]": "xxZanshin Teamxx",
                 "Name[zh_CN]": "Zanshin 团队",
                 "Name[zh_TW]": "Zanshin 團隊"
             }
@@ -75,7 +74,6 @@
         "Description[sv]": "Lägg till uppgifter i uppgiftslistan",
         "Description[tr]": "Yapılacaklar listenize görevler ekleyin",
         "Description[uk]": "Додайте завдання до вашого списку завдань",
-        "Description[x-test]": "xxAdd tasks to your todo listxx",
         "Description[zh_CN]": "将任务添加到您的待办事项",
         "Description[zh_TW]": "將工作項目加入您的待辦清單",
         "EnabledByDefault": true,
@@ -115,7 +113,6 @@
         "Name[sv]": "Zanshin uppgifter",
         "Name[tr]": "Zanşin Görevler",
         "Name[uk]": "Завдання Zanshin",
-        "Name[x-test]": "xxZanshin Tasksxx",
         "Name[zh_CN]": "Zanshin 任务",
         "Name[zh_TW]": "Zanshin 工作項目"
     }
