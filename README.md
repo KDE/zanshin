@@ -22,11 +22,11 @@ A Getting Things Done application which aims at getting your mind like water.
 - Make sure to have Qt > 6.4, Akonadi, AkonadiCalendar, KontactInterface, Runner, WindowSystem, I18n.
 	- For openSUSE Tumbleweed users:
 		```sh
-		$ zypper in akonadi-server-devel \
-		akonadi-calendar-devel akonadi-contact-devel \
+		$ zypper in akonadi-devel \
+		akonadi-calendar-devel akonadi-contacts-devel \
 		kontactinterface-devel \
-		krunner-devel \
-		kwindowsystem-devel \
+		kf6-krunner-devel \
+	  	kf6-kwindowsystem-devel \
 		ki18n-devel
 		```
 
