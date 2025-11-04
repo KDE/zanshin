@@ -190,12 +190,12 @@ msgstr "Impossible d'ajouter « %1 » au contexte « %2 »"
 #: src/presentation/availablepagesmodel.cpp:282
 #, kde-format
 msgid "Cannot move %1 to Inbox"
-msgstr "Impossible de déplacer « %1 » vers la boîte de réception"
+msgstr "Impossible de déplacer « %1 » vers la boite de réception"
 
 #: src/presentation/availablepagesmodel.cpp:286
 #, kde-format
 msgid "Cannot move task %1 to Inbox"
-msgstr "Impossible de déplacer la tâche « %1 » vers la boîte de réception"
+msgstr "Impossible de déplacer la tâche « %1 » vers la boite de réception"
 
 #: src/presentation/availablepagesmodel.cpp:295
 #, kde-format
