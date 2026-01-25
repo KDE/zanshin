@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: zanshin\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-11-17 11:53+0000\n"
-"PO-Revision-Date: 2024-01-26 17:58+0200\n"
+"PO-Revision-Date: 2026-01-25 00:00+0200\n"
 "Last-Translator: Moo\n"
 "Language-Team: lt\n"
 "Language: lt\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Plural-Forms: nplurals=4; plural=(n==1 ? 0 : n%10>=2 && (n%100<10 || n"
 "%100>=20) ? 1 : n%10==0 || (n%100>10 && n%100<20) ? 2 : 3);\n"
 "X-Qt-Contexts: true\n"
-"X-Generator: Poedit 3.0.1\n"
+"X-Generator: Poedit 3.8\n"
 
 #, kde-format
 msgctxt "NAME OF TRANSLATORS"
@@ -488,11 +488,11 @@ msgid "Source"
 msgstr "Šaltinis"
 
 #: src/widgets/pageview.cpp:156
-#, fuzzy, kde-format
-#| msgid "Type and press enter to add a task"
+#, kde-format
 msgctxt "@info:placeholder"
 msgid "Type and press enter to add a task"
-msgstr "Norėdami pridėti užduotį, parašykite ir paspauskite Įvedimo klavišą"
+msgstr ""
+"Norėdami pridėti užduotį, parašykite ir paspauskite Įvedimo (Enter) klavišą"
 
 #: src/widgets/pageview.cpp:173
 #, kde-format
@@ -527,7 +527,8 @@ msgstr "Pradėti dabar"
 #: src/widgets/pageview.cpp:360
 #, kde-format
 msgid "Type and press enter to add an item"
-msgstr "Norėdami pridėti elementą, parašykite ir paspauskite Įvedimo klavišą"
+msgstr ""
+"Norėdami pridėti elementą, parašykite ir paspauskite Įvedimo (Enter) klavišą"
 
 #: src/widgets/pageview.cpp:386
 #, kde-format
@@ -599,8 +600,7 @@ msgid "Copyright 2008-2016, Kevin Ottens <ervin@kde.org>"
 msgstr "Autorių teisės 2008-2016, Kevin Ottens <ervin@kde.org>"
 
 #: src/zanshin/app/aboutdata.cpp:19
-#, fuzzy, kde-format
-#| msgid "Kevin Ottens"
+#, kde-format
 msgctxt "@info:credit"
 msgid "Kevin Ottens"
 msgstr "Kevin Ottens"
@@ -611,8 +611,7 @@ msgid "Lead Developer"
 msgstr "Pagrindinis programuotojas"
 
 #: src/zanshin/app/aboutdata.cpp:23
-#, fuzzy, kde-format
-#| msgid "Mario Bensi"
+#, kde-format
 msgctxt "@info:credit"
 msgid "Mario Bensi"
 msgstr "Mario Bensi"
@@ -623,8 +622,7 @@ msgid "Developer"
 msgstr "Programuotojas"
 
 #: src/zanshin/app/aboutdata.cpp:27
-#, fuzzy, kde-format
-#| msgid "Franck Arrecot"
+#, kde-format
 msgctxt "@info:credit"
 msgid "Franck Arrecot"
 msgstr "Franck Arrecot"
