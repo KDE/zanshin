@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: zanshin\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-11-17 11:53+0000\n"
-"PO-Revision-Date: 2026-01-25 00:00+0200\n"
+"PO-Revision-Date: 2026-01-31 22:52+0200\n"
 "Last-Translator: Moo\n"
 "Language-Team: lt\n"
 "Language: lt\n"
@@ -43,7 +43,7 @@ msgid ""
 "store and query its TODOs."
 msgstr ""
 "Pasirinkite ar sukurkite išteklių, kurį programa naudos, kad saugotų ir "
-"užklaustų atliktinas užduotis."
+"užklaustų, kokios yra atliktinos užduotys."
 
 #: src/akonadi/akonadiconfigdialog.cpp:50
 #, kde-format
@@ -78,7 +78,7 @@ msgstr "Nepavyko rasti kolekcijos, kurioje saugoti užduotį!"
 #: src/akonadi/akonaditaskrepository.cpp:197
 #, kde-format
 msgid "Could not associate '%1', it is an ancestor of '%2'"
-msgstr "Nepavyko susieti \"%1\", tai yra viršesnysis \"%2\" elementas"
+msgstr "Nepavyko susieti „%1“, tai yra viršesnysis „%2“ elementas"
 
 #: src/presentation/alltaskspagemodel.cpp:35
 #, kde-format
@@ -263,12 +263,12 @@ msgstr "Nepavyksta perkelti užduotį %1 kaip %2 dalinio uždavinio"
 #: src/presentation/runningtaskmodel.cpp:46
 #, kde-format
 msgid "Cannot update task %1 to 'not running'"
-msgstr "Nepavyksta atnaujinti užduotį %1 į \"nevykdoma\""
+msgstr "Nepavyksta atnaujinti užduotį %1 į „nevykdoma“"
 
 #: src/presentation/runningtaskmodel.cpp:54
 #, kde-format
 msgid "Cannot update task %1 to 'running'"
-msgstr "Nepavyksta atnaujinti užduotį %1 į \"vykdoma\""
+msgstr "Nepavyksta atnaujinti užduotį %1 į „vykdoma“"
 
 #: src/presentation/workdaypagemodel.cpp:40
 #, kde-format
@@ -334,7 +334,7 @@ msgstr "Ištrinti projektą"
 #: src/widgets/availablepagesview.cpp:266
 #, kde-format
 msgid "Do you really want to delete the project '%1', with all its actions?"
-msgstr "Ar tikrai norite ištrinti projektą \"%1\", su visais jo veiksmais?"
+msgstr "Ar tikrai norite ištrinti projektą „%1“ su visais jo veiksmais?"
 
 #: src/widgets/availablepagesview.cpp:268
 #, kde-format
@@ -344,7 +344,7 @@ msgstr "Ištrinti kontekstą"
 #: src/widgets/availablepagesview.cpp:269
 #, kde-format
 msgid "Do you really want to delete the context '%1'?"
-msgstr "Ar tikrai norite ištrinti kontekstą \"%1\"?"
+msgstr "Ar tikrai norite ištrinti kontekstą „%1“?"
 
 #: src/widgets/availablesourcesview.cpp:53
 #, kde-format
@@ -591,13 +591,13 @@ msgstr "Zanshin užduotys"
 msgid ""
 "A Getting Things Done application which aims at getting your mind like water"
 msgstr ""
-"Užduočių atlikimo programa, kurios tikslas - nuraminti jūsų protą kaip "
+"Užduočių atlikimo programa, kurios tikslas – nuraminti jūsų protą kaip "
 "vandenį"
 
 #: src/zanshin/app/aboutdata.cpp:17
 #, kde-format
 msgid "Copyright 2008-2016, Kevin Ottens <ervin@kde.org>"
-msgstr "Autorių teisės 2008-2016, Kevin Ottens <ervin@kde.org>"
+msgstr "Autorių teisės 2008–2016, Kevin Ottens <ervin@kde.org>"
 
 #: src/zanshin/app/aboutdata.cpp:19
 #, kde-format
@@ -659,7 +659,7 @@ msgstr "Pagrindinė įrankių juosta"
 #: src/zanshin/runner/zanshinrunner.cpp:56
 #, kde-format
 msgid "Add \"%1\" to your todo list"
-msgstr "Pridėti \"%1\" į jūsų užduočių sąrašą"
+msgstr "Pridėti „%1“ į jūsų užduočių sąrašą"
 
 #~ msgctxt "the day after today"
 #~ msgid "tomorrow"
