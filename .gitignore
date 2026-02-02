@@ -29,3 +29,4 @@ CMakeLists.txt.user*
 /.vscode/
 CMakeUserPresets.json
 .qtcreator/
+.sentry-native/
