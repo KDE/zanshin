@@ -1,33 +1,34 @@
 # Copyright (C) YEAR This_file_is_part_of_KDE
 # This file is distributed under the same license as the PACKAGE package.
-# SPDX-FileCopyrightText: 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2019, 2023, 2024 Vít Pelčák <vit@pelcak.org>
+# SPDX-FileCopyrightText: 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2019, 2023, 2024, 2026 Vít Pelčák <vit@pelcak.org>
 # Tomáš Chvátal <tomas.chvatal@gmail.com>, 2012.
 # SPDX-FileCopyrightText: 2021, 2023, 2024 Vit Pelcak <vit@pelcak.org>
+# SPDX-FileCopyrightText: 2026 Libor Filípek <filipek.libor@protonmail.com>
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-11-17 11:53+0000\n"
-"PO-Revision-Date: 2024-07-04 14:40+0200\n"
-"Last-Translator: Vit Pelcak <vit@pelcak.org>\n"
+"PO-Revision-Date: 2026-02-27 21:05+0100\n"
+"Last-Translator:  Vít Pelčák <vit@pelcak.org>\n"
 "Language-Team: Czech <kde-i18n-doc@kde.org>\n"
 "Language: cs\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Lokalize 24.05.1\n"
+"X-Generator: Lokalize 25.12.2\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
 
 #, kde-format
 msgctxt "NAME OF TRANSLATORS"
 msgid "Your names"
-msgstr "Vít Pelčák"
+msgstr "Vít Pelčák,Libor Filípek"
 
 #, kde-format
 msgctxt "EMAIL OF TRANSLATORS"
 msgid "Your emails"
-msgstr "vit@pelcak.org"
+msgstr "vit@pelcak.org,libor.filipek@gmail.com"
 
 #: src/akonadi/akonadiconfigdialog.cpp:36
 #, kde-format
@@ -42,7 +43,7 @@ msgid ""
 "store and query its TODOs."
 msgstr ""
 "Prosím vyberte nebo vytvořte zdroj, který bude použit aplikací pro ukládání "
-"a hledání úloh."
+"a hledání úkolů."
 
 #: src/akonadi/akonadiconfigdialog.cpp:50
 #, kde-format
@@ -72,22 +73,22 @@ msgstr "Opravdu si přejete smazat vybrané instance agenta?"
 #: src/akonadi/akonaditaskrepository.cpp:50
 #, kde-format
 msgid "Could not find a collection to store the task into!"
-msgstr ""
+msgstr "Nelze najít kolekci, do které by bylo možné úkol uložit!"
 
 #: src/akonadi/akonaditaskrepository.cpp:197
 #, kde-format
 msgid "Could not associate '%1', it is an ancestor of '%2'"
-msgstr ""
+msgstr "Nelze přiřadit '%1', je to předek '%2'"
 
 #: src/presentation/alltaskspagemodel.cpp:35
 #, kde-format
 msgid "Cannot add task %1"
-msgstr "Nelze přidat úlohu %1"
+msgstr "Nelze přidat úkol %1"
 
 #: src/presentation/alltaskspagemodel.cpp:46
 #, kde-format
 msgid "Cannot remove task %1"
-msgstr "Nelze odstranit úlohu %1"
+msgstr "Nelze odstranit úkol %1"
 
 #: src/presentation/alltaskspagemodel.cpp:56
 #: src/presentation/contextpagemodel.cpp:70
@@ -96,13 +97,13 @@ msgstr "Nelze odstranit úlohu %1"
 #: src/presentation/workdaypagemodel.cpp:61
 #, kde-format
 msgid "Cannot promote task %1 to be a project"
-msgstr ""
+msgstr "Úkol %1 nelze povýšit na projekt"
 
 #: src/presentation/alltaskspagemodel.cpp:97
 #: src/presentation/editormodel.cpp:389
 #, kde-format
 msgid "Cannot modify task %1"
-msgstr "Nelze upravit úlohu %1"
+msgstr "Nelze upravit úkol %1"
 
 #: src/presentation/alltaskspagemodel.cpp:122
 #: src/presentation/contextpagemodel.cpp:140
@@ -110,19 +111,19 @@ msgstr "Nelze upravit úlohu %1"
 #: src/presentation/workdaypagemodel.cpp:117
 #, kde-format
 msgid "Cannot move task %1 as sub-task of %2"
-msgstr ""
+msgstr "Úkol %1 nelze přesunout jako podúkol úkolu %2"
 
 #: src/presentation/alltaskspagemodel.cpp:125
 #: src/presentation/inboxpagemodel.cpp:114
 #: src/presentation/workdaypagemodel.cpp:125
 #, kde-format
 msgid "Cannot deparent task %1 from its parent"
-msgstr ""
+msgstr "Nelze odebrat úkol %1 z jeho nadřazeného úkolu"
 
 #: src/presentation/availablepagesmodel.cpp:111
 #, kde-format
 msgid "Cannot add project %1 in dataSource %2"
-msgstr ""
+msgstr "Nelze přidat projekt %1 do zdroje dat %2"
 
 #: src/presentation/availablepagesmodel.cpp:119
 #, kde-format
@@ -162,42 +163,42 @@ msgstr "Kontexty"
 #: src/presentation/availablepagesmodel.cpp:147
 #, kde-format
 msgid "All Tasks"
-msgstr "Všechny úlohy"
+msgstr "Všechny úkoly"
 
 #: src/presentation/availablepagesmodel.cpp:246
 #, kde-format
 msgid "Cannot modify project %1"
-msgstr ""
+msgstr "Nelze upravit projekt %1"
 
 #: src/presentation/availablepagesmodel.cpp:251
 #, kde-format
 msgid "Cannot modify context %1"
-msgstr ""
+msgstr "Nelze upravit kontext %1"
 
 #: src/presentation/availablepagesmodel.cpp:270
 #, kde-format
 msgid "Cannot add %1 to project %2"
-msgstr ""
+msgstr "%1 nelze přidat do projektu %2"
 
 #: src/presentation/availablepagesmodel.cpp:276
 #, kde-format
 msgid "Cannot add %1 to context %2"
-msgstr ""
+msgstr "%1 nelze přidat do kontextu %2"
 
 #: src/presentation/availablepagesmodel.cpp:282
 #, kde-format
 msgid "Cannot move %1 to Inbox"
-msgstr ""
+msgstr "%1 nelze přesunout do Příchozích"
 
 #: src/presentation/availablepagesmodel.cpp:286
 #, kde-format
 msgid "Cannot move task %1 to Inbox"
-msgstr ""
+msgstr "Úkol %1 nelze přesunout do Příchozích"
 
 #: src/presentation/availablepagesmodel.cpp:295
 #, kde-format
 msgid "Cannot update task %1 to Workday"
-msgstr ""
+msgstr "Úkol %1 nelze aktualizovat na pracovní den"
 
 #: src/presentation/availablesourcesmodel.cpp:97
 #, kde-format
@@ -207,87 +208,87 @@ msgstr "Nelze upravit zdroj %1"
 #: src/presentation/contextpagemodel.cpp:50
 #, kde-format
 msgid "Cannot add task %1 in context %2"
-msgstr ""
+msgstr "Nelze přidat úkol %1 v kontextu %2"
 
 #: src/presentation/contextpagemodel.cpp:61
 #, kde-format
 msgid "Cannot remove task %1 from context %2"
-msgstr ""
+msgstr "Nelze odstranit úkol %1 z kontextu %2"
 
 #: src/presentation/contextpagemodel.cpp:111
 #, kde-format
 msgid "Cannot modify task %1 in context %2"
-msgstr ""
+msgstr "Nelze upravit úkol %1 v kontextu %2"
 
 #: src/presentation/contextpagemodel.cpp:143
 #, kde-format
 msgid "Cannot dissociate task %1 from its parent"
-msgstr ""
+msgstr "Nelze oddělit úkol %1 od jeho nadřazeného úkolu"
 
 #: src/presentation/inboxpagemodel.cpp:35
 #, kde-format
 msgid "Cannot add task %1 in Inbox"
-msgstr ""
+msgstr "Nelze přidat úkol %1 do Příchozích"
 
 #: src/presentation/inboxpagemodel.cpp:46
 #, kde-format
 msgid "Cannot remove task %1 from Inbox"
-msgstr ""
+msgstr "Nelze odstranit úkol %1 z Příchozích"
 
 #: src/presentation/inboxpagemodel.cpp:96
 #, kde-format
 msgid "Cannot modify task %1 in Inbox"
-msgstr ""
+msgstr "Nelze upravit úkol %1 v Příchozích"
 
 #: src/presentation/projectpagemodel.cpp:47
 #, kde-format
 msgid "Cannot add task %1 in project %2"
-msgstr ""
+msgstr "Nelze přidat úkol %1 do projektu %2"
 
 #: src/presentation/projectpagemodel.cpp:58
 #, kde-format
 msgid "Cannot remove task %1 from project %2"
-msgstr ""
+msgstr "Nelze odstranit úkol %1 z projektu %2"
 
 #: src/presentation/projectpagemodel.cpp:108
 #, kde-format
 msgid "Cannot modify task %1 in project %2"
-msgstr ""
+msgstr "Nelze upravit úkol %1 v projektu %2"
 
 #: src/presentation/projectpagemodel.cpp:134
 #, kde-format
 msgid "Cannot move task %1 as a sub-task of %2"
-msgstr ""
+msgstr "Úkol %1 nelze přesunout jako podúkol úkolu %2"
 
 #: src/presentation/runningtaskmodel.cpp:46
 #, kde-format
 msgid "Cannot update task %1 to 'not running'"
-msgstr "Nelze aktualizovat úlohu %1 na 'neběží'"
+msgstr "Úkol %1 nelze aktualizovat na 'neběží'"
 
 #: src/presentation/runningtaskmodel.cpp:54
 #, kde-format
 msgid "Cannot update task %1 to 'running'"
-msgstr "Nelze aktualizovat úlohu %1 na 'běží'"
+msgstr "Úkol %1 nelze aktualizovat na 'běží'"
 
 #: src/presentation/workdaypagemodel.cpp:40
 #, kde-format
 msgid "Cannot add task %1 in Workday"
-msgstr ""
+msgstr "Nelze přidat úkol %1 v pracovním dni"
 
 #: src/presentation/workdaypagemodel.cpp:51
 #, kde-format
 msgid "Cannot remove task %1 from Workday"
-msgstr ""
+msgstr "Nelze odstranit úkol %1 z pracovního dne"
 
 #: src/presentation/workdaypagemodel.cpp:102
 #, kde-format
 msgid "Cannot modify task %1 in Workday"
-msgstr ""
+msgstr "Nelze upravit úkol %1 v pracovním dni"
 
 #: src/widgets/applicationcomponents.cpp:48
 #, kde-format
 msgid "Move Task"
-msgstr "Přesunout úlohu"
+msgstr "Přesunout úkol"
 
 #: src/widgets/availablepagesview.cpp:50
 #, kde-format
@@ -333,7 +334,7 @@ msgstr "Smazat projekt"
 #: src/widgets/availablepagesview.cpp:266
 #, kde-format
 msgid "Do you really want to delete the project '%1', with all its actions?"
-msgstr "Opravdu si přejete smazat projet \"%1\" se všemi jeho činnostmi?"
+msgstr "Opravdu si přejete smazat projekt '%1' se všemi jeho činnostmi?"
 
 #: src/widgets/availablepagesview.cpp:268
 #, kde-format
@@ -491,32 +492,32 @@ msgstr "Zdroj"
 #, kde-format
 msgctxt "@info:placeholder"
 msgid "Type and press enter to add a task"
-msgstr "Pro přidání úlohy ji napište a stiskněte Enter"
+msgstr "Pro přidání úkolu ho napište a stiskněte Enter"
 
 #: src/widgets/pageview.cpp:173
 #, kde-format
 msgid "New Task"
-msgstr "Nová úloha"
+msgstr "Nový úkol"
 
 #: src/widgets/pageview.cpp:186
 #, kde-format
 msgid "Remove Task"
-msgstr "Odstranit úlohu"
+msgstr "Odstranit úkol"
 
 #: src/widgets/pageview.cpp:194
 #, kde-format
 msgid "Promote Task as Project"
-msgstr "Povýšit úlohu na projekt"
+msgstr "Povýšit úkol na projekt"
 
 #: src/widgets/pageview.cpp:208
 #, kde-format
 msgid "Show done tasks"
-msgstr "Zobrazit dokončené úlohy"
+msgstr "Zobrazit dokončené úkol"
 
 #: src/widgets/pageview.cpp:216
 #, kde-format
 msgid "Show future tasks"
-msgstr "Zobrazit budoucí úlohy"
+msgstr "Zobrazit budoucí úkoly"
 
 #: src/widgets/pageview.cpp:242
 #, kde-format
@@ -541,12 +542,12 @@ msgstr "Opravdu si přejete smazat vybrané položky?"
 #: src/widgets/pageview.cpp:396
 #, kde-format
 msgid "Do you really want to delete the selected task and all its children?"
-msgstr "Opravdu si přejete smazat vybranou úlohu a všechny její potomky?"
+msgstr "Opravdu si přejete smazat vybraný úkol a všechny jeho potomky?"
 
 #: src/widgets/pageview.cpp:400
 #, kde-format
 msgid "Delete Tasks"
-msgstr "Smazat úlohy"
+msgstr "Smazat úkoly"
 
 #: src/widgets/quickselectdialog.cpp:30
 #, kde-format
@@ -568,7 +569,7 @@ msgstr "Cesta: %1"
 #, kde-format
 msgctxt "@title:window"
 msgid "Zanshin Running Task Banner"
-msgstr ""
+msgstr "Lišta běžícího úkolu Zanshin"
 
 #: src/widgets/runningtaskwidget.cpp:49
 #, kde-format
@@ -578,7 +579,7 @@ msgstr "Zastavit"
 #: src/zanshin/app/aboutdata.cpp:14
 #, kde-format
 msgid "Zanshin Tasks"
-msgstr "Úlohy Zanshin"
+msgstr "Úkoly Zanshin"
 
 #: src/zanshin/app/aboutdata.cpp:15
 #, kde-format
@@ -651,4 +652,4 @@ msgstr "Hlavní panel nástrojů"
 #: src/zanshin/runner/zanshinrunner.cpp:56
 #, kde-format
 msgid "Add \"%1\" to your todo list"
-msgstr "Přidat \"%1\" do seznamu úloh"
+msgstr "Přidat \"%1\" do seznamu úkolů"
