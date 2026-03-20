@@ -83,9 +83,9 @@ find_package(KF6 ${KF_MIN_VERSION} REQUIRED COMPONENTS
     Crash
 )
 
-find_package(KPim6Akonadi "6.6.40" REQUIRED)
-find_package(KPim6AkonadiCalendar "6.6.40" REQUIRED)
-find_package(KPim6KontactInterface "6.6.40" REQUIRED)
+find_package(KPim6Akonadi "6.7.40" REQUIRED)
+find_package(KPim6AkonadiCalendar "6.7.40" REQUIRED)
+find_package(KPim6KontactInterface "6.7.40" REQUIRED)
 
 add_definitions(-DQT_NO_CONTEXTLESS_CONNECT)
 if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
