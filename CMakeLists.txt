@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.27)
+cmake_minimum_required(VERSION 3.29)
 # KDE Application Version, managed by release script
 set(RELEASE_SERVICE_VERSION_MAJOR "26")
 set(RELEASE_SERVICE_VERSION_MINOR "07")
