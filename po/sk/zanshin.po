@@ -12,8 +12,8 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Lokalize 21.12.3\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
+"X-Generator: Lokalize 21.12.3\n"
 "X-Qt-Contexts: true\n"
 
 #, kde-format
@@ -27,18 +27,13 @@ msgid "Your emails"
 msgstr "wizzardsk@gmail.com"
 
 #: src/akonadi/akonadiconfigdialog.cpp:36
-#, fuzzy, kde-format
-#| msgid "Configure Zanshin"
+#, kde-format
 msgctxt "@title:window"
 msgid "Configure"
 msgstr "Nastaviť"
 
 #: src/akonadi/akonadiconfigdialog.cpp:40
-#, fuzzy, kde-format
-#| msgctxt "Akonadi::ConfigDialog|"
-#| msgid ""
-#| "Please select or create a resource which will be used by the application "
-#| "to store and query its TODOs."
+#, kde-format
 msgid ""
 "Please select or create a resource which will be used by the application to "
 "store and query its TODOs."
@@ -52,69 +47,59 @@ msgid "Add resource"
 msgstr "Pridať zdroj"
 
 #: src/akonadi/akonadiconfigdialog.cpp:57
-#, fuzzy, kde-format
-#| msgid "Remove Project"
+#, kde-format
 msgid "Remove resource"
 msgstr "Odstrániť projekt"
 
 #: src/akonadi/akonadiconfigdialog.cpp:64
-#, fuzzy, kde-format
-#| msgid "Configure LDAP Servers..."
+#, kde-format
 msgid "Configure resource..."
 msgstr "Nastaviť servery LDAP..."
 
 #: src/akonadi/akonadiconfigdialog.cpp:122
-#, fuzzy, kde-format
-#| msgctxt "Akonadi::ConfigDialog|"
-#| msgid "Multiple Agent Deletion"
+#, kde-format
 msgid "Multiple Agent Deletion"
 msgstr "Mazanie viacerých agentov"
 
 #: src/akonadi/akonadiconfigdialog.cpp:123
-#, fuzzy, kde-format
-#| msgid "Do you really want to delete the selected agent instance?"
-#| msgid_plural "Do you really want to delete these %1 agent instances?"
+#, kde-format
 msgid "Do you really want to delete the selected agent instances?"
 msgstr "Naozaj chcete vymazať vybranú inštanciu agenta?"
 
 #: src/akonadi/akonaditaskrepository.cpp:50
 #, kde-format
 msgid "Could not find a collection to store the task into!"
-msgstr ""
+msgstr "Could not find a collection to store the task into!"
 
 #: src/akonadi/akonaditaskrepository.cpp:197
 #, kde-format
 msgid "Could not associate '%1', it is an ancestor of '%2'"
-msgstr ""
+msgstr "Could not associate '%1', it is an ancestor of '%2'"
 
 #: src/presentation/alltaskspagemodel.cpp:35
-#, fuzzy, kde-format
-#| msgid "Remove Project"
+#, kde-format
 msgid "Cannot add task %1"
-msgstr "Odstrániť projekt"
+msgstr "Cannot add task %1"
 
 #: src/presentation/alltaskspagemodel.cpp:46
-#, fuzzy, kde-format
-#| msgid "Remove Project"
+#, kde-format
 msgid "Cannot remove task %1"
-msgstr "Odstrániť projekt"
+msgstr "Cannot remove task %1"
 
 #: src/presentation/alltaskspagemodel.cpp:56
 #: src/presentation/contextpagemodel.cpp:70
 #: src/presentation/inboxpagemodel.cpp:55
 #: src/presentation/projectpagemodel.cpp:67
 #: src/presentation/workdaypagemodel.cpp:61
-#, fuzzy, kde-format
-#| msgid "Promote Action as Project"
+#, kde-format
 msgid "Cannot promote task %1 to be a project"
-msgstr "Povýšiť akciu ako projekt"
+msgstr "Cannot promote task %1 to be a project"
 
 #: src/presentation/alltaskspagemodel.cpp:97
 #: src/presentation/editormodel.cpp:389
-#, fuzzy, kde-format
-#| msgid "Remove Project"
+#, kde-format
 msgid "Cannot modify task %1"
-msgstr "Odstrániť projekt"
+msgstr "Cannot modify task %1"
 
 #: src/presentation/alltaskspagemodel.cpp:122
 #: src/presentation/contextpagemodel.cpp:140
@@ -122,37 +107,34 @@ msgstr "Odstrániť projekt"
 #: src/presentation/workdaypagemodel.cpp:117
 #, kde-format
 msgid "Cannot move task %1 as sub-task of %2"
-msgstr ""
+msgstr "Cannot move task %1 as sub-task of %2"
 
 #: src/presentation/alltaskspagemodel.cpp:125
 #: src/presentation/inboxpagemodel.cpp:114
 #: src/presentation/workdaypagemodel.cpp:125
 #, kde-format
 msgid "Cannot deparent task %1 from its parent"
-msgstr ""
+msgstr "Cannot deparent task %1 from its parent"
 
 #: src/presentation/availablepagesmodel.cpp:111
 #, kde-format
 msgid "Cannot add project %1 in dataSource %2"
-msgstr ""
+msgstr "Cannot add project %1 in dataSource %2"
 
 #: src/presentation/availablepagesmodel.cpp:119
-#, fuzzy, kde-format
-#| msgid "Remove Context"
+#, kde-format
 msgid "Cannot add context %1"
-msgstr "Odstrániť kontext"
+msgstr "Cannot add context %1"
 
 #: src/presentation/availablepagesmodel.cpp:127
-#, fuzzy, kde-format
-#| msgid "Remove Project"
+#, kde-format
 msgid "Cannot remove project %1"
-msgstr "Odstrániť projekt"
+msgstr "Cannot remove project %1"
 
 #: src/presentation/availablepagesmodel.cpp:130
-#, fuzzy, kde-format
-#| msgid "Remove Context"
+#, kde-format
 msgid "Cannot remove context %1"
-msgstr "Odstrániť kontext"
+msgstr "Cannot remove context %1"
 
 #: src/presentation/availablepagesmodel.cpp:139
 #, kde-format
@@ -162,7 +144,7 @@ msgstr "Inbox"
 #: src/presentation/availablepagesmodel.cpp:141
 #, kde-format
 msgid "Workday"
-msgstr ""
+msgstr "Workday"
 
 #: src/presentation/availablepagesmodel.cpp:143
 #, kde-format
@@ -180,154 +162,137 @@ msgid "All Tasks"
 msgstr "Všetky úlohy"
 
 #: src/presentation/availablepagesmodel.cpp:246
-#, fuzzy, kde-format
-#| msgid "Remove Project"
+#, kde-format
 msgid "Cannot modify project %1"
-msgstr "Odstrániť projekt"
+msgstr "Cannot modify project %1"
 
 #: src/presentation/availablepagesmodel.cpp:251
-#, fuzzy, kde-format
-#| msgid "Remove Context"
+#, kde-format
 msgid "Cannot modify context %1"
-msgstr "Odstrániť kontext"
+msgstr "Cannot modify context %1"
 
 #: src/presentation/availablepagesmodel.cpp:270
-#, fuzzy, kde-format
-#| msgid "Remove Project"
+#, kde-format
 msgid "Cannot add %1 to project %2"
-msgstr "Odstrániť projekt"
+msgstr "Cannot add %1 to project %2"
 
 #: src/presentation/availablepagesmodel.cpp:276
-#, fuzzy, kde-format
-#| msgid "Remove Context"
+#, kde-format
 msgid "Cannot add %1 to context %2"
-msgstr "Odstrániť kontext"
+msgstr "Cannot add %1 to context %2"
 
 #: src/presentation/availablepagesmodel.cpp:282
-#, fuzzy, kde-format
-#| msgid "Remove Context"
+#, kde-format
 msgid "Cannot move %1 to Inbox"
-msgstr "Odstrániť kontext"
+msgstr "Cannot move %1 to Inbox"
 
 #: src/presentation/availablepagesmodel.cpp:286
-#, fuzzy, kde-format
-#| msgid "Remove Project"
+#, kde-format
 msgid "Cannot move task %1 to Inbox"
-msgstr "Odstrániť projekt"
+msgstr "Cannot move task %1 to Inbox"
 
 #: src/presentation/availablepagesmodel.cpp:295
 #, kde-format
 msgid "Cannot update task %1 to Workday"
-msgstr ""
+msgstr "Cannot update task %1 to Workday"
 
 #: src/presentation/availablesourcesmodel.cpp:97
-#, fuzzy, kde-format
-#| msgid "Remove Project"
+#, kde-format
 msgid "Cannot modify source %1"
-msgstr "Odstrániť projekt"
+msgstr "Cannot modify source %1"
 
 #: src/presentation/contextpagemodel.cpp:50
-#, fuzzy, kde-format
-#| msgid "Remove Context"
+#, kde-format
 msgid "Cannot add task %1 in context %2"
-msgstr "Odstrániť kontext"
+msgstr "Cannot add task %1 in context %2"
 
 #: src/presentation/contextpagemodel.cpp:61
-#, fuzzy, kde-format
-#| msgid "Remove Context"
+#, kde-format
 msgid "Cannot remove task %1 from context %2"
-msgstr "Odstrániť kontext"
+msgstr "Cannot remove task %1 from context %2"
 
 #: src/presentation/contextpagemodel.cpp:111
-#, fuzzy, kde-format
-#| msgid "Remove Context"
+#, kde-format
 msgid "Cannot modify task %1 in context %2"
-msgstr "Odstrániť kontext"
+msgstr "Cannot modify task %1 in context %2"
 
 #: src/presentation/contextpagemodel.cpp:143
 #, kde-format
 msgid "Cannot dissociate task %1 from its parent"
-msgstr ""
+msgstr "Cannot dissociate task %1 from its parent"
 
 #: src/presentation/inboxpagemodel.cpp:35
 #, kde-format
 msgid "Cannot add task %1 in Inbox"
-msgstr ""
+msgstr "Cannot add task %1 in Inbox"
 
 #: src/presentation/inboxpagemodel.cpp:46
-#, fuzzy, kde-format
-#| msgid "Remove Project"
+#, kde-format
 msgid "Cannot remove task %1 from Inbox"
-msgstr "Odstrániť projekt"
+msgstr "Cannot remove task %1 from Inbox"
 
 #: src/presentation/inboxpagemodel.cpp:96
 #, kde-format
 msgid "Cannot modify task %1 in Inbox"
-msgstr ""
+msgstr "Cannot modify task %1 in Inbox"
 
 #: src/presentation/projectpagemodel.cpp:47
-#, fuzzy, kde-format
-#| msgid "Remove Project"
+#, kde-format
 msgid "Cannot add task %1 in project %2"
-msgstr "Odstrániť projekt"
+msgstr "Cannot add task %1 in project %2"
 
 #: src/presentation/projectpagemodel.cpp:58
-#, fuzzy, kde-format
-#| msgid "Remove Project"
+#, kde-format
 msgid "Cannot remove task %1 from project %2"
-msgstr "Odstrániť projekt"
+msgstr "Cannot remove task %1 from project %2"
 
 #: src/presentation/projectpagemodel.cpp:108
-#, fuzzy, kde-format
-#| msgid "Remove Project"
+#, kde-format
 msgid "Cannot modify task %1 in project %2"
-msgstr "Odstrániť projekt"
+msgstr "Cannot modify task %1 in project %2"
 
 #: src/presentation/projectpagemodel.cpp:134
 #, kde-format
 msgid "Cannot move task %1 as a sub-task of %2"
-msgstr ""
+msgstr "Cannot move task %1 as a sub-task of %2"
 
 #: src/presentation/runningtaskmodel.cpp:46
 #, kde-format
 msgid "Cannot update task %1 to 'not running'"
-msgstr ""
+msgstr "Cannot update task %1 to 'not running'"
 
 #: src/presentation/runningtaskmodel.cpp:54
 #, kde-format
 msgid "Cannot update task %1 to 'running'"
-msgstr ""
+msgstr "Cannot update task %1 to 'running'"
 
 #: src/presentation/workdaypagemodel.cpp:40
 #, kde-format
 msgid "Cannot add task %1 in Workday"
-msgstr ""
+msgstr "Cannot add task %1 in Workday"
 
 #: src/presentation/workdaypagemodel.cpp:51
-#, fuzzy, kde-format
-#| msgid "Remove Project"
+#, kde-format
 msgid "Cannot remove task %1 from Workday"
-msgstr "Odstrániť projekt"
+msgstr "Cannot remove task %1 from Workday"
 
 #: src/presentation/workdaypagemodel.cpp:102
 #, kde-format
 msgid "Cannot modify task %1 in Workday"
-msgstr ""
+msgstr "Cannot modify task %1 in Workday"
 
 #: src/widgets/applicationcomponents.cpp:48
 #, kde-format
 msgid "Move Task"
-msgstr ""
+msgstr "Move Task"
 
 #: src/widgets/availablepagesview.cpp:50
-#, fuzzy, kde-format
-#| msgid "New Project"
+#, kde-format
 msgid "New Project"
 msgstr "Nový projekt"
 
 #: src/widgets/availablepagesview.cpp:56
-#, fuzzy, kde-format
-#| msgid "New Context"
+#, kde-format
 msgid "New Context"
 msgstr "Nový kontext"
 
@@ -347,13 +312,12 @@ msgid "Next Page"
 msgstr "Nasledujúca stránka"
 
 #: src/widgets/availablepagesview.cpp:105
-#, fuzzy, kde-format
+#, kde-format
 msgid "Go to Page..."
 msgstr "Prejsť na &stránku..."
 
 #: src/widgets/availablepagesview.cpp:240
-#, fuzzy, kde-format
-#| msgid "No Context"
+#, kde-format
 msgctxt "@title:window"
 msgid "Add a context"
 msgstr "Žiadny kontext"
@@ -364,29 +328,24 @@ msgid "Delete Project"
 msgstr "Vymazať projekt"
 
 #: src/widgets/availablepagesview.cpp:266
-#, fuzzy, kde-format
-#| msgctxt "Widgets::AvailablePagesView|"
-#| msgid "Do you really want to delete the project '%1', with all its actions?"
+#, kde-format
 msgid "Do you really want to delete the project '%1', with all its actions?"
 msgstr "Naozaj chcete vymazať projekt '%1', so všetkými akciami?"
 
 #: src/widgets/availablepagesview.cpp:268
-#, fuzzy, kde-format
-#| msgid "Next Context"
+#, kde-format
 msgid "Delete Context"
 msgstr "Ďalší kontext"
 
 #: src/widgets/availablepagesview.cpp:269
-#, fuzzy, kde-format
-#| msgid "Do you really want to delete the selected agent instance?"
-#| msgid_plural "Do you really want to delete these %1 agent instances?"
+#, kde-format
 msgid "Do you really want to delete the context '%1'?"
-msgstr "Naozaj chcete vymazať vybranú inštanciu agenta?"
+msgstr "Do you really want to delete the context '%1'?"
 
 #: src/widgets/availablesourcesview.cpp:53
 #, kde-format
 msgid "Use as Default Source"
-msgstr ""
+msgstr "Use as Default Source"
 
 #: src/widgets/availablesourcesview.cpp:74
 #, kde-format
@@ -433,15 +392,13 @@ msgstr "Editor"
 
 #. i18n: ectx: property (text), widget (QLabel, dueDateLabel)
 #: src/widgets/editorview.ui:41
-#, fuzzy, kde-format
+#, kde-format
 msgid "D&ue Date "
 msgstr "Termín splnenia"
 
 #. i18n: ectx: property (text), widget (QCheckBox, doneButton)
 #: src/widgets/editorview.ui:62 src/widgets/runningtaskwidget.cpp:53
-#, fuzzy, kde-format
-#| msgctxt "EditorView|"
-#| msgid "Done"
+#, kde-format
 msgid "Done"
 msgstr "Hotovo"
 
@@ -453,35 +410,32 @@ msgstr "Pridať prílohu..."
 
 #. i18n: ectx: property (toolTip), widget (QToolButton, removeAttachmentButton)
 #: src/widgets/editorview.ui:100
-#, fuzzy, kde-format
-#| msgid "Attachments"
+#, kde-format
 msgid "Remove Attachment"
 msgstr "Odstrániť prílohu"
 
 #. i18n: ectx: property (text), widget (QPushButton, startTodayButton)
 #: src/widgets/editorview.ui:121
-#, fuzzy, kde-format
-#| msgctxt "@option today"
-#| msgid "&Today"
+#, kde-format
 msgid "Select for &Today"
 msgstr "&Dnes"
 
 #. i18n: ectx: property (text), widget (QLabel, recurrenceLabel)
 #: src/widgets/editorview.ui:130
-#, fuzzy, kde-format
+#, kde-format
 msgid "&Recurrence"
 msgstr "Opakovanie:"
 
 #. i18n: ectx: property (text), widget (QLabel, startDateLabel)
 #: src/widgets/editorview.ui:146
-#, fuzzy, kde-format
+#, kde-format
 msgid "St&art Date"
 msgstr "Počiatočný dátum"
 
 #: src/widgets/filterwidget.cpp:29
 #, kde-format
 msgid "Sort by title"
-msgstr ""
+msgstr "Sort by title"
 
 #: src/widgets/filterwidget.cpp:30
 #, kde-format
@@ -490,7 +444,7 @@ msgstr "Triediť podľa dátumu"
 
 #. i18n: ectx: property (placeholderText), widget (QLineEdit, filterEdit)
 #: src/widgets/filterwidget.ui:31 src/widgets/pageview.cpp:200
-#, fuzzy, kde-format
+#, kde-format
 msgid "Filter..."
 msgstr "Filtrovať..."
 
@@ -498,13 +452,13 @@ msgstr "Filtrovať..."
 #: src/widgets/filterwidget.ui:65
 #, kde-format
 msgid "Sort in descending order"
-msgstr ""
+msgstr "Sort in descending order"
 
 #. i18n: ectx: property (toolTip), widget (QToolButton, ascendingButton)
 #: src/widgets/filterwidget.ui:88
 #, kde-format
 msgid "Sort in ascending order"
-msgstr ""
+msgstr "Sort in ascending order"
 
 #: src/widgets/itemdelegate.cpp:47
 #, kde-format
@@ -513,29 +467,24 @@ msgstr "Projekt: %1"
 
 #. i18n: ectx: property (windowTitle), widget (QDialog, NameAndDataSourceDialog)
 #: src/widgets/nameanddatasourcedialog.ui:14
-#, fuzzy, kde-format
-#| msgid "New Project"
+#, kde-format
 msgid "Add a project"
 msgstr "Nový projekt"
 
 #. i18n: ectx: property (text), widget (QLabel, nameLabel)
 #: src/widgets/nameanddatasourcedialog.ui:25
-#, fuzzy, kde-format
-#| msgctxt "@item:inlistbox Name of the contact"
-#| msgid "Name"
+#, kde-format
 msgid "Name"
 msgstr "Názov"
 
 #. i18n: ectx: property (text), widget (QLabel, sourceLabel)
 #: src/widgets/nameanddatasourcedialog.ui:42
-#, fuzzy, kde-format
-#| msgid "Sources"
+#, kde-format
 msgid "Source"
 msgstr "Zdroj"
 
 #: src/widgets/pageview.cpp:156
-#, fuzzy, kde-format
-#| msgid "Type and press enter to add a note"
+#, kde-format
 msgctxt "@info:placeholder"
 msgid "Type and press enter to add a task"
 msgstr "Píšte a stlačte enter na pridanie poznámky"
@@ -546,62 +495,52 @@ msgid "New Task"
 msgstr "Nová úloha"
 
 #: src/widgets/pageview.cpp:186
-#, fuzzy, kde-format
-#| msgid "&Remove Host"
+#, kde-format
 msgid "Remove Task"
 msgstr "Odstrániť hostiteľa"
 
 #: src/widgets/pageview.cpp:194
-#, fuzzy, kde-format
-#| msgid "Promote Action as Project"
+#, kde-format
 msgid "Promote Task as Project"
 msgstr "Povýšiť akciu ako projekt"
 
 #: src/widgets/pageview.cpp:208
 #, kde-format
 msgid "Show done tasks"
-msgstr ""
+msgstr "Show done tasks"
 
 #: src/widgets/pageview.cpp:216
 #, kde-format
 msgid "Show future tasks"
-msgstr ""
+msgstr "Show future tasks"
 
 #: src/widgets/pageview.cpp:242
-#, fuzzy, kde-format
-#| msgid "Starts With"
+#, kde-format
 msgid "Start Now"
 msgstr "Spustiť teraz!"
 
 #: src/widgets/pageview.cpp:360
-#, fuzzy, kde-format
-#| msgid "Type and press enter to add a note"
+#, kde-format
 msgid "Type and press enter to add an item"
 msgstr "Píšte a stlačte enter na pridanie poznámky"
 
 #: src/widgets/pageview.cpp:386
-#, fuzzy, kde-format
-#| msgid "Do you really want to delete the selected agent instance?"
-#| msgid_plural "Do you really want to delete these %1 agent instances?"
+#, kde-format
 msgid "Do you really want to delete the selected items and their children?"
 msgstr "Naozaj chcete vymazať vybranú inštanciu agenta?"
 
 #: src/widgets/pageview.cpp:388
-#, fuzzy, kde-format
-#| msgid "Do you really want to delete the selected agent instance?"
-#| msgid_plural "Do you really want to delete these %1 agent instances?"
+#, kde-format
 msgid "Do you really want to delete the selected items?"
 msgstr "Naozaj chcete vymazať vybranú inštanciu agenta?"
 
 #: src/widgets/pageview.cpp:396
-#, fuzzy, kde-format
-#| msgid "Do you really want to delete the selected agent instance?"
-#| msgid_plural "Do you really want to delete these %1 agent instances?"
+#, kde-format
 msgid "Do you really want to delete the selected task and all its children?"
 msgstr "Naozaj chcete vymazať vybranú inštanciu agenta?"
 
 #: src/widgets/pageview.cpp:400
-#, fuzzy, kde-format
+#, kde-format
 msgid "Delete Tasks"
 msgstr "Odstrániť úlohy"
 
@@ -609,11 +548,10 @@ msgstr "Odstrániť úlohy"
 #, kde-format
 msgctxt "@title:window"
 msgid "Quick Select Dialog"
-msgstr ""
+msgstr "Quick Vyberte Dialog"
 
 #: src/widgets/quickselectdialog.cpp:32 src/widgets/quickselectdialog.cpp:70
-#, fuzzy, kde-format
-#| msgid "You can start typing to filter the list of projects."
+#, kde-format
 msgid "You can start typing to filter the list of available pages"
 msgstr "Môžete začať písať na filtrovanie zoznamu projektov."
 
@@ -623,8 +561,7 @@ msgid "Path: %1"
 msgstr "Cesta: %1"
 
 #: src/widgets/runningtaskwidget.cpp:39
-#, fuzzy, kde-format
-#| msgid "Zanshin Tasks"
+#, kde-format
 msgctxt "@title:window"
 msgid "Zanshin Running Task Banner"
 msgstr "Úlohy Zanshin"
@@ -640,11 +577,7 @@ msgid "Zanshin Tasks"
 msgstr "Úlohy Zanshin"
 
 #: src/zanshin/app/aboutdata.cpp:15
-#, fuzzy, kde-format
-#| msgctxt "QObject|"
-#| msgid ""
-#| "A Getting Things Done application which aims at getting your mind like "
-#| "water"
+#, kde-format
 msgid ""
 "A Getting Things Done application which aims at getting your mind like water"
 msgstr ""
@@ -652,28 +585,23 @@ msgstr ""
 "ako voda"
 
 #: src/zanshin/app/aboutdata.cpp:17
-#, fuzzy, kde-format
-#| msgid "Copyright 2008-2014, Kevin Ottens <ervin@kde.org>"
+#, kde-format
 msgid "Copyright 2008-2016, Kevin Ottens <ervin@kde.org>"
 msgstr "Copyright 2008-2014, Kevin Ottens <ervin@kde.org>"
 
 #: src/zanshin/app/aboutdata.cpp:19
-#, fuzzy, kde-format
-#| msgid "Kevin Ottens"
+#, kde-format
 msgctxt "@info:credit"
 msgid "Kevin Ottens"
 msgstr "Kevin Ottens"
 
 #: src/zanshin/app/aboutdata.cpp:20
-#, fuzzy, kde-format
-#| msgctxt "QObject|"
-#| msgid "Lead Developer"
+#, kde-format
 msgid "Lead Developer"
 msgstr "Hlavný vývojár"
 
 #: src/zanshin/app/aboutdata.cpp:23
-#, fuzzy, kde-format
-#| msgid "Mario Bensi"
+#, kde-format
 msgctxt "@info:credit"
 msgid "Mario Bensi"
 msgstr "Mario Bensi"
@@ -684,22 +612,18 @@ msgid "Developer"
 msgstr "Vývojár"
 
 #: src/zanshin/app/aboutdata.cpp:27
-#, fuzzy, kde-format
-#| msgctxt "QObject|"
-#| msgid "Franck Arrecot"
+#, kde-format
 msgctxt "@info:credit"
 msgid "Franck Arrecot"
 msgstr "Franck Arrecot"
 
 #: src/zanshin/app/main.cpp:81
-#, fuzzy, kde-format
-#| msgid "Sources"
+#, kde-format
 msgid "Sources"
 msgstr "Zdroje"
 
 #: src/zanshin/app/main.cpp:85
-#, fuzzy, kde-format
-#| msgid "Pager"
+#, kde-format
 msgid "Pages"
 msgstr "Stránky"
 
@@ -711,7 +635,7 @@ msgstr "Pre&jsť"
 
 #. i18n: ectx: Menu
 #: src/zanshin/app/zanshinui.rc:27
-#, fuzzy, kde-format
+#, kde-format
 msgid "&Panels"
 msgstr "Panely"
 
@@ -723,9 +647,7 @@ msgid "Main Toolbar"
 msgstr "Hlavný panel nástrojov"
 
 #: src/zanshin/runner/zanshinrunner.cpp:56
-#, fuzzy, kde-format
-#| msgctxt "ZanshinRunner|"
-#| msgid "Add \"%1\" to your todo list"
+#, kde-format
 msgid "Add \"%1\" to your todo list"
 msgstr "Pridať \"%1\" do vášho zoznamu úloh"
 
@@ -750,7 +672,6 @@ msgstr "Pridať \"%1\" do vášho zoznamu úloh"
 #~ msgstr "nasledujúci mesiac"
 
 #, fuzzy
-#~| msgid "Today"
 #~ msgctxt "@option today"
 #~ msgid "&Today"
 #~ msgstr "&Dnes"
@@ -772,7 +693,6 @@ msgstr "Pridať \"%1\" do vášho zoznamu úloh"
 #~ msgstr "Žiadny dátum"
 
 #, fuzzy
-#~| msgid "Context View"
 #~ msgid "Context name"
 #~ msgstr "Prehľad kontextov"
 
@@ -780,12 +700,10 @@ msgstr "Pridať \"%1\" do vášho zoznamu úloh"
 #~ msgstr "Zobraziť organizačné jednotky pre výsledky LDAP"
 
 #, fuzzy
-#~| msgid "Configure Completion Order..."
 #~ msgid "Configure Completion..."
 #~ msgstr "Nastaviť poradie dopĺňania..."
 
 #, fuzzy
-#~| msgid "Edit Recent Addresses"
 #~ msgid "Recent Addresses"
 #~ msgstr "Editovať posledné adresy"
 
@@ -797,58 +715,46 @@ msgstr "Pridať \"%1\" do vášho zoznamu úloh"
 #~ msgstr "Server LDAP: %1"
 
 #, fuzzy
-#~| msgid "Postal Address"
 #~ msgid "Blacklist Email Completion"
 #~ msgstr "Poštová adresa"
 
 #, fuzzy
-#~| msgid "Search for:"
 #~ msgid "Search email:"
 #~ msgstr "Hľadať:"
 
 #, fuzzy
-#~| msgctxt "@action:button Start searching"
-#~| msgid "&Search"
 #~ msgid "Search"
 #~ msgstr "&Hľadať"
 
 #, fuzzy
-#~| msgid "Postal Address"
 #~ msgid "Show Blacklisted Emails"
 #~ msgstr "Poštová adresa"
 
 #, fuzzy
-#~| msgid "Searching..."
 #~ msgid "Search in result..."
 #~ msgstr "Hľadá sa..."
 
 #, fuzzy
-#~| msgid "Select All"
 #~ msgid "&Select"
 #~ msgstr "Vybrať všetko"
 
 #, fuzzy
-#~| msgid "Unselect All"
 #~ msgid "&Unselect"
 #~ msgstr "Odznačiť všetko"
 
 #, fuzzy
-#~| msgid "Configure Completion Order..."
 #~ msgid "Configure completion"
 #~ msgstr "Nastaviť poradie dopĺňania..."
 
 #, fuzzy
-#~| msgid "Edit Completion Order"
 #~ msgid "Completion Order"
 #~ msgstr "Upraviť poradie dopĺňania"
 
 #, fuzzy
-#~| msgid "Edit Recent Addresses"
 #~ msgid "Recent Address"
 #~ msgstr "Editovať posledné adresy"
 
 #, fuzzy
-#~| msgid "Postal Address"
 #~ msgid "Blacklist Email Address"
 #~ msgstr "Poštová adresa"
 
@@ -925,7 +831,6 @@ msgstr "Pridať \"%1\" do vášho zoznamu úloh"
 #~ msgstr "Faxové číslo"
 
 #, fuzzy
-#~| msgid "Pager"
 #~ msgid "Pager"
 #~ msgstr "Stránky"
 
@@ -990,8 +895,6 @@ msgstr "Pridať \"%1\" do vášho zoznamu úloh"
 #~ msgstr "v"
 
 #, fuzzy
-#~| msgctxt "@item:inlistbox Name of the contact"
-#~| msgid "Name"
 #~ msgctxt "@item:inlistbox Name of the contact"
 #~ msgid "Name"
 #~ msgstr "Názov"
@@ -1019,13 +922,10 @@ msgstr "Pridať \"%1\" do vášho zoznamu úloh"
 #~ msgstr "Obsahuje"
 
 #, fuzzy
-#~| msgid "Searching..."
 #~ msgid "Search in result"
 #~ msgstr "Hľadá sa..."
 
 #, fuzzy
-#~| msgctxt "Widgets::AvailableSourcesView|"
-#~| msgid "Search..."
 #~ msgid "Searching..."
 #~ msgstr "Hľadať..."
 
@@ -1039,7 +939,6 @@ msgstr "Pridať \"%1\" do vášho zoznamu úloh"
 #~ msgstr "Pridať vybrané"
 
 #, fuzzy
-#~| msgid "Configure LDAP Servers..."
 #~ msgid "Configure LDAP Servers..."
 #~ msgstr "Nastaviť servery LDAP..."
 
@@ -1066,7 +965,6 @@ msgstr "Pridať \"%1\" do vášho zoznamu úloh"
 #~ msgstr "O&dstrániť"
 
 #, fuzzy
-#~| msgid "Do you want to remove setting for host \"%1\"?"
 #~ msgid "Do you want to remove this email address?"
 #~ msgid_plural "Do you want to remove %1 email addresses?"
 #~ msgstr[0] "Chcete odstrániť nastavenia pre hostiteľa \"%1\"?"
@@ -1074,7 +972,6 @@ msgstr "Pridať \"%1\" do vášho zoznamu úloh"
 #~ msgstr[2] "Chcete odstrániť nastavenia pre hostiteľa \"%1\"?"
 
 #, fuzzy
-#~| msgid "&Remove"
 #~ msgid "Remove"
 #~ msgstr "O&dstrániť"
 
@@ -1083,56 +980,40 @@ msgstr "Pridať \"%1\" do vášho zoznamu úloh"
 #~ msgstr "Značky"
 
 #, fuzzy
-#~| msgid "Remove Context"
 #~ msgid "Cannot remove note %1 from Inbox"
 #~ msgstr "Odstrániť kontext"
 
 #, fuzzy
-#~| msgid "Remove Context"
 #~ msgid "Cannot remove note %1 from tag %2"
 #~ msgstr "Odstrániť kontext"
 
 #, fuzzy
-#~| msgid ""
-#~| "A Getting Things Done application which aims at getting your mind like "
-#~| "water"
 #~ msgid "A note taking application which aims at getting your mind like water"
 #~ msgstr ""
 #~ "Aplikácia na urobenie vecí, ktorá sa zameriava na to, aby vaša myseľ bola "
 #~ "ako voda"
 
 #, fuzzy
-#~| msgid "Copyright 2008-2014, Kevin Ottens <ervin@kde.org>"
 #~ msgid "Copyright 2008-2015, Kevin Ottens <ervin@kde.org>"
 #~ msgstr "Copyright 2008-2014, Kevin Ottens <ervin@kde.org>"
 
 #, fuzzy
-#~| msgctxt "Widgets::PageView|"
-#~| msgid "Remove item"
 #~ msgid "Move Item"
 #~ msgstr "Odstrániť položku"
 
 #, fuzzy
-#~| msgctxt "Widgets::AvailablePagesView|"
-#~| msgid "Add Tag"
 #~ msgid "Add Tag"
 #~ msgstr "Pridať značku"
 
 #, fuzzy
-#~| msgctxt "Widgets::AvailablePagesView|"
-#~| msgid "Tag name"
 #~ msgid "Tag name"
 #~ msgstr "Názov štítku"
 
 #, fuzzy
-#~| msgctxt "Widgets::AvailablePagesView|"
-#~| msgid "Delete Tag"
 #~ msgid "Delete Tag"
 #~ msgstr "Vymazať štítok"
 
 #, fuzzy
-#~| msgid "Do you really want to delete the selected agent instance?"
-#~| msgid_plural "Do you really want to delete these %1 agent instances?"
 #~ msgid "Do you really want to delete the tag '%1'?"
 #~ msgstr "Naozaj chcete vymazať vybranú inštanciu agenta?"
 
@@ -1141,8 +1022,6 @@ msgstr "Pridať \"%1\" do vášho zoznamu úloh"
 #~ msgstr "delegovaný na %1)"
 
 #, fuzzy
-#~| msgctxt "Widgets::AvailablePagesView|"
-#~| msgid "Delete Tag"
 #~ msgid "Delegate To: "
 #~ msgstr "Vymazať štítok"
 
@@ -1151,13 +1030,10 @@ msgstr "Pridať \"%1\" do vášho zoznamu úloh"
 #~ msgstr "Termín splnenia"
 
 #, fuzzy
-#~| msgid "New Context"
 #~ msgid "New Item"
 #~ msgstr "Nová položka"
 
 #, fuzzy
-#~| msgctxt "Widgets::PageView|"
-#~| msgid "Remove item"
 #~ msgid "Remove Item"
 #~ msgstr "Odstrániť položku"
 
@@ -1175,8 +1051,6 @@ msgstr "Pridať \"%1\" do vášho zoznamu úloh"
 #~ msgstr "Filter"
 
 #, fuzzy
-#~| msgctxt "EditorView|"
-#~| msgid "Done"
 #~ msgctxt "Widgets::RunningTaskWidget|"
 #~ msgid "Done"
 #~ msgstr "Hotovo"
