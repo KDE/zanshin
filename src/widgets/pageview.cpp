@@ -150,7 +150,9 @@ PageView::PageView(QWidget *parent)
     connect(m_centralView->model(), &QAbstractItemModel::rowsInserted, m_centralView, &QTreeView::expandAll);
     connect(m_centralView->model(), &QAbstractItemModel::layoutChanged, m_centralView, &QTreeView::expandAll);
     connect(m_centralView->model(), &QAbstractItemModel::modelReset, m_centralView, &QTreeView::expandAll);
-    m_centralView->setStyle(new TreeProxyStyle);
+    auto style = new TreeProxyStyle();
+    style->setParent(this);
+    m_centralView->setStyle(style);
 
     m_quickAddEdit->setObjectName(QLatin1StringView("quickAddEdit"));
     m_quickAddEdit->setPlaceholderText(i18nc("@info:placeholder", "Type and press enter to add a task"));
