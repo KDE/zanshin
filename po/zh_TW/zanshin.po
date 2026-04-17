@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zanshin_qt\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-11-17 11:53+0000\n"
+"POT-Creation-Date: 2026-04-17 00:45+0000\n"
 "PO-Revision-Date: 2024-07-05 15:34+0900\n"
 "Last-Translator: Kisaragi Hiu <mail@kisaragi-hiu.com>\n"
 "Language-Team: Traditional Chinese <zh-l10n@lists.slat.org>\n"
@@ -440,7 +440,7 @@ msgid "Sort by date"
 msgstr "依日期排序"
 
 #. i18n: ectx: property (placeholderText), widget (QLineEdit, filterEdit)
-#: src/widgets/filterwidget.ui:31 src/widgets/pageview.cpp:200
+#: src/widgets/filterwidget.ui:31 src/widgets/pageview.cpp:202
 #, kde-format
 msgid "Filter..."
 msgstr "篩選…"
@@ -480,63 +480,63 @@ msgstr "名稱"
 msgid "Source"
 msgstr "來源"
 
-#: src/widgets/pageview.cpp:156
+#: src/widgets/pageview.cpp:158
 #, kde-format
 msgctxt "@info:placeholder"
 msgid "Type and press enter to add a task"
 msgstr "輸入後按下 Enter 來新增工作項目"
 
-#: src/widgets/pageview.cpp:173
+#: src/widgets/pageview.cpp:175
 #, kde-format
 msgid "New Task"
 msgstr "新增工作"
 
-#: src/widgets/pageview.cpp:186
+#: src/widgets/pageview.cpp:188
 #, kde-format
 msgid "Remove Task"
 msgstr "移除工作"
 
-#: src/widgets/pageview.cpp:194
+#: src/widgets/pageview.cpp:196
 #, kde-format
 msgid "Promote Task as Project"
 msgstr "將工作項目升格為專案"
 
-#: src/widgets/pageview.cpp:208
+#: src/widgets/pageview.cpp:210
 #, kde-format
 msgid "Show done tasks"
 msgstr "顯示已完成工作"
 
-#: src/widgets/pageview.cpp:216
+#: src/widgets/pageview.cpp:218
 #, kde-format
 msgid "Show future tasks"
 msgstr "顯示未來工作"
 
-#: src/widgets/pageview.cpp:242
+#: src/widgets/pageview.cpp:244
 #, kde-format
 msgid "Start Now"
 msgstr "現在開始"
 
-#: src/widgets/pageview.cpp:360
+#: src/widgets/pageview.cpp:362
 #, kde-format
 msgid "Type and press enter to add an item"
 msgstr "輸入後按下 Enter 來新增項目"
 
-#: src/widgets/pageview.cpp:386
+#: src/widgets/pageview.cpp:388
 #, kde-format
 msgid "Do you really want to delete the selected items and their children?"
 msgstr "您確定要刪除所選項目和它們的子項目嗎？"
 
-#: src/widgets/pageview.cpp:388
+#: src/widgets/pageview.cpp:390
 #, kde-format
 msgid "Do you really want to delete the selected items?"
 msgstr "您確定要刪除所選項目嗎？"
 
-#: src/widgets/pageview.cpp:396
+#: src/widgets/pageview.cpp:398
 #, kde-format
 msgid "Do you really want to delete the selected task and all its children?"
 msgstr "您確定要刪除所選工作項目和它們的子項目嗎？"
 
-#: src/widgets/pageview.cpp:400
+#: src/widgets/pageview.cpp:402
 #, kde-format
 msgid "Delete Tasks"
 msgstr "刪除工作"

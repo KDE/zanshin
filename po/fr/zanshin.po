@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zanshin\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-11-17 11:53+0000\n"
+"POT-Creation-Date: 2026-04-17 00:45+0000\n"
 "PO-Revision-Date: 2024-07-05 10:30+0200\n"
 "Last-Translator: Xavier Besnard <xavier.besnard@kde.org>\n"
 "Language-Team: French <French <kde-francophone@kde.org>>\n"
@@ -454,7 +454,7 @@ msgstr "Trier par date"
 
 # | msgid "String"
 #. i18n: ectx: property (placeholderText), widget (QLineEdit, filterEdit)
-#: src/widgets/filterwidget.ui:31 src/widgets/pageview.cpp:200
+#: src/widgets/filterwidget.ui:31 src/widgets/pageview.cpp:202
 #, kde-format
 msgid "Filter..."
 msgstr "Filtrer..."
@@ -494,65 +494,65 @@ msgstr "Nom"
 msgid "Source"
 msgstr "Source"
 
-#: src/widgets/pageview.cpp:156
+#: src/widgets/pageview.cpp:158
 #, kde-format
 msgctxt "@info:placeholder"
 msgid "Type and press enter to add a task"
 msgstr ""
 "Saisissez du texte et appuyez sur la touche « Entrée » pour ajouter une tâche"
 
-#: src/widgets/pageview.cpp:173
+#: src/widgets/pageview.cpp:175
 #, kde-format
 msgid "New Task"
 msgstr "Nouvelle tâche"
 
-#: src/widgets/pageview.cpp:186
+#: src/widgets/pageview.cpp:188
 #, kde-format
 msgid "Remove Task"
 msgstr "Supprimer la tâche"
 
-#: src/widgets/pageview.cpp:194
+#: src/widgets/pageview.cpp:196
 #, kde-format
 msgid "Promote Task as Project"
 msgstr "Promouvoir la tâche comme projet"
 
-#: src/widgets/pageview.cpp:208
+#: src/widgets/pageview.cpp:210
 #, kde-format
 msgid "Show done tasks"
 msgstr "Afficher les tâches terminées"
 
-#: src/widgets/pageview.cpp:216
+#: src/widgets/pageview.cpp:218
 #, kde-format
 msgid "Show future tasks"
 msgstr "Afficher les tâches futures"
 
-#: src/widgets/pageview.cpp:242
+#: src/widgets/pageview.cpp:244
 #, kde-format
 msgid "Start Now"
 msgstr "Démarrer maintenant"
 
-#: src/widgets/pageview.cpp:360
+#: src/widgets/pageview.cpp:362
 #, kde-format
 msgid "Type and press enter to add an item"
 msgstr "Saisissez du texte et appuyez sur Entrée pour ajouter un élément"
 
-#: src/widgets/pageview.cpp:386
+#: src/widgets/pageview.cpp:388
 #, kde-format
 msgid "Do you really want to delete the selected items and their children?"
 msgstr ""
 "Voulez-vous vraiment supprimer les éléments sélectionnés et leurs enfants ?"
 
-#: src/widgets/pageview.cpp:388
+#: src/widgets/pageview.cpp:390
 #, kde-format
 msgid "Do you really want to delete the selected items?"
 msgstr "Voulez-vous vraiment supprimer les éléments sélectionnés ?"
 
-#: src/widgets/pageview.cpp:396
+#: src/widgets/pageview.cpp:398
 #, kde-format
 msgid "Do you really want to delete the selected task and all its children?"
 msgstr "Voulez-vous vraiment supprimer la tâche sélectionnée et ses enfants ?"
 
-#: src/widgets/pageview.cpp:400
+#: src/widgets/pageview.cpp:402
 #, kde-format
 msgid "Delete Tasks"
 msgstr "Supprimer les tâches"

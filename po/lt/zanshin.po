@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zanshin\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-11-17 11:53+0000\n"
+"POT-Creation-Date: 2026-04-17 00:45+0000\n"
 "PO-Revision-Date: 2026-01-31 22:52+0200\n"
 "Last-Translator: Moo\n"
 "Language-Team: lt\n"
@@ -447,7 +447,7 @@ msgid "Sort by date"
 msgstr "Rikiuoti pagal datą"
 
 #. i18n: ectx: property (placeholderText), widget (QLineEdit, filterEdit)
-#: src/widgets/filterwidget.ui:31 src/widgets/pageview.cpp:200
+#: src/widgets/filterwidget.ui:31 src/widgets/pageview.cpp:202
 #, kde-format
 msgid "Filter..."
 msgstr "Filtruoti..."
@@ -487,69 +487,69 @@ msgstr "Pavadinimas"
 msgid "Source"
 msgstr "Šaltinis"
 
-#: src/widgets/pageview.cpp:156
+#: src/widgets/pageview.cpp:158
 #, kde-format
 msgctxt "@info:placeholder"
 msgid "Type and press enter to add a task"
 msgstr ""
 "Norėdami pridėti užduotį, parašykite ir paspauskite Įvedimo (Enter) klavišą"
 
-#: src/widgets/pageview.cpp:173
+#: src/widgets/pageview.cpp:175
 #, kde-format
 msgid "New Task"
 msgstr "Nauja užduotis"
 
-#: src/widgets/pageview.cpp:186
+#: src/widgets/pageview.cpp:188
 #, kde-format
 msgid "Remove Task"
 msgstr "Šalinti užduotį"
 
-#: src/widgets/pageview.cpp:194
+#: src/widgets/pageview.cpp:196
 #, kde-format
 msgid "Promote Task as Project"
 msgstr "Paaukštinti užduotį į projektą"
 
-#: src/widgets/pageview.cpp:208
+#: src/widgets/pageview.cpp:210
 #, kde-format
 msgid "Show done tasks"
 msgstr "Rodyti atliktas užduotis"
 
-#: src/widgets/pageview.cpp:216
+#: src/widgets/pageview.cpp:218
 #, kde-format
 msgid "Show future tasks"
 msgstr "Rodyti ateities užduotis"
 
-#: src/widgets/pageview.cpp:242
+#: src/widgets/pageview.cpp:244
 #, kde-format
 msgid "Start Now"
 msgstr "Pradėti dabar"
 
-#: src/widgets/pageview.cpp:360
+#: src/widgets/pageview.cpp:362
 #, kde-format
 msgid "Type and press enter to add an item"
 msgstr ""
 "Norėdami pridėti elementą, parašykite ir paspauskite Įvedimo (Enter) klavišą"
 
-#: src/widgets/pageview.cpp:386
+#: src/widgets/pageview.cpp:388
 #, kde-format
 msgid "Do you really want to delete the selected items and their children?"
 msgstr ""
 "Ar tikrai norite ištrinti pasirinktus elementus ir jų pavaldžiuosius "
 "elementus?"
 
-#: src/widgets/pageview.cpp:388
+#: src/widgets/pageview.cpp:390
 #, kde-format
 msgid "Do you really want to delete the selected items?"
 msgstr "Ar tikrai norite ištrinti pasirinktus elementus?"
 
-#: src/widgets/pageview.cpp:396
+#: src/widgets/pageview.cpp:398
 #, kde-format
 msgid "Do you really want to delete the selected task and all its children?"
 msgstr ""
 "Ar tikrai norite ištrinti pasirinktą užduotį ir visus jos pavaldžiuosius "
 "elementus?"
 
-#: src/widgets/pageview.cpp:400
+#: src/widgets/pageview.cpp:402
 #, kde-format
 msgid "Delete Tasks"
 msgstr "Ištrinti užduotis"
