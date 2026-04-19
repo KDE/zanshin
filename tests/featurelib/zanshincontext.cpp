@@ -26,6 +26,7 @@
 #include <KConfigGroup>
 #include <KSharedConfig>
 
+#include <QMimeData>
 #include <QSortFilterProxyModel>
 #include <QStandardItemModel>
 #include <QTest>
@@ -585,12 +586,12 @@ bool ZanshinContext::I_open_the_item_in_the_editor_again()
 bool ZanshinContext::I_drop_the_item_on_the_central_list(const QString &dropSiteName)
 {
     VERIFY(m_index.isValid());
-    const QMimeData *data = model()->mimeData(QModelIndexList() << m_index);
+    const std::unique_ptr<QMimeData> data(model()->mimeData(QModelIndexList() << m_index));
 
     QAbstractItemModel *destModel = model();
     QModelIndex dropIndex = Zanshin::findIndex(destModel, dropSiteName);
     VERIFY(dropIndex.isValid());
-    VERIFY(destModel->dropMimeData(data, Qt::MoveAction, -1, -1, dropIndex));
+    VERIFY(destModel->dropMimeData(data.get(), Qt::MoveAction, -1, -1, dropIndex));
     waitForStableState();
 
     return true;
@@ -599,10 +600,10 @@ bool ZanshinContext::I_drop_the_item_on_the_central_list(const QString &dropSite
 bool ZanshinContext::I_drop_the_item_on_the_blank_area_of_the_central_list()
 {
     VERIFY(m_index.isValid());
-    const QMimeData *data = model()->mimeData(QModelIndexList() << m_index);
+    const std::unique_ptr<QMimeData> data(model()->mimeData(QModelIndexList() << m_index));
 
     QAbstractItemModel *destModel = model();
-    VERIFY(destModel->dropMimeData(data, Qt::MoveAction, -1, -1, QModelIndex()));
+    VERIFY(destModel->dropMimeData(data.get(), Qt::MoveAction, -1, -1, QModelIndex()));
     waitForStableState();
 
     return true;
@@ -621,12 +622,12 @@ bool ZanshinContext::I_drop_items_on_the_central_list(const QString &dropSiteNam
                    });
     VERIFY(allValid);
 
-    const QMimeData *data = model()->mimeData(indexes);
+    const std::unique_ptr<QMimeData> data(model()->mimeData(indexes));
 
     QAbstractItemModel *destModel = model();
     QModelIndex dropIndex = Zanshin::findIndex(destModel, dropSiteName);
     VERIFY(dropIndex.isValid());
-    VERIFY(destModel->dropMimeData(data, Qt::MoveAction, -1, -1, dropIndex));
+    VERIFY(destModel->dropMimeData(data.get(), Qt::MoveAction, -1, -1, dropIndex));
     waitForStableState();
 
     return true;
@@ -635,7 +636,7 @@ bool ZanshinContext::I_drop_items_on_the_central_list(const QString &dropSiteNam
 bool ZanshinContext::I_drop_the_item_on_the_page_list(const QString &pageName)
 {
     VERIFY(m_index.isValid());
-    const QMimeData *data = model()->mimeData(QModelIndexList() << m_index);
+    const std::unique_ptr<QMimeData> data(model()->mimeData(QModelIndexList() << m_index));
 
     auto availablePages = m_appModel->property("availablePages").value<QObject*>();
     VERIFY(availablePages);
@@ -646,7 +647,7 @@ bool ZanshinContext::I_drop_the_item_on_the_page_list(const QString &pageName)
 
     QModelIndex dropIndex = Zanshin::findIndex(destModel, pageName);
     VERIFY(dropIndex.isValid());
-    VERIFY(destModel->dropMimeData(data, Qt::MoveAction, -1, -1, dropIndex));
+    VERIFY(destModel->dropMimeData(data.get(), Qt::MoveAction, -1, -1, dropIndex));
     waitForStableState();
 
     return true;
@@ -665,7 +666,7 @@ bool ZanshinContext::I_drop_items_on_the_page_list(const QString &pageName)
                    });
     VERIFY(allValid);
 
-    const QMimeData *data = model()->mimeData(indexes);
+    const std::unique_ptr<QMimeData> data(model()->mimeData(indexes));
 
     auto availablePages = m_appModel->property("availablePages").value<QObject*>();
     VERIFY(availablePages);
@@ -676,7 +677,7 @@ bool ZanshinContext::I_drop_items_on_the_page_list(const QString &pageName)
 
     QModelIndex dropIndex = Zanshin::findIndex(destModel, pageName);
     VERIFY(dropIndex.isValid());
-    VERIFY(destModel->dropMimeData(data, Qt::MoveAction, -1, -1, dropIndex));
+    VERIFY(destModel->dropMimeData(data.get(), Qt::MoveAction, -1, -1, dropIndex));
     waitForStableState();
 
     return true;
