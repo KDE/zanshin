@@ -294,14 +294,15 @@ private slots:
     void shouldHaveApplicationModelAndSetErrorHandler()
     {
         // GIVEN
-        Widgets::ApplicationComponents components;
+        QWidget parentWidget;
+        auto components = new Widgets::ApplicationComponents(&parentWidget);
         auto model = QObjectPtr::create();
 
         // WHEN
-        components.setModel(model);
+        components->setModel(model);
 
         // THEN
-        QCOMPARE(components.model(), model);
+        QCOMPARE(components->model(), model);
         auto errorHandlerBase = model->property("errorHandler").value<Presentation::ErrorHandler*>();
         QVERIFY(errorHandlerBase);
         auto errorHandler = static_cast<Widgets::PageViewErrorHandler*>(errorHandlerBase);
@@ -309,7 +310,7 @@ private slots:
         QVERIFY(!errorHandler->pageView());
 
         // WHEN
-        auto pageView = components.pageView();
+        auto pageView = components->pageView();
 
         // THEN
         QCOMPARE(errorHandler->pageView(), pageView);
@@ -318,40 +319,43 @@ private slots:
     void shouldApplyAvailableSourcesModelToAvailableSourcesView()
     {
         // GIVEN
-        Widgets::ApplicationComponents components;
+        QWidget parentWidget;
+        auto components = new Widgets::ApplicationComponents(&parentWidget);
         auto model = QObjectPtr::create();
         QObject availableSources;
         model->setProperty("availableSources", QVariant::fromValue(&availableSources));
 
         // WHEN
-        components.setModel(model);
+        components->setModel(model);
 
         // THEN
-        QCOMPARE(components.availableSourcesView()->model(), &availableSources);
+        QCOMPARE(components->availableSourcesView()->model(), &availableSources);
     }
 
     void shouldApplyAvailableSourcesModelAlsoToCreatedAvailableSourcesView()
     {
         // GIVEN
-        Widgets::ApplicationComponents components;
+        QWidget parentWidget;
+        auto components = new Widgets::ApplicationComponents(&parentWidget);
         // Force creation
-        components.availableSourcesView();
+        components->availableSourcesView();
 
         auto model = QObjectPtr::create();
         QObject availableSources;
         model->setProperty("availableSources", QVariant::fromValue(&availableSources));
 
         // WHEN
-        components.setModel(model);
+        components->setModel(model);
 
         // THEN
-        QCOMPARE(components.availableSourcesView()->model(), &availableSources);
+        QCOMPARE(components->availableSourcesView()->model(), &availableSources);
     }
 
     void shouldApplyAvailablePagesModelToAvailablePagesView()
     {
         // GIVEN
-        Widgets::ApplicationComponents components;
+        QWidget parentWidget;
+        auto components = new Widgets::ApplicationComponents(&parentWidget);
         auto model = QObjectPtr::create();
 
         QObject availablePages;
@@ -363,19 +367,20 @@ private slots:
         model->setProperty("availableSources", QVariant::fromValue(&availableSources));
 
         // WHEN
-        components.setModel(model);
+        components->setModel(model);
 
         // THEN
-        QCOMPARE(components.availablePagesView()->model(), &availablePages);
-        QCOMPARE(components.availablePagesView()->projectSourcesModel(), sourcesModel);
+        QCOMPARE(components->availablePagesView()->model(), &availablePages);
+        QCOMPARE(components->availablePagesView()->projectSourcesModel(), sourcesModel);
     }
 
     void shouldApplyAvailablePagesModelAlsoToCreatedAvailablePagesView()
     {
         // GIVEN
-        Widgets::ApplicationComponents components;
+        QWidget parentWidget;
+        auto components = new Widgets::ApplicationComponents(&parentWidget);
         // Force creation
-        components.availablePagesView();
+        components->availablePagesView();
 
         auto model = QObjectPtr::create();
         QObject availablePages;
@@ -384,150 +389,159 @@ private slots:
         model->setProperty("availablePages", QVariant::fromValue(&availablePages));
 
         // WHEN
-        components.setModel(model);
+        components->setModel(model);
 
         // THEN
-        QCOMPARE(components.availablePagesView()->model(), &availablePages);
-        QCOMPARE(components.availablePagesView()->projectSourcesModel(), sourcesModel);
+        QCOMPARE(components->availablePagesView()->model(), &availablePages);
+        QCOMPARE(components->availablePagesView()->projectSourcesModel(), sourcesModel);
     }
 
     void shouldApplyCurrentPageModelToPageView()
     {
         // GIVEN
-        Widgets::ApplicationComponents components;
+        QWidget parentWidget;
+        auto components = new Widgets::ApplicationComponents(&parentWidget);
         auto model = QObjectPtr::create();
         QObject currentPage;
         model->setProperty("currentPage", QVariant::fromValue(&currentPage));
 
         // WHEN
-        components.setModel(model);
+        components->setModel(model);
 
         // THEN
-        QCOMPARE(components.pageView()->model(), &currentPage);
+        QCOMPARE(components->pageView()->model(), &currentPage);
     }
 
     void shouldApplyCurrentPageModelAlsoToCreatedPageView()
     {
         // GIVEN
-        Widgets::ApplicationComponents components;
+        QWidget parentWidget;
+        auto components = new Widgets::ApplicationComponents(&parentWidget);
         // Force creation
-        components.pageView();
+        components->pageView();
 
         auto model = QObjectPtr::create();
         QObject currentPage;
         model->setProperty("currentPage", QVariant::fromValue(&currentPage));
 
         // WHEN
-        components.setModel(model);
+        components->setModel(model);
 
         // THEN
-        QCOMPARE(components.pageView()->model(), &currentPage);
+        QCOMPARE(components->pageView()->model(), &currentPage);
     }
 
     void shouldApplyRunningTaskModelToPageView()
     {
         // GIVEN
-        Widgets::ApplicationComponents components;
+        QWidget parentWidget;
+        auto components = new Widgets::ApplicationComponents(&parentWidget);
         auto model = QObjectPtr::create();
         auto runningTaskModel = new RunningTaskModelStub(model.data());
         model->setProperty("runningTaskModel", QVariant::fromValue<Presentation::RunningTaskModelInterface*>(runningTaskModel));
 
         // WHEN
-        components.setModel(model);
+        components->setModel(model);
 
         // THEN
-        QCOMPARE(components.pageView()->runningTaskModel(), runningTaskModel);
+        QCOMPARE(components->pageView()->runningTaskModel(), runningTaskModel);
     }
 
     void shouldApplyRunningTaskModelAlsoToCreatedPageView()
     {
         // GIVEN
-        Widgets::ApplicationComponents components;
+        QWidget parentWidget;
+        auto components = new Widgets::ApplicationComponents(&parentWidget);
         // Force creation
-        components.pageView();
+        components->pageView();
 
         auto model = QObjectPtr::create();
         auto runningTaskModel = new RunningTaskModelStub(model.data());
         model->setProperty("runningTaskModel", QVariant::fromValue<Presentation::RunningTaskModelInterface*>(runningTaskModel));
 
         // WHEN
-        components.setModel(model);
+        components->setModel(model);
 
         // THEN
-        QCOMPARE(components.pageView()->runningTaskModel(), runningTaskModel);
+        QCOMPARE(components->pageView()->runningTaskModel(), runningTaskModel);
     }
 
     void shouldApplyEditorModelToEditorView()
     {
         // GIVEN
-        Widgets::ApplicationComponents components;
+        QWidget parentWidget;
+        auto components = new Widgets::ApplicationComponents(&parentWidget);
         auto model = QObjectPtr::create();
         QObject *editorModel = new EditorModelStub(model.data());
         model->setProperty("editor", QVariant::fromValue(editorModel));
 
         // WHEN
-        components.setModel(model);
+        components->setModel(model);
 
         // THEN
-        QCOMPARE(components.editorView()->model(), editorModel);
+        QCOMPARE(components->editorView()->model(), editorModel);
     }
 
     void shouldApplyEditorModelAlsoToCreatedPageView()
     {
         // GIVEN
-        Widgets::ApplicationComponents components;
+        QWidget parentWidget;
+        auto components = new Widgets::ApplicationComponents(&parentWidget);
         // Force creation
-        components.editorView();
+        components->editorView();
 
         auto model = QObjectPtr::create();
         QObject *editorModel = new EditorModelStub(model.data());
         model->setProperty("editor", QVariant::fromValue(editorModel));
 
         // WHEN
-        components.setModel(model);
+        components->setModel(model);
 
         // THEN
-        QCOMPARE(components.editorView()->model(), editorModel);
+        QCOMPARE(components->editorView()->model(), editorModel);
     }
 
     void shouldApplyRunningTaskModelToRunningTaskView()
     {
         // GIVEN
-        Widgets::ApplicationComponents components;
+        QWidget parentWidget;
+        auto components = new Widgets::ApplicationComponents(&parentWidget);
         auto model = QObjectPtr::create();
         auto runningTaskModel = new RunningTaskModelStub(model.data());
         model->setProperty("runningTaskModel", QVariant::fromValue<Presentation::RunningTaskModelInterface*>(runningTaskModel));
 
         // WHEN
-        components.setModel(model);
+        components->setModel(model);
 
         // THEN
-        QCOMPARE(components.runningTaskView()->model(), runningTaskModel);
+        QCOMPARE(components->runningTaskView()->model(), runningTaskModel);
     }
 
     void shouldApplyRunningTaskModelAlsoToCreatedRunningTaskView()
     {
         // GIVEN
-        Widgets::ApplicationComponents components;
+        QWidget parentWidget;
+        auto components = new Widgets::ApplicationComponents(&parentWidget);
         // Force creation
-        components.runningTaskView();
+        components->runningTaskView();
 
         auto model = QObjectPtr::create();
         auto runningTaskModel = new RunningTaskModelStub(model.data());
         model->setProperty("runningTaskModel", QVariant::fromValue<Presentation::RunningTaskModelInterface*>(runningTaskModel));
 
         // WHEN
-        components.setModel(model);
+        components->setModel(model);
 
         // THEN
-        QCOMPARE(components.runningTaskView()->model(), runningTaskModel);
+        QCOMPARE(components->runningTaskView()->model(), runningTaskModel);
     }
 
 
     void shouldPropageNullModelsToViews()
     {
         // GIVEN
-        Widgets::ApplicationComponents components;
+        QWidget parentWidget;
+        auto components = new Widgets::ApplicationComponents(&parentWidget);
 
         auto model = QObjectPtr::create();
         auto availableSources = new QObject(model.data());
@@ -541,33 +555,34 @@ private slots:
         auto runningTaskModel = new RunningTaskModelStub(model.data());
         model->setProperty("runningTaskModel", QVariant::fromValue<Presentation::RunningTaskModelInterface*>(runningTaskModel));
 
-        components.setModel(model);
+        components->setModel(model);
 
         // WHEN
-        components.setModel(QObjectPtr());
-        components.availableSourcesView();
-        components.availablePagesView();
-        components.pageView();
-        components.editorView();
-        components.runningTaskView();
+        components->setModel(QObjectPtr());
+        components->availableSourcesView();
+        components->availablePagesView();
+        components->pageView();
+        components->editorView();
+        components->runningTaskView();
 
         // THEN
-        QVERIFY(!components.availableSourcesView()->model());
-        QVERIFY(!components.availablePagesView()->model());
-        QVERIFY(!components.pageView()->model());
-        QVERIFY(!components.editorView()->model());
-        QVERIFY(!components.runningTaskView()->model());
+        QVERIFY(!components->availableSourcesView()->model());
+        QVERIFY(!components->availablePagesView()->model());
+        QVERIFY(!components->pageView()->model());
+        QVERIFY(!components->editorView()->model());
+        QVERIFY(!components->runningTaskView()->model());
     }
 
     void shouldPropageNullModelsToCreatedViews()
     {
         // GIVEN
-        Widgets::ApplicationComponents components;
-        components.availableSourcesView();
-        components.availablePagesView();
-        components.pageView();
-        components.editorView();
-        components.runningTaskView();
+        QWidget parentWidget;
+        auto components = new Widgets::ApplicationComponents(&parentWidget);
+        components->availableSourcesView();
+        components->availablePagesView();
+        components->pageView();
+        components->editorView();
+        components->runningTaskView();
 
         auto model = QObjectPtr::create();
         auto availableSources = new QObject(model.data());
@@ -581,17 +596,17 @@ private slots:
         auto runningTaskModel = new RunningTaskModelStub(model.data());
         model->setProperty("runningTaskModel", QVariant::fromValue<Presentation::RunningTaskModelInterface*>(runningTaskModel));
 
-        components.setModel(model);
+        components->setModel(model);
 
         // WHEN
-        components.setModel(QObjectPtr());
+        components->setModel(QObjectPtr());
 
         // THEN
-        QVERIFY(!components.availableSourcesView()->model());
-        QVERIFY(!components.availablePagesView()->model());
-        QVERIFY(!components.pageView()->model());
-        QVERIFY(!components.editorView()->model());
-        QVERIFY(!components.runningTaskView()->model());
+        QVERIFY(!components->availableSourcesView()->model());
+        QVERIFY(!components->availablePagesView()->model());
+        QVERIFY(!components->pageView()->model());
+        QVERIFY(!components->editorView()->model());
+        QVERIFY(!components->runningTaskView()->model());
     }
 
     void shouldApplyAvailablePagesSelectionToApplicationModel()
@@ -608,14 +623,15 @@ private slots:
                                 QVariant::fromValue(Domain::Task::Ptr::create()));
         model->setProperty("editor", QVariant::fromValue<QObject*>(&editorModel));
 
-        Widgets::ApplicationComponents components;
-        components.setModel(model);
+        QWidget parentWidget;
+        auto components = new Widgets::ApplicationComponents(&parentWidget);
+        components->setModel(model);
 
-        Widgets::AvailablePagesView *availablePagesView = components.availablePagesView();
+        Widgets::AvailablePagesView *availablePagesView = components->availablePagesView();
         auto pagesView = availablePagesView->findChild<QTreeView*>(QStringLiteral("pagesView"));
         QVERIFY(pagesView);
 
-        Widgets::PageView *pageView = components.pageView();
+        Widgets::PageView *pageView = components->pageView();
         QVERIFY(pageView);
         QVERIFY(!pageView->model());
 
@@ -648,10 +664,11 @@ private slots:
         EditorModelStub editorModel;
         model->setProperty("editor", QVariant::fromValue<QObject*>(&editorModel));
 
-        Widgets::ApplicationComponents components;
-        components.setModel(model);
+        QWidget parentWidget;
+        auto components = new Widgets::ApplicationComponents(&parentWidget);
+        components->setModel(model);
 
-        Widgets::PageView *pageView = components.pageView();
+        Widgets::PageView *pageView = components->pageView();
         auto centralView = pageView->findChild<QTreeView*>(QStringLiteral("centralView"));
         QModelIndex index = centralView->model()->index(2, 0);
 
@@ -666,33 +683,34 @@ private slots:
     void shouldHaveDefaultActionsList()
     {
         // GIVEN
-        Widgets::ApplicationComponents components;
+        QWidget parentWidget;
+        auto components = new Widgets::ApplicationComponents(&parentWidget);
 
         // WHEN
-        auto actions = components.globalActions();
+        auto actions = components->globalActions();
 
         // THEN
 
         // availablePages view
-        auto available = components.availablePagesView();
+        auto available = components->availablePagesView();
         auto availableGlobalActions = available->globalActions();
         for (auto it = availableGlobalActions.cbegin(); it != availableGlobalActions.cend(); ++it)
             QCOMPARE(actions.value(it.key()), it.value());
 
         // availableSources view
-        auto availableSources = components.availableSourcesView();
+        auto availableSources = components->availableSourcesView();
         auto availableSourcesGlobalActions = availableSources->globalActions();
         for (auto it = availableSourcesGlobalActions.cbegin(); it != availableSourcesGlobalActions.cend(); ++it)
             QCOMPARE(actions.value(it.key()), it.value());
 
         // page view
-        auto page = components.pageView();
+        auto page = components->pageView();
         auto pageGlobalActions = page->globalActions();
         for (auto it = pageGlobalActions.cbegin(); it != pageGlobalActions.cend(); ++it)
             QCOMPARE(actions.value(it.key()), it.value());
 
         // application component own action
-        auto moveAction = components.findChild<QAction*>(QStringLiteral("moveItemAction"));
+        auto moveAction = components->findChild<QAction*>(QStringLiteral("moveItemAction"));
         QCOMPARE(actions.value(QStringLiteral("page_view_move")), moveAction);
     }
 
@@ -711,22 +729,22 @@ private slots:
         AvailablePagesModelStub availablePagesModelStub;
         model->setProperty("availablePages", QVariant::fromValue<QObject*>(&availablePagesModelStub));
 
-        QWidget *mainWidget = new QWidget;
-        Widgets::ApplicationComponents components(mainWidget);
-        components.setModel(model);
+        QWidget parentWidget;
+        auto components = new Widgets::ApplicationComponents(&parentWidget);
+        components->setModel(model);
 
-        auto availablePageView = components.availablePagesView();
+        auto availablePageView = components->availablePagesView();
         auto availablePagesTreeView = availablePageView->findChild<QTreeView*>(QStringLiteral("pagesView"));
         Q_ASSERT(availablePagesTreeView);
 
         auto dialogStub = QuickSelectDialogStub::Ptr::create();
         dialogStub->index = availablePagesModelStub.pageListModel()->index(0, 0); // inbox selected
-        components.setQuickSelectDialogFactory([dialogStub] (QWidget *parent) {
+        components->setQuickSelectDialogFactory([dialogStub] (QWidget *parent) {
             dialogStub->parent = parent;
             return dialogStub;
         });
 
-        auto pageView = components.pageView();
+        auto pageView = components->pageView();
         auto centralView = pageView->findChild<QTreeView*>(QStringLiteral("centralView"));
         QModelIndex index1 = pageModel.itemModel.index(0,0);
         QModelIndex index2 = pageModel.itemModel.index(2,0);
@@ -736,7 +754,7 @@ private slots:
         auto displayedIndex = displayedModel->index(0, 0);
         auto displayedIndex2 = displayedModel->index(2, 0);
 
-        auto moveAction = components.findChild<QAction*>(QStringLiteral("moveItemAction"));
+        auto moveAction = components->findChild<QAction*>(QStringLiteral("moveItemAction"));
 
         // WHEN
         pageModel.selectedItems << index1 << index2;
