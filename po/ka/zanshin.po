@@ -650,23 +650,3 @@ msgstr "ხელსაწყოთა მთავარი ზოლი"
 #, kde-format
 msgid "Add \"%1\" to your todo list"
 msgstr "'%1'-ის თქვენს გეგმაში ჩამატება"
-
-#~ msgctxt "the day after today"
-#~ msgid "tomorrow"
-#~ msgstr "ხვალ"
-
-#~ msgctxt "this day"
-#~ msgid "today"
-#~ msgstr "დღეს"
-
-#~ msgctxt "the day before today"
-#~ msgid "yesterday"
-#~ msgstr "გუშინ"
-
-#~ msgctxt "the week after this week"
-#~ msgid "next week"
-#~ msgstr "შემდეგი კვირა"
-
-#~ msgctxt "the month after this month"
-#~ msgid "next month"
-#~ msgstr "შემდეგი თვე"
