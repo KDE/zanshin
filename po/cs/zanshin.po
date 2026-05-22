@@ -10,15 +10,15 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-04-17 00:45+0000\n"
-"PO-Revision-Date: 2026-02-27 21:05+0100\n"
-"Last-Translator:  Vít Pelčák <vit@pelcak.org>\n"
+"PO-Revision-Date: 2026-05-21 23:44+0200\n"
+"Last-Translator: Libor Filípek <libor.filipek@gmail.com>\n"
 "Language-Team: Czech <kde-i18n-doc@kde.org>\n"
 "Language: cs\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Lokalize 26.04.0\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
+"X-Generator: Poedit 3.8\n"
 
 #, kde-format
 msgctxt "NAME OF TRANSLATORS"
@@ -398,7 +398,7 @@ msgstr "Editor"
 #: src/widgets/editorview.ui:41
 #, kde-format
 msgid "D&ue Date "
-msgstr "Dat&um splnění"
+msgstr "Dat&um splnění "
 
 #. i18n: ectx: property (text), widget (QCheckBox, doneButton)
 #: src/widgets/editorview.ui:62 src/widgets/runningtaskwidget.cpp:53
