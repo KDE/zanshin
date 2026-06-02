@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: zanshin\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-04-17 00:45+0000\n"
-"PO-Revision-Date: 2013-09-08 07:05+0900\n"
-"Last-Translator: Gheyret Kenji <gheyret@gmail.com>\n"
+"PO-Revision-Date: 2026-06-01 18:59-0400\n"
+"Last-Translator: Abduqadir Abliz <sahranbay@gmail.com>\n"
 "Language-Team: Uyghur Computer Science Association <UKIJ@yahoogroups.com>\n"
 "Language: ug\n"
 "MIME-Version: 1.0\n"
@@ -17,23 +17,23 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 "X-Qt-Contexts: true\n"
+"X-Generator: Poedit 3.9\n"
 
 #, kde-format
 msgctxt "NAME OF TRANSLATORS"
 msgid "Your names"
-msgstr "ئابدۇقادىر ئابلىز, غەيرەت كەنجى"
+msgstr "ئابدۇقادىر ئابلىز، غەيرەت كەنجى"
 
 #, kde-format
 msgctxt "EMAIL OF TRANSLATORS"
 msgid "Your emails"
-msgstr "sahran.ug@gmail.com,  gheyret@gmail.com"
+msgstr "sahranbay@gmail.com, gheyret@gmail.com"
 
 #: src/akonadi/akonadiconfigdialog.cpp:36
-#, fuzzy, kde-format
-#| msgid "Remove"
+#, kde-format
 msgctxt "@title:window"
 msgid "Configure"
-msgstr "چىقىرىۋەت"
+msgstr "سەپلە"
 
 #: src/akonadi/akonadiconfigdialog.cpp:40
 #, kde-format
@@ -43,22 +43,19 @@ msgid ""
 msgstr ""
 
 #: src/akonadi/akonadiconfigdialog.cpp:50
-#, fuzzy, kde-format
-#| msgid "Remove"
+#, kde-format
 msgid "Add resource"
-msgstr "چىقىرىۋەت"
+msgstr ""
 
 #: src/akonadi/akonadiconfigdialog.cpp:57
-#, fuzzy, kde-format
-#| msgid "Remove"
+#, kde-format
 msgid "Remove resource"
-msgstr "چىقىرىۋەت"
+msgstr ""
 
 #: src/akonadi/akonadiconfigdialog.cpp:64
-#, fuzzy, kde-format
-#| msgid "Remove"
+#, kde-format
 msgid "Configure resource..."
-msgstr "چىقىرىۋەت"
+msgstr ""
 
 #: src/akonadi/akonadiconfigdialog.cpp:122
 #, kde-format
@@ -141,8 +138,7 @@ msgid "Cannot remove context %1"
 msgstr ""
 
 #: src/presentation/availablepagesmodel.cpp:139
-#, fuzzy, kde-format
-#| msgid "Inbox"
+#, kde-format
 msgid "Inbox"
 msgstr "قوبۇللاش ساندۇقى"
 
@@ -152,8 +148,7 @@ msgid "Workday"
 msgstr ""
 
 #: src/presentation/availablepagesmodel.cpp:143
-#, fuzzy, kde-format
-#| msgid "Project"
+#, kde-format
 msgid "Projects"
 msgstr "قۇرۇلۇش"
 
@@ -165,7 +160,7 @@ msgstr ""
 #: src/presentation/availablepagesmodel.cpp:147
 #, kde-format
 msgid "All Tasks"
-msgstr ""
+msgstr "ھەممە ۋەزىپە"
 
 #: src/presentation/availablepagesmodel.cpp:246
 #, kde-format
@@ -290,38 +285,32 @@ msgstr ""
 #: src/widgets/applicationcomponents.cpp:48
 #, kde-format
 msgid "Move Task"
-msgstr ""
+msgstr "ۋەزىپە يۆتكە"
 
 #: src/widgets/availablepagesview.cpp:50
-#, fuzzy, kde-format
-#| msgid "projects"
+#, kde-format
 msgid "New Project"
-msgstr "قۇرۇلۇشلار"
+msgstr "يېڭى قۇرۇلۇش"
 
 #: src/widgets/availablepagesview.cpp:56
-#, fuzzy, kde-format
-#| msgid "projects"
+#, kde-format
 msgid "New Context"
-msgstr "قۇرۇلۇشلار"
+msgstr "يېڭى مەزمۇن"
 
 #: src/widgets/availablepagesview.cpp:62
-#, fuzzy, kde-format
-#| msgid "Remove"
+#, kde-format
 msgid "Remove Page"
-msgstr "چىقىرىۋەت"
+msgstr "بەتنى چىقىرىۋەت"
 
 #: src/widgets/availablepagesview.cpp:91
-#, fuzzy, kde-format
-#| msgid "Previous"
+#, kde-format
 msgid "Previous Page"
-msgstr "ئالدىنقى"
+msgstr "ئالدىنقى بەت"
 
 #: src/widgets/availablepagesview.cpp:98
-#, fuzzy, kde-format
-#| msgctxt "@option next week"
-#| msgid "Next &Week"
+#, kde-format
 msgid "Next Page"
-msgstr "كېيىنكى ھەپتە(&W)"
+msgstr "كېيىنكى بەت"
 
 #: src/widgets/availablepagesview.cpp:105
 #, kde-format
@@ -329,17 +318,15 @@ msgid "Go to Page..."
 msgstr ""
 
 #: src/widgets/availablepagesview.cpp:240
-#, fuzzy, kde-format
-#| msgid "projects"
+#, kde-format
 msgctxt "@title:window"
 msgid "Add a context"
-msgstr "قۇرۇلۇشلار"
+msgstr ""
 
 #: src/widgets/availablepagesview.cpp:265
-#, fuzzy, kde-format
-#| msgid "Project"
+#, kde-format
 msgid "Delete Project"
-msgstr "قۇرۇلۇش"
+msgstr ""
 
 #: src/widgets/availablepagesview.cpp:266
 #, kde-format
@@ -347,10 +334,9 @@ msgid "Do you really want to delete the project '%1', with all its actions?"
 msgstr ""
 
 #: src/widgets/availablepagesview.cpp:268
-#, fuzzy, kde-format
-#| msgid "Project"
+#, kde-format
 msgid "Delete Context"
-msgstr "قۇرۇلۇش"
+msgstr ""
 
 #: src/widgets/availablepagesview.cpp:269
 #, kde-format
@@ -365,82 +351,75 @@ msgstr ""
 #: src/widgets/availablesourcesview.cpp:74
 #, kde-format
 msgid "Configure %1..."
-msgstr ""
+msgstr "%1 نى سەپلە…"
 
 #: src/widgets/editorview.cpp:30
-#, fuzzy, kde-format
-#| msgid "Attachments"
+#, kde-format
 msgid "Add Attachment"
-msgstr "قوشۇلمىلار"
+msgstr "قوشۇلما قوش"
 
 #: src/widgets/editorview.cpp:35
 #, kde-format
 msgid "Never"
-msgstr ""
+msgstr "ھەرگىز"
 
 #: src/widgets/editorview.cpp:36
 #, kde-format
 msgid "Daily"
-msgstr ""
+msgstr "كۈندە"
 
 #: src/widgets/editorview.cpp:37
 #, kde-format
 msgid "Weekly"
-msgstr ""
+msgstr "ھەر ھەپتىدە"
 
 #: src/widgets/editorview.cpp:38
 #, kde-format
 msgid "Monthly"
-msgstr ""
+msgstr "ھەر ئايدا"
 
 #: src/widgets/editorview.cpp:39
 #, kde-format
 msgid "Yearly"
-msgstr ""
+msgstr "ھەر يىلى"
 
 #. i18n: ectx: property (windowTitle), widget (QWidget, EditorView)
 #. i18n: ectx: property (text), widget (QListView, attachmentList)
 #: src/widgets/editorview.ui:14 src/widgets/editorview.ui:184
 #: src/zanshin/app/main.cpp:89
-#, fuzzy, kde-format
-#| msgid "&Editor"
+#, kde-format
 msgid "Editor"
-msgstr "تەھرىرلىگۈچ(&E)"
+msgstr "تەھرىرلىگۈچ"
 
 #. i18n: ectx: property (text), widget (QLabel, dueDateLabel)
 #: src/widgets/editorview.ui:41
-#, fuzzy, kde-format
-#| msgid "Due Date"
+#, kde-format
 msgid "D&ue Date "
-msgstr "مۆھلىتى(چېسلا)"
+msgstr ""
 
 #. i18n: ectx: property (text), widget (QCheckBox, doneButton)
 #: src/widgets/editorview.ui:62 src/widgets/runningtaskwidget.cpp:53
 #, kde-format
 msgid "Done"
-msgstr ""
+msgstr "تامام"
 
 #. i18n: ectx: property (toolTip), widget (QToolButton, addAttachmentButton)
 #: src/widgets/editorview.ui:86
-#, fuzzy, kde-format
-#| msgid "Attachments"
+#, kde-format
 msgid "Add Attachment..."
-msgstr "قوشۇلمىلار"
+msgstr ""
 
 #. i18n: ectx: property (toolTip), widget (QToolButton, removeAttachmentButton)
 #: src/widgets/editorview.ui:100
-#, fuzzy, kde-format
-#| msgid "Attachments"
+#, kde-format
 msgid "Remove Attachment"
-msgstr "قوشۇلمىلار"
+msgstr ""
 
 #. i18n: ectx: property (text), widget (QPushButton, startTodayButton)
 #: src/widgets/editorview.ui:121
-#, fuzzy, kde-format
-#| msgctxt "@option today"
-#| msgid "&Today"
+#, kde-format
 msgid "Select for &Today"
-msgstr "بۈگۈن(&T)"
+msgstr ""
 
 #. i18n: ectx: property (text), widget (QLabel, recurrenceLabel)
 #: src/widgets/editorview.ui:130
@@ -468,7 +447,7 @@ msgstr ""
 #: src/widgets/filterwidget.ui:31 src/widgets/pageview.cpp:202
 #, kde-format
 msgid "Filter..."
-msgstr ""
+msgstr "سۈزگۈچ…"
 
 #. i18n: ectx: property (toolTip), widget (QToolButton, descendingButton)
 #: src/widgets/filterwidget.ui:65
@@ -483,30 +462,27 @@ msgid "Sort in ascending order"
 msgstr ""
 
 #: src/widgets/itemdelegate.cpp:47
-#, fuzzy, kde-format
-#| msgid "Project"
+#, kde-format
 msgid "Project: %1"
-msgstr "قۇرۇلۇش"
+msgstr "قۇرۇلۇش: %1"
 
 #. i18n: ectx: property (windowTitle), widget (QDialog, NameAndDataSourceDialog)
 #: src/widgets/nameanddatasourcedialog.ui:14
-#, fuzzy, kde-format
-#| msgid "projects"
+#, kde-format
 msgid "Add a project"
-msgstr "قۇرۇلۇشلار"
+msgstr ""
 
 #. i18n: ectx: property (text), widget (QLabel, nameLabel)
 #: src/widgets/nameanddatasourcedialog.ui:25
 #, kde-format
 msgid "Name"
-msgstr ""
+msgstr "ئاتى"
 
 #. i18n: ectx: property (text), widget (QLabel, sourceLabel)
 #: src/widgets/nameanddatasourcedialog.ui:42
-#, fuzzy, kde-format
-#| msgid "Sources"
+#, kde-format
 msgid "Source"
-msgstr "مەنبەلەر"
+msgstr "مەنبە"
 
 #: src/widgets/pageview.cpp:158
 #, kde-format
@@ -517,13 +493,12 @@ msgstr ""
 #: src/widgets/pageview.cpp:175
 #, kde-format
 msgid "New Task"
-msgstr ""
+msgstr "يېڭى ۋەزىپە"
 
 #: src/widgets/pageview.cpp:188
-#, fuzzy, kde-format
-#| msgid "Remove"
+#, kde-format
 msgid "Remove Task"
-msgstr "چىقىرىۋەت"
+msgstr ""
 
 #: src/widgets/pageview.cpp:196
 #, kde-format
@@ -595,12 +570,12 @@ msgstr ""
 #: src/widgets/runningtaskwidget.cpp:49
 #, kde-format
 msgid "Stop"
-msgstr ""
+msgstr "توختا"
 
 #: src/zanshin/app/aboutdata.cpp:14
 #, kde-format
 msgid "Zanshin Tasks"
-msgstr ""
+msgstr "Zanshin ۋەزىپە"
 
 #: src/zanshin/app/aboutdata.cpp:15
 #, kde-format
@@ -614,17 +589,15 @@ msgid "Copyright 2008-2016, Kevin Ottens <ervin@kde.org>"
 msgstr ""
 
 #: src/zanshin/app/aboutdata.cpp:19
-#, fuzzy, kde-format
-#| msgid "Kevin Ottens"
+#, kde-format
 msgctxt "@info:credit"
 msgid "Kevin Ottens"
 msgstr "Kevin Ottens"
 
 #: src/zanshin/app/aboutdata.cpp:20
-#, fuzzy, kde-format
-#| msgid "Lead Developer"
+#, kde-format
 msgid "Lead Developer"
-msgstr "باش ئىجادىيەتچى"
+msgstr ""
 
 #: src/zanshin/app/aboutdata.cpp:23
 #, kde-format
@@ -633,10 +606,9 @@ msgid "Mario Bensi"
 msgstr ""
 
 #: src/zanshin/app/aboutdata.cpp:24 src/zanshin/app/aboutdata.cpp:28
-#, fuzzy, kde-format
-#| msgid "Developer"
+#, kde-format
 msgid "Developer"
-msgstr "ئىجادىيەتچى"
+msgstr "ئىجادكار"
 
 #: src/zanshin/app/aboutdata.cpp:27
 #, kde-format
@@ -645,15 +617,14 @@ msgid "Franck Arrecot"
 msgstr ""
 
 #: src/zanshin/app/main.cpp:81
-#, fuzzy, kde-format
-#| msgid "Sources"
+#, kde-format
 msgid "Sources"
-msgstr "مەنبەلەر"
+msgstr ""
 
 #: src/zanshin/app/main.cpp:85
 #, kde-format
 msgid "Pages"
-msgstr ""
+msgstr "بەت"
 
 #. i18n: ectx: Menu (go)
 #: src/zanshin/app/zanshinui.rc:15 src/zanshin/kontact/zanshin_part.rc:15
@@ -665,7 +636,7 @@ msgstr "يۆتكەل(&G)"
 #: src/zanshin/app/zanshinui.rc:27
 #, kde-format
 msgid "&Panels"
-msgstr ""
+msgstr "تاختايلار(&P)"
 
 #. i18n: ectx: ToolBar (mainToolBar)
 #: src/zanshin/app/zanshinui.rc:35 src/zanshin/kontact/zanshin_part.rc:27
@@ -695,7 +666,6 @@ msgstr ""
 #~ msgid "next month"
 #~ msgstr "كېيىنكى ئاي"
 
-#, fuzzy
 #~| msgid "Today"
 #~ msgctxt "@option today"
 #~ msgid "&Today"
@@ -705,7 +675,6 @@ msgstr ""
 #~ msgid "To&morrow"
 #~ msgstr "ئەتە(&M)"
 
-#, fuzzy
 #~| msgid "Last Week"
 #~ msgctxt "@option next week"
 #~ msgid "Next &Week"
@@ -719,73 +688,59 @@ msgstr ""
 #~ msgid "No Date"
 #~ msgstr "چېسلا يوق"
 
-#, fuzzy
 #~| msgid "Collection"
 #~ msgid "Completion Order"
 #~ msgstr "توپلام"
 
-#, fuzzy
 #~| msgid "Collection"
 #~ msgid "Edit Completion Order"
 #~ msgstr "توپلام"
 
-#, fuzzy
 #~| msgid "&Editor"
 #~ msgid "Add Host"
 #~ msgstr "تەھرىرلىگۈچ(&E)"
 
-#, fuzzy
 #~| msgid "&Editor"
 #~ msgid "Edit Host"
 #~ msgstr "تەھرىرلىگۈچ(&E)"
 
-#, fuzzy
 #~| msgid "&Editor"
 #~ msgid "&Add Host..."
 #~ msgstr "تەھرىرلىگۈچ(&E)"
 
-#, fuzzy
 #~| msgid "&Editor"
 #~ msgid "&Edit Host..."
 #~ msgstr "تەھرىرلىگۈچ(&E)"
 
-#, fuzzy
 #~| msgid "Remove"
 #~ msgid "&Remove Host"
 #~ msgstr "چىقىرىۋەت"
 
-#, fuzzy
 #~| msgid "Remove"
 #~ msgid "&Remove"
 #~ msgstr "چىقىرىۋەت"
 
-#, fuzzy
 #~| msgid "Remove"
 #~ msgid "Remove"
 #~ msgstr "چىقىرىۋەت"
 
-#, fuzzy
 #~| msgid "Remove"
 #~ msgid "Move Item"
 #~ msgstr "چىقىرىۋەت"
 
-#, fuzzy
 #~| msgid "Due Date"
 #~ msgid "De&legate to"
 #~ msgstr "مۆھلىتى(چېسلا)"
 
-#, fuzzy
 #~| msgid "Remove"
 #~ msgid "Remove Item"
 #~ msgstr "چىقىرىۋەت"
 
-#, fuzzy
 #~| msgid "Inbox"
 #~ msgctxt "Presentation::AvailableTaskPagesModel|"
 #~ msgid "Inbox"
 #~ msgstr "قوبۇللاش ساندۇقى"
 
-#, fuzzy
 #~| msgid "&Editor"
 #~ msgctxt "EditorView|"
 #~ msgid "Editor"
