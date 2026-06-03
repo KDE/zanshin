@@ -46,6 +46,7 @@
   <name xml:lang="sl">Zanshin</name>
   <name xml:lang="sv">Zanshin</name>
   <name xml:lang="tr">Zanşin</name>
+  <name xml:lang="ug">Zanshin</name>
   <name xml:lang="uk">Zanshin</name>
   <name xml:lang="zh-CN">Zanshin</name>
   <name xml:lang="zh-TW">Zanshin</name>
@@ -86,6 +87,7 @@
   <summary xml:lang="sl">Upravljanje nalog</summary>
   <summary xml:lang="sv">Hanteringsprogram av uppgifter</summary>
   <summary xml:lang="tr">Yapılacaklar Yönetimi Uygulaması</summary>
+  <summary xml:lang="ug">بېجىرىدىغان ئىش تىزىمىنى باشقۇرۇش پىروگراممىسى</summary>
   <summary xml:lang="uk">Програма для керування завданнями</summary>
   <summary xml:lang="zh-CN">待办事项管理应用</summary>
   <summary xml:lang="zh-TW">待辦事項管理應用程式</summary>
@@ -167,6 +169,7 @@
     <p subtitle="true" xml:lang="sl">Zbiraj</p>
     <p subtitle="true" xml:lang="sv">Samla</p>
     <p subtitle="true" xml:lang="tr">Topla</p>
+    <p subtitle="true" xml:lang="ug">توپلا</p>
     <p subtitle="true" xml:lang="uk">Збирання</p>
     <p subtitle="true" xml:lang="zh-CN">收集</p>
     <p subtitle="true" xml:lang="zh-TW">收集</p>
@@ -311,6 +314,7 @@
     <p subtitle="true" xml:lang="sl">Optimiziraj</p>
     <p subtitle="true" xml:lang="sv">Optimera</p>
     <p subtitle="true" xml:lang="tr">Eniyile</p>
+    <p subtitle="true" xml:lang="ug">ئەلالاشتۇر</p>
     <p subtitle="true" xml:lang="uk">Оптимізація</p>
     <p subtitle="true" xml:lang="zh-CN">优化</p>
     <p subtitle="true" xml:lang="zh-TW">最佳化</p>
@@ -383,6 +387,7 @@
     <p subtitle="true" xml:lang="sl">Integriraj</p>
     <p subtitle="true" xml:lang="sv">Integrera</p>
     <p subtitle="true" xml:lang="tr">Tümleştir</p>
+    <p subtitle="true" xml:lang="ug">ئىنتېگرال</p>
     <p subtitle="true" xml:lang="uk">Інтеграція</p>
     <p subtitle="true" xml:lang="zh-CN">融合</p>
     <p subtitle="true" xml:lang="zh-TW">整合</p>
