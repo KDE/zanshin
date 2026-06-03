@@ -36,6 +36,7 @@
                 "Name[sl]": "Ekipa Zanshin",
                 "Name[sv]": "Zanshin-gruppen",
                 "Name[tr]": "Zanşin Takımı",
+                "Name[ug]": "Zanshin قوشۇنى",
                 "Name[uk]": "Команда Zanshin",
                 "Name[zh_CN]": "Zanshin 团队",
                 "Name[zh_TW]": "Zanshin 團隊"
@@ -75,6 +76,7 @@
         "Description[sl]": "Dodaj naloge v vaš seznam nalog",
         "Description[sv]": "Lägg till uppgifter i uppgiftslistan",
         "Description[tr]": "Yapılacaklar listenize görevler ekleyin",
+        "Description[ug]": "بېجىرىدىغان ئىش تىزىمىغا ۋەزىپە قوشىدۇ",
         "Description[uk]": "Додайте завдання до вашого списку завдань",
         "Description[zh_CN]": "将任务添加到您的待办事项",
         "Description[zh_TW]": "將工作項目加入您的待辦清單",
@@ -115,6 +117,7 @@
         "Name[sl]": "Zanshinove naloge",
         "Name[sv]": "Zanshin uppgifter",
         "Name[tr]": "Zanşin Görevler",
+        "Name[ug]": "Zanshin ۋەزىپە",
         "Name[uk]": "Завдання Zanshin",
         "Name[zh_CN]": "Zanshin 任务",
         "Name[zh_TW]": "Zanshin 工作項目"
