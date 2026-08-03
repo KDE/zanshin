@@ -1,5 +1,6 @@
 # Translation of zanshin to Norwegian Nynorsk
 #
+# Karl Ove Hufthammer <karl@huftis.org>, 2021, 2022, 2024.
 msgid ""
 msgstr ""
 "Project-Id-Version: zanshin\n"
