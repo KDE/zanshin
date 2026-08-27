@@ -4,18 +4,18 @@
 Dependencies:
 - 'on': ['Linux', 'FreeBSD', 'Windows']
   'require':
-    'frameworks/extra-cmake-modules': '@latest-kf6'
-    'frameworks/kcoreaddons': '@latest-kf6'
-    'frameworks/kwindowsystem': '@latest-kf6'
-    'frameworks/ki18n': '@latest-kf6'
-    'frameworks/kcrash': '@latest-kf6'
+    'frameworks/extra-cmake-modules': 'Frameworks/6.24'
+    'frameworks/kcoreaddons': 'Frameworks/6.24'
+    'frameworks/kwindowsystem': 'Frameworks/6.24'
+    'frameworks/ki18n': 'Frameworks/6.24'
+    'frameworks/kcrash': 'Frameworks/6.24'
     'pim/akonadi' : '@same'
     'pim/akonadi-calendar' : '@same'
     'pim/kontactinterface' : '@same'
 
 - 'on': ['Linux', 'FreeBSD']
   'require':
-    'frameworks/krunner': '@latest-kf6'
+    'frameworks/krunner': 'Frameworks/6.24'
 
 Options:
   ctest-arguments: '--repeat until-pass:3'
