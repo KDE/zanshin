@@ -136,43 +136,43 @@
     <p xml:lang="uk">Zanshin — потужна і водночас проста програма для керування записами ваших щоденних завдань. За її допомогою ви зможете впорядкувати ваше життя і уникнути постійного тиску обставин та нестачі часу. Користуючись Zanshin, ви не забуватимете про події і почуватимете себе спокійнішими.</p>
     <p xml:lang="zh-CN">Zanshin 是一个强大而简明的应用程序，可用来管理您的日常操作。 它帮助您组织并减少人们在工作和个人生活中必须做的事情造成的认知压力。 您再也不会不会忘记任何东西，让您心如止水。</p>
     <p xml:lang="zh-TW">Zanshin 是一個功能強大但又簡潔的日常活動管理應用程式。它幫助您管理工作與個人生活中需要做的事，降低它們對您的心理壓力。您不再需要擔心忘記事情，讓您的思緒可以如流水般。</p>
-    <p subtitle="true">Collect</p>
-    <p subtitle="true" xml:lang="ar">اجمع</p>
-    <p subtitle="true" xml:lang="bg">Събиране</p>
-    <p subtitle="true" xml:lang="ca">Recull</p>
-    <p subtitle="true" xml:lang="ca-valencia">Arreplega</p>
-    <p subtitle="true" xml:lang="cs">Sbírka</p>
-    <p subtitle="true" xml:lang="de">Sammeln</p>
-    <p subtitle="true" xml:lang="en-GB">Collect</p>
-    <p subtitle="true" xml:lang="eo">Kolekti</p>
-    <p subtitle="true" xml:lang="es">Recopilar</p>
-    <p subtitle="true" xml:lang="eu">Bildu</p>
-    <p subtitle="true" xml:lang="fi">Kokoa</p>
-    <p subtitle="true" xml:lang="fr">Collecter</p>
-    <p subtitle="true" xml:lang="gl">Apunta.</p>
-    <p subtitle="true" xml:lang="he">איסוף</p>
-    <p subtitle="true" xml:lang="hi">इकट्ठा करना</p>
-    <p subtitle="true" xml:lang="hu">Gyűjtés</p>
-    <p subtitle="true" xml:lang="ia">Collige</p>
-    <p subtitle="true" xml:lang="it">Raccogli</p>
-    <p subtitle="true" xml:lang="ka">შეგროვება</p>
-    <p subtitle="true" xml:lang="ko">수집</p>
-    <p subtitle="true" xml:lang="lt">Surinkite</p>
-    <p subtitle="true" xml:lang="nl">Verzamelen</p>
-    <p subtitle="true" xml:lang="nn">Samla</p>
-    <p subtitle="true" xml:lang="pl">Zbierz</p>
-    <p subtitle="true" xml:lang="pt">Recolher</p>
-    <p subtitle="true" xml:lang="pt-BR">Coletar</p>
-    <p subtitle="true" xml:lang="ru">Сбор</p>
-    <p subtitle="true" xml:lang="sa">संग्रह</p>
-    <p subtitle="true" xml:lang="sk">Collect</p>
-    <p subtitle="true" xml:lang="sl">Zbiraj</p>
-    <p subtitle="true" xml:lang="sv">Samla</p>
-    <p subtitle="true" xml:lang="tr">Topla</p>
-    <p subtitle="true" xml:lang="ug">توپلا</p>
-    <p subtitle="true" xml:lang="uk">Збирання</p>
-    <p subtitle="true" xml:lang="zh-CN">收集</p>
-    <p subtitle="true" xml:lang="zh-TW">收集</p>
+    <p>Collect</p>
+    <p xml:lang="ar">اجمع</p>
+    <p xml:lang="bg">Събиране</p>
+    <p xml:lang="ca">Recull</p>
+    <p xml:lang="ca-valencia">Arreplega</p>
+    <p xml:lang="cs">Sbírka</p>
+    <p xml:lang="de">Sammeln</p>
+    <p xml:lang="en-GB">Collect</p>
+    <p xml:lang="eo">Kolekti</p>
+    <p xml:lang="es">Recopilar</p>
+    <p xml:lang="eu">Bildu</p>
+    <p xml:lang="fi">Kokoa</p>
+    <p xml:lang="fr">Collecter</p>
+    <p xml:lang="gl">Apunta.</p>
+    <p xml:lang="he">איסוף</p>
+    <p xml:lang="hi">इकट्ठा करना</p>
+    <p xml:lang="hu">Gyűjtés</p>
+    <p xml:lang="ia">Collige</p>
+    <p xml:lang="it">Raccogli</p>
+    <p xml:lang="ka">შეგროვება</p>
+    <p xml:lang="ko">수집</p>
+    <p xml:lang="lt">Surinkite</p>
+    <p xml:lang="nl">Verzamelen</p>
+    <p xml:lang="nn">Samla</p>
+    <p xml:lang="pl">Zbierz</p>
+    <p xml:lang="pt">Recolher</p>
+    <p xml:lang="pt-BR">Coletar</p>
+    <p xml:lang="ru">Сбор</p>
+    <p xml:lang="sa">संग्रह</p>
+    <p xml:lang="sk">Collect</p>
+    <p xml:lang="sl">Zbiraj</p>
+    <p xml:lang="sv">Samla</p>
+    <p xml:lang="tr">Topla</p>
+    <p xml:lang="ug">توپلا</p>
+    <p xml:lang="uk">Збирання</p>
+    <p xml:lang="zh-CN">收集</p>
+    <p xml:lang="zh-TW">收集</p>
     <p>Worried about forgetting something? Unexpected memory losses? Zanshin is here to help you. You can collect your tasks and free your mind. You will soon stop hearing this voice nagging you about what you probably forgot, or what you should do. Just fire up Zanshin, once something is collected, you are sure to find it there.</p>
     <p xml:lang="ar">هل تشعر بالقلق من نسيان شيء ما؟ هل تعاني من فقدان الذاكرة بشكل غير متوقع؟ زانشين هنا لمساعدتك. يمكنك جمع مهامك وتحرير عقلك. ستتوقف قريبًا عن سماع هذا الصوت الذي يزعجك بشأن ما ربما نسيته، أو ما يجب عليك فعله. ما عليك سوى تشغيل زانشين وبمجرد جمع شيء ما، من المؤكد أنك ستجده هناك.</p>
     <p xml:lang="bg">Притеснявате се, че ще забравите нещо? Неочаквани загуби на памет? Zanshin е тук, за да ви помогне. Можете да съберете задачите си и да освободите ума си. Вие  скоро ще престанете да се притеснявате за това, което вероятно сте забравили, или какво трябва да направите. Просто стартирайте Zanshin, и след като нещо е събрано, вие със сигурност ще го намерите там.</p>
@@ -209,42 +209,42 @@
     <p xml:lang="uk">Непокоїтеся, що щось забудете? Пропускаєте щось? Вам допоможе Zanshin. Ви можете зібрати записи ваших завдань і позбутися проблем. Ви більше не чутимете ці докори про те, що ви щось забули або маєте зробити. Просто запустіть Zanshin, щойно дані буде зібрано, — ви знайдете усе, що вам потрібне.</p>
     <p xml:lang="zh-CN">担心忘记东西吗？有意外失忆吗？让Zanshin来帮助您。您可以集中管理您的任务并放飞您的心灵。 您很快就能摆脱那些提醒“您忘了什么东西”或“您该做什么了”的唠叨。只需让Zanshin为您效劳：任何东西被收集，您都能在这找到它。</p>
     <p xml:lang="zh-TW">擔心忘記東西？或是平常會忘東忘西的？Zanshin 可以幫助您。透過 Zanshin 您可以把要做的事情收集起來，不用再費力記住它們。不用多久您便不再需要擔心可能有忘記什麼或是您應該做什麼。只需要開啟 Zanshin，所有東西都收集在這裡的時候，您一定會在這裡找到它。</p>
-    <p subtitle="true">Organize</p>
-    <p subtitle="true" xml:lang="ar">نظّم</p>
-    <p subtitle="true" xml:lang="bg">Организиране</p>
-    <p subtitle="true" xml:lang="ca">Organitza</p>
-    <p subtitle="true" xml:lang="ca-valencia">Organitza</p>
-    <p subtitle="true" xml:lang="cs">Organizace</p>
-    <p subtitle="true" xml:lang="de">Organisieren</p>
-    <p subtitle="true" xml:lang="en-GB">Organise</p>
-    <p subtitle="true" xml:lang="eo">Organizi</p>
-    <p subtitle="true" xml:lang="es">Organizar</p>
-    <p subtitle="true" xml:lang="eu">Antolatu</p>
-    <p subtitle="true" xml:lang="fi">Järjestä</p>
-    <p subtitle="true" xml:lang="fr">Organiser</p>
-    <p subtitle="true" xml:lang="gl">Organiza.</p>
-    <p subtitle="true" xml:lang="he">סידור</p>
-    <p subtitle="true" xml:lang="hi">आयोजन</p>
-    <p subtitle="true" xml:lang="hu">Szervezés</p>
-    <p subtitle="true" xml:lang="ia">Organisa</p>
-    <p subtitle="true" xml:lang="it">Organizza</p>
-    <p subtitle="true" xml:lang="ka">ორგანიზება</p>
-    <p subtitle="true" xml:lang="ko">정리</p>
-    <p subtitle="true" xml:lang="lt">Tvarkykite</p>
-    <p subtitle="true" xml:lang="nl">Organiseren</p>
-    <p subtitle="true" xml:lang="nn">Organiser</p>
-    <p subtitle="true" xml:lang="pl">Uporządkuj</p>
-    <p subtitle="true" xml:lang="pt">Organizar</p>
-    <p subtitle="true" xml:lang="pt-BR">Organizar</p>
-    <p subtitle="true" xml:lang="ru">Организация</p>
-    <p subtitle="true" xml:lang="sa">संगठित करें</p>
-    <p subtitle="true" xml:lang="sk">Organize</p>
-    <p subtitle="true" xml:lang="sl">Organiziraj</p>
-    <p subtitle="true" xml:lang="sv">Organisera</p>
-    <p subtitle="true" xml:lang="tr">Organize Et</p>
-    <p subtitle="true" xml:lang="uk">Впорядкування</p>
-    <p subtitle="true" xml:lang="zh-CN">整理</p>
-    <p subtitle="true" xml:lang="zh-TW">組織</p>
+    <p>Organize</p>
+    <p xml:lang="ar">نظّم</p>
+    <p xml:lang="bg">Организиране</p>
+    <p xml:lang="ca">Organitza</p>
+    <p xml:lang="ca-valencia">Organitza</p>
+    <p xml:lang="cs">Organizace</p>
+    <p xml:lang="de">Organisieren</p>
+    <p xml:lang="en-GB">Organise</p>
+    <p xml:lang="eo">Organizi</p>
+    <p xml:lang="es">Organizar</p>
+    <p xml:lang="eu">Antolatu</p>
+    <p xml:lang="fi">Järjestä</p>
+    <p xml:lang="fr">Organiser</p>
+    <p xml:lang="gl">Organiza.</p>
+    <p xml:lang="he">סידור</p>
+    <p xml:lang="hi">आयोजन</p>
+    <p xml:lang="hu">Szervezés</p>
+    <p xml:lang="ia">Organisa</p>
+    <p xml:lang="it">Organizza</p>
+    <p xml:lang="ka">ორგანიზება</p>
+    <p xml:lang="ko">정리</p>
+    <p xml:lang="lt">Tvarkykite</p>
+    <p xml:lang="nl">Organiseren</p>
+    <p xml:lang="nn">Organiser</p>
+    <p xml:lang="pl">Uporządkuj</p>
+    <p xml:lang="pt">Organizar</p>
+    <p xml:lang="pt-BR">Organizar</p>
+    <p xml:lang="ru">Организация</p>
+    <p xml:lang="sa">संगठित करें</p>
+    <p xml:lang="sk">Organize</p>
+    <p xml:lang="sl">Organiziraj</p>
+    <p xml:lang="sv">Organisera</p>
+    <p xml:lang="tr">Organize Et</p>
+    <p xml:lang="uk">Впорядкування</p>
+    <p xml:lang="zh-CN">整理</p>
+    <p xml:lang="zh-TW">組織</p>
     <p>Zanshin makes it simple to put your daily life in order. Just create a few projects, a few contexts and start filling them with tasks. You can simply do this using drag and drop. Something has to be done before a given day? Just set a due date and it'll stand out from your other items. You need to work on a project? Focus on it and you will see all the related tasks. Feeling like dealing with your phone calls? Focus on your phone context to find all the pending calls you have to give.</p>
     <p xml:lang="ar">يجعل زانشين من السهل تنظيم حياتك اليومية. ما عليك سوى إنشاء عدد قليل من المشاريع، وعدد قليل من السياقات والبدء في ملئها بالمهام. يمكنك ببساطة القيام بذلك باستخدام السحب والإفلات. هل يجب إنجاز شيء ما قبل يوم معين؟ ما عليك سوى تحديد تاريخ استحقاق وسيبرز هذا من بين العناصر الأخرى. هل تحتاج إلى العمل على مشروع؟ ركز عليه وسترى جميع المهام ذات الصلة. هل تشعر بالرغبة في التعامل مع مكالماتك الهاتفية؟ ركز على سياق هاتفك للعثور على جميع المكالمات المعلقة التي يجب عليك إجراؤها.</p>
     <p xml:lang="bg">Zanshin улеснява въвеждането на ред в ежедневието ви. Просто създайте няколко проекта, няколко контекста и започнете да ги запълвате със задачи. Можете просто да направите това със завличане с мишката. Нещо трябва да се свърши преди даден ден? Просто задайте срок за изпълнение и то ще се отличава от останалите ви елементи. Трябва да да работите по даден проект? Фокусирайте се върху него и ще видите всички свързани с него задачи. Не ви се иска да се занимавате с телефонните си обаждания? Фокусирайте се върху контекста на телефона си, за да намерите всички чакащи обаждания, които трябва да извършите.</p>
@@ -281,43 +281,43 @@
     <p xml:lang="uk">Zanshin спрощує упорядковування вашого щоденного життя. Просто створіть декілька проєктів, контекстів і почніть їх заповнювати записами завдань. Зробити це можна простим перетягуванням зі спаданням. Щось треба зробити до певного дня? Просто встановіть кінцеву дату і пункт буде виокремлено серед інших. Маєте працювати над проєктом? Сфокусуйте його і ви побачите усі пов'язані завдання. Непокоїтеся за ваші телефонні дзвінки? Сфокусуйтеся на телефонному контексті і отримайте список тих, кому слід поздвонити.</p>
     <p xml:lang="zh-CN">Zanshin让搞定您的生活变得简单。只需创建几个项目，几个情景并开始用任务填满它们。 您仅需拖放就能做到这一点。 必须在某天前完成？只需设置一个到期日，任务就会与其他项目区分开。 需要在一个项目上工作？关注它，您就能看到所有相关任务。 要处理您的电话？关注您的电话上下文就能找到您要拨打的所有待处理电话。</p>
     <p xml:lang="zh-TW">Zanshin 讓規律的日常生活變得簡單。建立一些專案、一些場景，然後開始把工作項目填進去。這可以透過滑鼠拖放簡單搭乘。某天前必須做好某件事？設定一個到期日，然後該項目就會被突出顯示。需要在某個專案上進行工作？聚焦它然後您就會看到所有相關的工作項目。覺得要來處理您該打的電話？聚焦在電話場景來看您所有還沒打的電話。</p>
-    <p subtitle="true">Optimize</p>
-    <p subtitle="true" xml:lang="ar">حسِّن</p>
-    <p subtitle="true" xml:lang="bg">Оптимизиране</p>
-    <p subtitle="true" xml:lang="ca">Optimitza</p>
-    <p subtitle="true" xml:lang="ca-valencia">Optimitza</p>
-    <p subtitle="true" xml:lang="cs">Optimalizace</p>
-    <p subtitle="true" xml:lang="de">Optimieren</p>
-    <p subtitle="true" xml:lang="en-GB">Optimise</p>
-    <p subtitle="true" xml:lang="eo">Optimumigu</p>
-    <p subtitle="true" xml:lang="es">Optimizar</p>
-    <p subtitle="true" xml:lang="eu">Optimizatu</p>
-    <p subtitle="true" xml:lang="fi">Optimoi</p>
-    <p subtitle="true" xml:lang="fr">Optimiser</p>
-    <p subtitle="true" xml:lang="gl">Optimiza.</p>
-    <p subtitle="true" xml:lang="he">מיטוב</p>
-    <p subtitle="true" xml:lang="hi">अनुकूलन</p>
-    <p subtitle="true" xml:lang="hu">Optimalizálás</p>
-    <p subtitle="true" xml:lang="ia">Optimisa</p>
-    <p subtitle="true" xml:lang="it">Ottimizza</p>
-    <p subtitle="true" xml:lang="ka">ოპტიმიზაცია</p>
-    <p subtitle="true" xml:lang="ko">최적화</p>
-    <p subtitle="true" xml:lang="lt">Optimizuokite</p>
-    <p subtitle="true" xml:lang="nl">Optimaliseren</p>
-    <p subtitle="true" xml:lang="nn">Optimer</p>
-    <p subtitle="true" xml:lang="pl">Zoptymalizuj</p>
-    <p subtitle="true" xml:lang="pt">Optimizar</p>
-    <p subtitle="true" xml:lang="pt-BR">Otimizar</p>
-    <p subtitle="true" xml:lang="ru">Оптимизация</p>
-    <p subtitle="true" xml:lang="sa">अनुकूलनं कुर्वन्तु</p>
-    <p subtitle="true" xml:lang="sk">Optimalizovať</p>
-    <p subtitle="true" xml:lang="sl">Optimiziraj</p>
-    <p subtitle="true" xml:lang="sv">Optimera</p>
-    <p subtitle="true" xml:lang="tr">Eniyile</p>
-    <p subtitle="true" xml:lang="ug">ئەلالاشتۇر</p>
-    <p subtitle="true" xml:lang="uk">Оптимізація</p>
-    <p subtitle="true" xml:lang="zh-CN">优化</p>
-    <p subtitle="true" xml:lang="zh-TW">最佳化</p>
+    <p>Optimize</p>
+    <p xml:lang="ar">حسِّن</p>
+    <p xml:lang="bg">Оптимизиране</p>
+    <p xml:lang="ca">Optimitza</p>
+    <p xml:lang="ca-valencia">Optimitza</p>
+    <p xml:lang="cs">Optimalizace</p>
+    <p xml:lang="de">Optimieren</p>
+    <p xml:lang="en-GB">Optimise</p>
+    <p xml:lang="eo">Optimumigu</p>
+    <p xml:lang="es">Optimizar</p>
+    <p xml:lang="eu">Optimizatu</p>
+    <p xml:lang="fi">Optimoi</p>
+    <p xml:lang="fr">Optimiser</p>
+    <p xml:lang="gl">Optimiza.</p>
+    <p xml:lang="he">מיטוב</p>
+    <p xml:lang="hi">अनुकूलन</p>
+    <p xml:lang="hu">Optimalizálás</p>
+    <p xml:lang="ia">Optimisa</p>
+    <p xml:lang="it">Ottimizza</p>
+    <p xml:lang="ka">ოპტიმიზაცია</p>
+    <p xml:lang="ko">최적화</p>
+    <p xml:lang="lt">Optimizuokite</p>
+    <p xml:lang="nl">Optimaliseren</p>
+    <p xml:lang="nn">Optimer</p>
+    <p xml:lang="pl">Zoptymalizuj</p>
+    <p xml:lang="pt">Optimizar</p>
+    <p xml:lang="pt-BR">Otimizar</p>
+    <p xml:lang="ru">Оптимизация</p>
+    <p xml:lang="sa">अनुकूलनं कुर्वन्तु</p>
+    <p xml:lang="sk">Optimalizovať</p>
+    <p xml:lang="sl">Optimiziraj</p>
+    <p xml:lang="sv">Optimera</p>
+    <p xml:lang="tr">Eniyile</p>
+    <p xml:lang="ug">ئەلالاشتۇر</p>
+    <p xml:lang="uk">Оптимізація</p>
+    <p xml:lang="zh-CN">优化</p>
+    <p xml:lang="zh-TW">最佳化</p>
     <p>We hackers love our keyboards, and you probably find yourself more efficient with your hands on the keyboard as much as possible. That's why we crafted Zanshin carefully to be completely drivable from the keyboard. We added shortcuts to add tasks, move them to a project or a context, navigate, etc.</p>
     <p xml:lang="ar">نحن المخترقون نحب لوحات المفاتيح، وربما تجد نفسك أكثر كفاءة عندما تستخدم يديك على لوحة المفاتيح قدر الإمكان. ولهذا السبب صممنا زانشين بعناية بحيث يمكن تشغيله بالكامل من لوحة المفاتيح. لقد أضفنا اختصارات لإضافة المهام ونقلها إلى مشروع أو سياق، والتنقل، وما إلى ذلك.</p>
     <p xml:lang="bg">Ние, хакерите, обичаме клавиатурите си и вероятно сте по-ефективни с ръце върху клавиатурата, доколкото е възможно. Ето защо ние създадохме Zanshin внимателно, за да може да се управлява изцяло от клавиатурата. Добавихме клавишни комбинации за добавяне на задачи, преместването им в проект или контекст, навигация и т.н.</p>
@@ -354,43 +354,43 @@
     <p xml:lang="uk">Ми, програмісти, полюбляємо клавіатури, і ви, ймовірно, найефективніше працюєте з клавіатурою. Ось чому ми створили Zanshin таким, щоб ним можна було керувати з клавіатури. Ми додали клавіатурні комбінації для додавання завдань, пересування їх до проєкту або контексту, навігації тощо.</p>
     <p xml:lang="zh-CN">我们极客热爱键盘。您很可能发现，您的手与键盘搭档时您会更高效。正因为如此，我们精心雕琢了Zanshin，使其完全顺从于您的键盘。 我们加入了导航、添加任务、将项移动到项目或情景等的捷径。</p>
     <p xml:lang="zh-TW">我們這些黑客都愛用鍵盤，您可能也是手儘量在鍵盤上的時候效率會比較高。這就是為什麼我們仔細製作 Zanshin，確保它是完全可以透過鍵盤使用的。我們有為新增工作、移動工作到專案或場景、導覽等等動作加上鍵盤快捷鍵。</p>
-    <p subtitle="true">Integrate</p>
-    <p subtitle="true" xml:lang="ar">كامل</p>
-    <p subtitle="true" xml:lang="bg">Интегриране</p>
-    <p subtitle="true" xml:lang="ca">Integra</p>
-    <p subtitle="true" xml:lang="ca-valencia">Integra</p>
-    <p subtitle="true" xml:lang="cs">Integrace</p>
-    <p subtitle="true" xml:lang="de">Integrieren</p>
-    <p subtitle="true" xml:lang="en-GB">Integrate</p>
-    <p subtitle="true" xml:lang="eo">Integri</p>
-    <p subtitle="true" xml:lang="es">Integrar</p>
-    <p subtitle="true" xml:lang="eu">Bateratu</p>
-    <p subtitle="true" xml:lang="fi">Eheytä</p>
-    <p subtitle="true" xml:lang="fr">Intégrer</p>
-    <p subtitle="true" xml:lang="gl">Integra.</p>
-    <p subtitle="true" xml:lang="he">שילוב</p>
-    <p subtitle="true" xml:lang="hi">एकीकृत करें</p>
-    <p subtitle="true" xml:lang="hu">Integrálás</p>
-    <p subtitle="true" xml:lang="ia">Integrar</p>
-    <p subtitle="true" xml:lang="it">Integra</p>
-    <p subtitle="true" xml:lang="ka">ინტეგრირება</p>
-    <p subtitle="true" xml:lang="ko">통합</p>
-    <p subtitle="true" xml:lang="lt">Integruokite</p>
-    <p subtitle="true" xml:lang="nl">Integreren</p>
-    <p subtitle="true" xml:lang="nn">Integrer</p>
-    <p subtitle="true" xml:lang="pl">Scal</p>
-    <p subtitle="true" xml:lang="pt">Integrar</p>
-    <p subtitle="true" xml:lang="pt-BR">Integrar</p>
-    <p subtitle="true" xml:lang="ru">Интеграция</p>
-    <p subtitle="true" xml:lang="sa">एकीकृत करें</p>
-    <p subtitle="true" xml:lang="sk">Integrovať</p>
-    <p subtitle="true" xml:lang="sl">Integriraj</p>
-    <p subtitle="true" xml:lang="sv">Integrera</p>
-    <p subtitle="true" xml:lang="tr">Tümleştir</p>
-    <p subtitle="true" xml:lang="ug">ئىنتېگرال</p>
-    <p subtitle="true" xml:lang="uk">Інтеграція</p>
-    <p subtitle="true" xml:lang="zh-CN">融合</p>
-    <p subtitle="true" xml:lang="zh-TW">整合</p>
+    <p>Integrate</p>
+    <p xml:lang="ar">كامل</p>
+    <p xml:lang="bg">Интегриране</p>
+    <p xml:lang="ca">Integra</p>
+    <p xml:lang="ca-valencia">Integra</p>
+    <p xml:lang="cs">Integrace</p>
+    <p xml:lang="de">Integrieren</p>
+    <p xml:lang="en-GB">Integrate</p>
+    <p xml:lang="eo">Integri</p>
+    <p xml:lang="es">Integrar</p>
+    <p xml:lang="eu">Bateratu</p>
+    <p xml:lang="fi">Eheytä</p>
+    <p xml:lang="fr">Intégrer</p>
+    <p xml:lang="gl">Integra.</p>
+    <p xml:lang="he">שילוב</p>
+    <p xml:lang="hi">एकीकृत करें</p>
+    <p xml:lang="hu">Integrálás</p>
+    <p xml:lang="ia">Integrar</p>
+    <p xml:lang="it">Integra</p>
+    <p xml:lang="ka">ინტეგრირება</p>
+    <p xml:lang="ko">통합</p>
+    <p xml:lang="lt">Integruokite</p>
+    <p xml:lang="nl">Integreren</p>
+    <p xml:lang="nn">Integrer</p>
+    <p xml:lang="pl">Scal</p>
+    <p xml:lang="pt">Integrar</p>
+    <p xml:lang="pt-BR">Integrar</p>
+    <p xml:lang="ru">Интеграция</p>
+    <p xml:lang="sa">एकीकृत करें</p>
+    <p xml:lang="sk">Integrovať</p>
+    <p xml:lang="sl">Integriraj</p>
+    <p xml:lang="sv">Integrera</p>
+    <p xml:lang="tr">Tümleştir</p>
+    <p xml:lang="ug">ئىنتېگرال</p>
+    <p xml:lang="uk">Інтеграція</p>
+    <p xml:lang="zh-CN">融合</p>
+    <p xml:lang="zh-TW">整合</p>
     <p>Zanshin is an application of the KDE community, as such it unleashes even more power when used with other KDE Applications or within KDE Plasma Desktop. Using KMail? You can create a task right from an email you received and it'll appear in Zanshin's Inbox. Using KOrganizer? All your overdue and coming task will appear in the calendar view. Using Plasma Desktop? Then you can collect from anywhere using KRunner, just type in "todo: Buy apples", and you will find that tasks in Zanshin's Inbox, even if it wasn't running!</p>
     <p xml:lang="ar">زانشين هو تطبيق من تطبيقات مجتمع كيدي، وبالتالي فهو يطلق العنان لمزيد من القوة عند استخدامه مع تطبيقات كيدي الأخرى أو داخل سطح مكتب بلازما من كيدي. هل تستخدم "بريدك"؟ يمكنك إنشاء مهمة مباشرة من رسالة بريد إلكتروني تلقيتها وستظهر في صندوق الوارد الخاص بزانشين. هل تستخدم "منظمك"؟ ستظهر جميع مهامك المتأخرة والمقبلة في عرض التقويم. هل تستخدم سطح مكتب بلازما؟ بعد ذلك يمكنك جمعها من أي مكان باستخدام "مشغل ك"  فقط اكتب "todo: Buy apples"، وستجد تلك المهام في صندوق الوارد الخاص بزانشين، حتى لو لم تكن قيد التشغيل!</p>
     <p xml:lang="bg">Zanshin е приложение на общността на KDE и като такова разгръща дори повече мощ, когато се използва с други приложения на KDE или в рамките на KDE Plasma . Използвате KMail? Можете да създадете задача директно от получен имейл и тя ще се появи във входящата поща на Zanshin. Използвате KOrganizer? Всички ваши просрочени и предстоящи задачи ще се появят в изгледа на календара. Използвате Plasma Desktop? Тогава вие можете да събирате отвсякъде с помощта на KRunner, просто въведете "todo: Buy apples", и ще откриете тази задача във входящата поща на Zanshin, дори и да не е била пусната!</p>
