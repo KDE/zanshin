@@ -144,7 +144,7 @@ msgstr "Impossible de supprimer le contexte « %1 »"
 #: src/presentation/availablepagesmodel.cpp:139
 #, kde-format
 msgid "Inbox"
-msgstr "Boîte de réception"
+msgstr "Boite de réception"
 
 #: src/presentation/availablepagesmodel.cpp:141
 #, kde-format
@@ -230,17 +230,17 @@ msgstr "Impossible de dissocier la tâche « %1 » de son parent"
 #: src/presentation/inboxpagemodel.cpp:35
 #, kde-format
 msgid "Cannot add task %1 in Inbox"
-msgstr "Impossible d'ajouter la tâche « %1 » à la Boîte de réception"
+msgstr "Impossible d'ajouter la tâche « %1 » à la Boite de réception"
 
 #: src/presentation/inboxpagemodel.cpp:46
 #, kde-format
 msgid "Cannot remove task %1 from Inbox"
-msgstr "Impossible de supprimer la tâche « %1 » de la Boîte de réception"
+msgstr "Impossible de supprimer la tâche « %1 » de la Boite de réception"
 
 #: src/presentation/inboxpagemodel.cpp:96
 #, kde-format
 msgid "Cannot modify task %1 in Inbox"
-msgstr "Impossible de modifier la tâche « %1 » dans la Boîte de réception"
+msgstr "Impossible de modifier la tâche « %1 » dans la Boite de réception"
 
 #: src/presentation/projectpagemodel.cpp:47
 #, kde-format
@@ -561,7 +561,7 @@ msgstr "Supprimer les tâches"
 #, kde-format
 msgctxt "@title:window"
 msgid "Quick Select Dialog"
-msgstr "Boîte de dialogue de sélection rapide"
+msgstr "Boite de dialogue de sélection rapide"
 
 #: src/widgets/quickselectdialog.cpp:32 src/widgets/quickselectdialog.cpp:70
 #, kde-format
