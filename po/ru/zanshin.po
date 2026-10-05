@@ -49,7 +49,7 @@ msgid ""
 "store and query its TODOs."
 msgstr ""
 "Выберите или создайте источник данных, который будет использоваться "
-"программой для сохранения и просмотра списков задач."
+"приложением для сохранения и просмотра списков задач."
 
 #: src/akonadi/akonadiconfigdialog.cpp:50
 #, kde-format
@@ -520,12 +520,12 @@ msgstr "Сделать из задачи проект"
 #: src/widgets/pageview.cpp:210
 #, kde-format
 msgid "Show done tasks"
-msgstr "Показать выполненные задачи"
+msgstr "Показывать выполненные задачи"
 
 #: src/widgets/pageview.cpp:218
 #, kde-format
 msgid "Show future tasks"
-msgstr "Показать предстоящие задачи"
+msgstr "Показывать предстоящие задачи"
 
 #: src/widgets/pageview.cpp:244
 #, kde-format
@@ -577,7 +577,7 @@ msgstr "Путь: %1"
 #, kde-format
 msgctxt "@title:window"
 msgid "Zanshin Running Task Banner"
-msgstr "Заголовок выполняемого задания в Zanshin"
+msgstr "Баннер выполняемой задачи в Zanshin"
 
 #: src/widgets/runningtaskwidget.cpp:49
 #, kde-format
@@ -599,7 +599,7 @@ msgstr ""
 #: src/zanshin/app/aboutdata.cpp:17
 #, kde-format
 msgid "Copyright 2008-2016, Kevin Ottens <ervin@kde.org>"
-msgstr "© Kevin Ottens <ervin@kde.org>, 2008-2016"
+msgstr "© Kevin Ottens <ervin@kde.org>, 2008–2016"
 
 #: src/zanshin/app/aboutdata.cpp:19
 #, kde-format
