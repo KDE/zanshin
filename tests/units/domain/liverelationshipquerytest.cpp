@@ -41,20 +41,21 @@ private:
         return obj->objectName().startsWith(QLatin1StringView("Project"));
     }
 
-    static QPair<int, QString> convertToPair(QObject *object)
-    {
-        return qMakePair(object->property(objectIdPropName).toInt(), object->objectName());
+    static std::pair<int, QString> convertToPair(QObject *object) {
+      return std::make_pair(object->property(objectIdPropName).toInt(),
+                            object->objectName());
     }
 
-    static bool representsPair(QObject *object, const QPair<int, QString> &output) {
-        return object->property(objectIdPropName).toInt() == output.first;
+    static bool representsPair(QObject *object,
+                               const std::pair<int, QString> &output) {
+      return object->property(objectIdPropName).toInt() == output.first;
     };
 
 private slots:
     void shouldHaveInitialFetchFunctionAndPredicate()
     {
         // GIVEN
-        Domain::LiveRelationshipQuery<QObject*, QPair<int, QString>> query;
+        Domain::LiveRelationshipQuery<QObject *, std::pair<int, QString>> query;
         query.setFetchFunction([this] (const Domain::LiveQueryInput<QObject*>::AddFunction &add) {
             Utils::JobHandler::install(new FakeJob, [this, add] {
                 add(createObject(0, QStringLiteral("ProjectA")));
@@ -73,16 +74,17 @@ private slots:
         query.setCompareFunction(compareObjectIds);
 
         // WHEN
-        Domain::QueryResult<QPair<int, QString>>::Ptr result = query.result();
+        Domain::QueryResult<std::pair<int, QString>>::Ptr result =
+            query.result();
         result->data();
         result = query.result(); // Should not cause any problem or wrong data
         QVERIFY(result->data().isEmpty());
 
         // THEN
-        QList<QPair<int, QString>> expected;
-        expected << QPair<int, QString>(0, QStringLiteral("ProjectA"))
-                 << QPair<int, QString>(3, QStringLiteral("ProjectB"))
-                 << QPair<int, QString>(6, QStringLiteral("ProjectC"));
+        QList<std::pair<int, QString>> expected;
+        expected << std::pair<int, QString>(0, QStringLiteral("ProjectA"))
+                 << std::pair<int, QString>(3, QStringLiteral("ProjectB"))
+                 << std::pair<int, QString>(6, QStringLiteral("ProjectC"));
         QTRY_COMPARE(result->data(), expected);
     }
 
@@ -171,7 +173,7 @@ private slots:
     void shouldDealWithSeveralFetchesProperly()
     {
         // GIVEN
-        Domain::LiveRelationshipQuery<QObject*, QPair<int, QString>> query;
+        Domain::LiveRelationshipQuery<QObject *, std::pair<int, QString>> query;
         query.setFetchFunction([this] (const Domain::LiveRelationshipQuery<QObject*, QString>::AddFunction &add) {
             Utils::JobHandler::install(new FakeJob, [this, add] {
                 add(createObject(0, QStringLiteral("ProjectA")));
@@ -190,14 +192,15 @@ private slots:
 
         for (int i = 0; i < 2; i++) {
             // WHEN * 2
-            Domain::QueryResult<QPair<int, QString>>::Ptr result = query.result();
+            Domain::QueryResult<std::pair<int, QString>>::Ptr result =
+                query.result();
 
             // THEN * 2
             QVERIFY(result->data().isEmpty());
-            QList<QPair<int, QString>> expected;
-            expected << QPair<int, QString>(0, QStringLiteral("ProjectA"))
-                     << QPair<int, QString>(3, QStringLiteral("ProjectB"))
-                     << QPair<int, QString>(6, QStringLiteral("ProjectC"));
+            QList<std::pair<int, QString>> expected;
+            expected << std::pair<int, QString>(0, QStringLiteral("ProjectA"))
+                     << std::pair<int, QString>(3, QStringLiteral("ProjectB"))
+                     << std::pair<int, QString>(6, QStringLiteral("ProjectC"));
             QTRY_COMPARE(result->data(), expected);
         }
     }
@@ -205,7 +208,8 @@ private slots:
     void shouldClearProviderWhenDeleted()
     {
         // GIVEN
-        auto query = new Domain::LiveRelationshipQuery<QObject*, QPair<int, QString>>;
+        auto query = new Domain::LiveRelationshipQuery<QObject *,
+                                                       std::pair<int, QString>>;
         query->setFetchFunction([this] (const Domain::LiveRelationshipQuery<QObject*, QString>::AddFunction &add) {
             Utils::JobHandler::install(new FakeJob, [this, add] {
                 add(createObject(0, QStringLiteral("ProjectA")));
@@ -217,7 +221,8 @@ private slots:
         query->setPredicateFunction(isProject);
         query->setCompareFunction(compareObjectIds);
 
-        Domain::QueryResult<QPair<int, QString>>::Ptr result = query->result();
+        Domain::QueryResult<std::pair<int, QString>>::Ptr result =
+            query->result();
         QTRY_COMPARE(result->data().count(), 1);
 
         // WHEN
@@ -230,7 +235,7 @@ private slots:
     void shouldReactToAdds()
     {
         // GIVEN
-        Domain::LiveRelationshipQuery<QObject*, QPair<int, QString>> query;
+        Domain::LiveRelationshipQuery<QObject *, std::pair<int, QString>> query;
         query.setFetchFunction([this] (const Domain::LiveRelationshipQuery<QObject*, QString>::AddFunction &add) {
             Utils::JobHandler::install(new FakeJob, [this, add] {
                 add(createObject(0, QStringLiteral("ProjectA")));
@@ -242,8 +247,10 @@ private slots:
         query.setPredicateFunction(isProject);
         query.setCompareFunction(compareObjectIds);
 
-        Domain::QueryResult<QPair<int, QString>>::Ptr result = query.result();
-        QList<QPair<int, QString>> expected{ qMakePair(0, QString::fromLatin1("ProjectA")) };
+        Domain::QueryResult<std::pair<int, QString>>::Ptr result =
+            query.result();
+        QList<std::pair<int, QString>> expected{
+            std::make_pair(0, QString::fromLatin1("ProjectA"))};
         QTRY_COMPARE(result->data(), expected);
 
         // WHEN
@@ -252,14 +259,14 @@ private slots:
         query.onAdded(createObject(5, QStringLiteral("ParentB")));
 
         // THEN
-        expected << QPair<int, QString>(3, QStringLiteral("ProjectB"));
+        expected << std::pair<int, QString>(3, QStringLiteral("ProjectB"));
         QCOMPARE(result->data(), expected);
     }
 
     void shouldReactToRemoves()
     {
         // GIVEN
-        Domain::LiveRelationshipQuery<QObject*, QPair<int, QString>> query;
+        Domain::LiveRelationshipQuery<QObject *, std::pair<int, QString>> query;
         query.setFetchFunction([this] (const Domain::LiveRelationshipQuery<QObject*, QString>::AddFunction &add) {
             Utils::JobHandler::install(new FakeJob, [this, add] {
                 add(createObject(0, QStringLiteral("ProjectA")));
@@ -272,8 +279,10 @@ private slots:
         query.setCompareFunction(compareObjectIds);
         query.setRepresentsFunction(representsPair);
 
-        Domain::QueryResult<QPair<int, QString>>::Ptr result = query.result();
-        QList<QPair<int, QString>> expected{ qMakePair(0, QString::fromLatin1("ProjectA")) };
+        Domain::QueryResult<std::pair<int, QString>>::Ptr result =
+            query.result();
+        QList<std::pair<int, QString>> expected{
+            std::make_pair(0, QString::fromLatin1("ProjectA"))};
         QTRY_COMPARE(result->data(), expected);
 
         // WHEN
@@ -296,7 +305,7 @@ private slots:
     void shouldReactToChanges()
     {
         // GIVEN
-        Domain::LiveRelationshipQuery<QObject*, QPair<int, QString>> query;
+        Domain::LiveRelationshipQuery<QObject *, std::pair<int, QString>> query;
         query.setFetchFunction([this] (const Domain::LiveRelationshipQuery<QObject*, QString>::AddFunction &add) {
             Utils::JobHandler::install(new FakeJob, [this, add] {
                 add(createObject(0, QStringLiteral("ProjectA")));
@@ -315,10 +324,12 @@ private slots:
         query.setCompareFunction(compareObjectIds);
         query.setRepresentsFunction(representsPair);
 
-        Domain::QueryResult<QPair<int, QString>>::Ptr result = query.result();
-        QList<QPair<int, QString>> expected{ qMakePair(0, QString::fromLatin1("ProjectA")),
-                                             qMakePair(3, QString::fromLatin1("ProjectB")),
-                                             qMakePair(6, QString::fromLatin1("ProjectC")) };
+        Domain::QueryResult<std::pair<int, QString>>::Ptr result =
+            query.result();
+        QList<std::pair<int, QString>> expected{
+            std::make_pair(0, QString::fromLatin1("ProjectA")),
+            std::make_pair(3, QString::fromLatin1("ProjectB")),
+            std::make_pair(6, QString::fromLatin1("ProjectC"))};
         QTRY_COMPARE(result->data(), expected);
 
         // WHEN
@@ -338,14 +349,15 @@ private slots:
         query.onChanged(createObject(3, QStringLiteral("whatever")));
 
         // THEN
-        expected[1] = qMakePair(3, QString::fromLatin1("ProjectB-Renamed"));
+        expected[1] =
+            std::make_pair(3, QString::fromLatin1("ProjectB-Renamed"));
         QTRY_COMPARE(result->data(), expected);
     }
 
     void shouldIgnoreUnrelatedChangesWhenEmpty()
     {
         // GIVEN
-        Domain::LiveRelationshipQuery<QObject*, QPair<int, QString>> query;
+        Domain::LiveRelationshipQuery<QObject *, std::pair<int, QString>> query;
         bool listingDone = false;
         query.setFetchFunction([&listingDone] (const Domain::LiveRelationshipQuery<QObject*, QString>::AddFunction &add) {
             Q_UNUSED(add);
@@ -358,7 +370,8 @@ private slots:
         query.setCompareFunction(compareObjectIds);
         query.setRepresentsFunction(representsPair);
 
-        Domain::QueryResult<QPair<int, QString>>::Ptr result = query.result();
+        Domain::QueryResult<std::pair<int, QString>>::Ptr result =
+            query.result();
         QTRY_VERIFY(listingDone);
         listingDone = false;
         QVERIFY(result->data().isEmpty());
@@ -375,7 +388,7 @@ private slots:
     void shouldAddWhenChangesMakeInputSuitableForQuery()
     {
         // GIVEN
-        Domain::LiveRelationshipQuery<QObject*, QPair<int, QString>> query;
+        Domain::LiveRelationshipQuery<QObject *, std::pair<int, QString>> query;
         bool listingDone = false;
         query.setFetchFunction([this, &listingDone] (const Domain::LiveRelationshipQuery<QObject*, QString>::AddFunction &add) {
             Utils::JobHandler::install(new FakeJob, [this, add, &listingDone] {
@@ -389,8 +402,9 @@ private slots:
         query.setCompareFunction(compareObjectIds);
         query.setRepresentsFunction(representsPair);
 
-        Domain::QueryResult<QPair<int, QString>>::Ptr result = query.result();
-        QList<QPair<int, QString>> expected;
+        Domain::QueryResult<std::pair<int, QString>>::Ptr result =
+            query.result();
+        QList<std::pair<int, QString>> expected;
         QTRY_VERIFY(listingDone);
         QCOMPARE(result->data(), expected);
 
@@ -404,7 +418,7 @@ private slots:
         query.onChanged(createObject(2, QStringLiteral("whatever")));
 
         // Then
-        expected << qMakePair(2, QStringLiteral("ProjectA"));
+        expected << std::make_pair(2, QStringLiteral("ProjectA"));
         QTRY_COMPARE(result->data(), expected);
     }
 
@@ -413,7 +427,7 @@ private slots:
         // GIVEN
         bool afterReset = false;
 
-        Domain::LiveRelationshipQuery<QObject*, QPair<int, QString>> query;
+        Domain::LiveRelationshipQuery<QObject *, std::pair<int, QString>> query;
         query.setFetchFunction([this, &afterReset] (const Domain::LiveRelationshipQuery<QObject*, QString>::AddFunction &add) {
             Utils::JobHandler::install(new FakeJob, [this, &afterReset, add] {
                 add(createObject(0, QStringLiteral("ProjectA")));
@@ -439,11 +453,13 @@ private slots:
         });
         query.setCompareFunction(compareObjectIds);
 
-        Domain::QueryResult<QPair<int, QString>>::Ptr result = query.result();
+        Domain::QueryResult<std::pair<int, QString>>::Ptr result =
+            query.result();
         int removeHandlerCallCount = 0;
-        result->addPostRemoveHandler([&removeHandlerCallCount](const QPair<int, QString> &, int) {
-                                         removeHandlerCallCount++;
-                                     });
+        result->addPostRemoveHandler(
+            [&removeHandlerCallCount](const std::pair<int, QString> &, int) {
+              removeHandlerCallCount++;
+            });
 
         QTRY_VERIFY(!result->data().isEmpty());
         QCOMPARE(removeHandlerCallCount, 0);
@@ -453,9 +469,10 @@ private slots:
         afterReset = true;
 
         // THEN
-        const QList<QPair<int, QString>> expected = { qMakePair(1, QStringLiteral("ItemA")),
-                                                      qMakePair(4, QStringLiteral("ItemB")),
-                                                      qMakePair(7, QStringLiteral("ItemC")) };
+        const QList<std::pair<int, QString>> expected = {
+            std::make_pair(1, QStringLiteral("ItemA")),
+            std::make_pair(4, QStringLiteral("ItemB")),
+            std::make_pair(7, QStringLiteral("ItemC"))};
         QTRY_COMPARE(result->data(), expected);
         QCOMPARE(removeHandlerCallCount, 2);
     }
