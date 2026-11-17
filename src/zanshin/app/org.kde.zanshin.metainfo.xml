@@ -2,7 +2,7 @@
 <component type="desktop-application">
   <id>org.kde.zanshin</id>
   <metadata_license>CC0-1.0</metadata_license>
-  <project_license>GPL-3.0+</project_license>
+  <project_license>GPL-3.0-or-later</project_license>
   <developer id="org.kde">
     <name translate="no">KDE</name>
   </developer>
@@ -430,6 +430,8 @@
   <url type="homepage">https://apps.kde.org/zanshin</url>
   <url type="bugtracker">https://bugs.kde.org/enter_bug.cgi?format=guided&amp;product=zanshin</url>
   <url type="vcs-browser">https://invent.kde.org/pim/zanshin</url>
+  <url type="donation">https://www.kde.org/community/donations/?app=zanshin&amp;source=appdata</url>
+  <url type="contribute">https://community.kde.org/Get_Involved</url>
   <screenshots>
     <screenshot type="default">
       <caption>Zanshin main window</caption>
