@@ -11,6 +11,8 @@
 
 #include "testlib/fakejob.h"
 
+#include <QSet>
+
 using namespace Utils;
 
 namespace

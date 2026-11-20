@@ -11,6 +11,7 @@
 #include <QDate>
 #include <QDebug>
 #include <QMetaType>
+#include <QObject>
 #include <QSharedPointer>
 #include <QString>
 #include <QUrl>

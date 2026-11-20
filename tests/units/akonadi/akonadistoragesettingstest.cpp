@@ -12,6 +12,7 @@
 
 #include "akonadi/akonadistoragesettings.h"
 
+#include <QSet>
 #include <QSignalSpy>
 
 using namespace Akonadi;
